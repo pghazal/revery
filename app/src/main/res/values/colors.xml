@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#263238</color>
+    <color name="colorPrimaryDark">#263238</color>
+    <color name="colorAccent">#ff9800</color>
+
+    <color name="color_background_recycler_view">#212121</color>
+    <color name="color_text_hint_alarm_label">#90a4ae</color>
+
+</resources>

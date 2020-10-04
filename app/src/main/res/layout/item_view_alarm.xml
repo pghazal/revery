@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/alarm_item_view_size"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:padding="@dimen/half_base_margin">
+
+        <TextView
+            android:id="@+id/timeTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            android:textColor="@android:color/white"
+            tools:text="15:40" />
+
+        <TextView
+            android:id="@+id/labelTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:lines="1"
+            android:textColor="@android:color/white"
+            tools:text="description" />
+
+        <LinearLayout
+            android:id="@+id/recurringDaysContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <TextView
+                android:id="@+id/mondayTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/minimum_base_margin"
+                android:enabled="false"
+                android:text="@string/monday_short"
+                android:textColor="@color/selector_recurring_days_alarm_text_color" />
+
+            <TextView
+                android:id="@+id/tuesdayTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/minimum_base_margin"
+                android:enabled="false"
+                android:text="@string/tuesday_short"
+                android:textColor="@color/selector_recurring_days_alarm_text_color" />
+
+            <TextView
+                android:id="@+id/wednesdayTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/minimum_base_margin"
+                android:enabled="false"
+                android:text="@string/wednesday_short"
+                android:textColor="@color/selector_recurring_days_alarm_text_color" />
+
+            <TextView
+                android:id="@+id/thursdayTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/minimum_base_margin"
+                android:enabled="false"
+                android:text="@string/thursday_short"
+                android:textColor="@color/selector_recurring_days_alarm_text_color" />
+
+            <TextView
+                android:id="@+id/fridayTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/minimum_base_margin"
+                android:enabled="false"
+                android:text="@string/friday_short"
+                android:textColor="@color/selector_recurring_days_alarm_text_color" />
+
+            <TextView
+                android:id="@+id/saturdayTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/minimum_base_margin"
+                android:enabled="false"
+                android:text="@string/saturday_short"
+                android:textColor="@color/selector_recurring_days_alarm_text_color" />
+
+            <TextView
+                android:id="@+id/sundayTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/minimum_base_margin"
+                android:enabled="false"
+                android:text="@string/sunday_short"
+                android:textColor="@color/selector_recurring_days_alarm_text_color" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/alarmSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:checked="false"
+        android:padding="@dimen/half_base_margin"
+        android:text="" />
+
+</LinearLayout>

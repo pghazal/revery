@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/labelEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/half_base_margin"
+            android:autofillHints="@string/alarm_label"
+            android:background="@drawable/rounded_corner"
+            android:hint="@string/alarm_label"
+            android:inputType="text"
+            android:textColor="@android:color/white"
+            android:textColorHint="@color/color_text_hint_alarm_label" />
+
+        <TimePicker
+            android:id="@+id/timePicker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:timePickerMode="spinner" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="@dimen/third_base_margin">
+
+            <ToggleButton
+                android:id="@+id/mondayToggle"
+                style="@style/RecurringDaysToggleStyle"
+                android:layout_width="@dimen/toggle_recurring_days_size"
+                android:layout_height="@dimen/toggle_recurring_days_size"
+                android:layout_marginEnd="@dimen/minimum_base_margin"
+                android:checked="false"
+                android:text=""
+                android:textOff="@string/monday_short"
+                android:textOn="@string/monday_short"
+                tools:checked="true" />
+
+            <ToggleButton
+                android:id="@+id/tuesdayToggle"
+                style="@style/RecurringDaysToggleStyle"
+                android:layout_width="@dimen/toggle_recurring_days_size"
+                android:layout_height="@dimen/toggle_recurring_days_size"
+                android:layout_marginEnd="@dimen/minimum_base_margin"
+                android:checked="false"
+                android:text=""
+                android:textOff="@string/tuesday_short"
+                android:textOn="@string/tuesday_short" />
+
+            <ToggleButton
+                android:id="@+id/wednesdayToggle"
+                style="@style/RecurringDaysToggleStyle"
+                android:layout_width="@dimen/toggle_recurring_days_size"
+                android:layout_height="@dimen/toggle_recurring_days_size"
+                android:layout_marginEnd="@dimen/minimum_base_margin"
+                android:checked="false"
+                android:text=""
+                android:textOff="@string/wednesday_short"
+                android:textOn="@string/wednesday_short" />
+
+            <ToggleButton
+                android:id="@+id/thursdayToggle"
+                style="@style/RecurringDaysToggleStyle"
+                android:layout_width="@dimen/toggle_recurring_days_size"
+                android:layout_height="@dimen/toggle_recurring_days_size"
+                android:layout_marginEnd="@dimen/minimum_base_margin"
+                android:checked="false"
+                android:text=""
+                android:textOff="@string/thursday_short"
+                android:textOn="@string/thursday_short" />
+
+            <ToggleButton
+                android:id="@+id/fridayToggle"
+                style="@style/RecurringDaysToggleStyle"
+                android:layout_width="@dimen/toggle_recurring_days_size"
+                android:layout_height="@dimen/toggle_recurring_days_size"
+                android:layout_marginEnd="@dimen/minimum_base_margin"
+                android:checked="false"
+                android:text=""
+                android:textOff="@string/friday_short"
+                android:textOn="@string/friday_short" />
+
+            <ToggleButton
+                android:id="@+id/saturdayToggle"
+                style="@style/RecurringDaysToggleStyle"
+                android:layout_width="@dimen/toggle_recurring_days_size"
+                android:layout_height="@dimen/toggle_recurring_days_size"
+                android:layout_marginEnd="@dimen/minimum_base_margin"
+                android:checked="false"
+                android:text=""
+                android:textOff="@string/saturday_short"
+                android:textOn="@string/saturday_short" />
+
+            <ToggleButton
+                android:id="@+id/sundayToggle"
+                style="@style/RecurringDaysToggleStyle"
+                android:layout_width="@dimen/toggle_recurring_days_size"
+                android:layout_height="@dimen/toggle_recurring_days_size"
+                android:checked="false"
+                android:text=""
+                android:textOff="@string/sunday_short"
+                android:textOn="@string/sunday_short" />
+
+        </LinearLayout>
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/vibrateSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:padding="@dimen/half_base_margin"
+            android:text="@string/vibrate" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal"
+            android:padding="@dimen/half_base_margin">
+
+            <Button
+                android:id="@+id/updateAlarmButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/half_base_margin"
+                android:layout_weight="1"
+                android:text="@string/update" />
+
+            <Button
+                android:id="@+id/deleteAlarmButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/half_base_margin"
+                android:layout_weight="1"
+                android:text="@string/delete" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

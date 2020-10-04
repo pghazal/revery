@@ -1,0 +1,39 @@
+<resources>
+    <!-- GENERAL -->
+    <string name="app_name">revery</string>
+    <string name="sleep_text">sleep</string>
+    <string name="alarm_text">alarms</string>
+
+    <string name="alarms_fragment">Alarms</string>
+    <string name="sleep_fragment">Sleep</string>
+
+    <!-- ALARM -->
+    <string name="recurring">recurring</string>
+    <string name="create_alarm">add an alarm</string>
+    <string name="vibrate">vibrate</string>
+    <string name="add">add</string>
+    <string name="update">update</string>
+    <string name="delete">delete</string>
+    <string name="alarm_label">description</string>
+
+    <!-- END ALARM -->
+
+    <!-- DAYS -->
+    <string name="monday_long">monday</string>
+    <string name="tuesday_long">tuesday</string>
+    <string name="wednesday_long">wednesday</string>
+    <string name="thursday_long">thursday</string>
+    <string name="friday_long">friday</string>
+    <string name="saturday_long">saturday</string>
+    <string name="sunday_long">sunday</string>
+
+    <string name="monday_short">M</string>
+    <string name="tuesday_short">T</string>
+    <string name="wednesday_short">W</string>
+    <string name="thursday_short">T</string>
+    <string name="friday_short">F</string>
+    <string name="saturday_short">S</string>
+    <string name="sunday_short">S</string>
+    <!-- END DAYS -->
+
+</resources>

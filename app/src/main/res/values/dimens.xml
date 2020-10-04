@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="minimum_base_margin">4dp</dimen>
+    <dimen name="third_base_margin">8dp</dimen>
+    <dimen name="half_base_margin">16dp</dimen>
+    <dimen name="base_margin">24dp</dimen>
+    <dimen name="double_base_margin">48dp</dimen>
+
+    <dimen name="bottom_navigation_view_height">64dp</dimen>
+    <dimen name="fab_add_alarm_size">64dp</dimen>
+    <dimen name="toggle_recurring_days_size">36dp</dimen>
+    <dimen name="alarm_item_view_size">96dp</dimen>
+</resources>

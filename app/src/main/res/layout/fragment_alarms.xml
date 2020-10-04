@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".alarm.ListAlarmsFragment">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_background_recycler_view" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addAlarmButton"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/fab_add_alarm_size"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_margin="@dimen/base_margin"
+        android:src="@drawable/ic_add"
+        app:fabCustomSize="@dimen/fab_add_alarm_size"
+        app:layout_anchorGravity="center|bottom"
+        app:layout_behavior=".view.ScrollAwareFABBehavior"
+        app:maxImageSize="@dimen/double_base_margin" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
