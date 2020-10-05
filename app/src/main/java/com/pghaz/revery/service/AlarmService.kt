@@ -24,6 +24,8 @@ class AlarmService : LifecycleService() {
         private const val TAG = "AlarmService"
 
         private const val AUDIO_FOCUS_PARAM = AudioManager.AUDIOFOCUS_GAIN
+
+        var isRunning: Boolean = false // this is ugly: find a way to check if service is alive
     }
 
     private lateinit var alarmHandler: AlarmHandler
@@ -50,6 +52,7 @@ class AlarmService : LifecycleService() {
 
     override fun onCreate() {
         super.onCreate()
+        isRunning = true
 
         alarmHandler = AlarmHandler()
         alarmRepository = AlarmRepository(application)
@@ -185,5 +188,7 @@ class AlarmService : LifecycleService() {
         }
         vibrator.cancel()
         abandonAudioFocus()
+
+        isRunning = false
     }
 }
