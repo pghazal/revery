@@ -14,19 +14,17 @@ class ReveryApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        createNotificationChannnel()
+        createNotificationChannel()
     }
 
-    private fun createNotificationChannnel() {
+    private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val serviceChannel = NotificationChannel(
                 CHANNEL_ID,
-                "Alarm Service Channel",
-                NotificationManager.IMPORTANCE_DEFAULT
+                "Alarm Service Channel", // TODO to change channel name
+                NotificationManager.IMPORTANCE_HIGH
             )
-            val manager = getSystemService(
-                NotificationManager::class.java
-            )
+            val manager = getSystemService(NotificationManager::class.java)
             manager?.createNotificationChannel(serviceChannel)
         }
     }

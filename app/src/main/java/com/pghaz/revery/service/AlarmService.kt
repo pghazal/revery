@@ -18,8 +18,6 @@ import com.pghaz.revery.application.ReveryApplication
 import com.pghaz.revery.repository.Alarm
 import com.pghaz.revery.repository.AlarmRepository
 
-
-// TODO: make service with View so that we can show on lock screen
 class AlarmService : LifecycleService() {
 
     companion object {
@@ -83,7 +81,11 @@ class AlarmService : LifecycleService() {
         super.onStartCommand(alarmIntent, flags, startId)
 
         alarmIntent?.let {
-            disableOneShotAlarm(it)
+            val alarmId = alarmIntent.getLongExtra(Alarm.ID, 0)
+            val recurring = alarmIntent.getBooleanExtra(Alarm.RECURRING, false)
+            val alarmLabel = alarmIntent.getStringExtra(Alarm.LABEL)
+
+            disableOneShotAlarm(recurring, alarmId)
 
             requestAudioFocus() // Step 1: request focus
 
@@ -91,7 +93,7 @@ class AlarmService : LifecycleService() {
                 vibrate()
             }
 
-            val notification = buildAlarmNotification(it)
+            val notification = buildAlarmNotification(alarmId, alarmLabel)
             startForeground(1, notification)
         }
 
@@ -125,9 +127,8 @@ class AlarmService : LifecycleService() {
         }
     }
 
-    private fun disableOneShotAlarm(alarmIntent: Intent) {
-        if (!alarmIntent.getBooleanExtra(Alarm.RECURRING, false)) {
-            val alarmId = alarmIntent.getLongExtra(Alarm.ID, 0)
+    private fun disableOneShotAlarm(recurring: Boolean, alarmId: Long) {
+        if (!recurring) {
             alarmRepository.get(alarmId).observe(this, { alarm ->
                 alarm?.let {
                     alarmHandler.disableAlarm(it)
@@ -137,18 +138,31 @@ class AlarmService : LifecycleService() {
         }
     }
 
-    private fun buildAlarmNotification(alarmIntent: Intent): Notification {
+    /**
+     * The MOST IMPORTANT thing to remember here in order to start the Activity in the Service is:
+     *  - set a requestCode different than 0 in the PendingIntent.getActivity()
+     *  - add .setFullScreenIntent(pendingIntent, true) when creating the notification
+     */
+    private fun buildAlarmNotification(alarmId: Long, alarmLabel: String?): Notification {
         val notificationIntent = Intent(this, RingActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
+        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
 
-        val alarmTitle = String.format("%s", alarmIntent.getStringExtra(Alarm.LABEL))
+        val pendingIntent = PendingIntent.getActivity(
+            this,
+            alarmId.toInt(),
+            notificationIntent,
+            0
+        )
 
         // TODO: custom notification
         return NotificationCompat.Builder(this, ReveryApplication.CHANNEL_ID)
-            .setContentTitle(alarmTitle)
+            .setContentTitle(String.format("%s", alarmLabel))
             .setContentText("Ring Ring...")
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentIntent(pendingIntent)
+            .setPriority(NotificationCompat.PRIORITY_MAX)
+            .setFullScreenIntent(pendingIntent, true)
             .build()
     }
 

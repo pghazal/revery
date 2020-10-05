@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
 
     <application
         android:name=".application.ReveryApplication"
@@ -14,14 +15,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".alarm.RingActivity" />
+        <activity
+            android:name=".alarm.RingActivity"
+            android:launchMode="singleInstance"
+            android:screenOrientation="fullSensor"
+            android:showOnLockScreen="true" />
 
         <receiver android:name=".broadcastreceiver.AlarmBroadcastReceiver">
             <intent-filter>
@@ -29,8 +35,16 @@
             </intent-filter>
         </receiver>
 
-        <service android:name=".service.AlarmService" />
-        <service android:name=".service.RescheduleAlarmsService" />
+        <service
+            android:name=".service.AlarmService"
+            android:enabled="true"
+            android:exported="false" />
+
+        <service
+            android:name=".service.RescheduleAlarmsService"
+            android:enabled="true"
+            android:exported="false" />
+
     </application>
 
 </manifest>
