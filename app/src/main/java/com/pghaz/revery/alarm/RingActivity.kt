@@ -1,5 +1,6 @@
 package com.pghaz.revery.alarm
 
+import android.app.Activity
 import android.app.KeyguardManager
 import android.content.Context
 import android.content.Intent
@@ -12,21 +13,35 @@ import kotlinx.android.synthetic.main.activity_ring.*
 
 class RingActivity : BaseActivity() {
 
+    companion object {
+        const val REQUEST_CODE_ALARM_RINGING = 42
+    }
+
     override fun getLayoutResId(): Int {
         return R.layout.activity_ring
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        allowDisplayOnLockScreen()
     }
 
     override fun configureViews(savedInstanceState: Bundle?) {
         stopAlarmButton.setOnClickListener {
             val intentService = Intent(applicationContext, AlarmService::class.java)
             applicationContext.stopService(intentService)
+
+            setResult(Activity.RESULT_OK)
             finish()
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        allowDisplayOnLockScreen()
+    // If this activity exists, it means an alarm is ringing.
+    // By setting result RESULT_CANCELED, we say to the MainActivity that it should finish() too.
+    // See onActivityResult() in MainActivity
+    override fun onBackPressed() {
+        setResult(Activity.RESULT_CANCELED)
+        super.onBackPressed()
     }
 
     private fun allowDisplayOnLockScreen() {

@@ -1,10 +1,13 @@
 package com.pghaz.revery
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.pghaz.revery.alarm.ListAlarmsFragment
+import com.pghaz.revery.alarm.RingActivity
+import com.pghaz.revery.service.AlarmService
 import com.pghaz.revery.sleep.SleepFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -12,6 +15,36 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
 
     override fun getLayoutResId(): Int {
         return R.layout.activity_main
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(getLayoutResId())
+        configureViews(savedInstanceState)
+
+        // If alarm is ringing then show RingActivity so that user can stop it
+        if (AlarmService.isRunning) {
+            val ringIntent = Intent(this, RingActivity::class.java)
+            ringIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+            startActivityForResult(ringIntent, RingActivity.REQUEST_CODE_ALARM_RINGING)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == RingActivity.REQUEST_CODE_ALARM_RINGING) {
+            when (resultCode) {
+                RESULT_OK -> {
+                    // alarm has been stopped successfully: nothing else to do here
+                }
+
+                RESULT_CANCELED -> {
+                    // We're coming back from RingActivity but user should first stop alarm before
+                    // arriving on MainActivity
+                    finish()
+                }
+            }
+        }
     }
 
     override fun configureViews(savedInstanceState: Bundle?) {

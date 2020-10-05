@@ -11,9 +11,9 @@ import android.os.Vibrator
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
+import com.pghaz.revery.MainActivity
 import com.pghaz.revery.R
 import com.pghaz.revery.alarm.AlarmHandler
-import com.pghaz.revery.alarm.RingActivity
 import com.pghaz.revery.application.ReveryApplication
 import com.pghaz.revery.repository.Alarm
 import com.pghaz.revery.repository.AlarmRepository
@@ -147,9 +147,9 @@ class AlarmService : LifecycleService() {
      *  - add .setFullScreenIntent(pendingIntent, true) when creating the notification
      */
     private fun buildAlarmNotification(alarmId: Long, alarmLabel: String?): Notification {
-        val notificationIntent = Intent(this, RingActivity::class.java)
+        val notificationIntent = Intent(this, MainActivity::class.java)
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
 
         val pendingIntent = PendingIntent.getActivity(
             this,
