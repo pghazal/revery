@@ -14,7 +14,7 @@ import com.pghaz.revery.adapter.AlarmsAdapter
 import com.pghaz.revery.adapter.OnAlarmClickListener
 import com.pghaz.revery.repository.Alarm
 import com.pghaz.revery.viewmodel.ListAlarmsViewModel
-import kotlinx.android.synthetic.main.fragment_alarms.*
+import kotlinx.android.synthetic.main.fragment_list_alarms.*
 import java.util.*
 
 
@@ -36,7 +36,7 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
     }
 
     override fun getLayoutResId(): Int {
-        return R.layout.fragment_alarms
+        return R.layout.fragment_list_alarms
     }
 
     override fun configureViews(savedInstanceState: Bundle?) {
