@@ -11,9 +11,9 @@
     <string name="recurring">recurring</string>
     <string name="create_alarm">add an alarm</string>
     <string name="vibrate">vibrate</string>
-    <string name="add">add</string>
-    <string name="update">update</string>
+    <string name="schedule">schedule</string>
     <string name="delete">delete</string>
+    <string name="cancel">cancel</string>
     <string name="alarm_label">description</string>
 
     <!-- END ALARM -->

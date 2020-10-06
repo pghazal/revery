@@ -54,8 +54,8 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
 
     private fun configureAddAlarmButton() {
         addAlarmButton.setOnClickListener {
-            val createAlarmFragment = CreateAlarmFragment.newInstance()
-            createAlarmFragment.show(childFragmentManager, CreateAlarmFragment.TAG)
+            val createAlarmFragment = CreateEditAlarmFragment.newInstance()
+            createAlarmFragment.show(childFragmentManager, CreateEditAlarmFragment.TAG)
         }
     }
 
@@ -114,7 +114,7 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
 
         Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show()
 
-        val editAlarmFragment = EditAlarmFragment.newInstance(
+        val createAlarmFragment = CreateEditAlarmFragment.newInstance(
             alarm.id,
             alarm.hour,
             alarm.minute,
@@ -130,7 +130,7 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
             alarm.sunday,
             alarm.vibrate
         )
-        editAlarmFragment.show(childFragmentManager, EditAlarmFragment.TAG)
+        createAlarmFragment.show(childFragmentManager, CreateEditAlarmFragment.TAG)
     }
 
     override fun onToggle(alarm: Alarm) {

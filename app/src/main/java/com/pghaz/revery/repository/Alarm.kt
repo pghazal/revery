@@ -6,9 +6,9 @@ import androidx.room.PrimaryKey
 @Entity(tableName = AlarmDatabase.ALARM_TABLE_NAME)
 data class Alarm(
     @PrimaryKey
-    var id: Long,
-    var hour: Int,
-    var minute: Int,
+    var id: Long = NO_ID,
+    var hour: Int = 0,
+    var minute: Int = 0,
     var label: String = "",
     var recurring: Boolean = false,
     var enabled: Boolean = true,
@@ -23,6 +23,8 @@ data class Alarm(
 ) {
 
     companion object {
+        const val NO_ID: Long = 0
+
         const val MONDAY = "MONDAY"
         const val TUESDAY = "TUESDAY"
         const val WEDNESDAY = "WEDNESDAY"

@@ -9,7 +9,7 @@ import com.pghaz.revery.repository.Alarm
 import com.pghaz.revery.repository.AlarmRepository
 
 
-class CreateAlarmViewModel(application: Application) : AndroidViewModel(application) {
+class CreateEditAlarmViewModel(application: Application) : AndroidViewModel(application) {
 
     private val alarmHandler = AlarmHandler()
     private val alarmRepository = AlarmRepository(application)
@@ -19,5 +19,17 @@ class CreateAlarmViewModel(application: Application) : AndroidViewModel(applicat
     fun createAlarm(context: Context?, alarm: Alarm) {
         alarmRepository.insert(alarm)
         alarmHandler.scheduleAlarm(context, alarm)
+    }
+
+    fun editAlarm(context: Context?, alarm: Alarm) {
+        alarmHandler.cancelAlarm(context, alarm)
+        alarmHandler.scheduleAlarm(context, alarm)
+
+        alarmRepository.update(alarm)
+    }
+
+    fun delete(context: Context?, alarm: Alarm) {
+        alarmHandler.cancelAlarm(context, alarm)
+        alarmRepository.delete(alarm)
     }
 }
