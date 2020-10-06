@@ -7,6 +7,7 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.pghaz.revery.R
 import com.pghaz.revery.repository.Alarm
+import com.pghaz.revery.util.DayUtil
 import java.util.*
 
 class AlarmViewHolder(view: View, private val alarmListener: OnAlarmClickListener) :
@@ -14,6 +15,7 @@ class AlarmViewHolder(view: View, private val alarmListener: OnAlarmClickListene
 
     private val timeTextView: TextView = view.findViewById(R.id.timeTextView)
     private val labelTextView: TextView = view.findViewById(R.id.labelTextView)
+    private val timeRemainingTextView: TextView = view.findViewById(R.id.timeRemainingTextView)
 
     private val recurringDaysContainer: View = view.findViewById(R.id.recurringDaysContainer)
     private val mondayTextView: TextView = view.findViewById(R.id.mondayTextView)
@@ -62,6 +64,16 @@ class AlarmViewHolder(view: View, private val alarmListener: OnAlarmClickListene
         alarmSwitch.isChecked = alarm.enabled
         alarmSwitch.setOnCheckedChangeListener { _, _ ->
             alarmListener.onToggle(alarm)
+        }
+
+        if (alarm.enabled) {
+            timeRemainingTextView.visibility = View.VISIBLE
+            val timeRemainingInfo = DayUtil.getTimeRemaining(alarm)
+            timeRemainingTextView.text =
+                DayUtil.getRemainingTimeText(timeRemainingTextView.context, timeRemainingInfo)
+        } else {
+            timeRemainingTextView.visibility = View.GONE
+            timeRemainingTextView.text = ""
         }
     }
 

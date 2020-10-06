@@ -106,6 +106,16 @@
                 android:textColor="@color/selector_recurring_days_alarm_text_color" />
 
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/timeRemainingTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            android:textColor="@android:color/white"
+            android:visibility="gone"
+            tools:text="in 1 day and 3h"
+            tools:visibility="visible" />
     </LinearLayout>
 
     <androidx.appcompat.widget.SwitchCompat

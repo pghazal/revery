@@ -40,16 +40,18 @@ class AlarmHandler {
                     PendingIntent.FLAG_UPDATE_CURRENT
                 )
 
+            val now = System.currentTimeMillis()
+
             val calendar: Calendar = Calendar.getInstance()
-            calendar.timeInMillis = System.currentTimeMillis()
+            calendar.timeInMillis = now
             calendar.set(Calendar.HOUR_OF_DAY, alarm.hour)
             calendar.set(Calendar.MINUTE, alarm.minute)
             calendar.set(Calendar.SECOND, 0)
             calendar.set(Calendar.MILLISECOND, 0)
 
             // if alarm time has already passed, increment day by 1
-            if (calendar.timeInMillis <= System.currentTimeMillis()) {
-                calendar.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH) + 1);
+            if (calendar.timeInMillis <= now) {
+                DayUtil.incrementByOneDay(calendar)
             }
 
             if (!alarm.recurring) {
@@ -87,6 +89,7 @@ class AlarmHandler {
                     alarm.id
                 )
 
+                // TODO: do not forget the debug value
                 val RUN_DAILY = if (BuildConfig.DEBUG) {
                     60 * 1000.toLong() // 1 minute
                 } else {

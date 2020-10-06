@@ -28,7 +28,7 @@ class EditAlarmFragment : BaseDialogFragment() {
                 args.getLong(Alarm.ID, NO_ID),
                 args.getInt(Alarm.HOUR, 0),
                 args.getInt(Alarm.MINUTE, 0),
-                args.getString(Alarm.LABEL),
+                args.getString(Alarm.LABEL, ""),
                 args.getBoolean(Alarm.RECURRING),
                 args.getBoolean(Alarm.ENABLED),
                 args.getBoolean(Alarm.MONDAY),
@@ -73,24 +73,21 @@ class EditAlarmFragment : BaseDialogFragment() {
                 if (TextUtils.isEmpty(labelEditText.text.trim())) "" else labelEditText.text.trim()
                     .toString()
 
-            val updatedAlarm = Alarm(
-                alarm.id,
-                timePicker.hour,
-                timePicker.minute,
-                label,
-                recurring,
-                true,
-                mondayToggle.isChecked,
-                tuesdayToggle.isChecked,
-                wednesdayToggle.isChecked,
-                thursdayToggle.isChecked,
-                fridayToggle.isChecked,
-                saturdayToggle.isChecked,
-                sundayToggle.isChecked,
-                vibrateSwitch.isChecked
-            )
+            alarm.hour = timePicker.hour
+            alarm.minute = timePicker.minute
+            alarm.label = label
+            alarm.recurring = recurring
+            alarm.enabled = true
+            alarm.monday = mondayToggle.isChecked
+            alarm.tuesday = tuesdayToggle.isChecked
+            alarm.wednesday = wednesdayToggle.isChecked
+            alarm.thursday = thursdayToggle.isChecked
+            alarm.friday = fridayToggle.isChecked
+            alarm.saturday = saturdayToggle.isChecked
+            alarm.sunday = sundayToggle.isChecked
+            alarm.vibrate = vibrateSwitch.isChecked
 
-            editAlarmViewModel.edit(context, updatedAlarm)
+            editAlarmViewModel.edit(context, alarm)
 
             dismiss()
         }

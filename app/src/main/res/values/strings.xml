@@ -36,4 +36,19 @@
     <string name="sunday_short">S</string>
     <!-- END DAYS -->
 
+    <plurals name="time_remaining_days">
+        <item quantity="one">%d day</item>
+        <item quantity="other">%d days</item>
+    </plurals>
+
+    <plurals name="time_remaining_hours">
+        <item quantity="one">%d hour</item>
+        <item quantity="other">%d hours</item>
+    </plurals>
+
+    <plurals name="time_remaining_minutes">
+        <item quantity="one">%d minute</item>
+        <item quantity="other">%d minutes</item>
+    </plurals>
+
 </resources>
