@@ -2,13 +2,16 @@ package com.pghaz.revery.alarm
 
 import android.os.Bundle
 import android.text.TextUtils
+import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
 import com.pghaz.revery.BaseDialogFragment
 import com.pghaz.revery.R
 import com.pghaz.revery.repository.Alarm
 import com.pghaz.revery.util.DayUtil
 import com.pghaz.revery.viewmodel.CreateEditAlarmViewModel
+import com.shawnlin.numberpicker.NumberPicker
 import kotlinx.android.synthetic.main.fragment_create_edit_alarm.*
+import java.util.*
 
 class CreateEditAlarmFragment : BaseDialogFragment() {
 
@@ -54,8 +57,8 @@ class CreateEditAlarmFragment : BaseDialogFragment() {
     }
 
     private fun updateViewsFromAlarm(alarm: Alarm) {
-        timePicker.hour = alarm.hour
-        timePicker.minute = alarm.minute
+        hourNumberPicker.value = alarm.hour
+        minuteNumberPicker.value = alarm.minute
 
         labelEditText.setText(alarm.label)
 
@@ -70,8 +73,25 @@ class CreateEditAlarmFragment : BaseDialogFragment() {
         vibrateSwitch.isChecked = alarm.vibrate
     }
 
+    private fun initTimePicker() {
+        context?.let {
+            val face = ResourcesCompat.getFont(it, R.font.montserrat_regular)
+            hourNumberPicker.setSelectedTypeface(face)
+            minuteNumberPicker.setSelectedTypeface(face)
+            hourNumberPicker.typeface = face
+            minuteNumberPicker.typeface = face
+        }
+
+        val calendar = Calendar.getInstance()
+        hourNumberPicker.value = DayUtil.getCurrentHour(calendar)
+        minuteNumberPicker.value = DayUtil.getCurrentMinute(calendar)
+
+        hourNumberPicker.formatter = NumberPicker.getTwoDigitFormatter()
+        minuteNumberPicker.formatter = NumberPicker.getTwoDigitFormatter()
+    }
+
     override fun configureViews(savedInstanceState: Bundle?) {
-        timePicker.setIs24HourView(true)
+        initTimePicker()
 
         // If we're editing an alarm, we set time/minute on the time picker
         if (alarm.id != Alarm.NO_ID) {
@@ -80,8 +100,8 @@ class CreateEditAlarmFragment : BaseDialogFragment() {
             // Also edit negative button
             negativeAlarmButton.text = getString(R.string.delete)
         } else {
-            alarm.hour = timePicker.hour
-            alarm.minute = timePicker.minute
+            alarm.hour = hourNumberPicker.value
+            alarm.minute = minuteNumberPicker.value
             negativeAlarmButton.text = getString(R.string.cancel)
         }
 
@@ -110,8 +130,12 @@ class CreateEditAlarmFragment : BaseDialogFragment() {
             dismiss()
         }
 
-        timePicker.setOnTimeChangedListener { _, hourOfDay, minute ->
-            alarm.hour = hourOfDay
+        hourNumberPicker.setOnValueChangedListener { _, _, hour ->
+            alarm.hour = hour
+            createEditAlarmViewModel.alarmLiveData.value = alarm
+        }
+
+        minuteNumberPicker.setOnValueChangedListener { _, _, minute ->
             alarm.minute = minute
             createEditAlarmViewModel.alarmLiveData.value = alarm
         }

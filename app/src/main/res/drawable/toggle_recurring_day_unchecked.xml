@@ -2,7 +2,7 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape android:shape="oval">
-            <solid android:color="#222222" />
+            <solid android:color="@color/colorPrimary" />
             <size android:width="@dimen/toggle_recurring_days_size" android:height="@dimen/toggle_recurring_days_size" />
         </shape>
     </item>

@@ -3,6 +3,7 @@ package com.pghaz.revery
 import android.os.Bundle
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 
 abstract class BaseActivity : AppCompatActivity() {
 
@@ -12,9 +13,14 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        colorNavigationBar()
 
         setContentView(getLayoutResId())
 
         configureViews(savedInstanceState)
+    }
+
+    private fun colorNavigationBar() {
+        window.navigationBarColor = ContextCompat.getColor(this, R.color.colorPrimary)
     }
 }

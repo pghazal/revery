@@ -7,7 +7,7 @@
     <dimen name="double_base_margin">48dp</dimen>
 
     <dimen name="bottom_navigation_view_height">64dp</dimen>
-    <dimen name="fab_add_alarm_size">64dp</dimen>
+    <dimen name="fab_add_alarm_size">32dp</dimen>
     <dimen name="toggle_recurring_days_size">36dp</dimen>
-    <dimen name="alarm_item_view_size">110dp</dimen>
+    <dimen name="alarm_item_view_size">120dp</dimen>
 </resources>

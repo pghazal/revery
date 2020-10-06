@@ -6,12 +6,20 @@
         <item name="colorAccent">@color/colorAccent</item>
         <!-- this remove the white screen on start up-->
         <item name="android:windowDisablePreview">true</item>
+
+        <item name="android:fontFamily">@font/montserrat_regular</item>
     </style>
 
     <style name="RecurringDaysToggleStyle">
         <item name="android:textColor">@android:color/white</item>
+        <item name="android:textStyle">bold</item>
         <item name="android:stateListAnimator">@null</item>
         <item name="android:background">@drawable/selector_toggle_recurring_day</item>
+    </style>
+
+    <style name="RecurringDaysTextStyle">
+        <item name="android:textColor">@color/selector_recurring_days_alarm_text_color</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
 </resources>

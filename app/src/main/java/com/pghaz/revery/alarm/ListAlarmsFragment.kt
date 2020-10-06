@@ -5,11 +5,12 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pghaz.revery.BaseFragment
 import com.pghaz.revery.R
+import com.pghaz.revery.adapter.AlarmItemDecoration
 import com.pghaz.revery.adapter.AlarmsAdapter
 import com.pghaz.revery.adapter.OnAlarmClickListener
 import com.pghaz.revery.repository.Alarm
@@ -47,9 +48,12 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
     private fun configureAlarmsList() {
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = alarmsAdapter
-        // TODO: customize item separator
-        val itemDecor = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
-        recyclerView.addItemDecoration(itemDecor)
+
+        context?.let {
+            val itemDecor =
+                AlarmItemDecoration(ContextCompat.getColor(it, R.color.colorPrimary), 2)
+            recyclerView.addItemDecoration(itemDecor)
+        }
     }
 
     private fun configureAddAlarmButton() {

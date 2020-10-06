@@ -198,5 +198,13 @@ class DayUtil {
 
             return stringBuilder.toString()
         }
+
+        fun getCurrentHour(calendar: Calendar): Int {
+            return calendar.get(Calendar.HOUR_OF_DAY)
+        }
+
+        fun getCurrentMinute(calendar: Calendar): Int {
+            return calendar.get(Calendar.MINUTE)
+        }
     }
 }

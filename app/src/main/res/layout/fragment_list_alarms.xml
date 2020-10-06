@@ -4,24 +4,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/color_main_background_view"
     tools:context=".alarm.ListAlarmsFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/color_background_recycler_view" />
+        android:layout_height="match_parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addAlarmButton"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/fab_add_alarm_size"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
         android:layout_margin="@dimen/base_margin"
+        android:backgroundTint="@color/colorAccent"
         android:src="@drawable/ic_add"
-        app:fabCustomSize="@dimen/fab_add_alarm_size"
+        android:tint="@android:color/white"
+        app:backgroundTint="@color/colorAccent"
+        app:fabSize="normal"
         app:layout_anchorGravity="center|bottom"
         app:layout_behavior=".view.ScrollAwareFABBehavior"
-        app:maxImageSize="@dimen/double_base_margin" />
+        app:maxImageSize="@dimen/fab_add_alarm_size"
+        app:tint="@android:color/white" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
