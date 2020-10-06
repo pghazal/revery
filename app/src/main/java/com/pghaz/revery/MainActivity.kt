@@ -19,8 +19,6 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(getLayoutResId())
-        configureViews(savedInstanceState)
 
         // If alarm is ringing then show RingActivity so that user can stop it
         if (AlarmService.isRunning) {
