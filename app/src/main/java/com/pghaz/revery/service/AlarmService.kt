@@ -76,8 +76,7 @@ class AlarmService : LifecycleService() {
         )
 
         mediaPlayer.setOnPreparedListener {
-            // TODO: uncomment
-            // it.start() // Step 3: when focused and prepared, play audio
+            it.start() // Step 3: when focused and prepared, play audio
         }
     }
 
