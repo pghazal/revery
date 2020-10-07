@@ -24,7 +24,6 @@
 
         <activity
             android:name=".alarm.RingActivity"
-            android:screenOrientation="fullSensor"
             android:showOnLockScreen="true" />
 
         <receiver android:name=".broadcastreceiver.AlarmBroadcastReceiver">
