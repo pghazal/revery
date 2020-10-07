@@ -24,7 +24,8 @@
 
         <activity
             android:name=".alarm.RingActivity"
-            android:showOnLockScreen="true" />
+            android:showOnLockScreen="true"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
 
         <receiver android:name=".broadcastreceiver.AlarmBroadcastReceiver">
             <intent-filter>
