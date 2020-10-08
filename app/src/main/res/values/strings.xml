@@ -16,8 +16,6 @@
     <string name="cancel">cancel</string>
     <string name="alarm_label">description</string>
 
-    <!-- END ALARM -->
-
     <!-- DAYS -->
     <string name="monday_long">monday</string>
     <string name="tuesday_long">tuesday</string>
@@ -35,8 +33,8 @@
     <string name="saturday_short">S</string>
     <string name="sunday_short">S</string>
     <string name="text_colon">:</string>
-    <!-- END DAYS -->
 
+    <!-- TIME REMAINING TEXTS -->
     <plurals name="time_remaining_days">
         <item quantity="one">%d day</item>
         <item quantity="other">%d days</item>

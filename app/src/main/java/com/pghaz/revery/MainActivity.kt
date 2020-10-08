@@ -9,6 +9,7 @@ import com.pghaz.revery.alarm.ListAlarmsFragment
 import com.pghaz.revery.alarm.RingActivity
 import com.pghaz.revery.service.AlarmService
 import com.pghaz.revery.sleep.SleepFragment
+import com.pghaz.revery.spotify.SpotifyActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
 /**
@@ -89,10 +90,7 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
     }
 
     private fun selectNavigationItem(fragment: Fragment, tag: String) {
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.fragmentContainer, fragment, tag)
-            .commit()
+        replaceFragment(fragment, tag)
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -104,11 +102,18 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
 
             R.id.sleep_tab -> {
                 openSleepTab()
+
+                openSpotiftyActivity()
                 true
             }
 
             else -> false
         }
+    }
+
+    private fun openSpotiftyActivity() {
+        val intent = Intent(this, SpotifyActivity::class.java)
+        startActivity(intent)
     }
 
     private fun openAlarmsTab() {

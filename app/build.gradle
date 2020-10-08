@@ -27,6 +27,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    // This is necessary to add so that Spotify Auth lib works properly
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
@@ -45,11 +51,13 @@ dependencies {
 
     implementation 'com.shawnlin:number-picker:2.4.10'
 
+    // Spotify SDK App Remote
     implementation project(':spotify-app-remote')
     implementation "com.google.code.gson:gson:2.8.5"
+    // Spotify Authentification Single-sign
+    implementation 'com.spotify.android:auth:1.2.3'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-
 }

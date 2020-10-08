@@ -29,6 +29,8 @@
             android:showOnLockScreen="true"
             android:theme="@style/Theme.Activity.FullScreen" />
 
+        <activity android:name=".spotify.SpotifyActivity" />
+
         <receiver android:name=".broadcastreceiver.AlarmBroadcastReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
