@@ -8,23 +8,34 @@
         <item name="android:windowDisablePreview">true</item>
 
         <item name="android:fontFamily">@font/montserrat_regular</item>
+
+        <item name="android:buttonStyle">@style/ReveryButton</item>
     </style>
 
-    <style name="Theme.AppCompat.Light.NoActionBar.FullScreen" parent="@style/Theme.MaterialComponents.Light.NoActionBar">
+    <style name="Theme.Activity.FullScreen" parent="@style/AppTheme">
+        <item name="colorPrimary">@color/colorAccent</item>
+        <item name="colorPrimaryDark">@color/color_main_background_view</item>
+
+        <item name="windowNoTitle">true</item>
         <item name="android:windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
         <item name="android:windowActionBar">false</item>
-        <item name="android:windowFullscreen">true</item>
-        <item name="android:windowContentOverlay">@null</item>
     </style>
 
-    <style name="RecurringDaysToggleStyle">
+    <style name="ReveryButton" parent="Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@color/colorAccent</item>
+        <item name="colorControlHighlight">@color/colorPrimaryDark</item>
+        <item name="textAllCaps">false</item>
+    </style>
+
+    <style name="ReveryRecurringDaysToggle">
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textStyle">bold</item>
         <item name="android:stateListAnimator">@null</item>
         <item name="android:background">@drawable/selector_toggle_recurring_day</item>
     </style>
 
-    <style name="RecurringDaysTextStyle">
+    <style name="ReveryRecurringDaysText">
         <item name="android:textColor">@color/selector_recurring_days_alarm_text_color</item>
         <item name="android:textStyle">bold</item>
     </style>

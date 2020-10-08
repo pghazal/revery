@@ -86,7 +86,7 @@
 
         <ToggleButton
             android:id="@+id/mondayToggle"
-            style="@style/RecurringDaysToggleStyle"
+            style="@style/ReveryRecurringDaysToggle"
             android:layout_width="@dimen/toggle_recurring_days_size"
             android:layout_height="@dimen/toggle_recurring_days_size"
             android:layout_marginEnd="@dimen/minimum_base_margin"
@@ -98,7 +98,7 @@
 
         <ToggleButton
             android:id="@+id/tuesdayToggle"
-            style="@style/RecurringDaysToggleStyle"
+            style="@style/ReveryRecurringDaysToggle"
             android:layout_width="@dimen/toggle_recurring_days_size"
             android:layout_height="@dimen/toggle_recurring_days_size"
             android:layout_marginEnd="@dimen/minimum_base_margin"
@@ -109,7 +109,7 @@
 
         <ToggleButton
             android:id="@+id/wednesdayToggle"
-            style="@style/RecurringDaysToggleStyle"
+            style="@style/ReveryRecurringDaysToggle"
             android:layout_width="@dimen/toggle_recurring_days_size"
             android:layout_height="@dimen/toggle_recurring_days_size"
             android:layout_marginEnd="@dimen/minimum_base_margin"
@@ -120,7 +120,7 @@
 
         <ToggleButton
             android:id="@+id/thursdayToggle"
-            style="@style/RecurringDaysToggleStyle"
+            style="@style/ReveryRecurringDaysToggle"
             android:layout_width="@dimen/toggle_recurring_days_size"
             android:layout_height="@dimen/toggle_recurring_days_size"
             android:layout_marginEnd="@dimen/minimum_base_margin"
@@ -131,7 +131,7 @@
 
         <ToggleButton
             android:id="@+id/fridayToggle"
-            style="@style/RecurringDaysToggleStyle"
+            style="@style/ReveryRecurringDaysToggle"
             android:layout_width="@dimen/toggle_recurring_days_size"
             android:layout_height="@dimen/toggle_recurring_days_size"
             android:layout_marginEnd="@dimen/minimum_base_margin"
@@ -142,7 +142,7 @@
 
         <ToggleButton
             android:id="@+id/saturdayToggle"
-            style="@style/RecurringDaysToggleStyle"
+            style="@style/ReveryRecurringDaysToggle"
             android:layout_width="@dimen/toggle_recurring_days_size"
             android:layout_height="@dimen/toggle_recurring_days_size"
             android:layout_marginEnd="@dimen/minimum_base_margin"
@@ -153,7 +153,7 @@
 
         <ToggleButton
             android:id="@+id/sundayToggle"
-            style="@style/RecurringDaysToggleStyle"
+            style="@style/ReveryRecurringDaysToggle"
             android:layout_width="@dimen/toggle_recurring_days_size"
             android:layout_height="@dimen/toggle_recurring_days_size"
             android:checked="false"
@@ -180,7 +180,7 @@
         android:orientation="horizontal"
         android:padding="@dimen/half_base_margin">
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/positiveAlarmButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -188,7 +188,7 @@
             android:layout_weight="1"
             android:text="@string/schedule" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/negativeAlarmButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

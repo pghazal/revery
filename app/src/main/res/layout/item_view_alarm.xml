@@ -88,7 +88,7 @@
 
         <TextView
             android:id="@+id/mondayTextView"
-            style="@style/RecurringDaysTextStyle"
+            style="@style/ReveryRecurringDaysText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/minimum_base_margin"
@@ -97,7 +97,7 @@
 
         <TextView
             android:id="@+id/tuesdayTextView"
-            style="@style/RecurringDaysTextStyle"
+            style="@style/ReveryRecurringDaysText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/minimum_base_margin"
@@ -106,7 +106,7 @@
 
         <TextView
             android:id="@+id/wednesdayTextView"
-            style="@style/RecurringDaysTextStyle"
+            style="@style/ReveryRecurringDaysText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/minimum_base_margin"
@@ -115,7 +115,7 @@
 
         <TextView
             android:id="@+id/thursdayTextView"
-            style="@style/RecurringDaysTextStyle"
+            style="@style/ReveryRecurringDaysText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/minimum_base_margin"
@@ -124,7 +124,7 @@
 
         <TextView
             android:id="@+id/fridayTextView"
-            style="@style/RecurringDaysTextStyle"
+            style="@style/ReveryRecurringDaysText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/minimum_base_margin"
@@ -133,7 +133,7 @@
 
         <TextView
             android:id="@+id/saturdayTextView"
-            style="@style/RecurringDaysTextStyle"
+            style="@style/ReveryRecurringDaysText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/minimum_base_margin"
@@ -142,7 +142,7 @@
 
         <TextView
             android:id="@+id/sundayTextView"
-            style="@style/RecurringDaysTextStyle"
+            style="@style/ReveryRecurringDaysText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/minimum_base_margin"
