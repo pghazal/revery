@@ -20,6 +20,14 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
         return R.layout.activity_main
     }
 
+    override fun shouldAnimateOnCreate(): Boolean {
+        return true
+    }
+
+    override fun shouldAnimateOnFinish(): Boolean {
+        return false
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         startRingActivityForResultAfterAlarmFires()

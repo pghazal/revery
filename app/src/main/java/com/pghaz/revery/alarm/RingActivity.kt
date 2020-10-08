@@ -21,6 +21,14 @@ class RingActivity : BaseActivity() {
         return R.layout.activity_ring
     }
 
+    override fun shouldAnimateOnCreate(): Boolean {
+        return false
+    }
+
+    override fun shouldAnimateOnFinish(): Boolean {
+        return true
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         allowDisplayOnLockScreen()

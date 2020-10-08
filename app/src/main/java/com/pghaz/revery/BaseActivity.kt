@@ -10,9 +10,15 @@ abstract class BaseActivity : AppCompatActivity() {
     @LayoutRes
     abstract fun getLayoutResId(): Int
     abstract fun configureViews(savedInstanceState: Bundle?)
+    abstract fun shouldAnimateOnCreate(): Boolean
+    abstract fun shouldAnimateOnFinish(): Boolean
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (!shouldAnimateOnCreate()) {
+            overridePendingTransition(0, 0)
+        }
+
         colorNavigationBar()
 
         setContentView(getLayoutResId())
@@ -22,5 +28,12 @@ abstract class BaseActivity : AppCompatActivity() {
 
     private fun colorNavigationBar() {
         window.navigationBarColor = ContextCompat.getColor(this, R.color.colorPrimary)
+    }
+
+    override fun finish() {
+        super.finish()
+        if (!shouldAnimateOnFinish()) {
+            overridePendingTransition(0, 0)
+        }
     }
 }
