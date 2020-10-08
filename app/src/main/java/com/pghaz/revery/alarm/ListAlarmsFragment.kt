@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,7 +15,6 @@ import com.pghaz.revery.adapter.OnAlarmClickListener
 import com.pghaz.revery.repository.Alarm
 import com.pghaz.revery.viewmodel.ListAlarmsViewModel
 import kotlinx.android.synthetic.main.fragment_list_alarms.*
-import java.util.*
 
 
 class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
@@ -108,16 +106,6 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
     }
 
     override fun onClick(alarm: Alarm) {
-        val toastText = String.format(
-            Locale.getDefault(),
-            "Alarm Clicked for %02d:%02d with id %d",
-            alarm.hour,
-            alarm.minute,
-            alarm.id
-        )
-
-        Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show()
-
         val createAlarmFragment = CreateEditAlarmFragment.newInstance(
             alarm.id,
             alarm.hour,

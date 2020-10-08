@@ -5,13 +5,16 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.widget.Toast
-import com.pghaz.revery.BuildConfig
 import com.pghaz.revery.broadcastreceiver.AlarmBroadcastReceiver
 import com.pghaz.revery.repository.Alarm
 import com.pghaz.revery.util.DayUtil
 import java.util.*
 
 class AlarmHandler {
+
+    companion object {
+        private const val RUN_DAILY = 24 * 60 * 60 * 1000.toLong() // 1 day
+    }
 
     fun scheduleAlarm(context: Context?, alarm: Alarm) {
         val alarmManager =
@@ -79,31 +82,12 @@ class AlarmHandler {
                 Toast.makeText(context, toastText, Toast.LENGTH_LONG).show()
 
             } else {
-                val toastText = String.format(
-                    Locale.getDefault(),
-                    "Recurring Alarm %s scheduled for %s at %02d:%02d with id %d",
-                    alarm.label,
-                    getRecurringDaysText(alarm),
-                    alarm.hour,
-                    alarm.minute,
-                    alarm.id
-                )
-
-                // TODO: do not forget the debug value
-                val RUN_DAILY = if (BuildConfig.DEBUG) {
-                    60 * 1000.toLong() // 1 minute
-                } else {
-                    24 * 60 * 60 * 1000.toLong() // 1 day
-                }
-
                 alarmManager.setRepeating(
                     AlarmManager.RTC_WAKEUP,
                     calendar.timeInMillis,
                     RUN_DAILY,
                     alarmPendingIntent
                 )
-
-                Toast.makeText(context, toastText, Toast.LENGTH_LONG).show()
             }
 
             alarm.enabled = true
@@ -125,50 +109,10 @@ class AlarmHandler {
             it.cancel(alarmPendingIntent)
 
             disableAlarm(alarm)
-
-            val toastText = String.format(
-                Locale.getDefault(),
-                "Alarm cancelled for %02d:%02d with id %d",
-                alarm.hour,
-                alarm.minute,
-                alarm.id
-            )
-
-            Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show()
         }
     }
 
     fun disableAlarm(alarm: Alarm) {
         alarm.enabled = false
-    }
-
-    // TODO: text of recurring days
-    private fun getRecurringDaysText(alarm: Alarm): String? {
-        if (!alarm.recurring) {
-            return null
-        }
-        var days = ""
-        if (alarm.monday) {
-            days += "Mo "
-        }
-        if (alarm.tuesday) {
-            days += "Tu "
-        }
-        if (alarm.wednesday) {
-            days += "We "
-        }
-        if (alarm.thursday) {
-            days += "Th "
-        }
-        if (alarm.friday) {
-            days += "Fr "
-        }
-        if (alarm.saturday) {
-            days += "Sa "
-        }
-        if (alarm.sunday) {
-            days += "Su "
-        }
-        return days
     }
 }
