@@ -4,7 +4,6 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.widget.Toast
 import com.pghaz.revery.broadcastreceiver.AlarmBroadcastReceiver
 import com.pghaz.revery.repository.Alarm
 import com.pghaz.revery.util.DayUtil
@@ -58,29 +57,11 @@ class AlarmHandler {
             }
 
             if (!alarm.recurring) {
-                var toastText: String? = null
-                try {
-                    toastText = String.format(
-                        Locale.getDefault(),
-                        "One Time Alarm %s scheduled for %s at %02d:%02d with id %d",
-                        alarm.label,
-                        DayUtil.toDay(calendar[Calendar.DAY_OF_WEEK]),
-                        alarm.hour,
-                        alarm.minute,
-                        alarm.id
-                    )
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-
                 alarmManager.setExactAndAllowWhileIdle(
                     AlarmManager.RTC_WAKEUP,
                     calendar.timeInMillis,
                     alarmPendingIntent
                 )
-
-                Toast.makeText(context, toastText, Toast.LENGTH_LONG).show()
-
             } else {
                 alarmManager.setRepeating(
                     AlarmManager.RTC_WAKEUP,
