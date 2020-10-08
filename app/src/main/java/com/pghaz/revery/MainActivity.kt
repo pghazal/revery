@@ -11,6 +11,9 @@ import com.pghaz.revery.service.AlarmService
 import com.pghaz.revery.sleep.SleepFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
+/**
+ * MainActivity has launchMode = "singleTask" in Manifest
+ */
 class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
 
     override fun getLayoutResId(): Int {
@@ -19,11 +22,25 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        startRingActivityForResultAfterAlarmFires()
+    }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+
+        // If the MainActivity is active (meaning instanciated background or foreground)
+        // we receive the alarm intent in onNewIntent()
+        // because launchMode in Manifest is "singleTask"
+        startRingActivityForResultAfterAlarmFires()
+    }
+
+    private fun startRingActivityForResultAfterAlarmFires() {
         // If alarm is ringing then show RingActivity so that user can stop it
         if (AlarmService.isRunning) {
             val ringIntent = Intent(this, RingActivity::class.java)
             ringIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+            ringIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            ringIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             startActivityForResult(ringIntent, RingActivity.REQUEST_CODE_ALARM_RINGING)
         }
     }

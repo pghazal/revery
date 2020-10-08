@@ -148,7 +148,6 @@ class AlarmService : LifecycleService() {
      */
     private fun buildAlarmNotification(alarmId: Long, alarmLabel: String?): Notification {
         val notificationIntent = Intent(this, MainActivity::class.java)
-        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
 
         val pendingIntent = PendingIntent.getActivity(
