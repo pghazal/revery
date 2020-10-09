@@ -84,7 +84,7 @@ class SpotifyActivity : BaseActivity() {
         AuthorizationClient.openLoginActivity(this, REQUEST_CODE_SPOTIFY_LOGIN, request)
     }
 
-    private fun handleSpotifyAuthorizationResponse(resultCode: Int, data: Intent?): String {
+    private fun handleSpotifyAuthorizationResponse(resultCode: Int, data: Intent?): String? {
         val response: AuthorizationResponse =
             AuthorizationClient.getResponse(resultCode, data)
 
@@ -94,8 +94,10 @@ class SpotifyActivity : BaseActivity() {
                 AuthorizationResponse.Type.TOKEN -> {
                     // Save TOKEN into SharedPrefs
                     CredentialsHandler.setToken(
-                        this, response.accessToken,
-                        response.expiresIn, TimeUnit.SECONDS
+                        this,
+                        response.accessToken,
+                        response.expiresIn,
+                        TimeUnit.SECONDS
                     )
                 }
 
@@ -119,7 +121,9 @@ class SpotifyActivity : BaseActivity() {
             when (resultCode) {
                 RESULT_OK -> {
                     val accessToken = handleSpotifyAuthorizationResponse(resultCode, data)
-                    showPlaylistsFragment(accessToken)
+                    if (accessToken != null) {
+                        showPlaylistsFragment(accessToken)
+                    }
                 }
 
                 RESULT_CANCELED -> {
