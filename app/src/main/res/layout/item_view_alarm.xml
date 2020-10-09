@@ -16,8 +16,8 @@
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="@dimen/item_view_image_size"
+            android:layout_height="@dimen/item_view_image_size"
             android:layout_alignParentStart="true"
             android:background="@color/colorPrimary" />
 

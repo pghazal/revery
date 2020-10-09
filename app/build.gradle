@@ -50,12 +50,15 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
 
     implementation 'com.shawnlin:number-picker:2.4.10'
+    implementation 'com.squareup.picasso:picasso:2.71828'
 
     // Spotify SDK App Remote
     implementation project(':spotify-app-remote')
     implementation "com.google.code.gson:gson:2.8.5"
     // Spotify Authentification Single-sign
     implementation 'com.spotify.android:auth:1.2.3'
+    // Spotify Web API library
+    implementation 'com.github.kaaes:spotify-web-api-android:0.4.1'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

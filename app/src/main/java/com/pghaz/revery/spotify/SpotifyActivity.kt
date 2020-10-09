@@ -55,11 +55,12 @@ class SpotifyActivity : BaseActivity() {
         SpotifyAppRemote.setDebugMode(BuildConfig.DEBUG)
 
         // TODO: get new access token ? with renew ?
-        if (CredentialsHandler.getToken(this) == null) {
+        val accessToken = CredentialsHandler.getToken(this)
+        if (accessToken == null) {
             authorizeSpotify()
         } else {
             // We already have an access token, we can display user's playlist
-            showPlaylistsFragment()
+            showPlaylistsFragment(accessToken)
         }
     }
 
@@ -76,13 +77,14 @@ class SpotifyActivity : BaseActivity() {
                         "playlist-read-collaborative"
                     )
                 )
+                .setShowDialog(false)
                 .setState(spotifyAuthorizationState)
                 .build()
 
         AuthorizationClient.openLoginActivity(this, REQUEST_CODE_SPOTIFY_LOGIN, request)
     }
 
-    private fun handleSpotifyAuthorizationResponse(resultCode: Int, data: Intent?) {
+    private fun handleSpotifyAuthorizationResponse(resultCode: Int, data: Intent?): String {
         val response: AuthorizationResponse =
             AuthorizationClient.getResponse(resultCode, data)
 
@@ -106,20 +108,24 @@ class SpotifyActivity : BaseActivity() {
                 }
             }
         }
+
+        return response.accessToken
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == REQUEST_CODE_SPOTIFY_LOGIN) {
-            handleSpotifyAuthorizationResponse(resultCode, data)
-
-            showPlaylistsFragment()
+            val accessToken = handleSpotifyAuthorizationResponse(resultCode, data)
+            showPlaylistsFragment(accessToken)
         }
     }
 
-    private fun showPlaylistsFragment() {
-        replaceFragment(SpotifyPlaylistsFragment.newInstance(), SpotifyPlaylistsFragment.TAG)
+    private fun showPlaylistsFragment(accessToken: String) {
+        replaceFragment(
+            SpotifyPlaylistsFragment.newInstance(accessToken),
+            SpotifyPlaylistsFragment.TAG
+        )
     }
 
     private fun connectToSpotifyAppRemote() {
