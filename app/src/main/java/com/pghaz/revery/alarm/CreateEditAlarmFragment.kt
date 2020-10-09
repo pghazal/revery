@@ -4,16 +4,16 @@ import android.os.Bundle
 import android.text.TextUtils
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
-import com.pghaz.revery.BaseDialogFragment
+import com.pghaz.revery.BaseBottomSheetDialogFragment
 import com.pghaz.revery.R
 import com.pghaz.revery.alarm.repository.Alarm
-import com.pghaz.revery.util.DayUtil
 import com.pghaz.revery.alarm.viewmodel.CreateEditAlarmViewModel
+import com.pghaz.revery.util.DayUtil
 import com.shawnlin.numberpicker.NumberPicker
 import kotlinx.android.synthetic.main.fragment_create_edit_alarm.*
 import java.util.*
 
-class CreateEditAlarmFragment : BaseDialogFragment() {
+class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
 
     private lateinit var createEditAlarmViewModel: CreateEditAlarmViewModel
     private lateinit var alarm: Alarm

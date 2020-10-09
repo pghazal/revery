@@ -5,9 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
-import androidx.fragment.app.DialogFragment
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-abstract class BaseDialogFragment : DialogFragment() {
+abstract class BaseBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
     @LayoutRes
     abstract fun getLayoutResId(): Int
@@ -18,7 +18,7 @@ abstract class BaseDialogFragment : DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(getLayoutResId(), container, false);
+        return inflater.inflate(getLayoutResId(), container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
