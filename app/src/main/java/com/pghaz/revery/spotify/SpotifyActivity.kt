@@ -116,8 +116,16 @@ class SpotifyActivity : BaseActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == REQUEST_CODE_SPOTIFY_LOGIN) {
-            val accessToken = handleSpotifyAuthorizationResponse(resultCode, data)
-            showPlaylistsFragment(accessToken)
+            when (resultCode) {
+                RESULT_OK -> {
+                    val accessToken = handleSpotifyAuthorizationResponse(resultCode, data)
+                    showPlaylistsFragment(accessToken)
+                }
+
+                RESULT_CANCELED -> {
+                    // handle
+                }
+            }
         }
     }
 
