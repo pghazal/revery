@@ -1,4 +1,4 @@
-package com.pghaz.revery.adapter
+package com.pghaz.revery.alarm.adapter
 
 import android.text.TextUtils
 import android.view.View
@@ -6,7 +6,7 @@ import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.pghaz.revery.R
-import com.pghaz.revery.repository.Alarm
+import com.pghaz.revery.alarm.repository.Alarm
 import com.pghaz.revery.util.DayUtil
 import java.util.*
 

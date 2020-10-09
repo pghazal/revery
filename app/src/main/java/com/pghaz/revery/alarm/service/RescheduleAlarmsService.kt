@@ -1,9 +1,9 @@
-package com.pghaz.revery.service
+package com.pghaz.revery.alarm.service
 
 import android.content.Intent
 import androidx.lifecycle.LifecycleService
 import com.pghaz.revery.alarm.AlarmHandler
-import com.pghaz.revery.repository.AlarmRepository
+import com.pghaz.revery.alarm.repository.AlarmRepository
 
 
 class RescheduleAlarmsService : LifecycleService() {

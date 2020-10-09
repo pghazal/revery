@@ -4,8 +4,8 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import com.pghaz.revery.broadcastreceiver.AlarmBroadcastReceiver
-import com.pghaz.revery.repository.Alarm
+import com.pghaz.revery.alarm.broadcastreceiver.AlarmBroadcastReceiver
+import com.pghaz.revery.alarm.repository.Alarm
 import com.pghaz.revery.util.DayUtil
 import java.util.*
 

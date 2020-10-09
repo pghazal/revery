@@ -1,11 +1,11 @@
-package com.pghaz.revery.adapter
+package com.pghaz.revery.alarm.adapter
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.pghaz.revery.R
-import com.pghaz.revery.repository.Alarm
+import com.pghaz.revery.alarm.repository.Alarm
 
 
 class AlarmsAdapter(private val alarmListener: OnAlarmClickListener) :

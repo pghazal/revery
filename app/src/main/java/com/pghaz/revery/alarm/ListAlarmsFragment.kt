@@ -9,11 +9,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pghaz.revery.BaseFragment
 import com.pghaz.revery.R
-import com.pghaz.revery.adapter.AlarmItemDecoration
-import com.pghaz.revery.adapter.AlarmsAdapter
-import com.pghaz.revery.adapter.OnAlarmClickListener
-import com.pghaz.revery.repository.Alarm
-import com.pghaz.revery.viewmodel.ListAlarmsViewModel
+import com.pghaz.revery.alarm.adapter.AlarmItemDecoration
+import com.pghaz.revery.alarm.adapter.AlarmsAdapter
+import com.pghaz.revery.alarm.adapter.OnAlarmClickListener
+import com.pghaz.revery.alarm.repository.Alarm
+import com.pghaz.revery.alarm.viewmodel.ListAlarmsViewModel
 import kotlinx.android.synthetic.main.fragment_list_alarms.*
 
 

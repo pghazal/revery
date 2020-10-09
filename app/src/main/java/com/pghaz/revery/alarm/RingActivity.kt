@@ -8,7 +8,7 @@ import android.os.Bundle
 import android.view.WindowManager
 import com.pghaz.revery.BaseActivity
 import com.pghaz.revery.R
-import com.pghaz.revery.service.AlarmService
+import com.pghaz.revery.alarm.service.AlarmService
 import kotlinx.android.synthetic.main.activity_ring.*
 
 class RingActivity : BaseActivity() {

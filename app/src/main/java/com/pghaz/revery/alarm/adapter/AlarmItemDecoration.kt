@@ -1,4 +1,4 @@
-package com.pghaz.revery.adapter
+package com.pghaz.revery.alarm.adapter
 
 import android.graphics.Canvas
 import android.graphics.Paint

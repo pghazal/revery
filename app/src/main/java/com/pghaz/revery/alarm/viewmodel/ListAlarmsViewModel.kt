@@ -1,12 +1,12 @@
-package com.pghaz.revery.viewmodel
+package com.pghaz.revery.alarm.viewmodel
 
 import android.app.Application
 import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import com.pghaz.revery.alarm.AlarmHandler
-import com.pghaz.revery.repository.Alarm
-import com.pghaz.revery.repository.AlarmRepository
+import com.pghaz.revery.alarm.repository.Alarm
+import com.pghaz.revery.alarm.repository.AlarmRepository
 
 class ListAlarmsViewModel(application: Application) : AndroidViewModel(application) {
 

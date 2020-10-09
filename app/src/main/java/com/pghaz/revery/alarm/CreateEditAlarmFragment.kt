@@ -6,9 +6,9 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
 import com.pghaz.revery.BaseDialogFragment
 import com.pghaz.revery.R
-import com.pghaz.revery.repository.Alarm
+import com.pghaz.revery.alarm.repository.Alarm
 import com.pghaz.revery.util.DayUtil
-import com.pghaz.revery.viewmodel.CreateEditAlarmViewModel
+import com.pghaz.revery.alarm.viewmodel.CreateEditAlarmViewModel
 import com.shawnlin.numberpicker.NumberPicker
 import kotlinx.android.synthetic.main.fragment_create_edit_alarm.*
 import java.util.*

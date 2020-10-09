@@ -1,4 +1,4 @@
-package com.pghaz.revery.repository
+package com.pghaz.revery.alarm.repository
 
 import android.content.Context
 import androidx.room.Database

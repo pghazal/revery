@@ -1,13 +1,13 @@
-package com.pghaz.revery.broadcastreceiver
+package com.pghaz.revery.alarm.broadcastreceiver
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.widget.Toast
-import com.pghaz.revery.repository.Alarm
-import com.pghaz.revery.service.AlarmService
-import com.pghaz.revery.service.RescheduleAlarmsService
+import com.pghaz.revery.alarm.repository.Alarm
+import com.pghaz.revery.alarm.service.AlarmService
+import com.pghaz.revery.alarm.service.RescheduleAlarmsService
 import java.util.*
 
 class AlarmBroadcastReceiver : BroadcastReceiver() {

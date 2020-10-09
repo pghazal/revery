@@ -1,4 +1,4 @@
-package com.pghaz.revery.service
+package com.pghaz.revery.alarm.service
 
 import android.app.Notification
 import android.app.PendingIntent
@@ -15,8 +15,8 @@ import com.pghaz.revery.MainActivity
 import com.pghaz.revery.R
 import com.pghaz.revery.alarm.AlarmHandler
 import com.pghaz.revery.application.ReveryApplication
-import com.pghaz.revery.repository.Alarm
-import com.pghaz.revery.repository.AlarmRepository
+import com.pghaz.revery.alarm.repository.Alarm
+import com.pghaz.revery.alarm.repository.AlarmRepository
 
 class AlarmService : LifecycleService() {
 

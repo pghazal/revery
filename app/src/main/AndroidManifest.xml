@@ -31,19 +31,19 @@
 
         <activity android:name=".spotify.SpotifyActivity" />
 
-        <receiver android:name=".broadcastreceiver.AlarmBroadcastReceiver">
+        <receiver android:name="com.pghaz.revery.alarm.broadcastreceiver.AlarmBroadcastReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
         <service
-            android:name=".service.AlarmService"
+            android:name="com.pghaz.revery.alarm.service.AlarmService"
             android:enabled="true"
             android:exported="false" />
 
         <service
-            android:name=".service.RescheduleAlarmsService"
+            android:name="com.pghaz.revery.alarm.service.RescheduleAlarmsService"
             android:enabled="true"
             android:exported="false" />
 
