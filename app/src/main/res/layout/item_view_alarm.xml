@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/alarm_item_view_size"
@@ -29,10 +30,11 @@
             android:layout_marginStart="@dimen/half_base_margin"
             android:layout_toStartOf="@id/alarmSwitch"
             android:layout_toEndOf="@+id/imageView"
+            android:fontFamily="@font/montserrat_semibold"
             android:lines="1"
             android:textColor="@android:color/white"
             android:textSize="32sp"
-            android:textStyle="bold"
+            app:fontFamily="@font/montserrat_semibold"
             tools:text="15:40" />
 
         <TextView
@@ -44,9 +46,7 @@
             android:layout_toStartOf="@+id/alarmSwitch"
             android:ellipsize="end"
             android:lines="1"
-            android:maxLength="42"
             android:textColor="@android:color/white"
-            android:textStyle="bold"
             tools:text="description" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
@@ -62,15 +62,13 @@
 
     <TextView
         android:id="@+id/timeRemainingTextView"
+        style="@style/ReveryLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|start"
         android:layout_marginStart="@dimen/half_base_margin"
         android:layout_marginBottom="@dimen/third_base_margin"
         android:lines="1"
-        android:textColor="@android:color/white"
-        android:textSize="10sp"
-        android:textStyle="bold"
         android:visibility="gone"
         tools:text="in 1 day and 3h"
         tools:visibility="visible" />
@@ -81,7 +79,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_margin="@dimen/third_base_margin"
-        android:gravity="start"
         android:orientation="horizontal"
         android:visibility="gone"
         tools:visibility="visible">

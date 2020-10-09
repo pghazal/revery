@@ -1,28 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center_horizontal"
-    android:orientation="vertical"
+    android:padding="@dimen/half_base_margin"
     tools:background="@color/color_main_background_view">
+
+    <TextView
+        android:id="@+id/descriptionLabel"
+        style="@style/ReveryLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginStart="@dimen/third_base_margin"
+        android:layout_marginBottom="@dimen/third_base_margin"
+        android:text="@string/alarm_description_static" />
 
     <EditText
         android:id="@+id/labelEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/half_base_margin"
-        android:autofillHints="@string/alarm_label"
+        android:layout_below="@id/descriptionLabel"
+        android:layout_marginStart="@dimen/third_base_margin"
+        android:layout_marginEnd="@dimen/third_base_margin"
+        android:layout_marginBottom="@dimen/base_margin"
+        android:autofillHints="@string/alarm_hint"
         android:background="@drawable/rounded_corner"
-        android:hint="@string/alarm_label"
+        android:hint="@string/alarm_hint"
         android:inputType="text"
         android:textColor="@android:color/white"
         android:textColorHint="@color/color_text_hint_alarm_label" />
 
     <LinearLayout
+        android:id="@+id/timeSpinnerContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/labelEditText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/half_base_margin"
         android:gravity="center"
         android:orientation="horizontal">
 
@@ -69,27 +85,50 @@
     </LinearLayout>
 
     <TextView
+        android:id="@+id/remainingLabel"
+        style="@style/ReveryLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/timeSpinnerContainer"
+        android:layout_alignStart="@+id/recurringDaysContainer"
+        android:layout_marginEnd="@dimen/third_base_margin"
+        android:layout_marginBottom="@dimen/half_base_margin"
+        android:text="@string/alarm_remaining_time_static" />
+
+    <TextView
         android:id="@+id/timeRemainingTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/third_base_margin"
+        android:layout_alignBaseline="@+id/remainingLabel"
+        android:layout_toEndOf="@+id/remainingLabel"
         android:textColor="@android:color/white"
-        android:textStyle="bold"
         tools:text="3 days 4 hours" />
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/recurringLabel"
+        style="@style/ReveryLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/remainingLabel"
+        android:layout_alignStart="@+id/recurringDaysContainer"
+        android:layout_marginBottom="@dimen/third_base_margin"
+        android:text="@string/alarm_repeat_static" />
+
+    <LinearLayout
+        android:id="@+id/recurringDaysContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/recurringLabel"
+        android:layout_centerHorizontal="true"
         android:gravity="center"
-        android:orientation="horizontal"
-        android:padding="@dimen/third_base_margin">
+        android:orientation="horizontal">
 
         <ToggleButton
             android:id="@+id/mondayToggle"
             style="@style/ReveryRecurringDaysToggle"
             android:layout_width="@dimen/toggle_recurring_days_size"
             android:layout_height="@dimen/toggle_recurring_days_size"
-            android:layout_marginEnd="@dimen/minimum_base_margin"
+            android:layout_marginEnd="@dimen/third_base_margin"
             android:checked="false"
             android:text=""
             android:textOff="@string/monday_short"
@@ -101,7 +140,7 @@
             style="@style/ReveryRecurringDaysToggle"
             android:layout_width="@dimen/toggle_recurring_days_size"
             android:layout_height="@dimen/toggle_recurring_days_size"
-            android:layout_marginEnd="@dimen/minimum_base_margin"
+            android:layout_marginEnd="@dimen/third_base_margin"
             android:checked="false"
             android:text=""
             android:textOff="@string/tuesday_short"
@@ -112,7 +151,7 @@
             style="@style/ReveryRecurringDaysToggle"
             android:layout_width="@dimen/toggle_recurring_days_size"
             android:layout_height="@dimen/toggle_recurring_days_size"
-            android:layout_marginEnd="@dimen/minimum_base_margin"
+            android:layout_marginEnd="@dimen/third_base_margin"
             android:checked="false"
             android:text=""
             android:textOff="@string/wednesday_short"
@@ -123,7 +162,7 @@
             style="@style/ReveryRecurringDaysToggle"
             android:layout_width="@dimen/toggle_recurring_days_size"
             android:layout_height="@dimen/toggle_recurring_days_size"
-            android:layout_marginEnd="@dimen/minimum_base_margin"
+            android:layout_marginEnd="@dimen/third_base_margin"
             android:checked="false"
             android:text=""
             android:textOff="@string/thursday_short"
@@ -134,7 +173,7 @@
             style="@style/ReveryRecurringDaysToggle"
             android:layout_width="@dimen/toggle_recurring_days_size"
             android:layout_height="@dimen/toggle_recurring_days_size"
-            android:layout_marginEnd="@dimen/minimum_base_margin"
+            android:layout_marginEnd="@dimen/third_base_margin"
             android:checked="false"
             android:text=""
             android:textOff="@string/friday_short"
@@ -145,7 +184,7 @@
             style="@style/ReveryRecurringDaysToggle"
             android:layout_width="@dimen/toggle_recurring_days_size"
             android:layout_height="@dimen/toggle_recurring_days_size"
-            android:layout_marginEnd="@dimen/minimum_base_margin"
+            android:layout_marginEnd="@dimen/third_base_margin"
             android:checked="false"
             android:text=""
             android:textOff="@string/saturday_short"
@@ -165,27 +204,30 @@
 
     <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/vibrateSwitch"
-        android:layout_width="match_parent"
+        style="@style/ReveryLabel"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/recurringDaysContainer"
+        android:layout_alignStart="@+id/recurringDaysContainer"
+        android:layout_gravity="start"
+        android:layout_marginTop="@dimen/third_base_margin"
         android:checked="false"
-        android:padding="@dimen/half_base_margin"
         android:text="@string/vibrate"
-        android:textColor="@android:color/white"
-        android:textStyle="bold" />
+        app:switchPadding="@dimen/third_base_margin" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/vibrateSwitch"
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/base_margin"
-        android:orientation="horizontal"
-        android:padding="@dimen/half_base_margin">
+        android:orientation="horizontal">
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/positiveAlarmButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/half_base_margin"
+            android:layout_marginEnd="@dimen/third_base_margin"
             android:layout_weight="1"
             android:text="@string/schedule" />
 
@@ -193,9 +235,8 @@
             android:id="@+id/negativeAlarmButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/half_base_margin"
+            android:layout_marginStart="@dimen/third_base_margin"
             android:layout_weight="1"
             android:text="@string/delete" />
     </LinearLayout>
-
-</LinearLayout>
+</RelativeLayout>

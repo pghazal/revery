@@ -4,7 +4,6 @@
     <string name="sleep_text">sleep</string>
     <string name="alarm_text">alarms</string>
 
-    <string name="alarms_fragment">Alarms</string>
     <string name="sleep_fragment">Sleep</string>
 
     <!-- ALARM -->
@@ -14,7 +13,11 @@
     <string name="schedule">schedule</string>
     <string name="delete">delete</string>
     <string name="cancel">cancel</string>
-    <string name="alarm_label">description</string>
+    <string name="alarm_hint">add a description</string>
+    <string name="text_colon">:</string>
+    <string name="alarm_description_static">description</string>
+    <string name="alarm_repeat_static">repeat the alarm</string>
+    <string name="alarm_remaining_time_static">fires in</string>
 
     <!-- DAYS -->
     <string name="monday_long">monday</string>
@@ -32,7 +35,6 @@
     <string name="friday_short">F</string>
     <string name="saturday_short">S</string>
     <string name="sunday_short">S</string>
-    <string name="text_colon">:</string>
 
     <!-- TIME REMAINING TEXTS -->
     <plurals name="time_remaining_days">
