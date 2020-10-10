@@ -15,29 +15,31 @@
         android:layout_height="match_parent"
         android:padding="@dimen/half_base_margin">
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/imageView"
             android:layout_width="@dimen/item_view_image_size"
             android:layout_height="@dimen/item_view_image_size"
             android:layout_alignParentStart="true"
-            android:background="@color/colorPrimary" />
+            android:background="@drawable/selector_alarm_image_background_color" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/timeTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/imageView"
             android:layout_marginStart="@dimen/half_base_margin"
+            android:layout_marginTop="-4dp"
             android:layout_toStartOf="@id/alarmSwitch"
             android:layout_toEndOf="@+id/imageView"
             android:fontFamily="@font/montserrat_semibold"
+            android:includeFontPadding="false"
             android:lines="1"
-            android:textColor="@android:color/white"
-            android:textSize="32sp"
+            android:textColor="@color/selector_alarm_time_text_color"
+            android:textSize="28sp"
             app:fontFamily="@font/montserrat_semibold"
             tools:text="15:40" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/labelTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -45,8 +47,8 @@
             android:layout_alignStart="@+id/timeTextView"
             android:layout_toStartOf="@+id/alarmSwitch"
             android:ellipsize="end"
-            android:lines="1"
-            android:textColor="@android:color/white"
+            android:lines="2"
+            android:textColor="@color/selector_alarm_label_text_color"
             tools:text="description" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
@@ -56,7 +58,7 @@
             android:layout_alignParentEnd="true"
             android:layout_gravity="end"
             android:checked="false"
-            android:padding="@dimen/half_base_margin"
+            android:padding="@dimen/third_base_margin"
             android:text="" />
     </RelativeLayout>
 
@@ -83,67 +85,81 @@
         android:visibility="gone"
         tools:visibility="visible">
 
-        <TextView
+        <CheckedTextView
             android:id="@+id/mondayTextView"
             style="@style/ReveryRecurringDaysText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/minimum_base_margin"
-            android:enabled="false"
+            android:checked="false"
+            android:clickable="false"
+            android:enabled="true"
             android:text="@string/monday_short" />
 
-        <TextView
+        <CheckedTextView
             android:id="@+id/tuesdayTextView"
             style="@style/ReveryRecurringDaysText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/minimum_base_margin"
-            android:enabled="false"
+            android:checked="false"
+            android:clickable="false"
+            android:enabled="true"
             android:text="@string/tuesday_short" />
 
-        <TextView
+        <CheckedTextView
             android:id="@+id/wednesdayTextView"
             style="@style/ReveryRecurringDaysText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/minimum_base_margin"
-            android:enabled="false"
+            android:checked="false"
+            android:clickable="false"
+            android:enabled="true"
             android:text="@string/wednesday_short" />
 
-        <TextView
+        <CheckedTextView
             android:id="@+id/thursdayTextView"
             style="@style/ReveryRecurringDaysText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/minimum_base_margin"
-            android:enabled="false"
+            android:checked="false"
+            android:clickable="false"
+            android:enabled="true"
             android:text="@string/thursday_short" />
 
-        <TextView
+        <CheckedTextView
             android:id="@+id/fridayTextView"
             style="@style/ReveryRecurringDaysText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/minimum_base_margin"
-            android:enabled="false"
+            android:checked="false"
+            android:clickable="false"
+            android:enabled="true"
             android:text="@string/friday_short" />
 
-        <TextView
+        <CheckedTextView
             android:id="@+id/saturdayTextView"
             style="@style/ReveryRecurringDaysText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/minimum_base_margin"
-            android:enabled="false"
+            android:checked="false"
+            android:clickable="false"
+            android:enabled="true"
             android:text="@string/saturday_short" />
 
-        <TextView
+        <CheckedTextView
             android:id="@+id/sundayTextView"
             style="@style/ReveryRecurringDaysText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/minimum_base_margin"
-            android:enabled="false"
+            android:checked="false"
+            android:clickable="false"
+            android:enabled="true"
             android:text="@string/sunday_short" />
 
     </LinearLayout>

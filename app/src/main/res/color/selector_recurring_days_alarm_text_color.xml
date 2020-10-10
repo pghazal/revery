@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:color="@color/color_text_hint_alarm_label" android:state_enabled="false" />
-    <item android:color="@color/colorAccent" />
+    <item android:color="@color/color_text_alarm_not_recurring_and_disabled" android:state_checked="false" android:state_enabled="false" />
+    <item android:color="@color/color_text_alarm_not_recurring_and_enabled" android:state_checked="false" android:state_enabled="true" />
+    <item android:color="@color/color_text_alarm_recurring_and_disabled" android:state_checked="true" android:state_enabled="false" />
+    <item android:color="@color/color_text_alarm_recurring_and_enabled" android:state_checked="true" android:state_enabled="true" />
+    <item android:color="@color/color_text_alarm_recurring_and_enabled" />
 
 </selector>

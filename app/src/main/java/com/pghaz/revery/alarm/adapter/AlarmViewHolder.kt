@@ -2,6 +2,8 @@ package com.pghaz.revery.alarm.adapter
 
 import android.text.TextUtils
 import android.view.View
+import android.widget.CheckedTextView
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -16,15 +18,16 @@ class AlarmViewHolder(view: View, private val alarmListener: OnAlarmClickListene
     private val timeTextView: TextView = view.findViewById(R.id.timeTextView)
     private val labelTextView: TextView = view.findViewById(R.id.labelTextView)
     private val timeRemainingTextView: TextView = view.findViewById(R.id.timeRemainingTextView)
+    private val imageView: ImageView = view.findViewById(R.id.imageView)
 
     private val recurringDaysContainer: View = view.findViewById(R.id.recurringDaysContainer)
-    private val mondayTextView: TextView = view.findViewById(R.id.mondayTextView)
-    private val tuesdayTextView: TextView = view.findViewById(R.id.tuesdayTextView)
-    private val wednesdayTextView: TextView = view.findViewById(R.id.wednesdayTextView)
-    private val thursdayTextView: TextView = view.findViewById(R.id.thursdayTextView)
-    private val fridayTextView: TextView = view.findViewById(R.id.fridayTextView)
-    private val saturdayTextView: TextView = view.findViewById(R.id.saturdayTextView)
-    private val sundayTextView: TextView = view.findViewById(R.id.sundayTextView)
+    private val mondayTextView: CheckedTextView = view.findViewById(R.id.mondayTextView)
+    private val tuesdayTextView: CheckedTextView = view.findViewById(R.id.tuesdayTextView)
+    private val wednesdayTextView: CheckedTextView = view.findViewById(R.id.wednesdayTextView)
+    private val thursdayTextView: CheckedTextView = view.findViewById(R.id.thursdayTextView)
+    private val fridayTextView: CheckedTextView = view.findViewById(R.id.fridayTextView)
+    private val saturdayTextView: CheckedTextView = view.findViewById(R.id.saturdayTextView)
+    private val sundayTextView: CheckedTextView = view.findViewById(R.id.sundayTextView)
 
     val alarmSwitch: SwitchCompat = view.findViewById(R.id.alarmSwitch)
 
@@ -53,18 +56,30 @@ class AlarmViewHolder(view: View, private val alarmListener: OnAlarmClickListene
             recurringDaysContainer.visibility = View.GONE
         }
 
-        mondayTextView.isEnabled = alarm.monday
-        tuesdayTextView.isEnabled = alarm.tuesday
-        wednesdayTextView.isEnabled = alarm.wednesday
-        thursdayTextView.isEnabled = alarm.thursday
-        fridayTextView.isEnabled = alarm.friday
-        saturdayTextView.isEnabled = alarm.saturday
-        sundayTextView.isEnabled = alarm.sunday
+        mondayTextView.isChecked = alarm.monday
+        tuesdayTextView.isChecked = alarm.tuesday
+        wednesdayTextView.isChecked = alarm.wednesday
+        thursdayTextView.isChecked = alarm.thursday
+        fridayTextView.isChecked = alarm.friday
+        saturdayTextView.isChecked = alarm.saturday
+        sundayTextView.isChecked = alarm.sunday
+
+        mondayTextView.isEnabled = alarm.enabled
+        tuesdayTextView.isEnabled = alarm.enabled
+        wednesdayTextView.isEnabled = alarm.enabled
+        thursdayTextView.isEnabled = alarm.enabled
+        fridayTextView.isEnabled = alarm.enabled
+        saturdayTextView.isEnabled = alarm.enabled
+        sundayTextView.isEnabled = alarm.enabled
 
         alarmSwitch.isChecked = alarm.enabled
         alarmSwitch.setOnCheckedChangeListener { _, _ ->
             alarmListener.onToggle(alarm)
         }
+
+        imageView.isEnabled = alarm.enabled
+        timeTextView.isEnabled = alarm.enabled
+        labelTextView.isEnabled = alarm.enabled
 
         if (alarm.enabled) {
             timeRemainingTextView.visibility = View.VISIBLE

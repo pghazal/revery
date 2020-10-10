@@ -10,7 +10,7 @@
     android:orientation="horizontal"
     android:padding="@dimen/half_base_margin">
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imageView"
         android:layout_width="@dimen/item_view_image_size"
         android:layout_height="@dimen/item_view_image_size"
@@ -24,7 +24,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/titleTextView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -36,7 +36,7 @@
             android:textColor="@android:color/white"
             android:textStyle="bold" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/subtitleTextView"
             android:layout_width="match_parent"
             android:layout_height="0dp"

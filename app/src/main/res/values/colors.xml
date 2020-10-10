@@ -8,4 +8,12 @@
     <color name="color_text_hint_alarm_label">#44635982</color>
     <color name="color_text_static_label">#635982</color>
 
+    <color name="color_text_alarm_not_recurring_and_disabled">#1A7561FF</color>
+    <color name="color_text_alarm_not_recurring_and_enabled">#407561FF</color>
+    <color name="color_text_alarm_recurring_and_disabled">#4D7561FF</color>
+    <color name="color_text_alarm_recurring_and_enabled">@color/colorAccent</color>
+
+    <color name="color_image_disabled">#4D180D3D</color>
+    <color name="color_image_enabled">@color/colorPrimary</color>
+
 </resources>
