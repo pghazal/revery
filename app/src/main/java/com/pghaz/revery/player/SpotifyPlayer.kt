@@ -14,12 +14,10 @@ import com.spotify.protocol.types.Track
 
 class SpotifyPlayer : AbstractPlayer() {
 
-    override fun getType(): AbstractPlayer.Type {
-        return AbstractPlayer.Type.SPOTIFY
-    }
-
     private var spotifyAppRemote: SpotifyAppRemote? = null
     private var connectionParams: ConnectionParams? = null
+
+    private lateinit var currentUri: String
 
     private val spotifyConnector = object : Connector.ConnectionListener {
         override fun onConnected(sar: SpotifyAppRemote?) {
@@ -48,13 +46,15 @@ class SpotifyPlayer : AbstractPlayer() {
             .build()
     }
 
-    override fun prepare(context: Context) {
+    override fun prepare(context: Context, uri: String) {
+        // "spotify:playlist:3H8dsoJvkH7lUkaQlUNjPJ"
+        currentUri = uri
         SpotifyAppRemote.connect(context, connectionParams, spotifyConnector)
     }
 
     override fun play() {
         // Play a playlist
-        spotifyAppRemote?.playerApi?.play("spotify:playlist:3H8dsoJvkH7lUkaQlUNjPJ")
+        spotifyAppRemote?.playerApi?.play(currentUri)
 
         // Subscribe to PlayerState
         spotifyAppRemote?.playerApi

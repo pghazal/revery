@@ -5,7 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.widget.Toast
-import com.pghaz.revery.alarm.repository.Alarm
+import com.pghaz.revery.alarm.model.app.Alarm
+import com.pghaz.revery.alarm.model.app.AlarmMetadata
 import com.pghaz.revery.alarm.service.AlarmService
 import com.pghaz.revery.alarm.service.RescheduleAlarmsService
 import java.util.*
@@ -65,16 +66,22 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
     }
 
     private fun startAlarmService(context: Context, intent: Intent) {
-        val intentService = Intent(context, AlarmService::class.java)
-        intentService.putExtra(Alarm.LABEL, intent.getStringExtra(Alarm.LABEL))
-        intentService.putExtra(Alarm.RECURRING, intent.getBooleanExtra(Alarm.RECURRING, false))
-        intentService.putExtra(Alarm.ID, intent.getLongExtra(Alarm.ID, 0))
-        intentService.putExtra(Alarm.VIBRATE, intent.getBooleanExtra(Alarm.VIBRATE, false))
+        val service = Intent(context, AlarmService::class.java)
+        service.putExtra(Alarm.LABEL, intent.getStringExtra(Alarm.LABEL))
+        service.putExtra(Alarm.RECURRING, intent.getBooleanExtra(Alarm.RECURRING, false))
+        service.putExtra(Alarm.ID, intent.getLongExtra(Alarm.ID, 0))
+        service.putExtra(Alarm.VIBRATE, intent.getBooleanExtra(Alarm.VIBRATE, false))
+
+        val metadataBundle = intent.getBundleExtra(Alarm.METADATA)
+        metadataBundle?.let {
+            val metadata = it.getParcelable(Alarm.METADATA) as AlarmMetadata?
+            service.putExtra(Alarm.METADATA, metadata)
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.startForegroundService(intentService)
+            context.startForegroundService(service)
         } else {
-            context.startService(intentService)
+            context.startService(service)
         }
     }
 

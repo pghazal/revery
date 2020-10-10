@@ -1,15 +1,14 @@
 package com.pghaz.revery.player
 
 import android.content.Context
-import android.media.*
+import android.media.AudioAttributes
+import android.media.AudioFocusRequest
+import android.media.AudioManager
+import android.media.MediaPlayer
 import android.net.Uri
 import android.util.Log
 
 class DefaultPlayer(private val audioManager: AudioManager) : AbstractPlayer() {
-
-    override fun getType(): AbstractPlayer.Type {
-        return AbstractPlayer.Type.DEFAULT
-    }
 
     private lateinit var mediaPlayer: MediaPlayer
 
@@ -29,9 +28,7 @@ class DefaultPlayer(private val audioManager: AudioManager) : AbstractPlayer() {
         }
 
     override fun init(context: Context) {
-        val alarmToneUri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
         mediaPlayer = MediaPlayer()
-        mediaPlayer.setDataSource(context, alarmToneUri)
         mediaPlayer.isLooping = true
         mediaPlayer.setAudioAttributes(
             AudioAttributes.Builder()
@@ -45,7 +42,9 @@ class DefaultPlayer(private val audioManager: AudioManager) : AbstractPlayer() {
         }
     }
 
-    override fun prepare(context: Context) {
+    override fun prepare(context: Context, uri: String) {
+        mediaPlayer.setDataSource(context, Uri.parse(uri))
+
         // Request audio focus for play back
         val result = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             audioFocusRequest?.let { audioManager.requestAudioFocus(it) }

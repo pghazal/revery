@@ -4,8 +4,9 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import com.pghaz.revery.alarm.broadcastreceiver.AlarmBroadcastReceiver
-import com.pghaz.revery.alarm.repository.Alarm
+import com.pghaz.revery.alarm.model.app.Alarm
 import com.pghaz.revery.util.DayUtil
 import java.util.*
 
@@ -33,6 +34,12 @@ class AlarmHandler {
             intent.putExtra(Alarm.RECURRING, alarm.recurring)
             intent.putExtra(Alarm.LABEL, alarm.label)
             intent.putExtra(Alarm.VIBRATE, alarm.vibrate)
+
+            // This is a workaround due to problems with Parcelables into Intent
+            // See: https://stackoverflow.com/questions/39478422/pendingintent-getbroadcast-lost-parcelable-data
+            val metadataBundle = Bundle()
+            metadataBundle.putParcelable(Alarm.METADATA, alarm.metadata)
+            intent.putExtra(Alarm.METADATA, metadataBundle)
 
             val alarmPendingIntent =
                 PendingIntent.getBroadcast(

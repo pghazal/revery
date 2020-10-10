@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.pghaz.revery.R
-import com.pghaz.revery.alarm.repository.Alarm
+import com.pghaz.revery.alarm.model.app.Alarm
 import com.pghaz.revery.util.DayUtil
 import java.util.*
 

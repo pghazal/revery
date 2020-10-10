@@ -2,32 +2,36 @@ package com.pghaz.revery.alarm.repository
 
 import android.app.Application
 import androidx.lifecycle.LiveData
-
+import androidx.lifecycle.Transformations
+import com.pghaz.revery.alarm.model.app.Alarm
+import com.pghaz.revery.alarm.model.room.RAlarm
 
 class AlarmRepository(application: Application) {
 
     private val alarmDao: AlarmDao = AlarmDatabase.getDatabase(application).alarmDao()
-    private var alarmsLiveData: LiveData<List<Alarm>> = alarmDao.getAlarms()
+    private val alarmsLiveData: LiveData<List<RAlarm>> = alarmDao.getAlarms()
 
     fun insert(alarm: Alarm) {
         AlarmDatabase.databaseWriteExecutor.execute {
-            alarm.id = alarmDao.insert(alarm)
+            alarm.id = alarmDao.insert(Alarm.toDatabaseModel(alarm))
         }
     }
 
     fun update(alarm: Alarm) {
         AlarmDatabase.databaseWriteExecutor.execute {
-            alarmDao.update(alarm)
+            alarmDao.update(Alarm.toDatabaseModel(alarm))
         }
     }
 
     fun get(id: Long): LiveData<Alarm> {
-        return alarmDao.get(id)
+        return Transformations.map(alarmDao.get(id)) {
+            return@map Alarm.fromDatabaseModel(it)
+        }
     }
 
     fun delete(alarm: Alarm) {
         AlarmDatabase.databaseWriteExecutor.execute {
-            alarmDao.delete(alarm)
+            alarmDao.delete(Alarm.toDatabaseModel(alarm))
         }
     }
 
@@ -38,6 +42,14 @@ class AlarmRepository(application: Application) {
     }
 
     fun getAlarmsLiveData(): LiveData<List<Alarm>> {
-        return alarmsLiveData
+        return Transformations.map(alarmsLiveData) { alarmsFromDb ->
+            val alarms = ArrayList<Alarm>()
+
+            alarmsFromDb.forEach { alarm ->
+                alarms.add(Alarm.fromDatabaseModel(alarm))
+            }
+
+            return@map alarms
+        }
     }
 }

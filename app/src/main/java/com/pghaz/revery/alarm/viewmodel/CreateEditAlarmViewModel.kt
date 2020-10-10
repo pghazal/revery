@@ -5,7 +5,7 @@ import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.pghaz.revery.alarm.AlarmHandler
-import com.pghaz.revery.alarm.repository.Alarm
+import com.pghaz.revery.alarm.model.app.Alarm
 import com.pghaz.revery.alarm.repository.AlarmRepository
 
 

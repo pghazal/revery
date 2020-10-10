@@ -2,24 +2,25 @@ package com.pghaz.revery.alarm.repository
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.pghaz.revery.alarm.model.room.RAlarm
 
 @Dao
 interface AlarmDao {
     @Insert
-    fun insert(alarm: Alarm): Long
+    fun insert(alarm: RAlarm): Long
 
     @Query("SELECT * FROM " + AlarmDatabase.ALARM_TABLE_NAME + " ORDER BY id ASC")
-    fun getAlarms(): LiveData<List<Alarm>>
+    fun getAlarms(): LiveData<List<RAlarm>>
 
     @Query("SELECT * FROM " + AlarmDatabase.ALARM_TABLE_NAME + " WHERE id=:id")
-    fun get(id: Long): LiveData<Alarm> // we're not using id because we don't get one at creation of pending intent
+    fun get(id: Long): LiveData<RAlarm>
 
     @Update
-    fun update(alarm: Alarm)
+    fun update(alarm: RAlarm)
 
     @Query("DELETE FROM " + AlarmDatabase.ALARM_TABLE_NAME)
     fun deleteAll()
 
     @Delete
-    fun delete(alarm: Alarm)
+    fun delete(alarm: RAlarm)
 }

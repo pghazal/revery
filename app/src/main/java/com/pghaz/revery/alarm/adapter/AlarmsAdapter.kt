@@ -5,8 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.pghaz.revery.R
-import com.pghaz.revery.alarm.repository.Alarm
-
+import com.pghaz.revery.alarm.model.app.Alarm
 
 class AlarmsAdapter(private val alarmListener: OnAlarmClickListener) :
     RecyclerView.Adapter<AlarmViewHolder>() {

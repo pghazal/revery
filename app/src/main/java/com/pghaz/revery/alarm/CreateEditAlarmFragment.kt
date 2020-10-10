@@ -1,15 +1,23 @@
 package com.pghaz.revery.alarm
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
 import com.pghaz.revery.BaseBottomSheetDialogFragment
 import com.pghaz.revery.R
-import com.pghaz.revery.alarm.repository.Alarm
+import com.pghaz.revery.alarm.model.app.Alarm
+import com.pghaz.revery.alarm.model.app.AlarmMetadata
+import com.pghaz.revery.alarm.model.room.RAlarmType
 import com.pghaz.revery.alarm.viewmodel.CreateEditAlarmViewModel
+import com.pghaz.revery.spotify.SpotifyActivity
+import com.pghaz.revery.spotify.SpotifyPlaylistsFragment
 import com.pghaz.revery.util.DayUtil
 import com.shawnlin.numberpicker.NumberPicker
+import kaaes.spotify.webapi.android.models.PlaylistSimple
 import kotlinx.android.synthetic.main.fragment_create_edit_alarm.*
 import java.util.*
 
@@ -34,7 +42,8 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
                 args.getBoolean(Alarm.FRIDAY, false),
                 args.getBoolean(Alarm.SATURDAY, false),
                 args.getBoolean(Alarm.SUNDAY, false),
-                args.getBoolean(Alarm.VIBRATE, false)
+                args.getBoolean(Alarm.VIBRATE, false),
+                args.getParcelable(Alarm.METADATA) as AlarmMetadata?
             )
         }
     }
@@ -238,7 +247,8 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
                 friday = false,
                 saturday = false,
                 sunday = false,
-                vibrate = false
+                vibrate = false,
+                AlarmMetadata()
             )
         }
 
@@ -257,6 +267,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
             saturday: Boolean,
             sunday: Boolean,
             vibrate: Boolean,
+            metadata: AlarmMetadata?
         ): CreateEditAlarmFragment {
             val args = Bundle()
 
@@ -274,6 +285,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
             args.putBoolean(Alarm.SATURDAY, saturday)
             args.putBoolean(Alarm.SUNDAY, sunday)
             args.putBoolean(Alarm.VIBRATE, vibrate)
+            args.putParcelable(Alarm.METADATA, metadata)
 
             val fragment = CreateEditAlarmFragment()
             fragment.arguments = args

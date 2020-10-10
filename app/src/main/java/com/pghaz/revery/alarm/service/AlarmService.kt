@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
+import android.media.RingtoneManager
 import android.os.Binder
 import android.os.IBinder
 import android.os.VibrationEffect
@@ -15,7 +16,9 @@ import androidx.lifecycle.LifecycleService
 import com.pghaz.revery.MainActivity
 import com.pghaz.revery.R
 import com.pghaz.revery.alarm.AlarmHandler
-import com.pghaz.revery.alarm.repository.Alarm
+import com.pghaz.revery.alarm.model.app.Alarm
+import com.pghaz.revery.alarm.model.app.AlarmMetadata
+import com.pghaz.revery.alarm.model.room.RAlarmType
 import com.pghaz.revery.alarm.repository.AlarmRepository
 import com.pghaz.revery.application.ReveryApplication
 import com.pghaz.revery.player.AbstractPlayer
@@ -73,40 +76,62 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
         super.onStartCommand(alarmIntent, flags, startId)
 
         alarmIntent?.let {
-            val alarmId = alarmIntent.getLongExtra(Alarm.ID, 0)
-            val recurring = alarmIntent.getBooleanExtra(Alarm.RECURRING, false)
-            val alarmLabel = alarmIntent.getStringExtra(Alarm.LABEL)
+            val alarmId = it.getLongExtra(Alarm.ID, 0)
+            val recurring = it.getBooleanExtra(Alarm.RECURRING, false)
+            val alarmLabel = it.getStringExtra(Alarm.LABEL)
+            val alarmVibrate = it.getBooleanExtra(Alarm.VIBRATE, false)
+            var alarmMetadata = it.getParcelableExtra(Alarm.METADATA) as AlarmMetadata?
+            alarmMetadata = safeInitMetadataIfNeeded(alarmMetadata)
 
             notification = buildAlarmNotification(alarmId, alarmLabel)
             disableOneShotAlarm(recurring, alarmId)
 
-            val isSpotify = true // TODO get this info
-            if (isSpotify) {
-                player = SpotifyPlayer()
-            } else {
-                player = DefaultPlayer(audioManager)
+            player = when (alarmMetadata.type) {
+                RAlarmType.DEFAULT -> {
+                    DefaultPlayer(audioManager)
+                }
+
+                RAlarmType.SPOTIFY -> {
+                    SpotifyPlayer()
+                }
             }
 
             player.onPlayerInitializedListener = this
 
-            when (player.getType()) {
-                AbstractPlayer.Type.DEFAULT -> {
+            when (alarmMetadata.type) {
+                RAlarmType.DEFAULT -> {
                     (player as DefaultPlayer).init(this)
-                    (player as DefaultPlayer).prepare(this)
+                    (player as DefaultPlayer).prepare(this, alarmMetadata.uri!!)
                 }
 
-                AbstractPlayer.Type.SPOTIFY -> {
+                RAlarmType.SPOTIFY -> {
                     (player as SpotifyPlayer).init(this)
-                    (player as SpotifyPlayer).prepare(this)
+                    (player as SpotifyPlayer).prepare(this, alarmMetadata.uri!!)
                 }
             }
 
-            if (it.getBooleanExtra(Alarm.VIBRATE, false)) {
+            if (alarmVibrate) {
                 vibrate()
             }
         }
 
         return START_STICKY
+    }
+
+    private fun safeInitMetadataIfNeeded(nullableMetadata: AlarmMetadata?): AlarmMetadata {
+        if (nullableMetadata?.uri != null) {
+            return nullableMetadata
+        }
+
+        val nonNullMetadata = AlarmMetadata()
+        // default ringtone
+        nonNullMetadata.type = RAlarmType.DEFAULT
+        nonNullMetadata.name = nullableMetadata?.name
+        nonNullMetadata.uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM).toString()
+        nonNullMetadata.description = nullableMetadata?.description
+        nonNullMetadata.imageUrl = nullableMetadata?.imageUrl
+
+        return nonNullMetadata
     }
 
     override fun onPlayerInitialized() {

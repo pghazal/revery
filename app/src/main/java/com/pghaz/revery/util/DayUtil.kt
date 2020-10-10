@@ -2,7 +2,7 @@ package com.pghaz.revery.util
 
 import android.content.Context
 import com.pghaz.revery.R
-import com.pghaz.revery.alarm.repository.Alarm
+import com.pghaz.revery.alarm.model.app.Alarm
 import java.util.*
 import kotlin.math.abs
 

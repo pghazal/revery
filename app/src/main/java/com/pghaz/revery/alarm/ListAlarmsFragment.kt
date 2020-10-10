@@ -12,7 +12,7 @@ import com.pghaz.revery.R
 import com.pghaz.revery.alarm.adapter.AlarmItemDecoration
 import com.pghaz.revery.alarm.adapter.AlarmsAdapter
 import com.pghaz.revery.alarm.adapter.OnAlarmClickListener
-import com.pghaz.revery.alarm.repository.Alarm
+import com.pghaz.revery.alarm.model.app.Alarm
 import com.pghaz.revery.alarm.viewmodel.ListAlarmsViewModel
 import kotlinx.android.synthetic.main.fragment_list_alarms.*
 
@@ -29,7 +29,7 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
         alarmsAdapter = AlarmsAdapter(this)
 
         listAlarmsViewModel = ViewModelProvider(this).get(ListAlarmsViewModel::class.java)
-        listAlarmsViewModel.getAlarmsLiveData().observe(this, { alarms ->
+        listAlarmsViewModel.alarmsLiveData.observe(this, { alarms ->
             alarmsAdapter.setAlarms(alarms)
         })
     }
@@ -88,7 +88,7 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
     }
 
     private fun cancelAllAlarms() {
-        val alarms = listAlarmsViewModel.getAlarmsLiveData().value
+        val alarms = listAlarmsViewModel.alarmsLiveData.value
         alarms?.forEach {
             if (it.enabled) {
                 listAlarmsViewModel.cancelAlarm(context, it)
@@ -98,7 +98,7 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
     }
 
     private fun deleteAllAlarms() {
-        val alarms = listAlarmsViewModel.getAlarmsLiveData().value
+        val alarms = listAlarmsViewModel.alarmsLiveData.value
         alarms?.forEach {
             listAlarmsViewModel.cancelAlarm(context, it)
             listAlarmsViewModel.delete(it)
@@ -120,7 +120,8 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
             alarm.friday,
             alarm.saturday,
             alarm.sunday,
-            alarm.vibrate
+            alarm.vibrate,
+            alarm.metadata
         )
         createAlarmFragment.show(childFragmentManager, CreateEditAlarmFragment.TAG)
     }
