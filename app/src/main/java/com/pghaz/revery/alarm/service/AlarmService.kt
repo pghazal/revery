@@ -4,8 +4,9 @@ import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.media.*
-import android.net.Uri
+import android.media.AudioManager
+import android.os.Binder
+import android.os.IBinder
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
@@ -14,16 +15,17 @@ import androidx.lifecycle.LifecycleService
 import com.pghaz.revery.MainActivity
 import com.pghaz.revery.R
 import com.pghaz.revery.alarm.AlarmHandler
-import com.pghaz.revery.application.ReveryApplication
 import com.pghaz.revery.alarm.repository.Alarm
 import com.pghaz.revery.alarm.repository.AlarmRepository
+import com.pghaz.revery.application.ReveryApplication
+import com.pghaz.revery.player.AbstractPlayer
+import com.pghaz.revery.player.DefaultPlayer
+import com.pghaz.revery.player.SpotifyPlayer
 
-class AlarmService : LifecycleService() {
+class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListener {
 
     companion object {
         private const val TAG = "AlarmService"
-
-        private const val AUDIO_FOCUS_PARAM = AudioManager.AUDIOFOCUS_GAIN
 
         var isRunning: Boolean = false // this is ugly: find a way to check if service is alive
     }
@@ -31,24 +33,30 @@ class AlarmService : LifecycleService() {
     private lateinit var alarmHandler: AlarmHandler
     private lateinit var alarmRepository: AlarmRepository
 
-    private lateinit var mediaPlayer: MediaPlayer
     private lateinit var vibrator: Vibrator
+    private lateinit var notification: Notification
 
     private lateinit var audioManager: AudioManager
-    private val onAudioFocusChangeListener =
-        AudioManager.OnAudioFocusChangeListener { focusChange ->
-            // TODO: handle focus changed ??
-        }
 
-    // Used only for Android O and later
-    private val audioFocusRequest =
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            AudioFocusRequest.Builder(AUDIO_FOCUS_PARAM)
-                .setOnAudioFocusChangeListener(onAudioFocusChangeListener)
-                .build()
-        } else {
-            null
+    private lateinit var player: AbstractPlayer
+
+    private val mBinder = AlarmServiceBinder()
+
+    inner class AlarmServiceBinder : Binder() {
+        fun getService(): AbstractPlayer? {
+            return player
         }
+    }
+
+    override fun onBind(intent: Intent): IBinder? {
+        super.onBind(intent)
+        return mBinder
+    }
+
+    override fun onUnbind(intent: Intent?): Boolean {
+        Log.e(TAG, "onUnbind")
+        return super.onUnbind(intent)
+    }
 
     override fun onCreate() {
         super.onCreate()
@@ -59,25 +67,6 @@ class AlarmService : LifecycleService() {
 
         vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
-
-        initMediaPlayer()
-    }
-
-    private fun initMediaPlayer() {
-        val alarmToneUri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
-        mediaPlayer = MediaPlayer()
-        mediaPlayer.setDataSource(this, alarmToneUri)
-        mediaPlayer.isLooping = true
-        mediaPlayer.setAudioAttributes(
-            AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_ALARM)
-                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                .build()
-        )
-
-        mediaPlayer.setOnPreparedListener {
-            it.start() // Step 3: when focused and prepared, play audio
-        }
     }
 
     override fun onStartCommand(alarmIntent: Intent?, flags: Int, startId: Int): Int {
@@ -88,46 +77,42 @@ class AlarmService : LifecycleService() {
             val recurring = alarmIntent.getBooleanExtra(Alarm.RECURRING, false)
             val alarmLabel = alarmIntent.getStringExtra(Alarm.LABEL)
 
+            notification = buildAlarmNotification(alarmId, alarmLabel)
             disableOneShotAlarm(recurring, alarmId)
 
-            requestAudioFocus() // Step 1: request focus
+            val isSpotify = true // TODO get this info
+            if (isSpotify) {
+                player = SpotifyPlayer()
+            } else {
+                player = DefaultPlayer(audioManager)
+            }
+
+            player.onPlayerInitializedListener = this
+
+            when (player.getType()) {
+                AbstractPlayer.Type.DEFAULT -> {
+                    (player as DefaultPlayer).init(this)
+                    (player as DefaultPlayer).prepare(this)
+                }
+
+                AbstractPlayer.Type.SPOTIFY -> {
+                    (player as SpotifyPlayer).init(this)
+                    (player as SpotifyPlayer).prepare(this)
+                }
+            }
 
             if (it.getBooleanExtra(Alarm.VIBRATE, false)) {
                 vibrate()
             }
-
-            val notification = buildAlarmNotification(alarmId, alarmLabel)
-            startForeground(1, notification)
         }
 
         return START_STICKY
     }
 
-    private fun requestAudioFocus() {
-        // Request audio focus for play back
-        val result = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            audioFocusRequest?.let { audioManager.requestAudioFocus(it) }
-        } else {
-            audioManager.requestAudioFocus(
-                onAudioFocusChangeListener,
-                AudioManager.STREAM_ALARM,
-                AUDIO_FOCUS_PARAM
-            )
-        }
+    override fun onPlayerInitialized() {
+        startForeground(1, notification)
 
-        if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-            mediaPlayer.prepareAsync() // Step 2: prepare audio async
-        } else {
-            Log.e(TAG, "# Request audio focus failed")
-        }
-    }
-
-    private fun abandonAudioFocus() {
-        val result = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            audioFocusRequest?.let { audioManager.abandonAudioFocusRequest(it) }
-        } else {
-            audioManager.abandonAudioFocus(onAudioFocusChangeListener)
-        }
+        player.play()
     }
 
     private fun disableOneShotAlarm(recurring: Boolean, alarmId: Long) {
@@ -180,13 +165,17 @@ class AlarmService : LifecycleService() {
     }
 
     override fun onDestroy() {
+        release()
         super.onDestroy()
-        if (mediaPlayer.isPlaying) {
-            mediaPlayer.stop()
-            mediaPlayer.release()
-        }
+        Log.e(TAG, "onDestroy()")
+    }
+
+    // TODO: what about user force-stop the app
+    private fun release() {
+        player.pause()
+        player.release()
+
         vibrator.cancel()
-        abandonAudioFocus()
 
         isRunning = false
     }

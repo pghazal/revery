@@ -7,14 +7,7 @@ import com.pghaz.revery.BaseActivity
 import com.pghaz.revery.BuildConfig
 import com.pghaz.revery.R
 import com.pghaz.revery.spotify.util.CredentialsHandler
-import com.spotify.android.appremote.api.ConnectionParams
-import com.spotify.android.appremote.api.Connector
 import com.spotify.android.appremote.api.SpotifyAppRemote
-import com.spotify.android.appremote.api.error.CouldNotFindSpotifyApp
-import com.spotify.android.appremote.api.error.NotLoggedInException
-import com.spotify.android.appremote.api.error.UserNotAuthorizedException
-import com.spotify.protocol.types.PlayerState
-import com.spotify.protocol.types.Track
 import com.spotify.sdk.android.auth.AuthorizationClient
 import com.spotify.sdk.android.auth.AuthorizationRequest
 import com.spotify.sdk.android.auth.AuthorizationResponse
@@ -25,12 +18,9 @@ class SpotifyActivity : BaseActivity() {
     companion object {
         private const val TAG = "SpotifyActivity"
 
-        private const val CLIENT_ID = "7cb7f4b08ff748cc9f19c84cc627f9d9"
-        private const val REDIRECT_URI = "com.pghaz.revery://connect"
         private const val REQUEST_CODE_SPOTIFY_LOGIN = 1337
     }
 
-    private var mSpotifyAppRemote: SpotifyAppRemote? = null
     private var spotifyAuthorizationState: String? = null
 
     override fun getLayoutResId(): Int {
@@ -69,7 +59,11 @@ class SpotifyActivity : BaseActivity() {
         spotifyAuthorizationState = System.currentTimeMillis().toString()
 
         val request: AuthorizationRequest =
-            AuthorizationRequest.Builder(CLIENT_ID, AuthorizationResponse.Type.TOKEN, REDIRECT_URI)
+            AuthorizationRequest.Builder(
+                getString(R.string.spotify_client_id),
+                AuthorizationResponse.Type.TOKEN,
+                getString(R.string.spotify_redirect_uri)
+            )
                 .setScopes(
                     arrayOf(
                         "app-remote-control",
@@ -138,55 +132,5 @@ class SpotifyActivity : BaseActivity() {
             SpotifyPlaylistsFragment.newInstance(accessToken),
             SpotifyPlaylistsFragment.TAG
         )
-    }
-
-    private fun connectToSpotifyAppRemote() {
-        val connectionParams = ConnectionParams.Builder(CLIENT_ID)
-            .setRedirectUri(REDIRECT_URI)
-            .showAuthView(true)
-            .build()
-
-        SpotifyAppRemote.connect(
-            this,
-            connectionParams,
-            object : Connector.ConnectionListener {
-                override fun onConnected(spotifyAppRemote: SpotifyAppRemote?) {
-                    mSpotifyAppRemote = spotifyAppRemote
-                    Log.e(TAG, "Connected! Yay!")
-
-                    // Now you can start interacting with App Remote
-                    //connected()
-                }
-
-                override fun onFailure(error: Throwable?) {
-                    Log.e(TAG, error?.message, error)
-
-                    if (error is NotLoggedInException || error is UserNotAuthorizedException) {
-                        // Show login button and trigger the login flow from auth library when clicked
-                    } else if (error is CouldNotFindSpotifyApp) {
-                        // Show button to download Spotify
-                    }
-                }
-            })
-    }
-
-    private fun connected() {
-        // Play a playlist
-        mSpotifyAppRemote?.playerApi?.play("spotify:playlist:37i9dQZF1DX2sUQwD7tbmL")
-
-        // Subscribe to PlayerState
-        mSpotifyAppRemote?.playerApi
-            ?.subscribeToPlayerState()
-            ?.setEventCallback { playerState: PlayerState ->
-                val track: Track? = playerState.track
-                if (track != null) {
-                    Log.e(TAG, track.name.toString() + " by " + track.artist.name)
-                }
-            }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        SpotifyAppRemote.disconnect(mSpotifyAppRemote)
     }
 }

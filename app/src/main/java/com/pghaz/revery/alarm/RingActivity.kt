@@ -2,19 +2,43 @@ package com.pghaz.revery.alarm
 
 import android.app.Activity
 import android.app.KeyguardManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Bundle
+import android.os.IBinder
+import android.util.Log
 import android.view.WindowManager
 import com.pghaz.revery.BaseActivity
 import com.pghaz.revery.R
 import com.pghaz.revery.alarm.service.AlarmService
+import com.pghaz.revery.player.AbstractPlayer
 import kotlinx.android.synthetic.main.activity_ring.*
 
 class RingActivity : BaseActivity() {
 
     companion object {
+        private const val TAG = "RingActivity"
+
         const val REQUEST_CODE_ALARM_RINGING = 42
+    }
+
+    private var player: AbstractPlayer? = null
+
+    private val mServiceConnection: ServiceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName, service: IBinder) {
+            Log.e(TAG, "onServiceConnected")
+            player = (service as AlarmService.AlarmServiceBinder).getService()
+        }
+
+        override fun onServiceDisconnected(name: ComponentName) {
+            player = null
+        }
+    }
+
+    private fun isServiceBound(): Boolean {
+        return player != null
     }
 
     override fun getLayoutResId(): Int {
@@ -32,12 +56,13 @@ class RingActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         allowDisplayOnLockScreen()
+
+        bindToAlarmService()
     }
 
     override fun configureViews(savedInstanceState: Bundle?) {
         stopAlarmButton.setOnClickListener {
-            val intentService = Intent(applicationContext, AlarmService::class.java)
-            applicationContext.stopService(intentService)
+            unbindAndStopAlarmService()
 
             setResult(Activity.RESULT_OK)
             finish()
@@ -67,5 +92,22 @@ class RingActivity : BaseActivity() {
             setShowWhenLocked(true)
             setTurnScreenOn(true)
         }
+    }
+
+    private fun bindToAlarmService() {
+        val service = Intent(applicationContext, AlarmService::class.java)
+        bindService(service, mServiceConnection, Activity.BIND_AUTO_CREATE)
+    }
+
+    private fun unbindAndStopAlarmService() {
+        unbindService(mServiceConnection)
+
+        val service = Intent(applicationContext, AlarmService::class.java)
+        applicationContext.stopService(service)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.e(TAG, "onDestroy")
     }
 }
