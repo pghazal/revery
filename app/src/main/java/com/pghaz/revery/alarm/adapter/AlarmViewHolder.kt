@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.pghaz.revery.R
 import com.pghaz.revery.alarm.model.app.Alarm
 import com.pghaz.revery.util.DayUtil
+import com.squareup.picasso.Picasso
 import java.util.*
 
 class AlarmViewHolder(view: View, private val alarmListener: OnAlarmClickListener) :
@@ -80,6 +81,10 @@ class AlarmViewHolder(view: View, private val alarmListener: OnAlarmClickListene
         imageView.isEnabled = alarm.enabled
         timeTextView.isEnabled = alarm.enabled
         labelTextView.isEnabled = alarm.enabled
+
+        Picasso.get().load(alarm.metadata?.imageUrl)
+            .placeholder(R.drawable.selector_alarm_image_background_color)
+            .into(imageView)
 
         if (alarm.enabled) {
             timeRemainingTextView.visibility = View.VISIBLE

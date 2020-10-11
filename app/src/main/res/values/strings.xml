@@ -10,6 +10,7 @@
     <string name="sleep_fragment">Sleep</string>
 
     <!-- ALARM -->
+    <string name="menu_disable_all_alarms">disable all alarms</string>
     <string name="recurring">recurring</string>
     <string name="create_alarm">add an alarm</string>
     <string name="vibrate">vibrate</string>

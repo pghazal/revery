@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <!-- TODO remove ? -->
     <item
         android:id="@+id/menu_alarms_delete_all"
         android:title="delete"
@@ -8,6 +9,8 @@
 
     <item
         android:id="@+id/menu_alarms_cancel_all"
-        android:title="cancel"
-        app:showAsAction="always" />
+        android:icon="@drawable/ic_alarm_off"
+        android:title="@string/menu_disable_all_alarms"
+        android:visible="true"
+        app:showAsAction="ifRoom" />
 </menu>

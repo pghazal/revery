@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:drawable="@drawable/ic_alarm"
+        android:gravity="center" />
+
+    <item>
+        <shape android:shape="rectangle">
+
+            <solid android:color="@color/color_image_disabled" />
+            <size
+                android:width="@dimen/item_view_image_size"
+                android:height="@dimen/item_view_image_size" />
+            <corners
+                android:bottomLeftRadius="0dp"
+                android:bottomRightRadius="0dp"
+                android:topLeftRadius="0dp"
+                android:topRightRadius="0dp" />
+        </shape>
+    </item>
+</layer-list>
