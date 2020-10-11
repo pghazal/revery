@@ -13,7 +13,7 @@
     <color name="color_text_alarm_recurring_and_disabled">#4D7561FF</color>
     <color name="color_text_alarm_recurring_and_enabled">@color/colorAccent</color>
 
-    <color name="color_image_disabled">#4D180D3D</color>
+    <color name="color_image_disabled">#80180D3D</color>
     <color name="color_image_enabled">@color/colorPrimary</color>
 
 </resources>
