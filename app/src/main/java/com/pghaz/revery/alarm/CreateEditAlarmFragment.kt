@@ -107,11 +107,11 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
             // Update views before any listeners are set
             updateViewsFromAlarm(alarm)
             // Also edit negative button
-            negativeAlarmButton.text = getString(R.string.delete)
+            negativeAlarmButton.visibility = View.VISIBLE
         } else {
             alarm.hour = hourNumberPicker.value
             alarm.minute = minuteNumberPicker.value
-            negativeAlarmButton.text = getString(R.string.cancel)
+            negativeAlarmButton.visibility = View.GONE
         }
 
         // Notify the LiveData so that it updates time remaining

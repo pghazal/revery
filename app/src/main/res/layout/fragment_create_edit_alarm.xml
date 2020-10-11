@@ -226,17 +226,22 @@
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/positiveAlarmButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/third_base_margin"
-            android:layout_weight="1"
-            android:text="@string/schedule" />
+            android:layout_height="@dimen/button_height"
+            android:layout_weight="4"
+            android:text="@string/save"
+            android:textAllCaps="true"
+            android:textStyle="bold" />
 
-        <androidx.appcompat.widget.AppCompatButton
+        <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/negativeAlarmButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/third_base_margin"
+            android:layout_height="@dimen/button_height"
+            android:layout_marginStart="@dimen/half_base_margin"
             android:layout_weight="1"
-            android:text="@string/delete" />
+            android:backgroundTint="@color/colorAccent"
+            android:contentDescription="@string/delete"
+            android:foreground="?attr/selectableItemBackground"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_trash_can" />
     </LinearLayout>
 </RelativeLayout>

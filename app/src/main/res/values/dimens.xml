@@ -6,6 +6,8 @@
     <dimen name="base_margin">24dp</dimen>
     <dimen name="double_base_margin">48dp</dimen>
 
+    <dimen name="button_height">48dp</dimen>
+
     <dimen name="bottom_navigation_view_height">64dp</dimen>
     <dimen name="fab_add_alarm_size">32dp</dimen>
     <dimen name="toggle_recurring_days_size">36dp</dimen>

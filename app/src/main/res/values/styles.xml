@@ -26,7 +26,6 @@
     <style name="ReveryButton" parent="Widget.AppCompat.Button.Colored">
         <item name="colorButtonNormal">@color/colorAccent</item>
         <item name="colorControlHighlight">@color/colorPrimaryDark</item>
-        <item name="textAllCaps">false</item>
     </style>
 
     <style name="ReveryRecurringDaysToggle">

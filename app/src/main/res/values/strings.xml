@@ -14,9 +14,8 @@
     <string name="recurring">recurring</string>
     <string name="create_alarm">add an alarm</string>
     <string name="vibrate">vibrate</string>
-    <string name="schedule">schedule</string>
+    <string name="save">save</string>
     <string name="delete">delete</string>
-    <string name="cancel">cancel</string>
     <string name="alarm_hint">add a description</string>
     <string name="text_colon">:</string>
     <string name="alarm_description_static">description</string>
