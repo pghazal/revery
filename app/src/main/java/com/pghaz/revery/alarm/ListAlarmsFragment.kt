@@ -56,13 +56,17 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
 
     private fun configureAddAlarmButton() {
         addAlarmButton.setOnClickListener {
-            val createAlarmFragment = CreateEditAlarmFragment.newInstance()
-            createAlarmFragment.show(childFragmentManager, CreateEditAlarmFragment.TAG)
+            var createAlarmFragment =
+                childFragmentManager.findFragmentByTag(CreateEditAlarmFragment.TAG) as CreateEditAlarmFragment?
+            if (createAlarmFragment == null) {
+                createAlarmFragment = CreateEditAlarmFragment.newInstance()
+                createAlarmFragment.show(childFragmentManager, CreateEditAlarmFragment.TAG)
+            }
         }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_alarms, menu);
+        inflater.inflate(R.menu.menu_alarms, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -106,24 +110,28 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
     }
 
     override fun onClick(alarm: Alarm) {
-        val createAlarmFragment = CreateEditAlarmFragment.newInstance(
-            alarm.id,
-            alarm.hour,
-            alarm.minute,
-            alarm.label,
-            alarm.recurring,
-            alarm.enabled,
-            alarm.monday,
-            alarm.tuesday,
-            alarm.wednesday,
-            alarm.thursday,
-            alarm.friday,
-            alarm.saturday,
-            alarm.sunday,
-            alarm.vibrate,
-            alarm.metadata
-        )
-        createAlarmFragment.show(childFragmentManager, CreateEditAlarmFragment.TAG)
+        var createAlarmFragment =
+            childFragmentManager.findFragmentByTag(CreateEditAlarmFragment.TAG) as CreateEditAlarmFragment?
+        if (createAlarmFragment == null) {
+            createAlarmFragment = CreateEditAlarmFragment.newInstance(
+                alarm.id,
+                alarm.hour,
+                alarm.minute,
+                alarm.label,
+                alarm.recurring,
+                alarm.enabled,
+                alarm.monday,
+                alarm.tuesday,
+                alarm.wednesday,
+                alarm.thursday,
+                alarm.friday,
+                alarm.saturday,
+                alarm.sunday,
+                alarm.vibrate,
+                alarm.metadata
+            )
+            createAlarmFragment.show(childFragmentManager, CreateEditAlarmFragment.TAG)
+        }
     }
 
     override fun onToggle(alarm: Alarm) {
