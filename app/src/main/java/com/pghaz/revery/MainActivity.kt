@@ -9,7 +9,6 @@ import com.pghaz.revery.alarm.ListAlarmsFragment
 import com.pghaz.revery.alarm.RingActivity
 import com.pghaz.revery.alarm.service.AlarmService
 import com.pghaz.revery.sleep.SleepFragment
-import com.pghaz.revery.spotify.SpotifyActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
 /**
@@ -31,7 +30,7 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        startRingActivityForResultAfterAlarmFires()
+        startRingActivityForResultIfAlarmFired()
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -40,10 +39,10 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
         // If the MainActivity is active (meaning instanciated background or foreground)
         // we receive the alarm intent in onNewIntent()
         // because launchMode in Manifest is "singleTask"
-        startRingActivityForResultAfterAlarmFires()
+        startRingActivityForResultIfAlarmFired()
     }
 
-    private fun startRingActivityForResultAfterAlarmFires() {
+    private fun startRingActivityForResultIfAlarmFired() {
         // If alarm is ringing then show RingActivity so that user can stop it
         if (AlarmService.isRunning) {
             val ringIntent = Intent(this, RingActivity::class.java)
@@ -102,18 +101,11 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
 
             R.id.sleep_tab -> {
                 openSleepTab()
-
-                openSpotiftyActivity()
                 true
             }
 
             else -> false
         }
-    }
-
-    private fun openSpotiftyActivity() {
-        val intent = Intent(this, SpotifyActivity::class.java)
-        startActivity(intent)
     }
 
     private fun openAlarmsTab() {

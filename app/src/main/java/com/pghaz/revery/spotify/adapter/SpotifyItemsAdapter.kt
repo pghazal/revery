@@ -6,14 +6,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.pghaz.revery.R
 import kaaes.spotify.webapi.android.models.PlaylistSimple
 
-class SpotifyItemsAdapter : RecyclerView.Adapter<SpotifyItemViewHolder>() {
+class SpotifyItemsAdapter(private val onSpotifyItemClickListener: OnSpotifyItemClickListener) :
+    RecyclerView.Adapter<SpotifyItemViewHolder>() {
 
     private var items: ArrayList<PlaylistSimple> = arrayListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SpotifyItemViewHolder {
         val view =
             LayoutInflater.from(parent.context).inflate(R.layout.item_view_spotify, parent, false)
-        return SpotifyItemViewHolder(view)
+        return SpotifyItemViewHolder(view, onSpotifyItemClickListener)
     }
 
     override fun onBindViewHolder(holder: SpotifyItemViewHolder, position: Int) {

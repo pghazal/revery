@@ -4,7 +4,8 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
+import android.view.View
+import android.view.View.OnTouchListener
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
 import com.pghaz.revery.BaseBottomSheetDialogFragment
@@ -13,11 +14,13 @@ import com.pghaz.revery.alarm.model.app.Alarm
 import com.pghaz.revery.alarm.model.app.AlarmMetadata
 import com.pghaz.revery.alarm.model.room.RAlarmType
 import com.pghaz.revery.alarm.viewmodel.CreateEditAlarmViewModel
+import com.pghaz.revery.animation.AnimatorUtils
 import com.pghaz.revery.spotify.SpotifyActivity
 import com.pghaz.revery.spotify.SpotifyPlaylistsFragment
 import com.pghaz.revery.util.DayUtil
 import com.shawnlin.numberpicker.NumberPicker
 import kaaes.spotify.webapi.android.models.PlaylistSimple
+import kotlinx.android.synthetic.main.floating_action_button_menu.*
 import kotlinx.android.synthetic.main.fragment_create_edit_alarm.*
 import java.util.*
 
@@ -54,7 +57,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         initAlarmFromArguments(arguments)
 
         createEditAlarmViewModel = ViewModelProvider(this).get(CreateEditAlarmViewModel::class.java)
-        createEditAlarmViewModel.alarmLiveData.observe(this, {
+        createEditAlarmViewModel.timeChangedAlarmLiveData.observe(this, {
             val timeRemainingInfo = DayUtil.getTimeRemaining(it)
             timeRemainingTextView.text =
                 DayUtil.getRemainingTimeText(timeRemainingTextView.context, timeRemainingInfo)
@@ -80,6 +83,11 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         sundayToggle.isChecked = alarm.sunday
 
         vibrateSwitch.isChecked = alarm.vibrate
+
+        if (alarm.metadata?.type != RAlarmType.DEFAULT) {
+            // todo
+            //chooseRingtoneButton.text = alarm.metadata?.name
+        }
     }
 
     private fun initTimePicker() {
@@ -114,8 +122,8 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
             negativeAlarmButton.visibility = View.GONE
         }
 
-        // Notify the LiveData so that it updates time remaining
-        createEditAlarmViewModel.alarmLiveData.value = alarm
+        // Notify the LiveData so that it updates the time remaining
+        createEditAlarmViewModel.timeChangedAlarmLiveData.value = alarm
 
         positiveAlarmButton.setOnClickListener {
             // This is a creation
@@ -141,60 +149,148 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
 
         hourNumberPicker.setOnValueChangedListener { _, _, hour ->
             alarm.hour = hour
-            createEditAlarmViewModel.alarmLiveData.value = alarm
+            createEditAlarmViewModel.timeChangedAlarmLiveData.value = alarm
         }
 
         minuteNumberPicker.setOnValueChangedListener { _, _, minute ->
             alarm.minute = minute
-            createEditAlarmViewModel.alarmLiveData.value = alarm
+            createEditAlarmViewModel.timeChangedAlarmLiveData.value = alarm
         }
 
         mondayToggle.setOnCheckedChangeListener { _, _ ->
             alarm.monday = mondayToggle.isChecked
             alarm.recurring = isAlarmRecurring()
-            createEditAlarmViewModel.alarmLiveData.value = alarm
+            createEditAlarmViewModel.timeChangedAlarmLiveData.value = alarm
         }
 
         tuesdayToggle.setOnCheckedChangeListener { _, _ ->
             alarm.tuesday = tuesdayToggle.isChecked
             alarm.recurring = isAlarmRecurring()
-            createEditAlarmViewModel.alarmLiveData.value = alarm
+            createEditAlarmViewModel.timeChangedAlarmLiveData.value = alarm
         }
 
         wednesdayToggle.setOnCheckedChangeListener { _, _ ->
             alarm.wednesday = wednesdayToggle.isChecked
             alarm.recurring = isAlarmRecurring()
-            createEditAlarmViewModel.alarmLiveData.value = alarm
+            createEditAlarmViewModel.timeChangedAlarmLiveData.value = alarm
         }
 
         thursdayToggle.setOnCheckedChangeListener { _, _ ->
             alarm.thursday = thursdayToggle.isChecked
             alarm.recurring = isAlarmRecurring()
-            createEditAlarmViewModel.alarmLiveData.value = alarm
+            createEditAlarmViewModel.timeChangedAlarmLiveData.value = alarm
         }
 
         fridayToggle.setOnCheckedChangeListener { _, _ ->
             alarm.friday = fridayToggle.isChecked
             alarm.recurring = isAlarmRecurring()
-            createEditAlarmViewModel.alarmLiveData.value = alarm
+            createEditAlarmViewModel.timeChangedAlarmLiveData.value = alarm
         }
 
         saturdayToggle.setOnCheckedChangeListener { _, _ ->
             alarm.saturday = saturdayToggle.isChecked
             alarm.recurring = isAlarmRecurring()
-            createEditAlarmViewModel.alarmLiveData.value = alarm
+            createEditAlarmViewModel.timeChangedAlarmLiveData.value = alarm
         }
 
         sundayToggle.setOnCheckedChangeListener { _, _ ->
             alarm.sunday = sundayToggle.isChecked
             alarm.recurring = isAlarmRecurring()
-            createEditAlarmViewModel.alarmLiveData.value = alarm
+            createEditAlarmViewModel.timeChangedAlarmLiveData.value = alarm
         }
 
         vibrateSwitch.setOnCheckedChangeListener { _, _ ->
             alarm.vibrate = vibrateSwitch.isChecked
-            createEditAlarmViewModel.alarmLiveData.value = alarm
+            createEditAlarmViewModel.timeChangedAlarmLiveData.value = alarm
         }
+
+        chooseRingtoneButton.setOnClickListener {
+            if (chooseRingtoneButton.isExpanded) {
+                closeMusicMenu()
+            } else {
+                openMusicMenu()
+            }
+        }
+
+        floatingMenuTouchInterceptor.setOnTouchListener(OnTouchListener { view, _ ->
+            if (chooseRingtoneButton.isExpanded) {
+                closeMusicMenu()
+            }
+            return@OnTouchListener view.performClick()
+        })
+
+        spotifyButton.setOnClickListener {
+            closeMusicMenu()
+            openSpotifyActivity()
+        }
+
+        defaultRingtoneButton.setOnClickListener {
+            closeMusicMenu()
+            selectDefaultRingtone()
+        }
+    }
+
+    private fun selectDefaultRingtone() {
+        alarm.metadata?.type = RAlarmType.DEFAULT
+        alarm.metadata?.uri = null
+        alarm.metadata?.name = null
+        alarm.metadata?.imageUrl = null
+    }
+
+    private fun openMusicMenu() {
+        val spotifyAnimator = AnimatorUtils.getTranslationAnimatorSet(
+            spotifyButton,
+            true,
+            AnimatorUtils.TranslationAxis.VERTICAL,
+            AnimatorUtils.TranslationDirection.FROM_BOTTOM_TO_TOP,
+            true,
+            0,
+            400
+        )
+
+        val defaultAnimator = AnimatorUtils.getTranslationAnimatorSet(
+            defaultRingtoneButton,
+            true,
+            AnimatorUtils.TranslationAxis.VERTICAL,
+            AnimatorUtils.TranslationDirection.FROM_BOTTOM_TO_TOP,
+            true,
+            100,
+            400
+        )
+
+        spotifyAnimator.playTogether(defaultAnimator)
+        spotifyAnimator.start()
+
+        chooseRingtoneButton.isExpanded = true
+        chooseRingtoneButton.setImageResource(R.drawable.ic_close)
+    }
+
+    private fun closeMusicMenu() {
+        val spotifyAnimator = AnimatorUtils.getTranslationAnimatorSet(
+            spotifyButton,
+            false,
+            AnimatorUtils.TranslationAxis.VERTICAL,
+            AnimatorUtils.TranslationDirection.FROM_TOP_TO_BOTTOM,
+            true,
+            0,
+            400
+        )
+
+        val defaultAnimator = AnimatorUtils.getTranslationAnimatorSet(
+            defaultRingtoneButton,
+            false,
+            AnimatorUtils.TranslationAxis.VERTICAL,
+            AnimatorUtils.TranslationDirection.FROM_TOP_TO_BOTTOM,
+            true,
+            100,
+            400
+        )
+
+        spotifyAnimator.playTogether(defaultAnimator)
+        spotifyAnimator.start()
+
+        chooseRingtoneButton.isExpanded = false
+        chooseRingtoneButton.setImageResource(R.drawable.ic_music_note)
     }
 
     private fun isAlarmRecurring(): Boolean {
@@ -230,8 +326,36 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         createEditAlarmViewModel.editAlarm(context, alarm)
     }
 
+    private fun openSpotifyActivity() {
+        val intent = Intent(context, SpotifyActivity::class.java)
+        startActivityForResult(intent, REQUEST_CODE_SPOTIFY_GET_PLAYLIST)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_CODE_SPOTIFY_GET_PLAYLIST) {
+            when (resultCode) {
+                Activity.RESULT_OK -> {
+                    val selectedPlaylist = data?.extras
+                        ?.getParcelable(SpotifyPlaylistsFragment.ARGS_SPOTIFY_SELECTED_PLAYLIST) as PlaylistSimple?
+
+                    alarm.metadata?.type = RAlarmType.SPOTIFY
+                    alarm.metadata?.uri = selectedPlaylist?.uri
+                    alarm.metadata?.name = selectedPlaylist?.name
+                    alarm.metadata?.imageUrl = selectedPlaylist?.images?.get(0)?.url
+
+                    // Todo: update view with data
+                    //chooseRingtoneButton.text = alarm.metadata?.name
+                }
+            }
+        }
+    }
+
     companion object {
-        const val TAG = "CreateAlarmFragment"
+        const val TAG = "CreateEditAlarmFragment"
+
+        private const val REQUEST_CODE_SPOTIFY_GET_PLAYLIST = 21
 
         fun newInstance(): CreateEditAlarmFragment {
             return newInstance(

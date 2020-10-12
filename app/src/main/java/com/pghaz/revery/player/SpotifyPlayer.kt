@@ -12,6 +12,7 @@ import com.spotify.android.appremote.api.error.UserNotAuthorizedException
 import com.spotify.protocol.types.PlayerState
 import com.spotify.protocol.types.Track
 
+// TODO: add settings for Shuffle, Fade, etc
 class SpotifyPlayer : AbstractPlayer() {
 
     private var spotifyAppRemote: SpotifyAppRemote? = null
@@ -23,7 +24,7 @@ class SpotifyPlayer : AbstractPlayer() {
         override fun onConnected(sar: SpotifyAppRemote?) {
             Log.e(TAG, "Connected! Yay!")
             spotifyAppRemote = sar
-            spotifyAppRemote?.playerApi?.setShuffle(true)
+            spotifyAppRemote?.playerApi?.setShuffle(true) // TODO: settings
 
             onPlayerInitializedListener?.onPlayerInitialized()
         }

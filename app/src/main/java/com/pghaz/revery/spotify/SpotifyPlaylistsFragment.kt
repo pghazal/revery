@@ -1,14 +1,18 @@
 package com.pghaz.revery.spotify
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pghaz.revery.BaseFragment
 import com.pghaz.revery.R
+import com.pghaz.revery.spotify.adapter.OnSpotifyItemClickListener
 import com.pghaz.revery.spotify.adapter.SpotifyItemsAdapter
 import com.pghaz.revery.spotify.viewmodel.SpotifyItemsViewModel
 import com.pghaz.revery.spotify.viewmodel.SpotifyViewModelFactory
 import com.pghaz.revery.view.ResultListScrollListener
+import kaaes.spotify.webapi.android.models.PlaylistSimple
 import kotlinx.android.synthetic.main.fragment_spotify_playlists.*
 
 class SpotifyPlaylistsFragment : BaseFragment(), ResultListScrollListener.OnLoadMoreListener {
@@ -26,7 +30,14 @@ class SpotifyPlaylistsFragment : BaseFragment(), ResultListScrollListener.OnLoad
 
         val accessToken = arguments?.getString(ARGS_ACCESS_TOKEN)
 
-        itemsAdapter = SpotifyItemsAdapter()
+        itemsAdapter = SpotifyItemsAdapter(object : OnSpotifyItemClickListener {
+            override fun onClick(playlist: PlaylistSimple) {
+                val data = Intent()
+                data.putExtra(ARGS_SPOTIFY_SELECTED_PLAYLIST, playlist)
+                activity?.setResult(Activity.RESULT_OK, data)
+                activity?.finish()
+            }
+        })
 
         spotifyItemsViewModel = ViewModelProvider(this, SpotifyViewModelFactory(accessToken))
             .get(SpotifyItemsViewModel::class.java)
@@ -50,7 +61,9 @@ class SpotifyPlaylistsFragment : BaseFragment(), ResultListScrollListener.OnLoad
 
     companion object {
         const val TAG = "SpotifyPlaylistsFragment"
+
         private const val ARGS_ACCESS_TOKEN = "ARGS_ACCESS_TOKEN"
+        const val ARGS_SPOTIFY_SELECTED_PLAYLIST = "ARGS_SPOTIFY_SELECTED_PLAYLIST"
 
         fun newInstance(accessToken: String): SpotifyPlaylistsFragment {
             val fragment = SpotifyPlaylistsFragment()

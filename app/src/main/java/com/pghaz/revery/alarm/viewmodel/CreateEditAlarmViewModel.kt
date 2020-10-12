@@ -14,7 +14,7 @@ class CreateEditAlarmViewModel(application: Application) : AndroidViewModel(appl
     private val alarmHandler = AlarmHandler()
     private val alarmRepository = AlarmRepository(application)
 
-    val alarmLiveData = MutableLiveData<Alarm>()
+    val timeChangedAlarmLiveData = MutableLiveData<Alarm>()
 
     fun createAlarm(context: Context?, alarm: Alarm) {
         alarmRepository.insert(alarm)

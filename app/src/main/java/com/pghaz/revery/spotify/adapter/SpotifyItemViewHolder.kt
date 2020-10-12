@@ -9,13 +9,20 @@ import com.squareup.picasso.Picasso
 import kaaes.spotify.webapi.android.models.Image
 import kaaes.spotify.webapi.android.models.PlaylistSimple
 
-class SpotifyItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+class SpotifyItemViewHolder(
+    view: View,
+    private val onSpotifyItemClickListener: OnSpotifyItemClickListener
+) : RecyclerView.ViewHolder(view) {
 
     private val titleTextView: TextView = view.findViewById(R.id.titleTextView)
     private val subtitleTextView: TextView = view.findViewById(R.id.subtitleTextView)
     private val imageView: ImageView = view.findViewById(R.id.imageView)
 
     fun bind(item: PlaylistSimple) {
+        itemView.setOnClickListener {
+            onSpotifyItemClickListener.onClick(item)
+        }
+
         titleTextView.text = item.name
         subtitleTextView.text = String.format("by %s", item.owner.display_name)
 
