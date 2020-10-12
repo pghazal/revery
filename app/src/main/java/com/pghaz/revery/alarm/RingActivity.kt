@@ -16,6 +16,7 @@ import com.pghaz.revery.alarm.service.AlarmService
 import com.pghaz.revery.player.AbstractPlayer
 import kotlinx.android.synthetic.main.activity_ring.*
 
+// TODO stay awake ?
 class RingActivity : BaseActivity() {
 
     companion object {
@@ -62,6 +63,8 @@ class RingActivity : BaseActivity() {
 
     override fun configureViews(savedInstanceState: Bundle?) {
         stopAlarmButton.setOnClickListener {
+            player?.pause()
+
             unbindAndStopAlarmService()
 
             setResult(Activity.RESULT_OK)
