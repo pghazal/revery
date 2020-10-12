@@ -26,6 +26,7 @@
 
         <activity
             android:name=".alarm.RingActivity"
+            android:keepScreenOn="true"
             android:showOnLockScreen="true"
             android:theme="@style/Theme.Activity.FullScreen" />
 
