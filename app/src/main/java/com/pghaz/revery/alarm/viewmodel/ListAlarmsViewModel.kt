@@ -9,16 +9,15 @@ import com.pghaz.revery.alarm.repository.AlarmRepository
 
 class ListAlarmsViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val alarmHandler = AlarmHandler()
     private val alarmRepository = AlarmRepository(application)
     val alarmsLiveData = alarmRepository.getAlarmsLiveData()
 
     fun scheduleAlarm(context: Context?, alarm: Alarm) {
-        alarmHandler.scheduleAlarm(context, alarm)
+        AlarmHandler.scheduleAlarm(context, alarm)
     }
 
     fun cancelAlarm(context: Context?, alarm: Alarm) {
-        alarmHandler.cancelAlarm(context, alarm)
+        AlarmHandler.cancelAlarm(context, alarm)
     }
 
     fun update(alarm: Alarm) {

@@ -6,12 +6,26 @@
         android:icon="@drawable/ic_alarm_off"
         android:title="@string/menu_disable_all_alarms"
         android:visible="true"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/menu_alarms_settings"
         android:icon="@drawable/ic_settings"
         android:title="@string/menu_settings"
         android:visible="true"
+        app:showAsAction="always" />
+
+    <!-- TODO remove ? -->
+    <item
+        android:id="@+id/menu_alarms_fire_alarm_spotify"
+        android:title="fire spotify alarm"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_alarms_fire_alarm_default"
+        android:title="fire default alarm"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_alarms_delete_all"
+        android:title="delete"
         app:showAsAction="ifRoom" />
 </menu>

@@ -8,13 +8,14 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pghaz.revery.BaseFragment
+import com.pghaz.revery.BuildConfig
 import com.pghaz.revery.R
-import com.pghaz.revery.settings.SettingsFragment
 import com.pghaz.revery.alarm.adapter.AlarmItemDecoration
 import com.pghaz.revery.alarm.adapter.AlarmsAdapter
 import com.pghaz.revery.alarm.adapter.OnAlarmClickListener
 import com.pghaz.revery.alarm.model.app.Alarm
 import com.pghaz.revery.alarm.viewmodel.ListAlarmsViewModel
+import com.pghaz.revery.settings.SettingsFragment
 import kotlinx.android.synthetic.main.fragment_list_alarms.*
 
 
@@ -69,7 +70,11 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_alarms, menu)
+        if (BuildConfig.DEBUG) {
+            inflater.inflate(R.menu.menu_alarms_debug, menu)
+        } else {
+            inflater.inflate(R.menu.menu_alarms, menu)
+        }
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -86,6 +91,24 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
             }
             R.id.menu_alarms_settings -> {
                 openSettings()
+                true
+            }
+            R.id.menu_alarms_fire_alarm_spotify -> {
+                AlarmHandler.fireAlarmNow(
+                    context, 1,
+                    spotify = true,
+                    fadeIn = true,
+                    fadeInDuration = 10000
+                )
+                true
+            }
+            R.id.menu_alarms_fire_alarm_default -> {
+                AlarmHandler.fireAlarmNow(
+                    context, 1,
+                    spotify = false,
+                    fadeIn = true,
+                    fadeInDuration = 10000
+                )
                 true
             }
             else -> super.onOptionsItemSelected(item)

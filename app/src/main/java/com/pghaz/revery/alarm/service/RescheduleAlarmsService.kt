@@ -5,15 +5,12 @@ import androidx.lifecycle.LifecycleService
 import com.pghaz.revery.alarm.AlarmHandler
 import com.pghaz.revery.alarm.repository.AlarmRepository
 
-
 class RescheduleAlarmsService : LifecycleService() {
 
-    private lateinit var alarmHandler: AlarmHandler
     private lateinit var alarmRepository: AlarmRepository
 
     override fun onCreate() {
         super.onCreate()
-        alarmHandler = AlarmHandler()
         alarmRepository = AlarmRepository(application)
     }
 
@@ -23,7 +20,7 @@ class RescheduleAlarmsService : LifecycleService() {
         alarmRepository.getAlarmsLiveData().observe(this, { alarms ->
             alarms.forEach {
                 if (it.enabled) {
-                    alarmHandler.scheduleAlarm(this, it)
+                    AlarmHandler.scheduleAlarm(this, it)
                 }
             }
         })

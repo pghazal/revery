@@ -7,16 +7,54 @@ import android.content.Intent
 import android.os.Bundle
 import com.pghaz.revery.alarm.broadcastreceiver.AlarmBroadcastReceiver
 import com.pghaz.revery.alarm.model.app.Alarm
+import com.pghaz.revery.alarm.model.app.AlarmMetadata
+import com.pghaz.revery.alarm.model.room.RAlarmType
 import com.pghaz.revery.util.DayUtil
 import java.util.*
 
-class AlarmHandler {
+object AlarmHandler {
 
-    companion object {
-        private const val RUN_DAILY = 24 * 60 * 60 * 1000.toLong() // 1 day
+    private const val RUN_DAILY = 24 * 60 * 60 * 1000.toLong()
+
+    // This is for test purpose only
+    fun fireAlarmNow(
+        context: Context?,
+        delayInSeconds: Int,
+        spotify: Boolean,
+        fadeIn: Boolean = false,
+        fadeInDuration: Long = 0
+    ) {
+        val calendar = Calendar.getInstance()
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+        val minute = calendar.get(Calendar.MINUTE)
+        val second = calendar.get(Calendar.SECOND)
+
+        val metadata = AlarmMetadata()
+        if (spotify) {
+            metadata.type = RAlarmType.SPOTIFY
+            metadata.uri = "spotify:playlist:3H8dsoJvkH7lUkaQlUNjPJ"
+        } else {
+            metadata.type = RAlarmType.DEFAULT
+        }
+
+        metadata.fadeIn = fadeIn
+        metadata.fadeInDuration = fadeInDuration
+
+        val alarm = Alarm(
+            id = System.currentTimeMillis(),
+            hour = hour,
+            minute = minute,
+            metadata = metadata
+        )
+
+        scheduleAlarm(context, alarm, second + delayInSeconds)
     }
 
     fun scheduleAlarm(context: Context?, alarm: Alarm) {
+        scheduleAlarm(context, alarm, 0)
+    }
+
+    private fun scheduleAlarm(context: Context?, alarm: Alarm, delayInSeconds: Int) {
         val alarmManager =
             context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager?
 
@@ -55,7 +93,7 @@ class AlarmHandler {
             calendar.timeInMillis = now
             calendar.set(Calendar.HOUR_OF_DAY, alarm.hour)
             calendar.set(Calendar.MINUTE, alarm.minute)
-            calendar.set(Calendar.SECOND, 0)
+            calendar.set(Calendar.SECOND, delayInSeconds)
             calendar.set(Calendar.MILLISECOND, 0)
 
             // if alarm time has already passed, increment day by 1

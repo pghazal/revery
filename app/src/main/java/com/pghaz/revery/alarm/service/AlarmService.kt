@@ -33,7 +33,6 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
         var isRunning: Boolean = false // this is ugly: find a way to check if service is alive
     }
 
-    private lateinit var alarmHandler: AlarmHandler
     private lateinit var alarmRepository: AlarmRepository
 
     private lateinit var vibrator: Vibrator
@@ -65,7 +64,6 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
         super.onCreate()
         isRunning = true
 
-        alarmHandler = AlarmHandler()
         alarmRepository = AlarmRepository(application)
 
         vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
@@ -144,7 +142,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
         if (!recurring) {
             alarmRepository.get(alarmId).observe(this, { alarm ->
                 alarm?.let {
-                    alarmHandler.disableAlarm(it)
+                    AlarmHandler.disableAlarm(it)
                     alarmRepository.update(it)
                 }
             })

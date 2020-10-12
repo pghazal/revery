@@ -3,6 +3,7 @@ package com.pghaz.revery.alarm.repository
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import com.pghaz.revery.BuildConfig
 import com.pghaz.revery.alarm.model.app.Alarm
 import com.pghaz.revery.alarm.model.room.RAlarm
 
@@ -25,6 +26,12 @@ class AlarmRepository(application: Application) {
 
     fun get(id: Long): LiveData<Alarm> {
         return Transformations.map(alarmDao.get(id)) {
+            if (BuildConfig.DEBUG) {
+                if (it == null) {
+                    return@map Alarm.fromDatabaseModel(RAlarm(id = 0))
+                }
+            }
+
             return@map Alarm.fromDatabaseModel(it)
         }
     }

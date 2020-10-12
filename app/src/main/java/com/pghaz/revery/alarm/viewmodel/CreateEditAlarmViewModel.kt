@@ -9,10 +9,8 @@ import com.pghaz.revery.alarm.model.app.Alarm
 import com.pghaz.revery.alarm.model.app.AlarmMetadata
 import com.pghaz.revery.alarm.repository.AlarmRepository
 
-
 class CreateEditAlarmViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val alarmHandler = AlarmHandler()
     private val alarmRepository = AlarmRepository(application)
 
     val timeChangedAlarmLiveData = MutableLiveData<Alarm>()
@@ -20,18 +18,18 @@ class CreateEditAlarmViewModel(application: Application) : AndroidViewModel(appl
 
     fun createAlarm(context: Context?, alarm: Alarm) {
         alarmRepository.insert(alarm)
-        alarmHandler.scheduleAlarm(context, alarm)
+        AlarmHandler.scheduleAlarm(context, alarm)
     }
 
     fun editAlarm(context: Context?, alarm: Alarm) {
-        alarmHandler.cancelAlarm(context, alarm)
-        alarmHandler.scheduleAlarm(context, alarm)
+        AlarmHandler.cancelAlarm(context, alarm)
+        AlarmHandler.scheduleAlarm(context, alarm)
 
         alarmRepository.update(alarm)
     }
 
     fun delete(context: Context?, alarm: Alarm) {
-        alarmHandler.cancelAlarm(context, alarm)
+        AlarmHandler.cancelAlarm(context, alarm)
         alarmRepository.delete(alarm)
     }
 }
