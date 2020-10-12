@@ -305,7 +305,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
 
     private fun createAndScheduleAlarm() {
         val label: String =
-            if (TextUtils.isEmpty(labelEditText.text.trim())) "" else labelEditText.text.trim()
+            if (TextUtils.isEmpty(labelEditText.text?.trim())) "" else labelEditText.text?.trim()
                 .toString()
 
         alarm.id = System.currentTimeMillis()
@@ -317,7 +317,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
 
     private fun editAndScheduleAlarm() {
         val label: String =
-            if (TextUtils.isEmpty(labelEditText.text.trim())) "" else labelEditText.text.trim()
+            if (TextUtils.isEmpty(labelEditText.text?.trim())) "" else labelEditText.text?.trim()
                 .toString()
 
         alarm.label = label

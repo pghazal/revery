@@ -17,26 +17,41 @@
         android:layout_marginBottom="@dimen/third_base_margin"
         android:text="@string/alarm_description_static" />
 
-    <EditText
-        android:id="@+id/labelEditText"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/labelInputLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/descriptionLabel"
         android:layout_marginStart="@dimen/third_base_margin"
         android:layout_marginEnd="@dimen/third_base_margin"
         android:layout_marginBottom="@dimen/base_margin"
-        android:autofillHints="@string/alarm_hint"
-        android:background="@drawable/shape_rounded_corner"
-        android:hint="@string/alarm_hint"
-        android:inputType="text"
-        android:textColor="@android:color/white"
-        android:textColorHint="@color/color_text_hint_alarm_label" />
+        app:boxBackgroundColor="@android:color/white"
+        app:endIconMode="clear_text"
+        app:endIconTint="@android:color/white"
+        app:hintEnabled="false">
+
+        <com.pghaz.revery.view.ClearFocusEditText
+            android:id="@+id/labelEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints="@string/alarm_hint"
+            android:background="@drawable/shape_rounded_corner"
+            android:hint="@string/alarm_hint"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textColor="@android:color/white"
+            android:textColorHint="@color/color_text_hint_alarm_label"
+            android:textCursorDrawable="@drawable/shape_cursor_edit_text" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <LinearLayout
         android:id="@+id/timeSpinnerContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/labelEditText"
+        android:layout_below="@id/labelInputLayout"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/half_base_margin"
         android:gravity="center"

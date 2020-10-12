@@ -27,7 +27,7 @@
     <string name="sunday_short">S</string>
 
     <!-- ALARM -->
-    <string name="menu_disable_all_alarms">disable all alarms</string>
+    <string name="menu_disable_all_alarms">turn the alarms off</string>
     <string name="recurring">recurring</string>
     <string name="create_alarm">add an alarm</string>
     <string name="vibrate">vibrate</string>
