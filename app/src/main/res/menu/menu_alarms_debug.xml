@@ -15,7 +15,6 @@
         android:visible="true"
         app:showAsAction="always" />
 
-    <!-- TODO remove ? -->
     <item
         android:id="@+id/menu_alarms_fire_alarm_spotify"
         android:title="fire spotify alarm"

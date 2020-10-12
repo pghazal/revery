@@ -1,6 +1,7 @@
 package com.pghaz.revery.player
 
 import android.content.Context
+import android.media.AudioManager
 import android.util.Log
 import com.pghaz.revery.R
 import com.spotify.android.appremote.api.ConnectionParams
@@ -12,8 +13,9 @@ import com.spotify.android.appremote.api.error.UserNotAuthorizedException
 import com.spotify.protocol.types.PlayerState
 import com.spotify.protocol.types.Track
 
-// TODO: add settings for Shuffle, Fade, etc
-class SpotifyPlayer : AbstractPlayer() {
+// TODO: add settings for Shuffle, etc
+class SpotifyPlayer(audioManager: AudioManager) :
+    AbstractPlayer(audioManager, AudioManager.STREAM_MUSIC) {
 
     private var spotifyAppRemote: SpotifyAppRemote? = null
     private var connectionParams: ConnectionParams? = null
@@ -22,7 +24,6 @@ class SpotifyPlayer : AbstractPlayer() {
 
     private val spotifyConnector = object : Connector.ConnectionListener {
         override fun onConnected(sar: SpotifyAppRemote?) {
-            Log.e(TAG, "Connected! Yay!")
             spotifyAppRemote = sar
             spotifyAppRemote?.playerApi?.setShuffle(true) // TODO: settings
 
@@ -54,8 +55,16 @@ class SpotifyPlayer : AbstractPlayer() {
     }
 
     override fun play() {
-        // Play a playlist
+        // If fade in enabled, first set minimum volume
+        if (fadeIn) {
+            initFadeIn()
+        }
+
         spotifyAppRemote?.playerApi?.play(currentUri)
+
+        if (fadeIn) {
+            fadeIn()
+        }
 
         // Subscribe to PlayerState
         spotifyAppRemote?.playerApi
@@ -70,6 +79,10 @@ class SpotifyPlayer : AbstractPlayer() {
 
     override fun pause() {
         spotifyAppRemote?.playerApi?.pause()
+
+        if (fadeIn) {
+            resetVolumeFromFadeIn()
+        }
     }
 
     override fun release() {

@@ -8,7 +8,8 @@ import android.media.MediaPlayer
 import android.net.Uri
 import android.util.Log
 
-class DefaultPlayer(private val audioManager: AudioManager) : AbstractPlayer() {
+class DefaultPlayer(audioManager: AudioManager) :
+    AbstractPlayer(audioManager, AudioManager.STREAM_ALARM) {
 
     private lateinit var mediaPlayer: MediaPlayer
 
@@ -31,7 +32,7 @@ class DefaultPlayer(private val audioManager: AudioManager) : AbstractPlayer() {
         mediaPlayer.isLooping = true
         mediaPlayer.setAudioAttributes(
             AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_ALARM)
+                .setUsage(if (streamType == AudioManager.STREAM_ALARM) AudioAttributes.USAGE_ALARM else AudioAttributes.USAGE_MEDIA)
                 .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                 .build()
         )
@@ -50,7 +51,7 @@ class DefaultPlayer(private val audioManager: AudioManager) : AbstractPlayer() {
         } else {
             audioManager.requestAudioFocus(
                 onAudioFocusChangeListener,
-                AudioManager.STREAM_ALARM,
+                streamType,
                 AUDIO_FOCUS_PARAM
             )
         }
@@ -63,11 +64,23 @@ class DefaultPlayer(private val audioManager: AudioManager) : AbstractPlayer() {
     }
 
     override fun play() {
+        if (fadeIn) {
+            initFadeIn()
+        }
+
         mediaPlayer.start()
+
+        if (fadeIn) {
+            fadeIn()
+        }
     }
 
     override fun pause() {
         mediaPlayer.pause()
+
+        if (fadeIn) {
+            resetVolumeFromFadeIn()
+        }
     }
 
     private fun abandonAudioFocus() {

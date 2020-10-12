@@ -90,7 +90,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
                 }
 
                 RAlarmType.SPOTIFY -> {
-                    SpotifyPlayer()
+                    SpotifyPlayer(audioManager)
                 }
             }
 
@@ -99,11 +99,15 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
             when (alarmMetadata.type) {
                 RAlarmType.DEFAULT -> {
                     (player as DefaultPlayer).init(this)
+                    (player as DefaultPlayer).fadeIn = alarmMetadata.fadeIn!!
+                    (player as DefaultPlayer).fadeInDuration = alarmMetadata.fadeInDuration!!
                     (player as DefaultPlayer).prepare(this, alarmMetadata.uri!!)
                 }
 
                 RAlarmType.SPOTIFY -> {
                     (player as SpotifyPlayer).init(this)
+                    (player as SpotifyPlayer).fadeIn = alarmMetadata.fadeIn!!
+                    (player as SpotifyPlayer).fadeInDuration = alarmMetadata.fadeInDuration!!
                     (player as SpotifyPlayer).prepare(this, alarmMetadata.uri!!)
                 }
             }
@@ -128,6 +132,8 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
         nonNullMetadata.uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM).toString()
         nonNullMetadata.description = nullableMetadata?.description
         nonNullMetadata.imageUrl = nullableMetadata?.imageUrl
+        nonNullMetadata.fadeIn = nullableMetadata?.fadeIn
+        nonNullMetadata.fadeInDuration = nullableMetadata?.fadeInDuration
 
         return nonNullMetadata
     }
