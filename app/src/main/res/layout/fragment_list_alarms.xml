@@ -19,6 +19,7 @@
         android:layout_gravity="bottom|center_horizontal"
         android:layout_margin="@dimen/base_margin"
         android:backgroundTint="@color/colorAccent"
+        android:contentDescription="@string/create_alarm"
         android:src="@drawable/ic_add"
         android:tint="@android:color/white"
         app:backgroundTint="@color/colorAccent"

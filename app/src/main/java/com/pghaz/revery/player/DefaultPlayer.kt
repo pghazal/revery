@@ -13,8 +13,7 @@ class DefaultPlayer(private val audioManager: AudioManager) : AbstractPlayer() {
     private lateinit var mediaPlayer: MediaPlayer
 
     private val onAudioFocusChangeListener =
-        AudioManager.OnAudioFocusChangeListener { focusChange ->
-            // TODO: handle focus changed ??
+        AudioManager.OnAudioFocusChangeListener { _ ->
         }
 
     // Used only for Android O and later

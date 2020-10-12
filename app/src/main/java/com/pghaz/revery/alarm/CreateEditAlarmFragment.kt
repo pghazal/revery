@@ -381,8 +381,9 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
 
         private const val REQUEST_CODE_SPOTIFY_GET_PLAYLIST = 21
 
-        fun newInstance(): CreateEditAlarmFragment {
+        fun newInstance(dialogTitle: String): CreateEditAlarmFragment {
             return newInstance(
+                dialogTitle,
                 Alarm.NO_ID,
                 0, 0,
                 "",
@@ -401,6 +402,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         }
 
         fun newInstance(
+            dialogTitle: String,
             id: Long,
             hour: Int,
             minute: Int,
@@ -418,6 +420,8 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
             metadata: AlarmMetadata?
         ): CreateEditAlarmFragment {
             val args = Bundle()
+
+            args.putString(ARGS_DIALOG_TITLE, dialogTitle)
 
             args.putLong(Alarm.ID, id)
             args.putInt(Alarm.HOUR, hour)

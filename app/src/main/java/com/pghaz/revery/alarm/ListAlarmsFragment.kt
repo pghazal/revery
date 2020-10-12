@@ -60,7 +60,8 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
             var createAlarmFragment =
                 childFragmentManager.findFragmentByTag(CreateEditAlarmFragment.TAG) as CreateEditAlarmFragment?
             if (createAlarmFragment == null) {
-                createAlarmFragment = CreateEditAlarmFragment.newInstance()
+                createAlarmFragment =
+                    CreateEditAlarmFragment.newInstance(getString(R.string.create_alarm))
                 createAlarmFragment.show(childFragmentManager, CreateEditAlarmFragment.TAG)
             }
         }
@@ -115,6 +116,7 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
             childFragmentManager.findFragmentByTag(CreateEditAlarmFragment.TAG) as CreateEditAlarmFragment?
         if (createAlarmFragment == null) {
             createAlarmFragment = CreateEditAlarmFragment.newInstance(
+                getString(R.string.edit_alarm),
                 alarm.id,
                 alarm.hour,
                 alarm.minute,

@@ -4,14 +4,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/half_base_margin"
+    android:paddingStart="@dimen/half_base_margin"
+    android:paddingTop="@dimen/third_base_margin"
+    android:paddingEnd="@dimen/half_base_margin"
+    android:paddingBottom="@dimen/half_base_margin"
     tools:background="@color/color_main_background_view">
+
+    <include
+        android:id="@+id/header"
+        layout="@layout/header_bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true" />
 
     <TextView
         android:id="@+id/descriptionLabel"
         style="@style/ReveryLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/header"
         android:layout_gravity="start"
         android:layout_marginStart="@dimen/third_base_margin"
         android:layout_marginBottom="@dimen/third_base_margin"
