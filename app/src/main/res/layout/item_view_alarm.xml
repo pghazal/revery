@@ -17,8 +17,8 @@
 
         <com.pghaz.revery.view.ReveryImageView
             android:id="@+id/imageView"
-            android:layout_width="@dimen/item_view_image_size"
-            android:layout_height="@dimen/item_view_image_size"
+            android:layout_width="@dimen/item_view_alarm_image_size"
+            android:layout_height="@dimen/item_view_alarm_image_size"
             android:layout_alignParentStart="true"
             android:scaleType="centerCrop"
             tools:background="@drawable/selector_alarm_image_background_color" />

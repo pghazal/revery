@@ -5,8 +5,8 @@
 
             <solid android:color="@color/color_image_enabled" />
             <size
-                android:width="@dimen/item_view_image_size"
-                android:height="@dimen/item_view_image_size" />
+                android:width="@dimen/item_view_alarm_image_size"
+                android:height="@dimen/item_view_alarm_image_size" />
             <corners
                 android:bottomLeftRadius="0dp"
                 android:bottomRightRadius="0dp"

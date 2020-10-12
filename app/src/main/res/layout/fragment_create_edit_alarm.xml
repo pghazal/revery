@@ -230,6 +230,64 @@
         android:text="@string/vibrate"
         app:switchPadding="@dimen/third_base_margin" />
 
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/ringtone_image_size"
+        android:layout_above="@+id/buttonsContainer"
+        android:layout_alignBottom="@+id/chooseRingtoneButton"
+        android:layout_alignParentStart="true"
+        android:layout_marginEnd="@dimen/half_base_margin"
+        android:layout_toStartOf="@+id/chooseRingtoneButton">
+
+        <com.pghaz.revery.view.ReveryImageView
+            android:id="@+id/imageView"
+            android:layout_width="@dimen/ringtone_image_size"
+            android:layout_height="@dimen/ringtone_image_size"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/selector_alarm_image_background_color"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/half_base_margin"
+            android:layout_toEndOf="@+id/imageView"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/titleTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="@font/montserrat_semibold"
+                android:maxLines="2"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:fontFamily="@font/montserrat_semibold"
+                tools:text="title"
+                tools:visibility="visible" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/subtitleTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"
+                android:visibility="gone"
+                tools:text="subtitle"
+                tools:visibility="visible" />
+
+        </LinearLayout>
+    </RelativeLayout>
+
     <LinearLayout
         android:id="@+id/buttonsContainer"
         android:layout_width="match_parent"
@@ -280,7 +338,6 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/buttonsContainer"
         android:layout_alignEnd="@+id/buttonsContainer"
-        android:layout_marginEnd="@dimen/half_base_margin"
         android:backgroundTint="@color/colorAccent"
         android:src="@drawable/ic_music_note"
         android:tint="@android:color/white"

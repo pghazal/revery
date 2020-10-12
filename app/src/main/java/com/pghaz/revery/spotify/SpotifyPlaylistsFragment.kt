@@ -52,6 +52,7 @@ class SpotifyPlaylistsFragment : BaseFragment(), ResultListScrollListener.OnLoad
         scrollListener = ResultListScrollListener(layoutManager, this)
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = itemsAdapter
+        recyclerView.setHasFixedSize(true)
         recyclerView.addOnScrollListener(scrollListener)
     }
 

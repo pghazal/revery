@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/color_main_background_view"
@@ -12,8 +14,8 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imageView"
-        android:layout_width="@dimen/item_view_image_size"
-        android:layout_height="@dimen/item_view_image_size"
+        android:layout_width="@dimen/item_view_alarm_image_size"
+        android:layout_height="@dimen/item_view_alarm_image_size"
         android:layout_marginEnd="@dimen/half_base_margin"
         android:layout_marginRight="@dimen/half_base_margin"
         android:background="@color/colorPrimary"
@@ -22,30 +24,31 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center_vertical"
         android:orientation="vertical">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/titleTextView"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:gravity="bottom"
-            android:maxLines="1"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:fontFamily="@font/montserrat_semibold"
+            android:maxLines="2"
             android:textColor="@android:color/white"
-            android:textStyle="bold" />
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:fontFamily="@font/montserrat_semibold"
+            tools:text="title" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/subtitleTextView"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:gravity="top"
             android:maxLines="1"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            tools:text="subtitle" />
 
     </LinearLayout>
 

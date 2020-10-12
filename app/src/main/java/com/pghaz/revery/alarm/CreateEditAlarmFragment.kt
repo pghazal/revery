@@ -19,6 +19,7 @@ import com.pghaz.revery.spotify.SpotifyActivity
 import com.pghaz.revery.spotify.SpotifyPlaylistsFragment
 import com.pghaz.revery.util.DayUtil
 import com.shawnlin.numberpicker.NumberPicker
+import com.squareup.picasso.Picasso
 import kaaes.spotify.webapi.android.models.PlaylistSimple
 import kotlinx.android.synthetic.main.floating_action_button_menu.*
 import kotlinx.android.synthetic.main.fragment_create_edit_alarm.*
@@ -62,6 +63,31 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
             timeRemainingTextView.text =
                 DayUtil.getRemainingTimeText(timeRemainingTextView.context, timeRemainingInfo)
         })
+
+        createEditAlarmViewModel.alarmMetadataLiveData.observe(this, {
+            if (it.name.isNullOrEmpty()) {
+                titleTextView.text = ""
+                titleTextView.visibility = View.GONE
+            } else {
+                titleTextView.text = it.name
+                titleTextView.visibility = View.VISIBLE
+            }
+
+            if (it.description.isNullOrEmpty()) {
+                subtitleTextView.text = ""
+                subtitleTextView.visibility = View.GONE
+            } else {
+                subtitleTextView.text = it.description
+                subtitleTextView.visibility = View.VISIBLE
+            }
+
+            if (it.imageUrl.isNullOrEmpty()) {
+                imageView.visibility = View.GONE
+            } else {
+                imageView.visibility = View.VISIBLE
+                Picasso.get().load(it.imageUrl).into(imageView)
+            }
+        })
     }
 
     override fun getLayoutResId(): Int {
@@ -84,10 +110,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
 
         vibrateSwitch.isChecked = alarm.vibrate
 
-        if (alarm.metadata?.type != RAlarmType.DEFAULT) {
-            // todo
-            //chooseRingtoneButton.text = alarm.metadata?.name
-        }
+        createEditAlarmViewModel.alarmMetadataLiveData.value = alarm.metadata
     }
 
     private fun initTimePicker() {
@@ -235,6 +258,8 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         alarm.metadata?.uri = null
         alarm.metadata?.name = null
         alarm.metadata?.imageUrl = null
+
+        createEditAlarmViewModel.alarmMetadataLiveData.value = alarm.metadata
     }
 
     private fun openMusicMenu() {
@@ -345,8 +370,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
                     alarm.metadata?.name = selectedPlaylist?.name
                     alarm.metadata?.imageUrl = selectedPlaylist?.images?.get(0)?.url
 
-                    // Todo: update view with data
-                    //chooseRingtoneButton.text = alarm.metadata?.name
+                    createEditAlarmViewModel.alarmMetadataLiveData.value = alarm.metadata
                 }
             }
         }

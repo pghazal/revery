@@ -46,6 +46,7 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
     private fun configureAlarmsList() {
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = alarmsAdapter
+        recyclerView.setHasFixedSize(true)
 
         context?.let {
             val itemDecor =
