@@ -74,4 +74,12 @@
         <item name="android:elevation">16dp</item>
     </style>
 
+    <style name="ReverySpinnerTheme">
+        <item name="android:colorBackground">@color/color_main_background_view</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:textColorSecondary">@android:color/white</item>
+        <item name="android:textColorTertiary">@android:color/white</item>
+        <item name="android:textColorPrimaryDisableOnly">@android:color/white</item>
+    </style>
+
 </resources>

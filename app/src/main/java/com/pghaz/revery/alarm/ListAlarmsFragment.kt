@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pghaz.revery.BaseFragment
 import com.pghaz.revery.R
+import com.pghaz.revery.settings.SettingsFragment
 import com.pghaz.revery.alarm.adapter.AlarmItemDecoration
 import com.pghaz.revery.alarm.adapter.AlarmsAdapter
 import com.pghaz.revery.alarm.adapter.OnAlarmClickListener
@@ -83,6 +84,10 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
                 cancelAllAlarms()
                 true
             }
+            R.id.menu_alarms_settings -> {
+                openSettings()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -108,6 +113,15 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
         alarms?.forEach {
             listAlarmsViewModel.cancelAlarm(context, it)
             listAlarmsViewModel.delete(it)
+        }
+    }
+
+    private fun openSettings() {
+        var fragment =
+            childFragmentManager.findFragmentByTag(SettingsFragment.TAG) as SettingsFragment?
+        if (fragment == null) {
+            fragment = SettingsFragment.newInstance(getString(R.string.menu_settings))
+            fragment.show(childFragmentManager, SettingsFragment.TAG)
         }
     }
 

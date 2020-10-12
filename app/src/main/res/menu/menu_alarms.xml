@@ -13,4 +13,11 @@
         android:title="@string/menu_disable_all_alarms"
         android:visible="true"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_alarms_settings"
+        android:icon="@drawable/ic_settings"
+        android:title="@string/menu_settings"
+        android:visible="true"
+        app:showAsAction="ifRoom" />
 </menu>
