@@ -33,6 +33,8 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
         listAlarmsViewModel = ViewModelProvider(this).get(ListAlarmsViewModel::class.java)
         listAlarmsViewModel.alarmsLiveData.observe(this, { alarms ->
             alarmsAdapter.setAlarms(alarms)
+
+            showAddAlarmButtonIfHidden()
         })
     }
 
@@ -67,6 +69,11 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
                 createAlarmFragment.show(childFragmentManager, CreateEditAlarmFragment.TAG)
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        showAddAlarmButtonIfHidden()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
