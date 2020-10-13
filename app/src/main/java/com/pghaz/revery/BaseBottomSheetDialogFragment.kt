@@ -49,6 +49,7 @@ abstract class BaseBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val bottomSheetDialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
+        bottomSheetDialog.dismissWithAnimation = true
 
         bottomSheetDialog.setOnShowListener { dialog ->
             configureBottomSheetDialog(dialog as BottomSheetDialog)
