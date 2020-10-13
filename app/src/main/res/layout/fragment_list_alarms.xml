@@ -26,7 +26,6 @@
         app:fabSize="normal"
         app:layout_anchorGravity="center|bottom"
         app:layout_behavior=".view.ScrollAwareFABBehavior"
-        app:maxImageSize="@dimen/fab_add_alarm_size"
         app:tint="@android:color/white" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
