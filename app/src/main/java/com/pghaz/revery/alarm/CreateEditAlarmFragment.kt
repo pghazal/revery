@@ -15,6 +15,7 @@ import com.pghaz.revery.alarm.model.app.AlarmMetadata
 import com.pghaz.revery.alarm.model.room.RAlarmType
 import com.pghaz.revery.alarm.viewmodel.CreateEditAlarmViewModel
 import com.pghaz.revery.animation.AnimatorUtils
+import com.pghaz.revery.settings.SettingsFragment
 import com.pghaz.revery.spotify.SpotifyActivity
 import com.pghaz.revery.spotify.SpotifyPlaylistsFragment
 import com.pghaz.revery.util.DayUtil
@@ -32,23 +33,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
 
     private fun initAlarmFromArguments(arguments: Bundle?) {
         arguments?.let { args ->
-            alarm = Alarm(
-                args.getLong(Alarm.ID, Alarm.NO_ID),
-                args.getInt(Alarm.HOUR, 0),
-                args.getInt(Alarm.MINUTE, 0),
-                args.getString(Alarm.LABEL, ""),
-                args.getBoolean(Alarm.RECURRING, false),
-                args.getBoolean(Alarm.ENABLED, true),
-                args.getBoolean(Alarm.MONDAY, false),
-                args.getBoolean(Alarm.TUESDAY, false),
-                args.getBoolean(Alarm.WEDNESDAY, false),
-                args.getBoolean(Alarm.THURSDAY, false),
-                args.getBoolean(Alarm.FRIDAY, false),
-                args.getBoolean(Alarm.SATURDAY, false),
-                args.getBoolean(Alarm.SUNDAY, false),
-                args.getBoolean(Alarm.VIBRATE, false),
-                args.getParcelable(Alarm.METADATA) as AlarmMetadata?
-            )
+            alarm = args.getParcelable(Alarm.ARGS_ALARM) ?: Alarm()
         }
     }
 
@@ -109,6 +94,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         sundayToggle.isChecked = alarm.sunday
 
         vibrateToggle.isChecked = alarm.vibrate
+        fadeInToggle.isChecked = alarm.fadeIn
 
         createEditAlarmViewModel.alarmMetadataLiveData.value = alarm.metadata
     }
@@ -224,7 +210,11 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
 
         vibrateToggle.setOnCheckedChangeListener { _, _ ->
             alarm.vibrate = vibrateToggle.isChecked
-            createEditAlarmViewModel.timeChangedAlarmLiveData.value = alarm
+        }
+
+        fadeInToggle.setOnCheckedChangeListener { _, _ ->
+            alarm.fadeIn = fadeInToggle.isChecked
+            alarm.fadeInDuration = SettingsFragment.FADE_IN_DURATION // TODO
         }
 
         chooseRingtoneButton.setOnClickListener {
@@ -382,11 +372,8 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         private const val REQUEST_CODE_SPOTIFY_GET_PLAYLIST = 21
 
         fun newInstance(dialogTitle: String): CreateEditAlarmFragment {
-            return newInstance(
-                dialogTitle,
-                Alarm.NO_ID,
-                0, 0,
-                "",
+            val newAlarm = Alarm(
+                Alarm.NO_ID, 0, 0, "",
                 recurring = false,
                 enabled = true,
                 monday = false,
@@ -397,47 +384,19 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
                 saturday = false,
                 sunday = false,
                 vibrate = false,
-                AlarmMetadata()
+                fadeIn = false,
+                fadeInDuration = 0,
+                metadata = AlarmMetadata()
             )
+
+            return newInstance(dialogTitle, newAlarm)
         }
 
-        fun newInstance(
-            dialogTitle: String,
-            id: Long,
-            hour: Int,
-            minute: Int,
-            label: String?,
-            recurring: Boolean,
-            enabled: Boolean,
-            monday: Boolean,
-            tuesday: Boolean,
-            wednesday: Boolean,
-            thursday: Boolean,
-            friday: Boolean,
-            saturday: Boolean,
-            sunday: Boolean,
-            vibrate: Boolean,
-            metadata: AlarmMetadata?
-        ): CreateEditAlarmFragment {
+        fun newInstance(dialogTitle: String, alarm: Alarm): CreateEditAlarmFragment {
             val args = Bundle()
 
             args.putString(ARGS_DIALOG_TITLE, dialogTitle)
-
-            args.putLong(Alarm.ID, id)
-            args.putInt(Alarm.HOUR, hour)
-            args.putInt(Alarm.MINUTE, minute)
-            args.putString(Alarm.LABEL, label)
-            args.putBoolean(Alarm.RECURRING, recurring)
-            args.putBoolean(Alarm.ENABLED, enabled)
-            args.putBoolean(Alarm.MONDAY, monday)
-            args.putBoolean(Alarm.TUESDAY, tuesday)
-            args.putBoolean(Alarm.WEDNESDAY, wednesday)
-            args.putBoolean(Alarm.THURSDAY, thursday)
-            args.putBoolean(Alarm.FRIDAY, friday)
-            args.putBoolean(Alarm.SATURDAY, saturday)
-            args.putBoolean(Alarm.SUNDAY, sunday)
-            args.putBoolean(Alarm.VIBRATE, vibrate)
-            args.putParcelable(Alarm.METADATA, metadata)
+            args.putParcelable(Alarm.ARGS_ALARM, alarm)
 
             val fragment = CreateEditAlarmFragment()
             fragment.arguments = args

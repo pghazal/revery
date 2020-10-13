@@ -24,6 +24,10 @@
         android:title="fire default alarm"
         app:showAsAction="ifRoom" />
     <item
+        android:id="@+id/menu_alarms_fire_alarm_default_recurring"
+        android:title="fire recurring default alarm"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/menu_alarms_delete_all"
         android:title="delete"
         app:showAsAction="ifRoom" />

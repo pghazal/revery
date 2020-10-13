@@ -74,15 +74,14 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
         super.onStartCommand(alarmIntent, flags, startId)
 
         alarmIntent?.let {
-            val alarmId = it.getLongExtra(Alarm.ID, 0)
-            val recurring = it.getBooleanExtra(Alarm.RECURRING, false)
-            val alarmLabel = it.getStringExtra(Alarm.LABEL)
-            val alarmVibrate = it.getBooleanExtra(Alarm.VIBRATE, false)
-            var alarmMetadata = it.getParcelableExtra(Alarm.METADATA) as AlarmMetadata?
+            val alarmBundle = it.getBundleExtra(Alarm.ARGS_BUNDLE_ALARM)
+            val alarm = alarmBundle?.getParcelable<Alarm>(Alarm.ARGS_ALARM) as Alarm
+
+            var alarmMetadata = alarm.metadata
             alarmMetadata = safeInitMetadataIfNeeded(alarmMetadata)
 
-            notification = buildAlarmNotification(alarmId, alarmLabel)
-            disableOneShotAlarm(recurring, alarmId)
+            notification = buildAlarmNotification(alarm.id, alarm.label)
+            disableOneShotAlarm(alarm.recurring, alarm.id)
 
             player = when (alarmMetadata.type) {
                 RAlarmType.DEFAULT -> {
@@ -99,20 +98,20 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
             when (alarmMetadata.type) {
                 RAlarmType.DEFAULT -> {
                     (player as DefaultPlayer).init(this)
-                    (player as DefaultPlayer).fadeIn = alarmMetadata.fadeIn!!
-                    (player as DefaultPlayer).fadeInDuration = alarmMetadata.fadeInDuration!!
+                    (player as DefaultPlayer).fadeIn = alarm.fadeIn
+                    (player as DefaultPlayer).fadeInDuration = alarm.fadeInDuration
                     (player as DefaultPlayer).prepare(this, alarmMetadata.uri!!)
                 }
 
                 RAlarmType.SPOTIFY -> {
                     (player as SpotifyPlayer).init(this)
-                    (player as SpotifyPlayer).fadeIn = alarmMetadata.fadeIn!!
-                    (player as SpotifyPlayer).fadeInDuration = alarmMetadata.fadeInDuration!!
+                    (player as SpotifyPlayer).fadeIn = alarm.fadeIn
+                    (player as SpotifyPlayer).fadeInDuration = alarm.fadeInDuration
                     (player as SpotifyPlayer).prepare(this, alarmMetadata.uri!!)
                 }
             }
 
-            if (alarmVibrate) {
+            if (alarm.vibrate) {
                 vibrate()
             }
         }
@@ -132,8 +131,6 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
         nonNullMetadata.uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM).toString()
         nonNullMetadata.description = nullableMetadata?.description
         nonNullMetadata.imageUrl = nullableMetadata?.imageUrl
-        nonNullMetadata.fadeIn = nullableMetadata?.fadeIn
-        nonNullMetadata.fadeInDuration = nullableMetadata?.fadeInDuration
 
         return nonNullMetadata
     }

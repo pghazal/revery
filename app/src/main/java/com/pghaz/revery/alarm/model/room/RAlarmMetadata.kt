@@ -9,7 +9,5 @@ data class RAlarmMetadata(
     var name: String? = null,
     var uri: String? = null,
     var description: String? = null,
-    var imageUrl: String? = null,
-    var fadeIn: Boolean? = false,
-    var fadeInDuration: Long? = 0
+    var imageUrl: String? = null
 )

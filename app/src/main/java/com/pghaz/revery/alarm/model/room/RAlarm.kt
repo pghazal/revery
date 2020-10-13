@@ -22,5 +22,7 @@ data class RAlarm(
     var saturday: Boolean = false,
     var sunday: Boolean = false,
     var vibrate: Boolean = false,
+    var fadeIn: Boolean = false,
+    var fadeInDuration: Long = 0,
     @Embedded var metadata: RAlarmMetadata = RAlarmMetadata()
 )

@@ -17,6 +17,8 @@ class SettingsFragment : BaseBottomSheetDialogFragment() {
     companion object {
         const val TAG = "SettingsFragment"
 
+        const val FADE_IN_DURATION: Long = 10000
+
         fun newInstance(title: String?): SettingsFragment {
             val fragment = SettingsFragment()
 

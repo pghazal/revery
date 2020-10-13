@@ -5,7 +5,7 @@
     <color name="colorAccent">#7561FF</color>
 
     <color name="color_main_background_view">#0B0525</color>
-    <color name="color_text_hint_alarm_label">#44635982</color>
+    <color name="color_text_hint_alarm_label">#80635982</color>
     <color name="color_text_static_label">#635982</color>
 
     <color name="color_text_alarm_not_recurring_and_disabled">#1A7561FF</color>

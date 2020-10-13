@@ -10,9 +10,7 @@ class AlarmMetadata(
     var name: String? = null,
     var uri: String? = null,
     var description: String? = null,
-    var imageUrl: String? = null,
-    var fadeIn: Boolean? = false,
-    var fadeInDuration: Long? = 0
+    var imageUrl: String? = null
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
@@ -20,9 +18,7 @@ class AlarmMetadata(
         parcel.readString(),
         parcel.readString(),
         parcel.readString(),
-        parcel.readString(),
-        parcel.readInt() == 1,
-        parcel.readLong(),
+        parcel.readString()
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -31,8 +27,6 @@ class AlarmMetadata(
         parcel.writeString(uri)
         parcel.writeString(description)
         parcel.writeString(imageUrl)
-        parcel.writeInt(if (fadeIn == true) 1 else 0)
-        parcel.writeLong(fadeInDuration ?: 0)
     }
 
     override fun describeContents(): Int {
@@ -54,9 +48,7 @@ class AlarmMetadata(
                 metadata.name,
                 metadata.uri,
                 metadata.description,
-                metadata.imageUrl,
-                metadata.fadeIn,
-                metadata.fadeInDuration
+                metadata.imageUrl
             )
         }
 
@@ -66,9 +58,7 @@ class AlarmMetadata(
                 metadata?.name,
                 metadata?.uri,
                 metadata?.description,
-                metadata?.imageUrl,
-                metadata?.fadeIn,
-                metadata?.fadeInDuration,
+                metadata?.imageUrl
             )
         }
     }

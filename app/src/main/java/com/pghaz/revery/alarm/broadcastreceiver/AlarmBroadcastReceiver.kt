@@ -4,9 +4,9 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.os.Bundle
 import android.widget.Toast
 import com.pghaz.revery.alarm.model.app.Alarm
-import com.pghaz.revery.alarm.model.app.AlarmMetadata
 import com.pghaz.revery.alarm.service.AlarmService
 import com.pghaz.revery.alarm.service.RescheduleAlarmsService
 import java.util.*
@@ -24,15 +24,18 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
 
             startRescheduleAlarmsService(context)
         } else {
-            if (!intent.getBooleanExtra(Alarm.RECURRING, false)) {
-                startAlarmService(context, intent)
-            } else if (alarmIsToday(intent)) {
-                startAlarmService(context, intent)
+            val alarmBundle = intent.getBundleExtra(Alarm.ARGS_BUNDLE_ALARM)
+            val alarm = alarmBundle?.getParcelable<Alarm>(Alarm.ARGS_ALARM) as Alarm
+
+            if (!alarm.recurring) {
+                startAlarmService(context, alarm)
+            } else if (alarmIsToday(alarm)) {
+                startAlarmService(context, alarm)
             }
         }
     }
 
-    private fun alarmIsToday(intent: Intent): Boolean {
+    private fun alarmIsToday(alarm: Alarm): Boolean {
         val calendar: Calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
 
@@ -40,43 +43,37 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
 
         when (today) {
             Calendar.MONDAY -> {
-                return intent.getBooleanExtra(Alarm.MONDAY, false)
+                return alarm.monday
             }
             Calendar.TUESDAY -> {
-                return intent.getBooleanExtra(Alarm.TUESDAY, false)
+                return alarm.tuesday
             }
             Calendar.WEDNESDAY -> {
-                return intent.getBooleanExtra(Alarm.WEDNESDAY, false)
+                return alarm.wednesday
             }
             Calendar.THURSDAY -> {
-                return intent.getBooleanExtra(Alarm.THURSDAY, false)
+                return alarm.thursday
             }
             Calendar.FRIDAY -> {
-                return intent.getBooleanExtra(Alarm.FRIDAY, false)
+                return alarm.friday
             }
             Calendar.SATURDAY -> {
-                return intent.getBooleanExtra(Alarm.SATURDAY, false)
+                return alarm.saturday
             }
             Calendar.SUNDAY -> {
-                return intent.getBooleanExtra(Alarm.SUNDAY, false)
+                return alarm.sunday
             }
         }
 
         return false
     }
 
-    private fun startAlarmService(context: Context, intent: Intent) {
+    private fun startAlarmService(context: Context, alarm: Alarm) {
         val service = Intent(context, AlarmService::class.java)
-        service.putExtra(Alarm.LABEL, intent.getStringExtra(Alarm.LABEL))
-        service.putExtra(Alarm.RECURRING, intent.getBooleanExtra(Alarm.RECURRING, false))
-        service.putExtra(Alarm.ID, intent.getLongExtra(Alarm.ID, 0))
-        service.putExtra(Alarm.VIBRATE, intent.getBooleanExtra(Alarm.VIBRATE, false))
 
-        val metadataBundle = intent.getBundleExtra(Alarm.METADATA)
-        metadataBundle?.let {
-            val metadata = it.getParcelable(Alarm.METADATA) as AlarmMetadata?
-            service.putExtra(Alarm.METADATA, metadata)
-        }
+        val alarmBundle = Bundle()
+        alarmBundle.putParcelable(Alarm.ARGS_ALARM, alarm)
+        service.putExtra(Alarm.ARGS_BUNDLE_ALARM, alarmBundle)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             context.startForegroundService(service)

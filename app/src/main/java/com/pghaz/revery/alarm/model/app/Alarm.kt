@@ -1,5 +1,7 @@
 package com.pghaz.revery.alarm.model.app
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.pghaz.revery.alarm.model.room.RAlarm
 
 data class Alarm(
@@ -17,17 +19,72 @@ data class Alarm(
     var saturday: Boolean = false,
     var sunday: Boolean = false,
     var vibrate: Boolean = false,
+    var fadeIn: Boolean = false,
+    var fadeInDuration: Long = 0,
     var metadata: AlarmMetadata? = null
-) {
+) : Parcelable {
 
-    companion object {
+    constructor(parcel: Parcel) : this(
+        parcel.readLong(),
+        parcel.readInt(),
+        parcel.readInt(),
+        parcel.readString() ?: "",
+        parcel.readByte() != 0.toByte(),
+        parcel.readByte() != 0.toByte(),
+        parcel.readByte() != 0.toByte(),
+        parcel.readByte() != 0.toByte(),
+        parcel.readByte() != 0.toByte(),
+        parcel.readByte() != 0.toByte(),
+        parcel.readByte() != 0.toByte(),
+        parcel.readByte() != 0.toByte(),
+        parcel.readByte() != 0.toByte(),
+        parcel.readByte() != 0.toByte(),
+        parcel.readByte() != 0.toByte(),
+        parcel.readLong(),
+        parcel.readParcelable(AlarmMetadata::class.java.classLoader)
+    )
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeLong(id)
+        parcel.writeInt(hour)
+        parcel.writeInt(minute)
+        parcel.writeString(label)
+        parcel.writeByte(if (recurring) 1 else 0)
+        parcel.writeByte(if (enabled) 1 else 0)
+        parcel.writeByte(if (monday) 1 else 0)
+        parcel.writeByte(if (tuesday) 1 else 0)
+        parcel.writeByte(if (wednesday) 1 else 0)
+        parcel.writeByte(if (thursday) 1 else 0)
+        parcel.writeByte(if (friday) 1 else 0)
+        parcel.writeByte(if (saturday) 1 else 0)
+        parcel.writeByte(if (sunday) 1 else 0)
+        parcel.writeByte(if (vibrate) 1 else 0)
+        parcel.writeByte(if (fadeIn) 1 else 0)
+        parcel.writeLong(fadeInDuration)
+        parcel.writeParcelable(metadata, flags)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<Alarm> {
+        override fun createFromParcel(parcel: Parcel): Alarm {
+            return Alarm(parcel)
+        }
+
+        override fun newArray(size: Int): Array<Alarm?> {
+            return arrayOfNulls(size)
+        }
+
         fun fromDatabaseModel(alarm: RAlarm): Alarm {
             val metadata = AlarmMetadata.fromDatabaseModel(alarm.metadata)
 
             return Alarm(
                 alarm.id, alarm.hour, alarm.minute, alarm.label, alarm.recurring,
                 alarm.enabled, alarm.monday, alarm.tuesday, alarm.wednesday, alarm.thursday,
-                alarm.friday, alarm.saturday, alarm.sunday, alarm.vibrate, metadata
+                alarm.friday, alarm.saturday, alarm.sunday, alarm.vibrate, alarm.fadeIn,
+                alarm.fadeInDuration, metadata
             )
         }
 
@@ -37,26 +94,14 @@ data class Alarm(
             return RAlarm(
                 alarm.id, alarm.hour, alarm.minute, alarm.label, alarm.recurring, alarm.enabled,
                 alarm.monday, alarm.tuesday, alarm.wednesday, alarm.thursday, alarm.friday,
-                alarm.saturday, alarm.sunday, alarm.vibrate, metadata
+                alarm.saturday, alarm.sunday, alarm.vibrate, alarm.fadeIn, alarm.fadeInDuration,
+                metadata
             )
         }
 
         const val NO_ID: Long = 0
 
-        const val ID = "ID"
-        const val HOUR = "HOUR"
-        const val MINUTE = "MINUTE"
-        const val LABEL = "LABEL"
-        const val RECURRING = "RECURRING"
-        const val ENABLED = "ENABLED"
-        const val MONDAY = "MONDAY"
-        const val TUESDAY = "TUESDAY"
-        const val WEDNESDAY = "WEDNESDAY"
-        const val THURSDAY = "THURSDAY"
-        const val FRIDAY = "FRIDAY"
-        const val SATURDAY = "SATURDAY"
-        const val SUNDAY = "SUNDAY"
-        const val VIBRATE = "VIBRATE"
-        const val METADATA = "METADATA"
+        const val ARGS_ALARM = "ARGS_ALARM"
+        const val ARGS_BUNDLE_ALARM = "ARGS_BUNDLE_ALARM"
     }
 }

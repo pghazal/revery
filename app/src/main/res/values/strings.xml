@@ -34,6 +34,7 @@
     <string name="create_alarm">add alarm</string>
     <string name="edit_alarm">edit alarm</string>
     <string name="vibrate">vibrate</string>
+    <string name="fade_in">fade in</string>
     <string name="save">save</string>
     <string name="delete">delete</string>
     <string name="alarm_hint">add a description</string>

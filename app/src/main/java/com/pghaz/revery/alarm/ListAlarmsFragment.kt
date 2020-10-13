@@ -96,18 +96,30 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
             R.id.menu_alarms_fire_alarm_spotify -> {
                 AlarmHandler.fireAlarmNow(
                     context, 1,
+                    recurring = false,
                     spotify = true,
                     fadeIn = true,
-                    fadeInDuration = 10000
+                    fadeInDuration = SettingsFragment.FADE_IN_DURATION
                 )
                 true
             }
             R.id.menu_alarms_fire_alarm_default -> {
                 AlarmHandler.fireAlarmNow(
                     context, 1,
+                    recurring = false,
                     spotify = false,
                     fadeIn = true,
                     fadeInDuration = 10000
+                )
+                true
+            }
+            R.id.menu_alarms_fire_alarm_default_recurring -> {
+                AlarmHandler.fireAlarmNow(
+                    context, 1,
+                    recurring = true,
+                    spotify = false,
+                    fadeIn = true,
+                    fadeInDuration = SettingsFragment.FADE_IN_DURATION
                 )
                 true
             }
@@ -153,22 +165,7 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
             childFragmentManager.findFragmentByTag(CreateEditAlarmFragment.TAG) as CreateEditAlarmFragment?
         if (createAlarmFragment == null) {
             createAlarmFragment = CreateEditAlarmFragment.newInstance(
-                getString(R.string.edit_alarm),
-                alarm.id,
-                alarm.hour,
-                alarm.minute,
-                alarm.label,
-                alarm.recurring,
-                alarm.enabled,
-                alarm.monday,
-                alarm.tuesday,
-                alarm.wednesday,
-                alarm.thursday,
-                alarm.friday,
-                alarm.saturday,
-                alarm.sunday,
-                alarm.vibrate,
-                alarm.metadata
+                getString(R.string.edit_alarm), alarm
             )
             createAlarmFragment.show(childFragmentManager, CreateEditAlarmFragment.TAG)
         }

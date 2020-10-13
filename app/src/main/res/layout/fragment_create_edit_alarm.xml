@@ -229,21 +229,44 @@
 
     </LinearLayout>
 
-    <androidx.appcompat.widget.AppCompatToggleButton
-        android:id="@+id/vibrateToggle"
-        style="@style/ReveryToggle"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/toggle_size"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/recurringDaysContainer"
-        android:layout_alignStart="@+id/recurringDaysContainer"
-        android:layout_marginTop="@dimen/third_base_margin"
-        android:layout_marginEnd="@dimen/third_base_margin"
-        android:checked="false"
-        android:drawableStart="@drawable/ic_phone_vibrate"
-        android:text=""
-        android:textOff="@string/vibrate"
-        android:textOn="@string/vibrate"
-        tools:checked="true" />
+        android:layout_alignStart="@id/recurringDaysContainer"
+        android:layout_alignEnd="@id/recurringDaysContainer"
+        android:layout_marginTop="@dimen/half_base_margin"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatToggleButton
+            android:id="@+id/vibrateToggle"
+            style="@style/ReveryToggle"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/toggle_size"
+            android:layout_marginEnd="@dimen/third_base_margin"
+            android:layout_weight="1"
+            android:checked="false"
+            android:drawableStart="@drawable/ic_phone_vibrate"
+            android:text=""
+            android:textOff="@string/vibrate"
+            android:textOn="@string/vibrate"
+            tools:checked="true" />
+
+        <androidx.appcompat.widget.AppCompatToggleButton
+            android:id="@+id/fadeInToggle"
+            style="@style/ReveryToggle"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/toggle_size"
+            android:layout_marginStart="@dimen/third_base_margin"
+            android:layout_weight="1"
+            android:checked="false"
+            android:drawableStart="@drawable/ic_fade_in"
+            android:text=""
+            android:textOff="@string/fade_in"
+            android:textOn="@string/fade_in"
+            tools:checked="true" />
+
+    </LinearLayout>
 
     <RelativeLayout
         android:layout_width="wrap_content"

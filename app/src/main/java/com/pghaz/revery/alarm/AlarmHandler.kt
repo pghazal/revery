@@ -20,6 +20,7 @@ object AlarmHandler {
     fun fireAlarmNow(
         context: Context?,
         delayInSeconds: Int,
+        recurring: Boolean,
         spotify: Boolean,
         fadeIn: Boolean = false,
         fadeInDuration: Long = 0
@@ -37,13 +38,13 @@ object AlarmHandler {
             metadata.type = RAlarmType.DEFAULT
         }
 
-        metadata.fadeIn = fadeIn
-        metadata.fadeInDuration = fadeInDuration
-
         val alarm = Alarm(
             id = System.currentTimeMillis(),
             hour = hour,
             minute = minute,
+            recurring = recurring,
+            fadeIn = fadeIn,
+            fadeInDuration = fadeInDuration,
             metadata = metadata
         )
 
@@ -51,6 +52,8 @@ object AlarmHandler {
     }
 
     fun scheduleAlarm(context: Context?, alarm: Alarm) {
+        // TODO: idea feature: set an end time to alarm playing
+
         scheduleAlarm(context, alarm, 0)
     }
 
@@ -60,24 +63,12 @@ object AlarmHandler {
 
         alarmManager?.let {
             val intent = Intent(context?.applicationContext, AlarmBroadcastReceiver::class.java)
-            intent.putExtra(Alarm.MONDAY, alarm.monday)
-            intent.putExtra(Alarm.TUESDAY, alarm.tuesday)
-            intent.putExtra(Alarm.WEDNESDAY, alarm.wednesday)
-            intent.putExtra(Alarm.THURSDAY, alarm.thursday)
-            intent.putExtra(Alarm.FRIDAY, alarm.friday)
-            intent.putExtra(Alarm.SATURDAY, alarm.saturday)
-            intent.putExtra(Alarm.SUNDAY, alarm.sunday)
-
-            intent.putExtra(Alarm.ID, alarm.id)
-            intent.putExtra(Alarm.RECURRING, alarm.recurring)
-            intent.putExtra(Alarm.LABEL, alarm.label)
-            intent.putExtra(Alarm.VIBRATE, alarm.vibrate)
 
             // This is a workaround due to problems with Parcelables into Intent
             // See: https://stackoverflow.com/questions/39478422/pendingintent-getbroadcast-lost-parcelable-data
-            val metadataBundle = Bundle()
-            metadataBundle.putParcelable(Alarm.METADATA, alarm.metadata)
-            intent.putExtra(Alarm.METADATA, metadataBundle)
+            val alarmBundle = Bundle()
+            alarmBundle.putParcelable(Alarm.ARGS_ALARM, alarm)
+            intent.putExtra(Alarm.ARGS_BUNDLE_ALARM, alarmBundle)
 
             val alarmPendingIntent =
                 PendingIntent.getBroadcast(
