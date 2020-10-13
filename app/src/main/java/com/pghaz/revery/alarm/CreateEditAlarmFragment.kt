@@ -15,12 +15,12 @@ import com.pghaz.revery.alarm.model.app.AlarmMetadata
 import com.pghaz.revery.alarm.model.room.RAlarmType
 import com.pghaz.revery.alarm.viewmodel.CreateEditAlarmViewModel
 import com.pghaz.revery.animation.AnimatorUtils
+import com.pghaz.revery.image.ImageLoader
 import com.pghaz.revery.settings.SettingsFragment
 import com.pghaz.revery.spotify.SpotifyActivity
 import com.pghaz.revery.util.Arguments
 import com.pghaz.revery.util.DayUtil
 import com.shawnlin.numberpicker.NumberPicker
-import com.squareup.picasso.Picasso
 import kaaes.spotify.webapi.android.models.PlaylistSimple
 import kotlinx.android.synthetic.main.floating_action_button_menu.*
 import kotlinx.android.synthetic.main.fragment_create_edit_alarm.*
@@ -70,7 +70,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
                 imageView.visibility = View.GONE
             } else {
                 imageView.visibility = View.VISIBLE
-                Picasso.get().load(it.imageUrl).into(imageView)
+                ImageLoader.get().load(it.imageUrl).into(imageView)
             }
         })
     }

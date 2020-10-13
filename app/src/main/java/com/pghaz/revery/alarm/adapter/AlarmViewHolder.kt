@@ -9,8 +9,8 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.pghaz.revery.R
 import com.pghaz.revery.alarm.model.app.Alarm
+import com.pghaz.revery.image.ImageLoader
 import com.pghaz.revery.util.DayUtil
-import com.squareup.picasso.Picasso
 import java.util.*
 
 class AlarmViewHolder(view: View, private val alarmListener: OnAlarmClickListener) :
@@ -82,7 +82,7 @@ class AlarmViewHolder(view: View, private val alarmListener: OnAlarmClickListene
         timeTextView.isEnabled = alarm.enabled
         labelTextView.isEnabled = alarm.enabled
 
-        Picasso.get().load(alarm.metadata?.imageUrl)
+        ImageLoader.get().load(alarm.metadata?.imageUrl)
             .placeholder(R.drawable.selector_alarm_image_background_color)
             .into(imageView)
 

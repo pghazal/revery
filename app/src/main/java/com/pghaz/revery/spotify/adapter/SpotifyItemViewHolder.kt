@@ -5,7 +5,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.pghaz.revery.R
-import com.squareup.picasso.Picasso
+import com.pghaz.revery.image.ImageLoader
 import kaaes.spotify.webapi.android.models.Image
 import kaaes.spotify.webapi.android.models.PlaylistSimple
 
@@ -28,7 +28,7 @@ class SpotifyItemViewHolder(
 
         if (item.images.size > 0) {
             val image: Image = item.images[0]
-            Picasso.get()
+            ImageLoader.get()
                 .load(image.url)
                 .into(imageView)
         }
