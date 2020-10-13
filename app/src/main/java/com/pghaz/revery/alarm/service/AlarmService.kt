@@ -21,6 +21,7 @@ import com.pghaz.revery.application.ReveryApplication
 import com.pghaz.revery.player.AbstractPlayer
 import com.pghaz.revery.player.DefaultPlayer
 import com.pghaz.revery.player.SpotifyPlayer
+import com.pghaz.revery.settings.SettingsHandler
 import com.pghaz.revery.util.Arguments
 
 class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListener {
@@ -74,6 +75,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
         alarmIntent?.let {
             val alarmBundle = it.getBundleExtra(Arguments.ARGS_BUNDLE_ALARM)
             val alarm = alarmBundle?.getParcelable<Alarm>(Arguments.ARGS_ALARM) as Alarm
+            val fadeInDuration = SettingsHandler.getFadeInDuration(this)
 
             var alarmMetadata = alarm.metadata
             alarmMetadata = safeInitMetadataIfNeeded(alarmMetadata)
@@ -97,14 +99,14 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
                 RAlarmType.DEFAULT -> {
                     (player as DefaultPlayer).init(this)
                     (player as DefaultPlayer).fadeIn = alarm.fadeIn
-                    (player as DefaultPlayer).fadeInDuration = alarm.fadeInDuration
+                    (player as DefaultPlayer).fadeInDuration = fadeInDuration
                     (player as DefaultPlayer).prepare(this, alarmMetadata.uri!!)
                 }
 
                 RAlarmType.SPOTIFY -> {
                     (player as SpotifyPlayer).init(this)
                     (player as SpotifyPlayer).fadeIn = alarm.fadeIn
-                    (player as SpotifyPlayer).fadeInDuration = alarm.fadeInDuration
+                    (player as SpotifyPlayer).fadeInDuration = fadeInDuration
                     (player as SpotifyPlayer).prepare(this, alarmMetadata.uri!!)
                 }
             }

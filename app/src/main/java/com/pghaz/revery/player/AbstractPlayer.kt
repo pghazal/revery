@@ -45,7 +45,7 @@ abstract class AbstractPlayer(val audioManager: AudioManager, protected val stre
 
         volumeAnimator = ValueAnimator.ofInt(initialVolume, maxVolume)
         volumeAnimator?.interpolator = LinearInterpolator()
-        volumeAnimator?.duration = fadeInDuration
+        volumeAnimator?.duration = fadeInDuration * 1000
 
         volumeAnimator?.addUpdateListener {
             val volume = it.animatedValue as Int
