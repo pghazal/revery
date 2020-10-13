@@ -4,327 +4,363 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingStart="@dimen/half_base_margin"
-    android:paddingTop="@dimen/third_base_margin"
-    android:paddingEnd="@dimen/half_base_margin"
-    android:paddingBottom="@dimen/half_base_margin"
     tools:background="@color/colorPrimary">
 
     <include
         android:id="@+id/header"
         layout="@layout/header_bottom_sheet"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/bottom_sheet_dialog_header_height"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true" />
 
-    <TextView
-        android:id="@+id/descriptionLabel"
-        style="@style/ReveryLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/header"
-        android:layout_gravity="start"
-        android:layout_marginStart="@dimen/third_base_margin"
-        android:layout_marginBottom="@dimen/third_base_margin"
-        android:text="@string/alarm_description_static" />
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/labelInputLayout"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/descriptionLabel"
-        android:layout_marginStart="@dimen/third_base_margin"
-        android:layout_marginEnd="@dimen/third_base_margin"
-        android:layout_marginBottom="@dimen/base_margin"
-        app:boxBackgroundColor="@android:color/white"
-        app:endIconMode="clear_text"
-        app:endIconTint="@android:color/white"
-        app:hintEnabled="false">
+        android:layout_above="@+id/buttonsContainer"
+        android:layout_below="@+id/header"
+        android:fadeScrollbars="false"
+        android:fillViewport="true"
+        android:scrollbarStyle="insideInset"
+        android:scrollbarThumbVertical="@drawable/shape_scrollbar_vertical">
 
-        <com.pghaz.revery.view.ClearFocusEditText
-            android:id="@+id/labelEditText"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:autofillHints="@string/alarm_hint"
-            android:background="@drawable/shape_rectangle_rounded_corner"
-            android:hint="@string/alarm_hint"
-            android:imeOptions="actionDone"
-            android:inputType="text"
-            android:maxLines="1"
-            android:singleLine="true"
-            android:textColor="@android:color/white"
-            android:textColorHint="@color/color_text_hint_alarm_label"
-            android:textCursorDrawable="@drawable/shape_cursor_edit_text" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:paddingStart="@dimen/half_base_margin"
+            android:paddingTop="@dimen/third_base_margin"
+            android:paddingEnd="@dimen/half_base_margin">
 
-    <LinearLayout
-        android:id="@+id/timeSpinnerContainer"
+            <TextView
+                android:id="@+id/descriptionLabel"
+                style="@style/ReveryLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_gravity="start"
+                android:layout_marginBottom="@dimen/third_base_margin"
+                android:text="@string/alarm_description_static" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/labelInputLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/descriptionLabel"
+                android:layout_marginBottom="@dimen/base_margin"
+                app:boxBackgroundColor="@android:color/white"
+                app:endIconMode="clear_text"
+                app:endIconTint="@android:color/white"
+                app:hintEnabled="false">
+
+                <com.pghaz.revery.view.ClearFocusEditText
+                    android:id="@+id/labelEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autofillHints="@string/alarm_hint"
+                    android:background="@drawable/shape_rectangle_rounded_corner"
+                    android:hint="@string/alarm_hint"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textColor="@android:color/white"
+                    android:textColorHint="@color/color_text_hint_alarm_label"
+                    android:textCursorDrawable="@drawable/shape_cursor_edit_text" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <LinearLayout
+                android:id="@+id/timeSpinnerContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/labelInputLayout"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="@dimen/half_base_margin"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <com.shawnlin.numberpicker.NumberPicker
+                    android:id="@+id/hourNumberPicker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/minimum_base_margin"
+                    app:np_dividerColor="@android:color/white"
+                    app:np_height="180dp"
+                    app:np_max="23"
+                    app:np_min="0"
+                    app:np_selectedTextColor="@android:color/white"
+                    app:np_selectedTextSize="28sp"
+                    app:np_textColor="@android:color/white"
+                    app:np_textSize="20sp"
+                    app:np_width="64dp"
+                    tools:np_value="3" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/minimum_base_margin"
+                    android:text="@string/text_colon"
+                    android:textColor="@android:color/white"
+                    android:textSize="28sp"
+                    android:textStyle="bold" />
+
+                <com.shawnlin.numberpicker.NumberPicker
+                    android:id="@+id/minuteNumberPicker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/minimum_base_margin"
+                    app:np_dividerColor="@android:color/white"
+                    app:np_height="180dp"
+                    app:np_max="59"
+                    app:np_min="0"
+                    app:np_selectedTextColor="@android:color/white"
+                    app:np_selectedTextSize="28sp"
+                    app:np_textColor="@android:color/white"
+                    app:np_textSize="20sp"
+                    app:np_width="64dp"
+                    tools:np_value="3" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/remainingLabel"
+                style="@style/ReveryLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/timeSpinnerContainer"
+                android:layout_alignStart="@+id/recurringDaysContainer"
+                android:layout_marginEnd="@dimen/third_base_margin"
+                android:layout_marginBottom="@dimen/half_base_margin"
+                android:text="@string/alarm_remaining_time_static" />
+
+            <TextView
+                android:id="@+id/timeRemainingTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/remainingLabel"
+                android:layout_toEndOf="@+id/remainingLabel"
+                android:textColor="@android:color/white"
+                tools:text="3 days 4 hours" />
+
+            <TextView
+                android:id="@+id/recurringLabel"
+                style="@style/ReveryLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/remainingLabel"
+                android:layout_alignStart="@+id/recurringDaysContainer"
+                android:layout_marginBottom="@dimen/third_base_margin"
+                android:text="@string/alarm_repeat_static" />
+
+            <LinearLayout
+                android:id="@+id/recurringDaysContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/recurringLabel"
+                android:layout_centerHorizontal="true"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ToggleButton
+                    android:id="@+id/mondayToggle"
+                    style="@style/ReveryRecurringDaysToggle"
+                    android:layout_width="@dimen/toggle_size"
+                    android:layout_height="@dimen/toggle_size"
+                    android:layout_marginEnd="@dimen/third_base_margin"
+                    android:checked="false"
+                    android:text=""
+                    android:textOff="@string/monday_short"
+                    android:textOn="@string/monday_short"
+                    tools:checked="true" />
+
+                <ToggleButton
+                    android:id="@+id/tuesdayToggle"
+                    style="@style/ReveryRecurringDaysToggle"
+                    android:layout_width="@dimen/toggle_size"
+                    android:layout_height="@dimen/toggle_size"
+                    android:layout_marginEnd="@dimen/third_base_margin"
+                    android:checked="false"
+                    android:text=""
+                    android:textOff="@string/tuesday_short"
+                    android:textOn="@string/tuesday_short" />
+
+                <ToggleButton
+                    android:id="@+id/wednesdayToggle"
+                    style="@style/ReveryRecurringDaysToggle"
+                    android:layout_width="@dimen/toggle_size"
+                    android:layout_height="@dimen/toggle_size"
+                    android:layout_marginEnd="@dimen/third_base_margin"
+                    android:checked="false"
+                    android:text=""
+                    android:textOff="@string/wednesday_short"
+                    android:textOn="@string/wednesday_short" />
+
+                <ToggleButton
+                    android:id="@+id/thursdayToggle"
+                    style="@style/ReveryRecurringDaysToggle"
+                    android:layout_width="@dimen/toggle_size"
+                    android:layout_height="@dimen/toggle_size"
+                    android:layout_marginEnd="@dimen/third_base_margin"
+                    android:checked="false"
+                    android:text=""
+                    android:textOff="@string/thursday_short"
+                    android:textOn="@string/thursday_short" />
+
+                <ToggleButton
+                    android:id="@+id/fridayToggle"
+                    style="@style/ReveryRecurringDaysToggle"
+                    android:layout_width="@dimen/toggle_size"
+                    android:layout_height="@dimen/toggle_size"
+                    android:layout_marginEnd="@dimen/third_base_margin"
+                    android:checked="false"
+                    android:text=""
+                    android:textOff="@string/friday_short"
+                    android:textOn="@string/friday_short" />
+
+                <ToggleButton
+                    android:id="@+id/saturdayToggle"
+                    style="@style/ReveryRecurringDaysToggle"
+                    android:layout_width="@dimen/toggle_size"
+                    android:layout_height="@dimen/toggle_size"
+                    android:layout_marginEnd="@dimen/third_base_margin"
+                    android:checked="false"
+                    android:text=""
+                    android:textOff="@string/saturday_short"
+                    android:textOn="@string/saturday_short" />
+
+                <ToggleButton
+                    android:id="@+id/sundayToggle"
+                    style="@style/ReveryRecurringDaysToggle"
+                    android:layout_width="@dimen/toggle_size"
+                    android:layout_height="@dimen/toggle_size"
+                    android:checked="false"
+                    android:text=""
+                    android:textOff="@string/sunday_short"
+                    android:textOn="@string/sunday_short" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/optionsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/recurringDaysContainer"
+                android:layout_alignStart="@id/recurringDaysContainer"
+                android:layout_alignEnd="@id/recurringDaysContainer"
+                android:layout_marginTop="@dimen/half_base_margin"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatToggleButton
+                    android:id="@+id/vibrateToggle"
+                    style="@style/ReveryToggle"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/toggle_size"
+                    android:layout_marginEnd="@dimen/third_base_margin"
+                    android:layout_weight="1"
+                    android:checked="false"
+                    android:drawableStart="@drawable/ic_phone_vibrate"
+                    android:text=""
+                    android:textOff="@string/vibrate"
+                    android:textOn="@string/vibrate"
+                    tools:checked="true" />
+
+                <androidx.appcompat.widget.AppCompatToggleButton
+                    android:id="@+id/fadeInToggle"
+                    style="@style/ReveryToggle"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/toggle_size"
+                    android:layout_marginStart="@dimen/third_base_margin"
+                    android:layout_weight="1"
+                    android:checked="false"
+                    android:drawableStart="@drawable/ic_fade_in"
+                    android:text=""
+                    android:textOff="@string/fade_in"
+                    android:textOn="@string/fade_in"
+                    tools:checked="true" />
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/ringtone_image_size"
+                android:layout_below="@+id/optionsContainer"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginTop="@dimen/half_base_margin"
+                android:layout_marginEnd="64dp">
+
+                <com.pghaz.revery.view.ReveryImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="@dimen/ringtone_image_size"
+                    android:layout_height="@dimen/ringtone_image_size"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentBottom="true"
+                    android:background="@drawable/selector_alarm_image_background_color"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginStart="@dimen/half_base_margin"
+                    android:layout_marginBottom="@dimen/third_base_margin"
+                    android:layout_toEndOf="@+id/imageView"
+                    android:gravity="bottom"
+                    android:orientation="vertical">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/titleTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/montserrat_semibold"
+                        android:maxLines="2"
+                        android:textColor="@android:color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:visibility="gone"
+                        app:fontFamily="@font/montserrat_semibold"
+                        tools:text="title"
+                        tools:visibility="visible" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/subtitleTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:textColor="@android:color/white"
+                        android:textSize="12sp"
+                        android:visibility="gone"
+                        tools:text="subtitle"
+                        tools:visibility="visible" />
+
+                </LinearLayout>
+            </RelativeLayout>
+        </RelativeLayout>
+    </ScrollView>
+
+    <include
+        layout="@layout/floating_action_button_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/labelInputLayout"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/half_base_margin"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:layout_above="@+id/chooseRingtoneButton"
+        android:layout_alignEnd="@+id/chooseRingtoneButton" />
 
-        <com.shawnlin.numberpicker.NumberPicker
-            android:id="@+id/hourNumberPicker"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/minimum_base_margin"
-            app:np_dividerColor="@android:color/white"
-            app:np_height="180dp"
-            app:np_max="23"
-            app:np_min="0"
-            app:np_selectedTextColor="@android:color/white"
-            app:np_selectedTextSize="28sp"
-            app:np_textColor="@android:color/white"
-            app:np_textSize="20sp"
-            app:np_width="64dp"
-            tools:np_value="3" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/minimum_base_margin"
-            android:text="@string/text_colon"
-            android:textColor="@android:color/white"
-            android:textSize="28sp"
-            android:textStyle="bold" />
-
-        <com.shawnlin.numberpicker.NumberPicker
-            android:id="@+id/minuteNumberPicker"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/minimum_base_margin"
-            app:np_dividerColor="@android:color/white"
-            app:np_height="180dp"
-            app:np_max="59"
-            app:np_min="0"
-            app:np_selectedTextColor="@android:color/white"
-            app:np_selectedTextSize="28sp"
-            app:np_textColor="@android:color/white"
-            app:np_textSize="20sp"
-            app:np_width="64dp"
-            tools:np_value="3" />
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/remainingLabel"
-        style="@style/ReveryLabel"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/chooseRingtoneButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/timeSpinnerContainer"
-        android:layout_alignStart="@+id/recurringDaysContainer"
-        android:layout_marginEnd="@dimen/third_base_margin"
-        android:layout_marginBottom="@dimen/half_base_margin"
-        android:text="@string/alarm_remaining_time_static" />
-
-    <TextView
-        android:id="@+id/timeRemainingTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/remainingLabel"
-        android:layout_toEndOf="@+id/remainingLabel"
-        android:textColor="@android:color/white"
-        tools:text="3 days 4 hours" />
-
-    <TextView
-        android:id="@+id/recurringLabel"
-        style="@style/ReveryLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/remainingLabel"
-        android:layout_alignStart="@+id/recurringDaysContainer"
-        android:layout_marginBottom="@dimen/third_base_margin"
-        android:text="@string/alarm_repeat_static" />
-
-    <LinearLayout
-        android:id="@+id/recurringDaysContainer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/recurringLabel"
-        android:layout_centerHorizontal="true"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <ToggleButton
-            android:id="@+id/mondayToggle"
-            style="@style/ReveryRecurringDaysToggle"
-            android:layout_width="@dimen/toggle_size"
-            android:layout_height="@dimen/toggle_size"
-            android:layout_marginEnd="@dimen/third_base_margin"
-            android:checked="false"
-            android:text=""
-            android:textOff="@string/monday_short"
-            android:textOn="@string/monday_short"
-            tools:checked="true" />
-
-        <ToggleButton
-            android:id="@+id/tuesdayToggle"
-            style="@style/ReveryRecurringDaysToggle"
-            android:layout_width="@dimen/toggle_size"
-            android:layout_height="@dimen/toggle_size"
-            android:layout_marginEnd="@dimen/third_base_margin"
-            android:checked="false"
-            android:text=""
-            android:textOff="@string/tuesday_short"
-            android:textOn="@string/tuesday_short" />
-
-        <ToggleButton
-            android:id="@+id/wednesdayToggle"
-            style="@style/ReveryRecurringDaysToggle"
-            android:layout_width="@dimen/toggle_size"
-            android:layout_height="@dimen/toggle_size"
-            android:layout_marginEnd="@dimen/third_base_margin"
-            android:checked="false"
-            android:text=""
-            android:textOff="@string/wednesday_short"
-            android:textOn="@string/wednesday_short" />
-
-        <ToggleButton
-            android:id="@+id/thursdayToggle"
-            style="@style/ReveryRecurringDaysToggle"
-            android:layout_width="@dimen/toggle_size"
-            android:layout_height="@dimen/toggle_size"
-            android:layout_marginEnd="@dimen/third_base_margin"
-            android:checked="false"
-            android:text=""
-            android:textOff="@string/thursday_short"
-            android:textOn="@string/thursday_short" />
-
-        <ToggleButton
-            android:id="@+id/fridayToggle"
-            style="@style/ReveryRecurringDaysToggle"
-            android:layout_width="@dimen/toggle_size"
-            android:layout_height="@dimen/toggle_size"
-            android:layout_marginEnd="@dimen/third_base_margin"
-            android:checked="false"
-            android:text=""
-            android:textOff="@string/friday_short"
-            android:textOn="@string/friday_short" />
-
-        <ToggleButton
-            android:id="@+id/saturdayToggle"
-            style="@style/ReveryRecurringDaysToggle"
-            android:layout_width="@dimen/toggle_size"
-            android:layout_height="@dimen/toggle_size"
-            android:layout_marginEnd="@dimen/third_base_margin"
-            android:checked="false"
-            android:text=""
-            android:textOff="@string/saturday_short"
-            android:textOn="@string/saturday_short" />
-
-        <ToggleButton
-            android:id="@+id/sundayToggle"
-            style="@style/ReveryRecurringDaysToggle"
-            android:layout_width="@dimen/toggle_size"
-            android:layout_height="@dimen/toggle_size"
-            android:checked="false"
-            android:text=""
-            android:textOff="@string/sunday_short"
-            android:textOn="@string/sunday_short" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/recurringDaysContainer"
-        android:layout_alignStart="@id/recurringDaysContainer"
-        android:layout_alignEnd="@id/recurringDaysContainer"
-        android:layout_marginTop="@dimen/half_base_margin"
-        android:orientation="horizontal">
-
-        <androidx.appcompat.widget.AppCompatToggleButton
-            android:id="@+id/vibrateToggle"
-            style="@style/ReveryToggle"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/toggle_size"
-            android:layout_marginEnd="@dimen/third_base_margin"
-            android:layout_weight="1"
-            android:checked="false"
-            android:drawableStart="@drawable/ic_phone_vibrate"
-            android:text=""
-            android:textOff="@string/vibrate"
-            android:textOn="@string/vibrate"
-            tools:checked="true" />
-
-        <androidx.appcompat.widget.AppCompatToggleButton
-            android:id="@+id/fadeInToggle"
-            style="@style/ReveryToggle"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/toggle_size"
-            android:layout_marginStart="@dimen/third_base_margin"
-            android:layout_weight="1"
-            android:checked="false"
-            android:drawableStart="@drawable/ic_fade_in"
-            android:text=""
-            android:textOff="@string/fade_in"
-            android:textOn="@string/fade_in"
-            tools:checked="true" />
-
-    </LinearLayout>
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/ringtone_image_size"
         android:layout_above="@+id/buttonsContainer"
-        android:layout_alignBottom="@+id/chooseRingtoneButton"
-        android:layout_alignParentStart="true"
-        android:layout_marginEnd="@dimen/half_base_margin"
-        android:layout_toStartOf="@+id/chooseRingtoneButton">
-
-        <com.pghaz.revery.view.ReveryImageView
-            android:id="@+id/imageView"
-            android:layout_width="@dimen/ringtone_image_size"
-            android:layout_height="@dimen/ringtone_image_size"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentBottom="true"
-            android:background="@drawable/selector_alarm_image_background_color"
-            android:scaleType="centerCrop"
-            android:visibility="gone"
-            tools:visibility="visible" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="@dimen/half_base_margin"
-            android:layout_toEndOf="@+id/imageView"
-            android:orientation="vertical">
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/titleTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:fontFamily="@font/montserrat_semibold"
-                android:maxLines="2"
-                android:textColor="@android:color/white"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:visibility="gone"
-                app:fontFamily="@font/montserrat_semibold"
-                tools:text="title"
-                tools:visibility="visible" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/subtitleTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textColor="@android:color/white"
-                android:textSize="12sp"
-                android:visibility="gone"
-                tools:text="subtitle"
-                tools:visibility="visible" />
-
-        </LinearLayout>
-    </RelativeLayout>
+        android:layout_alignEnd="@+id/buttonsContainer"
+        android:backgroundTint="@color/colorAccent"
+        android:src="@drawable/ic_music_note"
+        android:tint="@android:color/white"
+        app:backgroundTint="@color/colorAccent"
+        app:fabSize="normal"
+        app:srcCompat="@drawable/ic_music_note"
+        app:tint="@android:color/white" />
 
     <LinearLayout
         android:id="@+id/buttonsContainer"
@@ -332,8 +368,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_gravity="center"
-        android:layout_marginTop="@dimen/base_margin"
-        android:orientation="horizontal">
+        android:layout_marginStart="@dimen/half_base_margin"
+        android:layout_marginEnd="@dimen/half_base_margin"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/half_base_margin"
+        android:paddingBottom="@dimen/half_base_margin">
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/positiveAlarmButton"
@@ -359,25 +398,4 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:descendantFocusability="blocksDescendants" />
-
-    <include
-        layout="@layout/floating_action_button_menu"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/chooseRingtoneButton"
-        android:layout_alignEnd="@+id/chooseRingtoneButton" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/chooseRingtoneButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/buttonsContainer"
-        android:layout_alignEnd="@+id/buttonsContainer"
-        android:backgroundTint="@color/colorAccent"
-        android:src="@drawable/ic_music_note"
-        android:tint="@android:color/white"
-        app:backgroundTint="@color/colorAccent"
-        app:fabSize="normal"
-        app:srcCompat="@drawable/ic_music_note"
-        app:tint="@android:color/white" />
 </RelativeLayout>

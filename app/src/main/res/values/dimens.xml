@@ -7,6 +7,8 @@
     <dimen name="double_base_margin">48dp</dimen>
     <dimen name="triple_base_margin">72dp</dimen>
 
+    <dimen name="bottom_sheet_dialog_header_height">48dp</dimen>
+    <dimen name="spinner_height">48dp</dimen>
     <dimen name="button_height">48dp</dimen>
 
     <dimen name="bottom_navigation_view_height">64dp</dimen>

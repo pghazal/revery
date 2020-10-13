@@ -43,6 +43,7 @@
         <item name="android:background">@drawable/selector_toggle</item>
         <item name="android:drawablePadding">@dimen/minimum_base_margin</item>
         <item name="android:drawableTint">@color/selector_toggle_text_color</item>
+        <item name="drawableTint">@color/selector_toggle_text_color</item>
         <item name="android:padding">@dimen/third_base_margin</item>
     </style>
 
