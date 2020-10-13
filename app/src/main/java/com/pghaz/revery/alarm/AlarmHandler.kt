@@ -53,8 +53,6 @@ object AlarmHandler {
     }
 
     fun scheduleAlarm(context: Context?, alarm: Alarm) {
-        // TODO: idea feature: set an end time to alarm playing
-
         scheduleAlarm(context, alarm, 0)
     }
 

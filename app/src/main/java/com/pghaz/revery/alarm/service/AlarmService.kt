@@ -169,7 +169,6 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
             0
         )
 
-        // TODO: custom notification
         return NotificationCompat.Builder(this, ReveryApplication.CHANNEL_ID)
             .setContentTitle(String.format("%s", alarmLabel))
             .setContentText("Ring Ring...")
@@ -197,7 +196,6 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
         Log.e(TAG, "onDestroy()")
     }
 
-    // TODO: what about user force-stop the app
     private fun release() {
         player.pause()
         player.release()

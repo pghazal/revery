@@ -13,7 +13,6 @@ import com.spotify.android.appremote.api.error.UserNotAuthorizedException
 import com.spotify.protocol.types.PlayerState
 import com.spotify.protocol.types.Track
 
-// TODO: add settings for Shuffle, etc
 class SpotifyPlayer(audioManager: AudioManager) :
     AbstractPlayer(audioManager, AudioManager.STREAM_MUSIC) {
 

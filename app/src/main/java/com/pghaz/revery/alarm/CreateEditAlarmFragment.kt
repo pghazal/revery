@@ -214,7 +214,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
 
         fadeInToggle.setOnCheckedChangeListener { _, _ ->
             alarm.fadeIn = fadeInToggle.isChecked
-            alarm.fadeInDuration = SettingsFragment.FADE_IN_DURATION // TODO
+            alarm.fadeInDuration = SettingsFragment.FADE_IN_DURATION
         }
 
         chooseRingtoneButton.setOnClickListener {

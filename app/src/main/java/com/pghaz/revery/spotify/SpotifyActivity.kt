@@ -44,7 +44,6 @@ class SpotifyActivity : BaseActivity() {
 
         SpotifyAppRemote.setDebugMode(BuildConfig.DEBUG)
 
-        // TODO: get new access token ? with renew ?
         val accessToken = CredentialsHandler.getToken(this)
         if (accessToken == null) {
             authorizeSpotify()

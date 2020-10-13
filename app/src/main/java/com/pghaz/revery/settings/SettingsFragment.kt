@@ -5,7 +5,6 @@ import com.pghaz.revery.BaseBottomSheetDialogFragment
 import com.pghaz.revery.R
 import com.pghaz.revery.util.Arguments
 
-// TODO handle settings
 class SettingsFragment : BaseBottomSheetDialogFragment() {
     override fun getLayoutResId(): Int {
         return R.layout.fragment_settings

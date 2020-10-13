@@ -16,7 +16,6 @@ import com.pghaz.revery.alarm.service.AlarmService
 import com.pghaz.revery.player.AbstractPlayer
 import kotlinx.android.synthetic.main.activity_ring.*
 
-// TODO stay awake ? : to test
 class RingActivity : BaseActivity() {
 
     companion object {

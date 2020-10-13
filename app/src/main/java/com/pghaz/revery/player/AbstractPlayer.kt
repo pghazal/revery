@@ -43,7 +43,6 @@ abstract class AbstractPlayer(val audioManager: AudioManager, protected val stre
         val initialVolume = audioManager.getStreamMinVolume(streamType)
         val maxVolume = audioManager.getStreamMaxVolume(streamType)
 
-        // TODO: in settings, let's decide if we follow user phone volume or the max volume possible
         volumeAnimator = ValueAnimator.ofInt(initialVolume, maxVolume)
         volumeAnimator?.interpolator = LinearInterpolator()
         volumeAnimator?.duration = fadeInDuration

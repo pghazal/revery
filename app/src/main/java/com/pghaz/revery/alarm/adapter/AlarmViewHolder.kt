@@ -82,7 +82,6 @@ class AlarmViewHolder(view: View, private val alarmListener: OnAlarmClickListene
         timeTextView.isEnabled = alarm.enabled
         labelTextView.isEnabled = alarm.enabled
 
-        // TODO: create a singleton for Picasso
         Picasso.get().load(alarm.metadata?.imageUrl)
             .placeholder(R.drawable.selector_alarm_image_background_color)
             .into(imageView)
