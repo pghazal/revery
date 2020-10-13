@@ -24,6 +24,7 @@ import com.pghaz.revery.application.ReveryApplication
 import com.pghaz.revery.player.AbstractPlayer
 import com.pghaz.revery.player.DefaultPlayer
 import com.pghaz.revery.player.SpotifyPlayer
+import com.pghaz.revery.util.Arguments
 
 class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListener {
 
@@ -74,8 +75,8 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
         super.onStartCommand(alarmIntent, flags, startId)
 
         alarmIntent?.let {
-            val alarmBundle = it.getBundleExtra(Alarm.ARGS_BUNDLE_ALARM)
-            val alarm = alarmBundle?.getParcelable<Alarm>(Alarm.ARGS_ALARM) as Alarm
+            val alarmBundle = it.getBundleExtra(Arguments.ARGS_BUNDLE_ALARM)
+            val alarm = alarmBundle?.getParcelable<Alarm>(Arguments.ARGS_ALARM) as Alarm
 
             var alarmMetadata = alarm.metadata
             alarmMetadata = safeInitMetadataIfNeeded(alarmMetadata)

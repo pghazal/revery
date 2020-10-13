@@ -9,6 +9,7 @@ import android.widget.Toast
 import com.pghaz.revery.alarm.model.app.Alarm
 import com.pghaz.revery.alarm.service.AlarmService
 import com.pghaz.revery.alarm.service.RescheduleAlarmsService
+import com.pghaz.revery.util.Arguments
 import java.util.*
 
 class AlarmBroadcastReceiver : BroadcastReceiver() {
@@ -24,8 +25,8 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
 
             startRescheduleAlarmsService(context)
         } else {
-            val alarmBundle = intent.getBundleExtra(Alarm.ARGS_BUNDLE_ALARM)
-            val alarm = alarmBundle?.getParcelable<Alarm>(Alarm.ARGS_ALARM) as Alarm
+            val alarmBundle = intent.getBundleExtra(Arguments.ARGS_BUNDLE_ALARM)
+            val alarm = alarmBundle?.getParcelable<Alarm>(Arguments.ARGS_ALARM) as Alarm
 
             if (!alarm.recurring) {
                 startAlarmService(context, alarm)
@@ -72,8 +73,8 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
         val service = Intent(context, AlarmService::class.java)
 
         val alarmBundle = Bundle()
-        alarmBundle.putParcelable(Alarm.ARGS_ALARM, alarm)
-        service.putExtra(Alarm.ARGS_BUNDLE_ALARM, alarmBundle)
+        alarmBundle.putParcelable(Arguments.ARGS_ALARM, alarm)
+        service.putExtra(Arguments.ARGS_BUNDLE_ALARM, alarmBundle)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             context.startForegroundService(service)

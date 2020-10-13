@@ -13,6 +13,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
+import com.pghaz.revery.util.Arguments
 import kotlinx.android.synthetic.main.header_bottom_sheet.*
 
 
@@ -41,7 +42,7 @@ abstract class BaseBottomSheetDialogFragment : BottomSheetDialogFragment() {
             dismiss()
         }
 
-        dialogTitleTextView.text = arguments?.getString(ARGS_DIALOG_TITLE, "")
+        dialogTitleTextView.text = arguments?.getString(Arguments.ARGS_DIALOG_TITLE, "")
 
         configureViews(savedInstanceState)
     }
@@ -99,9 +100,5 @@ abstract class BaseBottomSheetDialogFragment : BottomSheetDialogFragment() {
         newMaterialShapeDrawable.strokeWidth = currentMaterialShapeDrawable.strokeWidth
         newMaterialShapeDrawable.strokeColor = currentMaterialShapeDrawable.strokeColor
         return newMaterialShapeDrawable
-    }
-
-    companion object {
-        const val ARGS_DIALOG_TITLE = "ARGS_DIALOG_TITLE"
     }
 }

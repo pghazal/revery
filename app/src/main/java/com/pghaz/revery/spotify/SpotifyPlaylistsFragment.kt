@@ -11,6 +11,7 @@ import com.pghaz.revery.spotify.adapter.OnSpotifyItemClickListener
 import com.pghaz.revery.spotify.adapter.SpotifyItemsAdapter
 import com.pghaz.revery.spotify.viewmodel.SpotifyItemsViewModel
 import com.pghaz.revery.spotify.viewmodel.SpotifyViewModelFactory
+import com.pghaz.revery.util.Arguments
 import com.pghaz.revery.view.ResultListScrollListener
 import kaaes.spotify.webapi.android.models.PlaylistSimple
 import kotlinx.android.synthetic.main.fragment_spotify_playlists.*
@@ -28,12 +29,12 @@ class SpotifyPlaylistsFragment : BaseFragment(), ResultListScrollListener.OnLoad
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val accessToken = arguments?.getString(ARGS_ACCESS_TOKEN)
+        val accessToken = arguments?.getString(Arguments.ARGS_ACCESS_TOKEN)
 
         itemsAdapter = SpotifyItemsAdapter(object : OnSpotifyItemClickListener {
             override fun onClick(playlist: PlaylistSimple) {
                 val data = Intent()
-                data.putExtra(ARGS_SPOTIFY_SELECTED_PLAYLIST, playlist)
+                data.putExtra(Arguments.ARGS_SPOTIFY_SELECTED_PLAYLIST, playlist)
                 activity?.setResult(Activity.RESULT_OK, data)
                 activity?.finish()
             }
@@ -63,14 +64,11 @@ class SpotifyPlaylistsFragment : BaseFragment(), ResultListScrollListener.OnLoad
     companion object {
         const val TAG = "SpotifyPlaylistsFragment"
 
-        private const val ARGS_ACCESS_TOKEN = "ARGS_ACCESS_TOKEN"
-        const val ARGS_SPOTIFY_SELECTED_PLAYLIST = "ARGS_SPOTIFY_SELECTED_PLAYLIST"
-
         fun newInstance(accessToken: String): SpotifyPlaylistsFragment {
             val fragment = SpotifyPlaylistsFragment()
 
             val args = Bundle()
-            args.putString(ARGS_ACCESS_TOKEN, accessToken)
+            args.putString(Arguments.ARGS_ACCESS_TOKEN, accessToken)
 
             fragment.arguments = args
 

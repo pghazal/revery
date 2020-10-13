@@ -100,8 +100,5 @@ data class Alarm(
         }
 
         const val NO_ID: Long = 0
-
-        const val ARGS_ALARM = "ARGS_ALARM"
-        const val ARGS_BUNDLE_ALARM = "ARGS_BUNDLE_ALARM"
     }
 }

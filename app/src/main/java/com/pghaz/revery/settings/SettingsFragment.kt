@@ -3,6 +3,7 @@ package com.pghaz.revery.settings
 import android.os.Bundle
 import com.pghaz.revery.BaseBottomSheetDialogFragment
 import com.pghaz.revery.R
+import com.pghaz.revery.util.Arguments
 
 // TODO handle settings
 class SettingsFragment : BaseBottomSheetDialogFragment() {
@@ -23,7 +24,7 @@ class SettingsFragment : BaseBottomSheetDialogFragment() {
             val fragment = SettingsFragment()
 
             val args = Bundle()
-            args.putString(ARGS_DIALOG_TITLE, title)
+            args.putString(Arguments.ARGS_DIALOG_TITLE, title)
 
             fragment.arguments = args
 

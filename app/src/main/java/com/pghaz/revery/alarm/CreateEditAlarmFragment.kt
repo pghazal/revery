@@ -17,7 +17,7 @@ import com.pghaz.revery.alarm.viewmodel.CreateEditAlarmViewModel
 import com.pghaz.revery.animation.AnimatorUtils
 import com.pghaz.revery.settings.SettingsFragment
 import com.pghaz.revery.spotify.SpotifyActivity
-import com.pghaz.revery.spotify.SpotifyPlaylistsFragment
+import com.pghaz.revery.util.Arguments
 import com.pghaz.revery.util.DayUtil
 import com.shawnlin.numberpicker.NumberPicker
 import com.squareup.picasso.Picasso
@@ -33,7 +33,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
 
     private fun initAlarmFromArguments(arguments: Bundle?) {
         arguments?.let { args ->
-            alarm = args.getParcelable(Alarm.ARGS_ALARM) ?: Alarm()
+            alarm = args.getParcelable(Arguments.ARGS_ALARM) ?: Alarm()
         }
     }
 
@@ -353,7 +353,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
             when (resultCode) {
                 Activity.RESULT_OK -> {
                     val selectedPlaylist = data?.extras
-                        ?.getParcelable(SpotifyPlaylistsFragment.ARGS_SPOTIFY_SELECTED_PLAYLIST) as PlaylistSimple?
+                        ?.getParcelable(Arguments.ARGS_SPOTIFY_SELECTED_PLAYLIST) as PlaylistSimple?
 
                     alarm.metadata?.type = RAlarmType.SPOTIFY
                     alarm.metadata?.uri = selectedPlaylist?.uri
@@ -395,8 +395,8 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         fun newInstance(dialogTitle: String, alarm: Alarm): CreateEditAlarmFragment {
             val args = Bundle()
 
-            args.putString(ARGS_DIALOG_TITLE, dialogTitle)
-            args.putParcelable(Alarm.ARGS_ALARM, alarm)
+            args.putString(Arguments.ARGS_DIALOG_TITLE, dialogTitle)
+            args.putParcelable(Arguments.ARGS_ALARM, alarm)
 
             val fragment = CreateEditAlarmFragment()
             fragment.arguments = args

@@ -9,6 +9,7 @@ import com.pghaz.revery.alarm.broadcastreceiver.AlarmBroadcastReceiver
 import com.pghaz.revery.alarm.model.app.Alarm
 import com.pghaz.revery.alarm.model.app.AlarmMetadata
 import com.pghaz.revery.alarm.model.room.RAlarmType
+import com.pghaz.revery.util.Arguments
 import com.pghaz.revery.util.DayUtil
 import java.util.*
 
@@ -67,8 +68,8 @@ object AlarmHandler {
             // This is a workaround due to problems with Parcelables into Intent
             // See: https://stackoverflow.com/questions/39478422/pendingintent-getbroadcast-lost-parcelable-data
             val alarmBundle = Bundle()
-            alarmBundle.putParcelable(Alarm.ARGS_ALARM, alarm)
-            intent.putExtra(Alarm.ARGS_BUNDLE_ALARM, alarmBundle)
+            alarmBundle.putParcelable(Arguments.ARGS_ALARM, alarm)
+            intent.putExtra(Arguments.ARGS_BUNDLE_ALARM, alarmBundle)
 
             val alarmPendingIntent =
                 PendingIntent.getBroadcast(
