@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit
  */
 object CredentialsHandler {
 
-    private const val ACCESS_TOKEN_NAME = "webapi.credentials.access_token"
+    private const val ACCESS_TOKEN_NAME = "com.pghaz.revery.spotify.credentials.access_token"
     private const val ACCESS_TOKEN = "access_token"
     private const val EXPIRES_AT = "expires_at"
 
