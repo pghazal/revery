@@ -12,9 +12,12 @@ import android.util.Log
 import android.view.WindowManager
 import com.pghaz.revery.BaseActivity
 import com.pghaz.revery.R
+import com.pghaz.revery.alarm.model.app.Alarm
 import com.pghaz.revery.alarm.service.AlarmService
 import com.pghaz.revery.player.AbstractPlayer
+import com.pghaz.revery.util.Arguments
 import kotlinx.android.synthetic.main.activity_ring.*
+import java.util.*
 
 class RingActivity : BaseActivity() {
 
@@ -25,6 +28,8 @@ class RingActivity : BaseActivity() {
     }
 
     private var player: AbstractPlayer? = null
+
+    private lateinit var alarm: Alarm
 
     private val mServiceConnection: ServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
@@ -60,15 +65,37 @@ class RingActivity : BaseActivity() {
         bindToAlarmService()
     }
 
+    override fun parseArguments(args: Bundle?) {
+        val alarmBundle = args?.getBundle(Arguments.ARGS_BUNDLE_ALARM)
+        alarm = alarmBundle?.getParcelable<Alarm>(Arguments.ARGS_ALARM) as Alarm
+    }
+
     override fun configureViews(savedInstanceState: Bundle?) {
-        stopAlarmButton.setOnClickListener {
-            player?.pause()
+        timeTextView.text =
+            String.format(Locale.getDefault(), "%02d:%02d", alarm.hour, alarm.minute)
 
-            unbindAndStopAlarmService()
-
-            setResult(Activity.RESULT_OK)
-            finish()
+        turnOffButton.setOnClickListener {
+            stopAlarm(false)
         }
+
+        snoozeButton.setOnClickListener {
+            stopAlarm(true)
+        }
+    }
+
+    private fun stopAlarm(snooze: Boolean) {
+        player?.pause()
+
+        unbindAlarmService()
+
+        if (snooze) {
+            // TODO show a notification when snoozed ?
+            // TODO get snooze time from settings
+            AlarmHandler.snooze(this, alarm, 2)
+        }
+
+        setResult(Activity.RESULT_OK)
+        finish()
     }
 
     // If this activity exists, it means an alarm is ringing.
@@ -101,7 +128,7 @@ class RingActivity : BaseActivity() {
         bindService(service, mServiceConnection, Activity.BIND_AUTO_CREATE)
     }
 
-    private fun unbindAndStopAlarmService() {
+    private fun unbindAlarmService() {
         unbindService(mServiceConnection)
 
         val service = Intent(applicationContext, AlarmService::class.java)

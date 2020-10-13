@@ -5,6 +5,7 @@
     <dimen name="half_base_margin">16dp</dimen>
     <dimen name="base_margin">24dp</dimen>
     <dimen name="double_base_margin">48dp</dimen>
+    <dimen name="triple_base_margin">72dp</dimen>
 
     <dimen name="button_height">48dp</dimen>
 

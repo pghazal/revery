@@ -5,6 +5,8 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
+import com.pghaz.revery.BuildConfig
 import com.pghaz.revery.alarm.broadcastreceiver.AlarmBroadcastReceiver
 import com.pghaz.revery.alarm.model.app.Alarm
 import com.pghaz.revery.alarm.model.app.AlarmMetadata
@@ -27,6 +29,10 @@ object AlarmHandler {
         fadeInDuration: Long = 0
     ) {
         val calendar = Calendar.getInstance()
+        calendar.timeInMillis = System.currentTimeMillis()
+        // add delay in seconds
+        calendar.add(Calendar.SECOND, delayInSeconds)
+
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
         val minute = calendar.get(Calendar.MINUTE)
         val second = calendar.get(Calendar.SECOND)
@@ -49,14 +55,19 @@ object AlarmHandler {
             metadata = metadata
         )
 
-        scheduleAlarm(context, alarm, second + delayInSeconds)
+        scheduleAlarm(context, alarm, alarm.minute, second)
     }
 
     fun scheduleAlarm(context: Context?, alarm: Alarm) {
-        scheduleAlarm(context, alarm, 0)
+        scheduleAlarm(context, alarm, alarm.minute, 0)
     }
 
-    private fun scheduleAlarm(context: Context?, alarm: Alarm, delayInSeconds: Int) {
+    private fun scheduleAlarm(
+        context: Context?,
+        alarm: Alarm,
+        minute: Int,
+        second: Int
+    ) {
         val alarmManager =
             context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager?
 
@@ -82,8 +93,8 @@ object AlarmHandler {
             val calendar: Calendar = Calendar.getInstance()
             calendar.timeInMillis = now
             calendar.set(Calendar.HOUR_OF_DAY, alarm.hour)
-            calendar.set(Calendar.MINUTE, alarm.minute)
-            calendar.set(Calendar.SECOND, delayInSeconds)
+            calendar.set(Calendar.MINUTE, minute)
+            calendar.set(Calendar.SECOND, second)
             calendar.set(Calendar.MILLISECOND, 0)
 
             // if alarm time has already passed, increment day by 1
@@ -107,6 +118,18 @@ object AlarmHandler {
             }
 
             alarm.enabled = true
+
+            if (BuildConfig.DEBUG) {
+                val toastText = String.format(
+                    Locale.getDefault(),
+                    "Alarm scheduled for %s at %02d:%02d with id %d",
+                    DayUtil.getDaysText(calendar[Calendar.DAY_OF_WEEK], alarm),
+                    alarm.hour,
+                    alarm.minute,
+                    alarm.id
+                )
+                Toast.makeText(context, toastText, Toast.LENGTH_LONG).show()
+            }
         }
     }
 
@@ -130,5 +153,22 @@ object AlarmHandler {
 
     fun disableAlarm(alarm: Alarm) {
         alarm.enabled = false
+    }
+
+    fun snooze(context: Context?, alarm: Alarm, delayInMinutes: Int) {
+        val now = System.currentTimeMillis()
+
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = now
+        // add delay in minutes
+        calendar.add(Calendar.MINUTE, delayInMinutes)
+
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+        val minute = calendar.get(Calendar.MINUTE)
+
+        val snoozeAlarm =
+            alarm.copy(id = now, recurring = false, enabled = true, hour = hour, minute = minute)
+
+        scheduleAlarm(context, snoozeAlarm, snoozeAlarm.minute, 0)
     }
 }

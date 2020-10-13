@@ -1,5 +1,6 @@
 package com.pghaz.revery
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
@@ -11,6 +12,7 @@ abstract class BaseActivity : AppCompatActivity() {
     @LayoutRes
     abstract fun getLayoutResId(): Int
     abstract fun configureViews(savedInstanceState: Bundle?)
+    abstract fun parseArguments(args: Bundle?)
     abstract fun shouldAnimateOnCreate(): Boolean
     abstract fun shouldAnimateOnFinish(): Boolean
 
@@ -24,7 +26,18 @@ abstract class BaseActivity : AppCompatActivity() {
 
         setContentView(getLayoutResId())
 
+        if (savedInstanceState != null) {
+            parseArguments(savedInstanceState)
+        } else {
+            parseArguments(intent.extras)
+        }
+
         configureViews(savedInstanceState)
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        parseArguments(intent?.extras)
     }
 
     private fun colorNavigationBar() {

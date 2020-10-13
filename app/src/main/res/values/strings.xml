@@ -44,6 +44,8 @@
     <string name="alarm_fade_in_duration_static">fade in duration</string>
     <string name="alarm_repeat_static">repeat alarm</string>
     <string name="alarm_remaining_time_static">fires in</string>
+    <string name="alarm_turn_off">turn off</string>
+    <string name="alarm_snooze">snooze</string>
     <string name="spotify">Spotify</string>
     <string name="default_ringtone">Default</string>
 

@@ -53,6 +53,10 @@ class SpotifyActivity : BaseActivity() {
         }
     }
 
+    override fun parseArguments(args: Bundle?) {
+        // do nothing
+    }
+
     // Token will be received in onActivityForResult()
     private fun authorizeSpotify() {
         spotifyAuthorizationState = System.currentTimeMillis().toString()

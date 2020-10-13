@@ -6,10 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
 import android.media.RingtoneManager
-import android.os.Binder
-import android.os.IBinder
-import android.os.VibrationEffect
-import android.os.Vibrator
+import android.os.*
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
@@ -81,7 +78,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
             var alarmMetadata = alarm.metadata
             alarmMetadata = safeInitMetadataIfNeeded(alarmMetadata)
 
-            notification = buildAlarmNotification(alarm.id, alarm.label)
+            notification = buildAlarmNotification(alarm)
             disableOneShotAlarm(alarm.recurring, alarm.id)
 
             player = when (alarmMetadata.type) {
@@ -158,19 +155,23 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
      *  - set a requestCode different than 0 in the PendingIntent.getActivity()
      *  - add .setFullScreenIntent(pendingIntent, true) when creating the notification
      */
-    private fun buildAlarmNotification(alarmId: Long, alarmLabel: String?): Notification {
+    private fun buildAlarmNotification(alarm: Alarm): Notification {
         val notificationIntent = Intent(this, MainActivity::class.java)
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
 
+        val alarmBundle = Bundle()
+        alarmBundle.putParcelable(Arguments.ARGS_ALARM, alarm)
+        notificationIntent.putExtra(Arguments.ARGS_BUNDLE_ALARM, alarmBundle)
+
         val pendingIntent = PendingIntent.getActivity(
             this,
-            alarmId.toInt(),
+            alarm.id.toInt(),
             notificationIntent,
             0
         )
 
         return NotificationCompat.Builder(this, ReveryApplication.CHANNEL_ID)
-            .setContentTitle(String.format("%s", alarmLabel))
+            .setContentTitle(String.format("%s", alarm.label))
             .setContentText("Ring Ring...")
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentIntent(pendingIntent)
