@@ -48,7 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:autofillHints="@string/alarm_hint"
-            android:background="@drawable/shape_rounded_corner"
+            android:background="@drawable/shape_rectangle_rounded_corner"
             android:hint="@string/alarm_hint"
             android:imeOptions="actionDone"
             android:inputType="text"
@@ -340,19 +340,16 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/button_height"
             android:layout_weight="4"
-            android:text="@string/save"
-            android:textAllCaps="true"
-            android:textStyle="bold" />
+            android:text="@string/save" />
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/negativeAlarmButton"
+            style="@style/ReveryButton"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/button_height"
             android:layout_marginStart="@dimen/half_base_margin"
             android:layout_weight="1"
-            android:backgroundTint="@color/colorAccent"
             android:contentDescription="@string/delete"
-            android:foreground="?attr/selectableItemBackground"
             android:scaleType="centerInside"
             android:src="@drawable/ic_trash_can" />
     </LinearLayout>

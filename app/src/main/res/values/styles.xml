@@ -24,8 +24,9 @@
     </style>
 
     <style name="ReveryButton" parent="Widget.AppCompat.Button.Colored">
-        <item name="colorButtonNormal">@color/colorAccent</item>
-        <item name="colorControlHighlight">@color/colorPrimaryDark</item>
+        <item name="android:background">@drawable/shape_button_circled_corner</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">true</item>
     </style>
 
     <style name="ReveryRecurringDaysToggle" parent="ReveryToggle">
