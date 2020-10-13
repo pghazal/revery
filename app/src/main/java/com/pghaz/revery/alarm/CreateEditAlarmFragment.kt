@@ -108,7 +108,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         saturdayToggle.isChecked = alarm.saturday
         sundayToggle.isChecked = alarm.sunday
 
-        vibrateSwitch.isChecked = alarm.vibrate
+        vibrateToggle.isChecked = alarm.vibrate
 
         createEditAlarmViewModel.alarmMetadataLiveData.value = alarm.metadata
     }
@@ -222,8 +222,8 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
             createEditAlarmViewModel.timeChangedAlarmLiveData.value = alarm
         }
 
-        vibrateSwitch.setOnCheckedChangeListener { _, _ ->
-            alarm.vibrate = vibrateSwitch.isChecked
+        vibrateToggle.setOnCheckedChangeListener { _, _ ->
+            alarm.vibrate = vibrateToggle.isChecked
             createEditAlarmViewModel.timeChangedAlarmLiveData.value = alarm
         }
 

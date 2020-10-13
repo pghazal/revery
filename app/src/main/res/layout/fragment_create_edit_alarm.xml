@@ -153,8 +153,8 @@
         <ToggleButton
             android:id="@+id/mondayToggle"
             style="@style/ReveryRecurringDaysToggle"
-            android:layout_width="@dimen/toggle_recurring_days_size"
-            android:layout_height="@dimen/toggle_recurring_days_size"
+            android:layout_width="@dimen/toggle_size"
+            android:layout_height="@dimen/toggle_size"
             android:layout_marginEnd="@dimen/third_base_margin"
             android:checked="false"
             android:text=""
@@ -165,8 +165,8 @@
         <ToggleButton
             android:id="@+id/tuesdayToggle"
             style="@style/ReveryRecurringDaysToggle"
-            android:layout_width="@dimen/toggle_recurring_days_size"
-            android:layout_height="@dimen/toggle_recurring_days_size"
+            android:layout_width="@dimen/toggle_size"
+            android:layout_height="@dimen/toggle_size"
             android:layout_marginEnd="@dimen/third_base_margin"
             android:checked="false"
             android:text=""
@@ -176,8 +176,8 @@
         <ToggleButton
             android:id="@+id/wednesdayToggle"
             style="@style/ReveryRecurringDaysToggle"
-            android:layout_width="@dimen/toggle_recurring_days_size"
-            android:layout_height="@dimen/toggle_recurring_days_size"
+            android:layout_width="@dimen/toggle_size"
+            android:layout_height="@dimen/toggle_size"
             android:layout_marginEnd="@dimen/third_base_margin"
             android:checked="false"
             android:text=""
@@ -187,8 +187,8 @@
         <ToggleButton
             android:id="@+id/thursdayToggle"
             style="@style/ReveryRecurringDaysToggle"
-            android:layout_width="@dimen/toggle_recurring_days_size"
-            android:layout_height="@dimen/toggle_recurring_days_size"
+            android:layout_width="@dimen/toggle_size"
+            android:layout_height="@dimen/toggle_size"
             android:layout_marginEnd="@dimen/third_base_margin"
             android:checked="false"
             android:text=""
@@ -198,8 +198,8 @@
         <ToggleButton
             android:id="@+id/fridayToggle"
             style="@style/ReveryRecurringDaysToggle"
-            android:layout_width="@dimen/toggle_recurring_days_size"
-            android:layout_height="@dimen/toggle_recurring_days_size"
+            android:layout_width="@dimen/toggle_size"
+            android:layout_height="@dimen/toggle_size"
             android:layout_marginEnd="@dimen/third_base_margin"
             android:checked="false"
             android:text=""
@@ -209,8 +209,8 @@
         <ToggleButton
             android:id="@+id/saturdayToggle"
             style="@style/ReveryRecurringDaysToggle"
-            android:layout_width="@dimen/toggle_recurring_days_size"
-            android:layout_height="@dimen/toggle_recurring_days_size"
+            android:layout_width="@dimen/toggle_size"
+            android:layout_height="@dimen/toggle_size"
             android:layout_marginEnd="@dimen/third_base_margin"
             android:checked="false"
             android:text=""
@@ -220,8 +220,8 @@
         <ToggleButton
             android:id="@+id/sundayToggle"
             style="@style/ReveryRecurringDaysToggle"
-            android:layout_width="@dimen/toggle_recurring_days_size"
-            android:layout_height="@dimen/toggle_recurring_days_size"
+            android:layout_width="@dimen/toggle_size"
+            android:layout_height="@dimen/toggle_size"
             android:checked="false"
             android:text=""
             android:textOff="@string/sunday_short"
@@ -229,18 +229,21 @@
 
     </LinearLayout>
 
-    <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/vibrateSwitch"
-        style="@style/ReveryLabel"
+    <androidx.appcompat.widget.AppCompatToggleButton
+        android:id="@+id/vibrateToggle"
+        style="@style/ReveryToggle"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/toggle_size"
         android:layout_below="@+id/recurringDaysContainer"
         android:layout_alignStart="@+id/recurringDaysContainer"
-        android:layout_gravity="start"
         android:layout_marginTop="@dimen/third_base_margin"
+        android:layout_marginEnd="@dimen/third_base_margin"
         android:checked="false"
-        android:text="@string/vibrate"
-        app:switchPadding="@dimen/third_base_margin" />
+        android:drawableStart="@drawable/ic_phone_vibrate"
+        android:text=""
+        android:textOff="@string/vibrate"
+        android:textOn="@string/vibrate"
+        tools:checked="true" />
 
     <RelativeLayout
         android:layout_width="wrap_content"

@@ -10,7 +10,7 @@
 
     <dimen name="bottom_navigation_view_height">64dp</dimen>
     <dimen name="fab_add_alarm_size">32dp</dimen>
-    <dimen name="toggle_recurring_days_size">36dp</dimen>
+    <dimen name="toggle_size">36dp</dimen>
     <dimen name="alarm_item_view_size">120dp</dimen>
     <dimen name="item_view_alarm_image_size">64dp</dimen>
     <dimen name="ringtone_image_size">72dp</dimen>
