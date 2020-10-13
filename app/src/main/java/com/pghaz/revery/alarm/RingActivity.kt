@@ -15,6 +15,7 @@ import com.pghaz.revery.R
 import com.pghaz.revery.alarm.model.app.Alarm
 import com.pghaz.revery.alarm.service.AlarmService
 import com.pghaz.revery.player.AbstractPlayer
+import com.pghaz.revery.settings.SettingsHandler
 import com.pghaz.revery.util.Arguments
 import kotlinx.android.synthetic.main.activity_ring.*
 import java.util.*
@@ -78,6 +79,15 @@ class RingActivity : BaseActivity() {
             stopAlarm(false)
         }
 
+        val snoozeDurationArray = resources.getStringArray(R.array.snooze_duration_array)
+        snoozeButton.text =
+            String.format(
+                Locale.getDefault(),
+                "%s\n%s",
+                getString(R.string.alarm_snooze),
+                snoozeDurationArray[SettingsHandler.getSnoozeDurationPosition(this)]
+            )
+
         snoozeButton.setOnClickListener {
             stopAlarm(true)
         }
@@ -90,8 +100,8 @@ class RingActivity : BaseActivity() {
 
         if (snooze) {
             // TODO show a notification when snoozed ?
-            // TODO get snooze time from settings
-            AlarmHandler.snooze(this, alarm, 2)
+            val snoozeMinutes = SettingsHandler.getSnoozeDuration(this)
+            AlarmHandler.snooze(this, alarm, snoozeMinutes)
         }
 
         setResult(Activity.RESULT_OK)

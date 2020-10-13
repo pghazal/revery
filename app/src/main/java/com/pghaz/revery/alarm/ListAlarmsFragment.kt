@@ -16,6 +16,7 @@ import com.pghaz.revery.alarm.adapter.OnAlarmClickListener
 import com.pghaz.revery.alarm.model.app.Alarm
 import com.pghaz.revery.alarm.viewmodel.ListAlarmsViewModel
 import com.pghaz.revery.settings.SettingsFragment
+import com.pghaz.revery.settings.SettingsHandler
 import kotlinx.android.synthetic.main.fragment_list_alarms.*
 
 
@@ -106,7 +107,7 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
                     recurring = false,
                     spotify = true,
                     fadeIn = true,
-                    fadeInDuration = SettingsFragment.FADE_IN_DURATION
+                    fadeInDuration = SettingsHandler.getFadeInDuration(context!!)
                 )
                 true
             }
@@ -116,7 +117,7 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
                     recurring = false,
                     spotify = false,
                     fadeIn = true,
-                    fadeInDuration = 10000
+                    fadeInDuration = SettingsHandler.getFadeInDuration(context!!)
                 )
                 true
             }
@@ -126,7 +127,7 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
                     recurring = true,
                     spotify = false,
                     fadeIn = true,
-                    fadeInDuration = SettingsFragment.FADE_IN_DURATION
+                    fadeInDuration = SettingsHandler.getFadeInDuration(context!!)
                 )
                 true
             }

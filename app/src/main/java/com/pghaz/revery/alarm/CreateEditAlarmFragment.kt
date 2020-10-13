@@ -16,7 +16,7 @@ import com.pghaz.revery.alarm.model.room.RAlarmType
 import com.pghaz.revery.alarm.viewmodel.CreateEditAlarmViewModel
 import com.pghaz.revery.animation.AnimatorUtils
 import com.pghaz.revery.image.ImageLoader
-import com.pghaz.revery.settings.SettingsFragment
+import com.pghaz.revery.settings.SettingsHandler
 import com.pghaz.revery.spotify.SpotifyActivity
 import com.pghaz.revery.util.Arguments
 import com.pghaz.revery.util.DayUtil
@@ -212,9 +212,9 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
             alarm.vibrate = vibrateToggle.isChecked
         }
 
-        fadeInToggle.setOnCheckedChangeListener { _, _ ->
+        fadeInToggle.setOnCheckedChangeListener { buttonView, _ ->
             alarm.fadeIn = fadeInToggle.isChecked
-            alarm.fadeInDuration = SettingsFragment.FADE_IN_DURATION
+            alarm.fadeInDuration = SettingsHandler.getFadeInDuration(buttonView.context)
         }
 
         chooseRingtoneButton.setOnClickListener {
