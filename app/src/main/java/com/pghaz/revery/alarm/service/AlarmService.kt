@@ -35,6 +35,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
         private const val TAG = "AlarmService"
 
         var isRunning: Boolean = false // this is ugly: find a way to check if service is alive
+        var alarm: Alarm = Alarm() // this is very ugly: find a way to get the alarm
     }
 
     private lateinit var alarmRepository: AlarmRepository
@@ -78,14 +79,14 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
         super.onStartCommand(alarmIntent, flags, startId)
 
         alarmIntent?.let {
-            val alarm = IntentUtils.safeGetAlarmFromIntent(it)
+            alarm = IntentUtils.safeGetAlarmFromIntent(it)
             val fadeInDuration = SettingsHandler.getFadeInDuration(this)
 
             var alarmMetadata = alarm.metadata
             alarmMetadata = safeInitMetadataIfNeeded(alarmMetadata)
 
             notification = buildAlarmNotification(alarm)
-            disableOneShotAlarm(alarm.recurring, alarm.id)
+            disableOneShotAlarm(alarm)
 
             val shouldUseDeviceVolume = SettingsHandler.getShouldUseDeviceVolume(this)
 
@@ -147,10 +148,10 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
         player.play()
     }
 
-    private fun disableOneShotAlarm(recurring: Boolean, alarmId: Long) {
-        if (!recurring) {
-            alarmRepository.get(alarmId).observe(this, { alarm ->
-                alarm?.let {
+    private fun disableOneShotAlarm(alarm: Alarm) {
+        if (!alarm.recurring) {
+            alarmRepository.get(alarm.id).observe(this, {
+                it?.let {
                     AlarmHandler.disableAlarm(it)
                     alarmRepository.update(it)
                 }

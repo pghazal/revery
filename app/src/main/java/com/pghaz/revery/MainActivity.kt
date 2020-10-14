@@ -9,7 +9,6 @@ import com.pghaz.revery.alarm.ListAlarmsFragment
 import com.pghaz.revery.alarm.RingActivity
 import com.pghaz.revery.alarm.service.AlarmService
 import com.pghaz.revery.sleep.SleepFragment
-import com.pghaz.revery.util.Arguments
 import com.pghaz.revery.util.IntentUtils
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -32,7 +31,7 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        startRingActivityForResultIfAlarmFired(intent)
+        startRingActivityForResultIfAlarmFired()
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -41,10 +40,10 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
         // If the MainActivity is active (meaning instanciated background or foreground)
         // we receive the alarm intent in onNewIntent()
         // because launchMode in Manifest is "singleTask"
-        startRingActivityForResultIfAlarmFired(intent)
+        startRingActivityForResultIfAlarmFired()
     }
 
-    private fun startRingActivityForResultIfAlarmFired(intent: Intent?) {
+    private fun startRingActivityForResultIfAlarmFired() {
         // If alarm is ringing then show RingActivity so that user can stop it
         if (AlarmService.isRunning) {
             val ringIntent = Intent(this, RingActivity::class.java)
@@ -52,10 +51,7 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
             ringIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
             ringIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
 
-            if (intent?.hasExtra(Arguments.ARGS_BUNDLE_ALARM) == true) {
-                val alarm = IntentUtils.safeGetAlarmFromIntent(intent)
-                IntentUtils.safePutAlarmIntoIntent(ringIntent, alarm)
-            }
+            IntentUtils.safePutAlarmIntoIntent(ringIntent, AlarmService.alarm)
 
             startActivityForResult(ringIntent, RingActivity.REQUEST_CODE_ALARM_RINGING)
         }
