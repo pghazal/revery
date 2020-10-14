@@ -107,6 +107,13 @@ class RingActivity : BaseActivity() {
         bindToAlarmService()
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        val alarmBundle = Bundle()
+        alarmBundle.putParcelable(Arguments.ARGS_ALARM, alarm)
+        outState.putBundle(Arguments.ARGS_BUNDLE_ALARM, alarmBundle)
+        super.onSaveInstanceState(outState)
+    }
+
     override fun parseArguments(args: Bundle?) {
         val alarmBundle = args?.getBundle(Arguments.ARGS_BUNDLE_ALARM)
         alarm = alarmBundle?.getParcelable<Alarm>(Arguments.ARGS_ALARM) as Alarm
