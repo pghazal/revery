@@ -46,7 +46,9 @@
     <string name="alarm_snooze">snooze</string>
     <string name="spotify">Spotify</string>
     <string name="default_ringtone">Par défaut</string>
-
+    <string name="everyday">tous les jours</string>
+    <string name="weekend">week-end</string>
+    <string name="week">en semaine</string>
 
     <!-- TIME REMAINING TEXTS -->
     <plurals name="time_remaining_days">

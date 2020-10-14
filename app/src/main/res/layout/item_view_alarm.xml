@@ -87,6 +87,20 @@
         tools:visibility="visible">
 
         <CheckedTextView
+            android:id="@+id/recurringLabelTextView"
+            style="@style/ReveryRecurringDaysText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/minimum_base_margin"
+            android:checked="true"
+            android:clickable="false"
+            android:enabled="true"
+            android:text=""
+            android:visibility="gone"
+            tools:text="@string/everyday"
+            tools:visibility="visible" />
+
+        <CheckedTextView
             android:id="@+id/mondayTextView"
             style="@style/ReveryRecurringDaysText"
             android:layout_width="wrap_content"

@@ -22,6 +22,8 @@ class AlarmViewHolder(view: View, private val alarmListener: OnAlarmClickListene
     private val imageView: ImageView = view.findViewById(R.id.imageView)
 
     private val recurringDaysContainer: View = view.findViewById(R.id.recurringDaysContainer)
+    private val recurringLabelTextView: CheckedTextView =
+        view.findViewById(R.id.recurringLabelTextView)
     private val mondayTextView: CheckedTextView = view.findViewById(R.id.mondayTextView)
     private val tuesdayTextView: CheckedTextView = view.findViewById(R.id.tuesdayTextView)
     private val wednesdayTextView: CheckedTextView = view.findViewById(R.id.wednesdayTextView)
@@ -52,6 +54,32 @@ class AlarmViewHolder(view: View, private val alarmListener: OnAlarmClickListene
         labelTextView.text = alarm.label
 
         if (alarm.recurring) {
+            val isEveryday = alarm.monday && alarm.tuesday && alarm.wednesday && alarm.thursday &&
+                    alarm.friday && alarm.saturday && alarm.sunday
+            val isWeekend = alarm.saturday && alarm.sunday && !alarm.monday && !alarm.tuesday &&
+                    !alarm.wednesday && !alarm.thursday && !alarm.friday
+            val isWeek = alarm.monday && alarm.tuesday && alarm.wednesday && alarm.thursday &&
+                    alarm.friday && !alarm.saturday && !alarm.sunday
+
+            if (isEveryday || isWeekend || isWeek) {
+                recurringLabelTextView.text = when {
+                    isEveryday -> {
+                        recurringLabelTextView.context.getString(R.string.everyday)
+                    }
+                    isWeekend -> {
+                        recurringLabelTextView.context.getString(R.string.weekend)
+                    }
+                    else -> {
+                        recurringLabelTextView.context.getString(R.string.week)
+                    }
+                }
+                recurringLabelTextView.visibility = View.VISIBLE
+                updateRecurringDaysVisibility(View.GONE)
+            } else {
+                recurringLabelTextView.visibility = View.GONE
+                updateRecurringDaysVisibility(View.VISIBLE)
+            }
+
             recurringDaysContainer.visibility = View.VISIBLE
         } else {
             recurringDaysContainer.visibility = View.GONE
@@ -65,6 +93,7 @@ class AlarmViewHolder(view: View, private val alarmListener: OnAlarmClickListene
         saturdayTextView.isChecked = alarm.saturday
         sundayTextView.isChecked = alarm.sunday
 
+        recurringLabelTextView.isEnabled = alarm.enabled
         mondayTextView.isEnabled = alarm.enabled
         tuesdayTextView.isEnabled = alarm.enabled
         wednesdayTextView.isEnabled = alarm.enabled
@@ -97,4 +126,13 @@ class AlarmViewHolder(view: View, private val alarmListener: OnAlarmClickListene
         }
     }
 
+    private fun updateRecurringDaysVisibility(visibility: Int) {
+        mondayTextView.visibility = visibility
+        tuesdayTextView.visibility = visibility
+        wednesdayTextView.visibility = visibility
+        thursdayTextView.visibility = visibility
+        fridayTextView.visibility = visibility
+        saturdayTextView.visibility = visibility
+        sundayTextView.visibility = visibility
+    }
 }
