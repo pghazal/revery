@@ -5,8 +5,8 @@
     <string name="alarm_text">alarms</string>
     <string name="about">About</string>
 
-    <string name="spotify_client_id">7cb7f4b08ff748cc9f19c84cc627f9d9</string>
-    <string name="spotify_redirect_uri">com.pghaz.revery://connect</string>
+    <string name="spotify_client_id" translatable="false">7cb7f4b08ff748cc9f19c84cc627f9d9</string>
+    <string name="spotify_redirect_uri" translatable="false">com.pghaz.revery://connect</string>
 
     <string name="sleep_fragment">Sleep</string>
 
@@ -28,8 +28,8 @@
     <string name="sunday_short">S</string>
 
     <!-- ALARM -->
-    <string name="menu_disable_all_alarms">turn the alarms off</string>
-    <string name="menu_settings">settings</string>
+    <string name="menu_disable_all_alarms">Turn all alarms off</string>
+    <string name="menu_settings">Settings</string>
     <string name="recurring">recurring</string>
     <string name="create_alarm">add alarm</string>
     <string name="edit_alarm">edit alarm</string>
@@ -71,7 +71,7 @@
         <item>15 minutes</item>
         <item>20 minutes</item>
         <item>30 minutes</item>
-        <item>1 heure</item>
+        <item>1 hour</item>
     </string-array>
 
     <string-array name="fade_in_duration_array">

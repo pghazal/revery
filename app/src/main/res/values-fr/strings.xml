@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- GENERAL -->
+    <string name="app_name">Revery</string>
+    <string name="sleep_text">coucher</string>
+    <string name="alarm_text">réveil</string>
+    <string name="about">À propos</string>
+
+    <string name="sleep_fragment">Sleep</string>
+
+    <!-- DAYS -->
+    <string name="monday_long">lundi</string>
+    <string name="tuesday_long">mardi</string>
+    <string name="wednesday_long">mercredi</string>
+    <string name="thursday_long">jeudi</string>
+    <string name="friday_long">vendredi</string>
+    <string name="saturday_long">samedi</string>
+    <string name="sunday_long">dimanche</string>
+
+    <string name="monday_short">L</string>
+    <string name="tuesday_short">M</string>
+    <string name="wednesday_short">M</string>
+    <string name="thursday_short">J</string>
+    <string name="friday_short">V</string>
+    <string name="saturday_short">S</string>
+    <string name="sunday_short">D</string>
+
+    <!-- ALARM -->
+    <string name="menu_disable_all_alarms">Désactiver toutes les alarmes</string>
+    <string name="menu_settings">Paramètres</string>
+    <string name="recurring">répéter</string>
+    <string name="create_alarm">ajouter une alarme</string>
+    <string name="edit_alarm">éditer l\'alarme</string>
+    <string name="vibrate">vibrer</string>
+    <string name="fade_in">en douceur</string>
+    <string name="save">enregistrer</string>
+    <string name="delete">supprimer</string>
+    <string name="alarm_hint">ajouter une description</string>
+    <string name="text_colon">:</string>
+    <string name="alarm_description_static">description</string>
+    <string name="alarm_snooze_duration_static">durée de snooze</string>
+    <string name="alarm_fade_in_duration_static">durée du réveil en douceur</string>
+    <string name="alarm_repeat_static">répéter l\'alarme</string>
+    <string name="alarm_remaining_time_static">sonne dans</string>
+    <string name="alarm_turn_off">éteindre</string>
+    <string name="alarm_snooze">snooze</string>
+    <string name="spotify">Spotify</string>
+    <string name="default_ringtone">Par défaut</string>
+
+
+    <!-- TIME REMAINING TEXTS -->
+    <plurals name="time_remaining_days">
+        <item quantity="one">%d jour</item>
+        <item quantity="other">%d jours</item>
+    </plurals>
+
+    <plurals name="time_remaining_hours">
+        <item quantity="one">%d heure</item>
+        <item quantity="other">%d heures</item>
+    </plurals>
+
+    <plurals name="time_remaining_minutes">
+        <item quantity="one">%d minute</item>
+        <item quantity="other">%d minutes</item>
+    </plurals>
+
+    <string-array name="snooze_duration_array">
+        <item>5 minutes</item>
+        <item>10 minutes</item>
+        <item>15 minutes</item>
+        <item>20 minutes</item>
+        <item>30 minutes</item>
+        <item>1 heure</item>
+    </string-array>
+
+    <string-array name="fade_in_duration_array">
+        <item>5 secondes</item>
+        <item>10 secondes</item>
+        <item>20 secondes</item>
+        <item>30 secondes</item>
+        <item>1 minute</item>
+    </string-array>
+</resources>
