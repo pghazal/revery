@@ -3,7 +3,6 @@
     <string name="app_name">Revery</string>
     <string name="sleep_text">sleep</string>
     <string name="alarm_text">alarms</string>
-    <string name="about">About</string>
 
     <string name="spotify_client_id" translatable="false">7cb7f4b08ff748cc9f19c84cc627f9d9</string>
     <string name="spotify_redirect_uri" translatable="false">com.pghaz.revery://connect</string>
@@ -27,9 +26,18 @@
     <string name="saturday_short">S</string>
     <string name="sunday_short">S</string>
 
-    <!-- ALARM -->
+    <!-- SETTINGS -->
+    <string name="about">About</string>
+    <string name="alarm_snooze_duration_static">snooze duration</string>
+    <string name="alarm_fade_in_duration_static">fade in duration</string>
+    <string name="alarm_should_use_device_volume">Use device\'s volume</string>
+    <string name="alarm_should_use_device_volume_explanation"><b>WARNING:</b> if <b>enabled</b> and if you choose a default ringtone for your alarm, the application will use the <b>alarm stream</b> volume. Otherwise, it will use the <b>music stream</b> volume (e.g: when alarm plays a Spotify playlist). If <b>disabled</b>, the app will use the <b>maximum</b> volume of the according stream volume.</string>
+
+    <!-- MENU -->
     <string name="menu_disable_all_alarms">Turn all alarms off</string>
     <string name="menu_settings">Settings</string>
+
+    <!-- ALARM -->
     <string name="recurring">recurring</string>
     <string name="create_alarm">add alarm</string>
     <string name="edit_alarm">edit alarm</string>
@@ -40,8 +48,6 @@
     <string name="alarm_hint">add a description</string>
     <string name="text_colon">:</string>
     <string name="alarm_description_static">description</string>
-    <string name="alarm_snooze_duration_static">snooze duration</string>
-    <string name="alarm_fade_in_duration_static">fade in duration</string>
     <string name="alarm_repeat_static">repeat alarm</string>
     <string name="alarm_remaining_time_static">fires in</string>
     <string name="alarm_turn_off">turn off</string>

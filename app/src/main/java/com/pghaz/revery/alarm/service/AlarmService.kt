@@ -83,13 +83,15 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
             notification = buildAlarmNotification(alarm)
             disableOneShotAlarm(alarm.recurring, alarm.id)
 
+            val shouldUseDeviceVolume = SettingsHandler.getShouldUseDeviceVolume(this)
+
             player = when (alarmMetadata.type) {
                 RAlarmType.DEFAULT -> {
-                    DefaultPlayer(audioManager)
+                    DefaultPlayer(audioManager, shouldUseDeviceVolume)
                 }
 
                 RAlarmType.SPOTIFY -> {
-                    SpotifyPlayer(audioManager)
+                    SpotifyPlayer(audioManager, shouldUseDeviceVolume)
                 }
             }
 

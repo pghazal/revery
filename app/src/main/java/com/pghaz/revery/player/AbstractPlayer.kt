@@ -5,7 +5,11 @@ import android.content.Context
 import android.media.AudioManager
 import android.view.animation.LinearInterpolator
 
-abstract class AbstractPlayer(val audioManager: AudioManager, protected val streamType: Int) {
+abstract class AbstractPlayer(
+    val audioManager: AudioManager,
+    protected val streamType: Int,
+    private val shouldUseDeviceVolume: Boolean
+) {
     interface OnPlayerInitializedListener {
         fun onPlayerInitialized()
     }
@@ -13,7 +17,10 @@ abstract class AbstractPlayer(val audioManager: AudioManager, protected val stre
     var onPlayerInitializedListener: OnPlayerInitializedListener? = null
 
     private var volumeAnimator: ValueAnimator? = null
-    private val initialUserVolume = audioManager.getStreamVolume(streamType)
+    private val initialDeviceVolume = audioManager.getStreamVolume(streamType)
+    private val minVolume = audioManager.getStreamMinVolume(streamType)
+    private val maxVolume = audioManager.getStreamMaxVolume(streamType)
+
     var fadeIn: Boolean = false
     var fadeInDuration: Long = 0
 
@@ -28,7 +35,7 @@ abstract class AbstractPlayer(val audioManager: AudioManager, protected val stre
     abstract fun release()
 
     protected fun initFadeIn() {
-        audioManager.setStreamVolume(streamType, 0, 0)
+        audioManager.setStreamVolume(streamType, minVolume, 0)
     }
 
     protected fun resetVolumeFromFadeIn() {
@@ -36,14 +43,15 @@ abstract class AbstractPlayer(val audioManager: AudioManager, protected val stre
         volumeAnimator = null
 
         // Reset user volume
-        audioManager.setStreamVolume(streamType, initialUserVolume, 0)
+        audioManager.setStreamVolume(streamType, initialDeviceVolume, 0)
     }
 
     protected fun fadeIn() {
-        val initialVolume = audioManager.getStreamMinVolume(streamType)
-        val maxVolume = audioManager.getStreamMaxVolume(streamType)
-
-        volumeAnimator = ValueAnimator.ofInt(initialVolume, maxVolume)
+        volumeAnimator =
+            ValueAnimator.ofInt(
+                minVolume,
+                if (shouldUseDeviceVolume) initialDeviceVolume else maxVolume
+            )
         volumeAnimator?.interpolator = LinearInterpolator()
         volumeAnimator?.duration = fadeInDuration * 1000
 

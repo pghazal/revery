@@ -96,6 +96,16 @@ class SettingsFragment : BaseBottomSheetDialogFragment() {
                 // do nothing
             }
         }
+
+        // Volume
+        context?.let {
+            val shouldUseDeviceVolume = SettingsHandler.getShouldUseDeviceVolume(it)
+            shouldUseDeviceVolumeSwitch.isChecked = shouldUseDeviceVolume
+        }
+
+        shouldUseDeviceVolumeSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+            SettingsHandler.setShouldUseDeviceVolume(buttonView.context, isChecked)
+        }
     }
 
     companion object {

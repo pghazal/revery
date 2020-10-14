@@ -13,8 +13,8 @@ import com.spotify.android.appremote.api.error.UserNotAuthorizedException
 import com.spotify.protocol.types.PlayerState
 import com.spotify.protocol.types.Track
 
-class SpotifyPlayer(audioManager: AudioManager) :
-    AbstractPlayer(audioManager, AudioManager.STREAM_MUSIC) {
+class SpotifyPlayer(audioManager: AudioManager, shouldUseDeviceVolume: Boolean) :
+    AbstractPlayer(audioManager, AudioManager.STREAM_MUSIC, shouldUseDeviceVolume) {
 
     private var spotifyAppRemote: SpotifyAppRemote? = null
     private var connectionParams: ConnectionParams? = null

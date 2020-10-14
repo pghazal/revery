@@ -26,7 +26,7 @@
             android:orientation="vertical"
             android:padding="@dimen/half_base_margin">
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/snoozeLabel"
                 style="@style/ReveryLabel"
                 android:layout_width="wrap_content"
@@ -41,7 +41,7 @@
                 android:entries="@array/snooze_duration_array"
                 android:theme="@style/ReverySpinnerTheme" />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/fadeInLabel"
                 style="@style/ReveryLabel"
                 android:layout_width="wrap_content"
@@ -56,6 +56,26 @@
                 android:layout_height="@dimen/spinner_height"
                 android:entries="@array/fade_in_duration_array"
                 android:theme="@style/ReverySpinnerTheme" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/shouldUseDeviceVolumeSwitch"
+                style="@style/ReveryLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/base_margin"
+                android:text="@string/alarm_should_use_device_volume" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/shouldUseDeviceVolumeExplanationLabel"
+                style="@style/ReveryLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/third_base_margin"
+                android:gravity="start"
+                android:justificationMode="inter_word"
+                android:text="@string/alarm_should_use_device_volume_explanation"
+                android:textAllCaps="false"
+                android:textStyle="normal" />
 
             <Button
                 style="@style/Widget.AppCompat.Button.Borderless"

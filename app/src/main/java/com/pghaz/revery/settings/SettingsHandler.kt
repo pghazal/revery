@@ -6,14 +6,23 @@ import android.content.SharedPreferences
 object SettingsHandler {
 
     private const val SETTINGS_SHARED_PREF = "com.pghaz.revery.settings"
+
+    // Snooze
     private const val SETTINGS_SNOOZE_DURATION = "com.pghaz.revery.settings.snooze_duration"
     private const val SETTINGS_SNOOZE_DURATION_POSITION =
         "com.pghaz.revery.settings.snooze_duration.position"
+    private val DEFAULT_SNOOZE_DURATION = SnoozeDuration.TEN_MINUTES
+
+    // Fade in
     private const val SETTINGS_FADE_IN = "com.pghaz.revery.settings.fade_in"
     private const val SETTINGS_FADE_IN_POSITION = "com.pghaz.revery.settings.fade_in.position"
-
-    private val DEFAULT_SNOOZE_DURATION = SnoozeDuration.TEN_MINUTES
     private val DEFAULT_FADE_IN_DURATION = FadeInDuration.THIRTY_SECONDS
+
+    // Volume
+    // Should use user device volume or the max possible
+    private const val SETTINGS_SHOULD_USE_DEVICE_VOLUME =
+        "com.pghaz.revery.settings.alarm.volume.device"
+    private const val DEFAULT_SHOULD_USE_DEVICE_VOLUME = true
 
     private fun getSharedPreferences(context: Context): SharedPreferences {
         return context.applicationContext.getSharedPreferences(
@@ -61,6 +70,21 @@ object SettingsHandler {
         return sharedPreferences.getInt(
             SETTINGS_FADE_IN_POSITION,
             DEFAULT_FADE_IN_DURATION.ordinal
+        )
+    }
+
+    fun setShouldUseDeviceVolume(context: Context, userVolume: Boolean) {
+        val sharedPreferences = getSharedPreferences(context)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean(SETTINGS_SHOULD_USE_DEVICE_VOLUME, userVolume)
+        editor.apply()
+    }
+
+    fun getShouldUseDeviceVolume(context: Context): Boolean {
+        val sharedPreferences = getSharedPreferences(context)
+        return sharedPreferences.getBoolean(
+            SETTINGS_SHOULD_USE_DEVICE_VOLUME,
+            DEFAULT_SHOULD_USE_DEVICE_VOLUME
         )
     }
 }

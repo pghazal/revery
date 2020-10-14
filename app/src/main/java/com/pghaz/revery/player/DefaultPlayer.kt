@@ -8,8 +8,8 @@ import android.media.MediaPlayer
 import android.net.Uri
 import android.util.Log
 
-class DefaultPlayer(audioManager: AudioManager) :
-    AbstractPlayer(audioManager, AudioManager.STREAM_ALARM) {
+class DefaultPlayer(audioManager: AudioManager, shouldUseDeviceVolume: Boolean) :
+    AbstractPlayer(audioManager, AudioManager.STREAM_ALARM, shouldUseDeviceVolume) {
 
     private lateinit var mediaPlayer: MediaPlayer
 
