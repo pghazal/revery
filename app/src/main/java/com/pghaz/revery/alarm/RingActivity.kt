@@ -72,9 +72,6 @@ class RingActivity : BaseActivity() {
     }
 
     override fun configureViews(savedInstanceState: Bundle?) {
-        timeTextView.text =
-            String.format(Locale.getDefault(), "%02d:%02d", alarm.hour, alarm.minute)
-
         turnOffButton.setOnClickListener {
             stopAlarm(false)
         }
