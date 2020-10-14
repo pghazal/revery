@@ -10,6 +10,7 @@ import com.pghaz.revery.alarm.RingActivity
 import com.pghaz.revery.alarm.service.AlarmService
 import com.pghaz.revery.sleep.SleepFragment
 import com.pghaz.revery.util.Arguments
+import com.pghaz.revery.util.IntentUtils
 import kotlinx.android.synthetic.main.activity_main.*
 
 /**
@@ -51,8 +52,10 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
             ringIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
             ringIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
 
-            val alarmBundle = intent?.getBundleExtra(Arguments.ARGS_BUNDLE_ALARM)
-            ringIntent.putExtra(Arguments.ARGS_BUNDLE_ALARM, alarmBundle)
+            if (intent?.hasExtra(Arguments.ARGS_BUNDLE_ALARM) == true) {
+                val alarm = IntentUtils.safeGetAlarmFromIntent(intent)
+                IntentUtils.safePutAlarmIntoIntent(ringIntent, alarm)
+            }
 
             startActivityForResult(ringIntent, RingActivity.REQUEST_CODE_ALARM_RINGING)
         }

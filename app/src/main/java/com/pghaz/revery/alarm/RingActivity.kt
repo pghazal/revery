@@ -15,7 +15,7 @@ import com.pghaz.revery.alarm.model.app.Alarm
 import com.pghaz.revery.alarm.service.AlarmService
 import com.pghaz.revery.player.AbstractPlayer
 import com.pghaz.revery.settings.SettingsHandler
-import com.pghaz.revery.util.Arguments
+import com.pghaz.revery.util.IntentUtils
 import kotlinx.android.synthetic.main.activity_ring.*
 import java.util.*
 
@@ -108,15 +108,12 @@ class RingActivity : BaseActivity() {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        val alarmBundle = Bundle()
-        alarmBundle.putParcelable(Arguments.ARGS_ALARM, alarm)
-        outState.putBundle(Arguments.ARGS_BUNDLE_ALARM, alarmBundle)
+        IntentUtils.safePutAlarmIntoBundle(outState, alarm)
         super.onSaveInstanceState(outState)
     }
 
     override fun parseArguments(args: Bundle?) {
-        val alarmBundle = args?.getBundle(Arguments.ARGS_BUNDLE_ALARM)
-        alarm = alarmBundle?.getParcelable<Alarm>(Arguments.ARGS_ALARM) as Alarm
+        alarm = IntentUtils.safeGetAlarmFromBundle(args)
     }
 
     override fun configureViews(savedInstanceState: Bundle?) {

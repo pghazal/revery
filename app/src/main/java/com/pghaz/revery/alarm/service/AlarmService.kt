@@ -24,7 +24,7 @@ import com.pghaz.revery.player.AbstractPlayer
 import com.pghaz.revery.player.DefaultPlayer
 import com.pghaz.revery.player.SpotifyPlayer
 import com.pghaz.revery.settings.SettingsHandler
-import com.pghaz.revery.util.Arguments
+import com.pghaz.revery.util.IntentUtils
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -78,8 +78,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
         super.onStartCommand(alarmIntent, flags, startId)
 
         alarmIntent?.let {
-            val alarmBundle = it.getBundleExtra(Arguments.ARGS_BUNDLE_ALARM)
-            val alarm = alarmBundle?.getParcelable<Alarm>(Arguments.ARGS_ALARM) as Alarm
+            val alarm = IntentUtils.safeGetAlarmFromIntent(it)
             val fadeInDuration = SettingsHandler.getFadeInDuration(this)
 
             var alarmMetadata = alarm.metadata
@@ -168,9 +167,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
         val notificationIntent = Intent(this, MainActivity::class.java)
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
 
-        val alarmBundle = Bundle()
-        alarmBundle.putParcelable(Arguments.ARGS_ALARM, alarm)
-        notificationIntent.putExtra(Arguments.ARGS_BUNDLE_ALARM, alarmBundle)
+        IntentUtils.safePutAlarmIntoIntent(notificationIntent, alarm)
 
         val pendingIntent = PendingIntent.getActivity(
             this,

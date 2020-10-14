@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.os.Bundle
 import android.widget.Toast
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.pghaz.revery.alarm.AlarmHandler
@@ -13,7 +12,7 @@ import com.pghaz.revery.alarm.model.app.Alarm
 import com.pghaz.revery.alarm.service.AlarmService
 import com.pghaz.revery.alarm.service.RescheduleAlarmsService
 import com.pghaz.revery.settings.SettingsHandler
-import com.pghaz.revery.util.Arguments
+import com.pghaz.revery.util.IntentUtils
 import java.util.*
 
 class AlarmBroadcastReceiver : BroadcastReceiver() {
@@ -30,9 +29,8 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
             intent.action = ACTION_ALARM_SCHEDULE
             // This is a workaround due to problems with Parcelables into Intent
             // See: https://stackoverflow.com/questions/39478422/pendingintent-getbroadcast-lost-parcelable-data
-            val alarmBundle = Bundle()
-            alarmBundle.putParcelable(Arguments.ARGS_ALARM, alarm)
-            intent.putExtra(Arguments.ARGS_BUNDLE_ALARM, alarmBundle)
+
+            IntentUtils.safePutAlarmIntoIntent(intent, alarm)
 
             return intent
         }
@@ -41,9 +39,7 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
             val intent = Intent(context?.applicationContext, AlarmBroadcastReceiver::class.java)
             intent.action = ACTION_ALARM_STOP
 
-            val alarmBundle = Bundle()
-            alarmBundle.putParcelable(Arguments.ARGS_ALARM, alarm)
-            intent.putExtra(Arguments.ARGS_BUNDLE_ALARM, alarmBundle)
+            IntentUtils.safePutAlarmIntoIntent(intent, alarm)
 
             return intent
         }
@@ -52,9 +48,7 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
             val intent = Intent(context?.applicationContext, AlarmBroadcastReceiver::class.java)
             intent.action = ACTION_ALARM_SNOOZE
 
-            val alarmBundle = Bundle()
-            alarmBundle.putParcelable(Arguments.ARGS_ALARM, alarm)
-            intent.putExtra(Arguments.ARGS_BUNDLE_ALARM, alarmBundle)
+            IntentUtils.safePutAlarmIntoIntent(intent, alarm)
 
             return intent
         }
@@ -72,8 +66,7 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
             startRescheduleAlarmsService(context)
 
         } else if (ACTION_ALARM_SCHEDULE == intent.action) {
-            val alarmBundle = intent.getBundleExtra(Arguments.ARGS_BUNDLE_ALARM)
-            val alarm = alarmBundle?.getParcelable<Alarm>(Arguments.ARGS_ALARM) as Alarm
+            val alarm = IntentUtils.safeGetAlarmFromIntent(intent)
 
             if (!alarm.recurring) {
                 startAlarmService(context, alarm)
@@ -82,8 +75,7 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
             }
 
         } else if (ACTION_ALARM_SNOOZE == intent.action) {
-            val alarmBundle = intent.getBundleExtra(Arguments.ARGS_BUNDLE_ALARM)
-            val alarm = alarmBundle?.getParcelable<Alarm>(Arguments.ARGS_ALARM) as Alarm
+            val alarm = IntentUtils.safeGetAlarmFromIntent(intent)
 
             // TODO show a notification when snoozed ?
             val snoozeMinutes = SettingsHandler.getSnoozeDuration(context)
@@ -143,9 +135,7 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
     private fun startAlarmService(context: Context, alarm: Alarm) {
         val service = Intent(context, AlarmService::class.java)
 
-        val alarmBundle = Bundle()
-        alarmBundle.putParcelable(Arguments.ARGS_ALARM, alarm)
-        service.putExtra(Arguments.ARGS_BUNDLE_ALARM, alarmBundle)
+        IntentUtils.safePutAlarmIntoIntent(service, alarm)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             context.startForegroundService(service)
