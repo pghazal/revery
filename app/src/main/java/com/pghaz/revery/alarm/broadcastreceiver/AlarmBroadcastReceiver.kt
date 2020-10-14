@@ -6,13 +6,59 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.pghaz.revery.alarm.AlarmHandler
+import com.pghaz.revery.alarm.RingActivity
 import com.pghaz.revery.alarm.model.app.Alarm
 import com.pghaz.revery.alarm.service.AlarmService
 import com.pghaz.revery.alarm.service.RescheduleAlarmsService
+import com.pghaz.revery.settings.SettingsHandler
 import com.pghaz.revery.util.Arguments
 import java.util.*
 
 class AlarmBroadcastReceiver : BroadcastReceiver() {
+
+    companion object {
+        private const val TAG = "AlarmBroadcastReceiver"
+
+        const val ACTION_ALARM_SCHEDULE = "com.pghaz.revery.ACTION_ALARM_SCHEDULE"
+        const val ACTION_ALARM_STOP = "com.pghaz.revery.ACTION_ALARM_STOP"
+        const val ACTION_ALARM_SNOOZE = "com.pghaz.revery.ACTION_ALARM_SNOOZE"
+
+        fun getScheduleAlarmActionIntent(context: Context?, alarm: Alarm): Intent {
+            val intent = Intent(context?.applicationContext, AlarmBroadcastReceiver::class.java)
+            intent.action = ACTION_ALARM_SCHEDULE
+            // This is a workaround due to problems with Parcelables into Intent
+            // See: https://stackoverflow.com/questions/39478422/pendingintent-getbroadcast-lost-parcelable-data
+            val alarmBundle = Bundle()
+            alarmBundle.putParcelable(Arguments.ARGS_ALARM, alarm)
+            intent.putExtra(Arguments.ARGS_BUNDLE_ALARM, alarmBundle)
+
+            return intent
+        }
+
+        fun getStopAlarmActionIntent(context: Context?, alarm: Alarm): Intent {
+            val intent = Intent(context?.applicationContext, AlarmBroadcastReceiver::class.java)
+            intent.action = ACTION_ALARM_STOP
+
+            val alarmBundle = Bundle()
+            alarmBundle.putParcelable(Arguments.ARGS_ALARM, alarm)
+            intent.putExtra(Arguments.ARGS_BUNDLE_ALARM, alarmBundle)
+
+            return intent
+        }
+
+        fun getSnoozeActionIntent(context: Context?, alarm: Alarm): Intent {
+            val intent = Intent(context?.applicationContext, AlarmBroadcastReceiver::class.java)
+            intent.action = ACTION_ALARM_SNOOZE
+
+            val alarmBundle = Bundle()
+            alarmBundle.putParcelable(Arguments.ARGS_ALARM, alarm)
+            intent.putExtra(Arguments.ARGS_BUNDLE_ALARM, alarmBundle)
+
+            return intent
+        }
+    }
 
     override fun onReceive(context: Context?, intent: Intent?) {
         if (intent == null || context == null) {
@@ -24,7 +70,8 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
             Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show()
 
             startRescheduleAlarmsService(context)
-        } else {
+
+        } else if (ACTION_ALARM_SCHEDULE == intent.action) {
             val alarmBundle = intent.getBundleExtra(Arguments.ARGS_BUNDLE_ALARM)
             val alarm = alarmBundle?.getParcelable<Alarm>(Arguments.ARGS_ALARM) as Alarm
 
@@ -33,7 +80,31 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
             } else if (alarmIsToday(alarm)) {
                 startAlarmService(context, alarm)
             }
+
+        } else if (ACTION_ALARM_SNOOZE == intent.action) {
+            val alarmBundle = intent.getBundleExtra(Arguments.ARGS_BUNDLE_ALARM)
+            val alarm = alarmBundle?.getParcelable<Alarm>(Arguments.ARGS_ALARM) as Alarm
+
+            // TODO show a notification when snoozed ?
+            val snoozeMinutes = SettingsHandler.getSnoozeDuration(context)
+            AlarmHandler.snooze(context, alarm, snoozeMinutes)
+
+            stopService(context)
+        } else if (ACTION_ALARM_STOP == intent.action) {
+            stopService(context)
         }
+    }
+
+    private fun stopService(context: Context) {
+        broadcastAlarmStopped(context)
+
+        val service = Intent(context.applicationContext, AlarmService::class.java)
+        context.applicationContext.stopService(service)
+    }
+
+    private fun broadcastAlarmStopped(context: Context) {
+        val stopRingActivityIntent = RingActivity.getAlarmStoppedBroadcastReceiver(context)
+        LocalBroadcastManager.getInstance(context).sendBroadcast(stopRingActivityIntent)
     }
 
     private fun alarmIsToday(alarm: Alarm): Boolean {

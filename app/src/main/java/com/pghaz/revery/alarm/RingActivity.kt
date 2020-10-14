@@ -2,16 +2,15 @@ package com.pghaz.revery.alarm
 
 import android.app.Activity
 import android.app.KeyguardManager
-import android.content.ComponentName
-import android.content.Context
-import android.content.Intent
-import android.content.ServiceConnection
+import android.content.*
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
 import android.view.WindowManager
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.pghaz.revery.BaseActivity
 import com.pghaz.revery.R
+import com.pghaz.revery.alarm.broadcastreceiver.AlarmBroadcastReceiver
 import com.pghaz.revery.alarm.model.app.Alarm
 import com.pghaz.revery.alarm.service.AlarmService
 import com.pghaz.revery.player.AbstractPlayer
@@ -26,6 +25,15 @@ class RingActivity : BaseActivity() {
         private const val TAG = "RingActivity"
 
         const val REQUEST_CODE_ALARM_RINGING = 42
+        const val ACTION_ALARM_STOPPED = "com.pghaz.revery.ACTION_ALARM_STOPPED"
+
+        fun getAlarmStoppedBroadcastReceiver(context: Context): Intent {
+            val intent =
+                Intent(context.applicationContext, AlarmStoppedBroadcastReceiver::class.java)
+            intent.action = ACTION_ALARM_STOPPED
+
+            return intent
+        }
     }
 
     private var player: AbstractPlayer? = null
@@ -43,6 +51,19 @@ class RingActivity : BaseActivity() {
         }
     }
 
+    inner class AlarmStoppedBroadcastReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            intent?.let {
+                if (ACTION_ALARM_STOPPED == it.action) {
+                    setResult(Activity.RESULT_OK)
+                    finish()
+                }
+            }
+        }
+    }
+
+    private var receiver = AlarmStoppedBroadcastReceiver()
+
     private fun isServiceBound(): Boolean {
         return player != null
     }
@@ -59,10 +80,30 @@ class RingActivity : BaseActivity() {
         return true
     }
 
+    private fun registerToLocalAlarmBroadcastReceiver() {
+        val intentFilter = IntentFilter()
+        intentFilter.addAction(ACTION_ALARM_STOPPED)
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, intentFilter)
+    }
+
+    private fun bindToAlarmService() {
+        val service = Intent(applicationContext, AlarmService::class.java)
+        bindService(service, mServiceConnection, Activity.BIND_AUTO_CREATE)
+    }
+
+    private fun unregisterFromLocalAlarmBroadcastReceiver() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver)
+    }
+
+    private fun unbindFromAlarmService() {
+        unbindService(mServiceConnection)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         allowDisplayOnLockScreen()
 
+        registerToLocalAlarmBroadcastReceiver()
         bindToAlarmService()
     }
 
@@ -73,7 +114,7 @@ class RingActivity : BaseActivity() {
 
     override fun configureViews(savedInstanceState: Bundle?) {
         turnOffButton.setOnClickListener {
-            stopAlarm(false)
+            broadcastStopAlarm()
         }
 
         val snoozeDurationArray = resources.getStringArray(R.array.snooze_duration_array)
@@ -86,23 +127,18 @@ class RingActivity : BaseActivity() {
             )
 
         snoozeButton.setOnClickListener {
-            stopAlarm(true)
+            broadcastSnooze()
         }
     }
 
-    private fun stopAlarm(snooze: Boolean) {
-        player?.pause()
+    private fun broadcastStopAlarm() {
+        val stopIntent = AlarmBroadcastReceiver.getStopAlarmActionIntent(applicationContext, alarm)
+        sendBroadcast(stopIntent)
+    }
 
-        unbindAlarmService()
-
-        if (snooze) {
-            // TODO show a notification when snoozed ?
-            val snoozeMinutes = SettingsHandler.getSnoozeDuration(this)
-            AlarmHandler.snooze(this, alarm, snoozeMinutes)
-        }
-
-        setResult(Activity.RESULT_OK)
-        finish()
+    private fun broadcastSnooze() {
+        val snoozeIntent = AlarmBroadcastReceiver.getSnoozeActionIntent(applicationContext, alarm)
+        sendBroadcast(snoozeIntent)
     }
 
     // If this activity exists, it means an alarm is ringing.
@@ -130,19 +166,9 @@ class RingActivity : BaseActivity() {
         }
     }
 
-    private fun bindToAlarmService() {
-        val service = Intent(applicationContext, AlarmService::class.java)
-        bindService(service, mServiceConnection, Activity.BIND_AUTO_CREATE)
-    }
-
-    private fun unbindAlarmService() {
-        unbindService(mServiceConnection)
-
-        val service = Intent(applicationContext, AlarmService::class.java)
-        applicationContext.stopService(service)
-    }
-
     override fun onDestroy() {
+        unbindFromAlarmService()
+        unregisterFromLocalAlarmBroadcastReceiver()
         super.onDestroy()
         Log.e(TAG, "onDestroy")
     }

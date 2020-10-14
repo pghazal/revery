@@ -9,10 +9,12 @@ import android.media.RingtoneManager
 import android.os.*
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleService
 import com.pghaz.revery.MainActivity
 import com.pghaz.revery.R
 import com.pghaz.revery.alarm.AlarmHandler
+import com.pghaz.revery.alarm.broadcastreceiver.AlarmBroadcastReceiver
 import com.pghaz.revery.alarm.model.app.Alarm
 import com.pghaz.revery.alarm.model.app.AlarmMetadata
 import com.pghaz.revery.alarm.model.room.RAlarmType
@@ -23,6 +25,9 @@ import com.pghaz.revery.player.DefaultPlayer
 import com.pghaz.revery.player.SpotifyPlayer
 import com.pghaz.revery.settings.SettingsHandler
 import com.pghaz.revery.util.Arguments
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
 
 class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListener {
 
@@ -174,13 +179,50 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
             0
         )
 
+        val snoozeIntent = AlarmBroadcastReceiver.getSnoozeActionIntent(this, alarm)
+        val snoozePendingIntent: PendingIntent =
+            PendingIntent.getBroadcast(
+                this,
+                alarm.id.toInt(),
+                snoozeIntent,
+                PendingIntent.FLAG_CANCEL_CURRENT
+            )
+        val snoozeActionNotification =
+            NotificationCompat.Action(
+                null,
+                getString(R.string.alarm_snooze).toUpperCase(Locale.getDefault()),
+                snoozePendingIntent
+            )
+
+        val stopIntent = AlarmBroadcastReceiver.getStopAlarmActionIntent(this, alarm)
+        val stopPendingIntent: PendingIntent =
+            PendingIntent.getBroadcast(
+                this,
+                alarm.id.toInt(),
+                stopIntent,
+                PendingIntent.FLAG_CANCEL_CURRENT
+            )
+        val stopActionNotification =
+            NotificationCompat.Action(
+                null,
+                getString(R.string.alarm_turn_off).toUpperCase(Locale.getDefault()),
+                stopPendingIntent
+            )
+
+        val timeFormatter = SimpleDateFormat.getTimeInstance(DateFormat.SHORT)
+        val time = timeFormatter.format(Calendar.getInstance().time)
+
         return NotificationCompat.Builder(this, ReveryApplication.CHANNEL_ID)
-            .setContentTitle(String.format("%s", alarm.label))
-            .setContentText("Ring Ring...")
+            .setCategory(NotificationCompat.CATEGORY_ALARM)
+            .setContentTitle(String.format("%s %s", getString(R.string.alarm_of), time))
+            .setContentText(alarm.label)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setFullScreenIntent(pendingIntent, true)
+            .addAction(stopActionNotification)
+            .addAction(snoozeActionNotification)
+            .setColor(ContextCompat.getColor(this, R.color.colorAccent))
             .build()
     }
 
@@ -188,7 +230,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
         // Vibrate for 1000 milliseconds
         // Sleep for 1000 milliseconds
         val pattern = longArrayOf(1000, 1000)
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             vibrator.vibrate(VibrationEffect.createWaveform(pattern, 0))
         } else {
             vibrator.vibrate(pattern, 0)

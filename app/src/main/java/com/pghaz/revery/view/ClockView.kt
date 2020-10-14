@@ -20,8 +20,8 @@ class ClockView @JvmOverloads constructor(
     private var mAttached = false
     private val mHandler = Handler()
 
-    private var timeFormatter = SimpleDateFormat.getTimeInstance(DateFormat.SHORT)
-    private var dateFormatter = SimpleDateFormat.getDateInstance(DateFormat.FULL)
+    private val timeFormatter = SimpleDateFormat.getTimeInstance(DateFormat.SHORT)
+    private val dateFormatter = SimpleDateFormat.getDateInstance(DateFormat.FULL)
     private var mCalendar: Calendar = Calendar.getInstance()
 
     private val timeTextView: TextView

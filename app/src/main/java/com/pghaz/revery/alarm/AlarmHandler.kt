@@ -4,14 +4,12 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
 import android.widget.Toast
 import com.pghaz.revery.BuildConfig
 import com.pghaz.revery.alarm.broadcastreceiver.AlarmBroadcastReceiver
 import com.pghaz.revery.alarm.model.app.Alarm
 import com.pghaz.revery.alarm.model.app.AlarmMetadata
 import com.pghaz.revery.alarm.model.room.RAlarmType
-import com.pghaz.revery.util.Arguments
 import com.pghaz.revery.util.DayUtil
 import java.util.*
 
@@ -72,13 +70,7 @@ object AlarmHandler {
             context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager?
 
         alarmManager?.let {
-            val intent = Intent(context?.applicationContext, AlarmBroadcastReceiver::class.java)
-
-            // This is a workaround due to problems with Parcelables into Intent
-            // See: https://stackoverflow.com/questions/39478422/pendingintent-getbroadcast-lost-parcelable-data
-            val alarmBundle = Bundle()
-            alarmBundle.putParcelable(Arguments.ARGS_ALARM, alarm)
-            intent.putExtra(Arguments.ARGS_BUNDLE_ALARM, alarmBundle)
+            val intent = AlarmBroadcastReceiver.getScheduleAlarmActionIntent(context, alarm)
 
             val alarmPendingIntent =
                 PendingIntent.getBroadcast(

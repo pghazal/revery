@@ -57,6 +57,7 @@
     <string name="everyday">everyday</string>
     <string name="weekend">weekend</string>
     <string name="week">week</string>
+    <string name="alarm_of">Alarm:</string>
 
     <!-- TIME REMAINING TEXTS -->
     <plurals name="time_remaining_days">

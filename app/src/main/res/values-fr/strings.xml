@@ -26,7 +26,7 @@
 
     <!-- SETTINGS -->
     <string name="about">À propos</string>
-    <string name="alarm_snooze_duration_static">durée de snooze</string>
+    <string name="alarm_snooze_duration_static">durée de rappel d\'alarme</string>
     <string name="alarm_fade_in_duration_static">durée du réveil en douceur</string>
     <string name="alarm_should_use_device_volume">Utiliser le volume du téléphone</string>
     <string name="alarm_should_use_device_volume_explanation"><b>ATTENTION:</b> si <b>activé</b> et si vous choisissez une sonnerie par défaut pour votre alarme, l\'application utilisera le volume du <b>flux d\'alarme</b>. Sinon, il utilisera le volume du <b>flux de musique</b> (par exemple: lorsque l\'alarme joue une playlist Spotify). Si <b>désactivé</b>, l\'application utilisera le volume <b>maximum</b> du flux correspondant.</string>
@@ -48,13 +48,14 @@
     <string name="alarm_description_static">description</string>
     <string name="alarm_repeat_static">répéter l\'alarme</string>
     <string name="alarm_remaining_time_static">sonne dans</string>
-    <string name="alarm_turn_off">éteindre</string>
-    <string name="alarm_snooze">snooze</string>
+    <string name="alarm_turn_off">arrêter</string>
+    <string name="alarm_snooze">rappel d\'alarme</string>
     <string name="spotify">Spotify</string>
     <string name="default_ringtone">Par défaut</string>
     <string name="everyday">tous les jours</string>
     <string name="weekend">week-end</string>
     <string name="week">en semaine</string>
+    <string name="alarm_of">Alarme:</string>
 
     <!-- TIME REMAINING TEXTS -->
     <plurals name="time_remaining_days">
