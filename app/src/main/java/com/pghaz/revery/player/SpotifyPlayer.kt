@@ -4,6 +4,7 @@ import android.content.Context
 import android.media.AudioManager
 import android.util.Log
 import com.pghaz.revery.R
+import com.pghaz.revery.extension.logError
 import com.spotify.android.appremote.api.ConnectionParams
 import com.spotify.android.appremote.api.Connector
 import com.spotify.android.appremote.api.SpotifyAppRemote
@@ -44,7 +45,7 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
     }
 
     override fun onFailure(error: Throwable?) {
-        Log.e(TAG, error?.message, error)
+        context.logError(error?.message, error)
 
         if (error is NotLoggedInException || error is UserNotAuthorizedException) {
             // Show login button and trigger the login flow from auth library when clicked
@@ -71,7 +72,7 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
             ?.setEventCallback { playerState: PlayerState ->
                 val track: Track? = playerState.track
                 if (track != null) {
-                    Log.e(TAG, track.name.toString() + " by " + track.artist.name)
+                    context.logError(track.name.toString() + " by " + track.artist.name)
                 }
             }
     }
@@ -90,9 +91,5 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
 
     private fun getAppRemote(): SpotifyAppRemote? {
         return spotifyAppRemote
-    }
-
-    companion object {
-        private const val TAG = "SpotifyPlayer"
     }
 }

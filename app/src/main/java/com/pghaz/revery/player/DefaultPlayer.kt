@@ -6,7 +6,7 @@ import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.net.Uri
-import android.util.Log
+import com.pghaz.revery.extension.logError
 
 class DefaultPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
     AbstractPlayer(context, AudioManager.STREAM_ALARM, shouldUseDeviceVolume) {
@@ -59,7 +59,7 @@ class DefaultPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
         if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
             mediaPlayer.prepareAsync()
         } else {
-            Log.e(TAG, "# Request audio focus failed")
+            context.logError("# Request audio focus failed")
         }
     }
 
@@ -101,8 +101,6 @@ class DefaultPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
     }
 
     companion object {
-        private const val TAG = "DefaultPlayer"
-
         private const val AUDIO_FOCUS_PARAM = AudioManager.AUDIOFOCUS_GAIN
     }
 }

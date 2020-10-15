@@ -2,14 +2,16 @@ package com.pghaz.revery.alarm.service
 
 import android.app.Notification
 import android.app.PendingIntent
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.media.RingtoneManager
 import android.os.*
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleService
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.pghaz.revery.MainActivity
 import com.pghaz.revery.R
 import com.pghaz.revery.alarm.AlarmHandler
@@ -19,6 +21,8 @@ import com.pghaz.revery.alarm.model.app.AlarmMetadata
 import com.pghaz.revery.alarm.model.room.RAlarmType
 import com.pghaz.revery.alarm.repository.AlarmRepository
 import com.pghaz.revery.application.ReveryApplication
+import com.pghaz.revery.extension.logError
+import com.pghaz.revery.extension.toast
 import com.pghaz.revery.player.AbstractPlayer
 import com.pghaz.revery.player.DefaultPlayer
 import com.pghaz.revery.player.SpotifyPlayer
@@ -31,7 +35,15 @@ import java.util.*
 class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListener {
 
     companion object {
-        private const val TAG = "AlarmService"
+        const val ACTION_ALARM_SERVICE_SHOULD_STOP =
+            "com.pghaz.revery.ACTION_ALARM_SERVICE_SHOULD_STOP"
+
+        fun getServiceShouldStopIntent(context: Context): Intent {
+            val intent =
+                Intent(context.applicationContext, AlarmServiceBroadcastReceiver::class.java)
+            intent.action = ACTION_ALARM_SERVICE_SHOULD_STOP
+            return intent
+        }
 
         var isRunning: Boolean = false // this is ugly: find a way to check if service is alive
         var alarm: Alarm = Alarm() // this is very ugly: find a way to get the alarm
@@ -43,6 +55,25 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
     private lateinit var notification: Notification
 
     private lateinit var player: AbstractPlayer
+
+    private var receiver = AlarmServiceBroadcastReceiver()
+
+    inner class AlarmServiceBroadcastReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            intent?.let {
+                if (ACTION_ALARM_SERVICE_SHOULD_STOP == it.action) {
+                    toast("ACTION_ALARM_SERVICE_SHOULD_STOP")
+                    logError(ACTION_ALARM_SERVICE_SHOULD_STOP)
+                    vibrator.cancel()
+
+                    player.pause()
+                    player.release()
+
+                    stopSelf() // will call onDestroy()
+                }
+            }
+        }
+    }
 
     private val mBinder = AlarmServiceBinder()
 
@@ -58,8 +89,18 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
     }
 
     override fun onUnbind(intent: Intent?): Boolean {
-        Log.e(TAG, "onUnbind")
+        logError("onUnbind")
         return super.onUnbind(intent)
+    }
+
+    private fun registerToLocalAlarmBroadcastReceiver() {
+        val intentFilter = IntentFilter()
+        intentFilter.addAction(ACTION_ALARM_SERVICE_SHOULD_STOP)
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, intentFilter)
+    }
+
+    private fun unregisterFromLocalAlarmBroadcastReceiver() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver)
     }
 
     override fun onCreate() {
@@ -69,6 +110,8 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
         alarmRepository = AlarmRepository(application)
 
         vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+
+        registerToLocalAlarmBroadcastReceiver()
     }
 
     override fun onStartCommand(alarmIntent: Intent?, flags: Int, startId: Int): Int {
@@ -232,17 +275,9 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
     }
 
     override fun onDestroy() {
-        release()
-        super.onDestroy()
-        Log.e(TAG, "onDestroy()")
-    }
-
-    private fun release() {
-        player.pause()
-        player.release()
-
-        vibrator.cancel()
-
+        unregisterFromLocalAlarmBroadcastReceiver()
         isRunning = false
+        super.onDestroy()
+        logError("onDestroy()")
     }
 }

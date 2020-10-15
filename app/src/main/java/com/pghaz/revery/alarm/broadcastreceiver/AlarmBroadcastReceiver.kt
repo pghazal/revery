@@ -18,8 +18,6 @@ import java.util.*
 class AlarmBroadcastReceiver : BroadcastReceiver() {
 
     companion object {
-        private const val TAG = "AlarmBroadcastReceiver"
-
         const val ACTION_ALARM_SCHEDULE = "com.pghaz.revery.ACTION_ALARM_SCHEDULE"
         const val ACTION_ALARM_STOP = "com.pghaz.revery.ACTION_ALARM_STOP"
         const val ACTION_ALARM_SNOOZE = "com.pghaz.revery.ACTION_ALARM_SNOOZE"
@@ -81,22 +79,25 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
             val snoozeMinutes = SettingsHandler.getSnoozeDuration(context)
             AlarmHandler.snooze(context, alarm, snoozeMinutes)
 
-            stopService(context)
+            initiateServiceShutdown(context)
         } else if (ACTION_ALARM_STOP == intent.action) {
-            stopService(context)
+            initiateServiceShutdown(context)
         }
     }
 
-    private fun stopService(context: Context) {
-        broadcastAlarmStopped(context)
-
-        val service = Intent(context.applicationContext, AlarmService::class.java)
-        context.applicationContext.stopService(service)
+    private fun initiateServiceShutdown(context: Context) {
+        broadcastFinishRingActivity(context)
+        broadcastServiceShouldStop(context)
     }
 
-    private fun broadcastAlarmStopped(context: Context) {
-        val stopRingActivityIntent = RingActivity.getAlarmStoppedBroadcastReceiver(context)
+    private fun broadcastFinishRingActivity(context: Context) {
+        val stopRingActivityIntent = RingActivity.getFinishRingActivityBroadcastReceiver(context)
         LocalBroadcastManager.getInstance(context).sendBroadcast(stopRingActivityIntent)
+    }
+
+    private fun broadcastServiceShouldStop(context: Context) {
+        val serviceShouldStopIntent = AlarmService.getServiceShouldStopIntent(context)
+        LocalBroadcastManager.getInstance(context).sendBroadcast(serviceShouldStopIntent)
     }
 
     private fun alarmIsToday(alarm: Alarm): Boolean {

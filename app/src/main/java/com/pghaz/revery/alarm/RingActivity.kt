@@ -13,6 +13,7 @@ import com.pghaz.revery.R
 import com.pghaz.revery.alarm.broadcastreceiver.AlarmBroadcastReceiver
 import com.pghaz.revery.alarm.model.app.Alarm
 import com.pghaz.revery.alarm.service.AlarmService
+import com.pghaz.revery.extension.logError
 import com.pghaz.revery.player.AbstractPlayer
 import com.pghaz.revery.settings.SettingsHandler
 import com.pghaz.revery.util.IntentUtils
@@ -22,15 +23,13 @@ import java.util.*
 class RingActivity : BaseActivity() {
 
     companion object {
-        private const val TAG = "RingActivity"
-
         const val REQUEST_CODE_ALARM_RINGING = 42
-        const val ACTION_ALARM_STOPPED = "com.pghaz.revery.ACTION_ALARM_STOPPED"
+        const val ACTION_FINISH_RING_ACTIVITY = "com.pghaz.revery.ACTION_FINISH_RING_ACTIVITY"
 
-        fun getAlarmStoppedBroadcastReceiver(context: Context): Intent {
+        fun getFinishRingActivityBroadcastReceiver(context: Context): Intent {
             val intent =
-                Intent(context.applicationContext, AlarmStoppedBroadcastReceiver::class.java)
-            intent.action = ACTION_ALARM_STOPPED
+                Intent(context.applicationContext, FinishRingActivityBroadcastReceiver::class.java)
+            intent.action = ACTION_FINISH_RING_ACTIVITY
 
             return intent
         }
@@ -42,7 +41,7 @@ class RingActivity : BaseActivity() {
 
     private val mServiceConnection: ServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
-            Log.e(TAG, "onServiceConnected")
+            logError( "onServiceConnected")
             player = (service as AlarmService.AlarmServiceBinder).getService()
         }
 
@@ -51,10 +50,11 @@ class RingActivity : BaseActivity() {
         }
     }
 
-    inner class AlarmStoppedBroadcastReceiver : BroadcastReceiver() {
+    inner class FinishRingActivityBroadcastReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             intent?.let {
-                if (ACTION_ALARM_STOPPED == it.action) {
+                if (ACTION_FINISH_RING_ACTIVITY == it.action) {
+                    logError(ACTION_FINISH_RING_ACTIVITY)
                     setResult(Activity.RESULT_OK)
                     finish()
                 }
@@ -62,7 +62,7 @@ class RingActivity : BaseActivity() {
         }
     }
 
-    private var receiver = AlarmStoppedBroadcastReceiver()
+    private var receiver = FinishRingActivityBroadcastReceiver()
 
     private fun isServiceBound(): Boolean {
         return player != null
@@ -82,7 +82,7 @@ class RingActivity : BaseActivity() {
 
     private fun registerToLocalAlarmBroadcastReceiver() {
         val intentFilter = IntentFilter()
-        intentFilter.addAction(ACTION_ALARM_STOPPED)
+        intentFilter.addAction(ACTION_FINISH_RING_ACTIVITY)
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, intentFilter)
     }
 
@@ -174,6 +174,6 @@ class RingActivity : BaseActivity() {
         unbindFromAlarmService()
         unregisterFromLocalAlarmBroadcastReceiver()
         super.onDestroy()
-        Log.e(TAG, "onDestroy")
+        logError("onDestroy")
     }
 }

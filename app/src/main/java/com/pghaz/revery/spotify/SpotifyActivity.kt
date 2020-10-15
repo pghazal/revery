@@ -2,10 +2,10 @@ package com.pghaz.revery.spotify
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import com.pghaz.revery.BaseActivity
 import com.pghaz.revery.BuildConfig
 import com.pghaz.revery.R
+import com.pghaz.revery.extension.logError
 import com.pghaz.revery.spotify.util.CredentialsHandler
 import com.spotify.android.appremote.api.SpotifyAppRemote
 import com.spotify.sdk.android.auth.AuthorizationClient
@@ -16,8 +16,6 @@ import java.util.concurrent.TimeUnit
 class SpotifyActivity : BaseActivity() {
 
     companion object {
-        private const val TAG = "SpotifyActivity"
-
         private const val REQUEST_CODE_SPOTIFY_LOGIN = 1337
     }
 
@@ -99,11 +97,11 @@ class SpotifyActivity : BaseActivity() {
                 }
 
                 AuthorizationResponse.Type.ERROR -> {
-                    Log.e(TAG, "Auth error : " + response.error)
+                    logError("Auth error : " + response.error)
                 }
 
                 else -> {
-                    Log.e(TAG, "Auth result: " + response.type)
+                    logError("Auth result: " + response.type)
                 }
             }
         }
