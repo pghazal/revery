@@ -8,8 +8,8 @@ import android.media.MediaPlayer
 import android.net.Uri
 import android.util.Log
 
-class DefaultPlayer(audioManager: AudioManager, shouldUseDeviceVolume: Boolean) :
-    AbstractPlayer(audioManager, AudioManager.STREAM_ALARM, shouldUseDeviceVolume) {
+class DefaultPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
+    AbstractPlayer(context, AudioManager.STREAM_ALARM, shouldUseDeviceVolume) {
 
     private lateinit var mediaPlayer: MediaPlayer
 
@@ -27,7 +27,7 @@ class DefaultPlayer(audioManager: AudioManager, shouldUseDeviceVolume: Boolean) 
             null
         }
 
-    override fun init(context: Context) {
+    override fun init() {
         mediaPlayer = MediaPlayer()
         mediaPlayer.isLooping = true
         mediaPlayer.setAudioAttributes(
@@ -42,7 +42,7 @@ class DefaultPlayer(audioManager: AudioManager, shouldUseDeviceVolume: Boolean) 
         }
     }
 
-    override fun prepare(context: Context, uri: String) {
+    override fun prepare(uri: String) {
         mediaPlayer.setDataSource(context, Uri.parse(uri))
 
         // Request audio focus for play back

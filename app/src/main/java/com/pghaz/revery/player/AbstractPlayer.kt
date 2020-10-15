@@ -6,7 +6,7 @@ import android.media.AudioManager
 import android.view.animation.LinearInterpolator
 
 abstract class AbstractPlayer(
-    val audioManager: AudioManager,
+    protected val context: Context,
     protected val streamType: Int,
     private val shouldUseDeviceVolume: Boolean
 ) {
@@ -16,17 +16,18 @@ abstract class AbstractPlayer(
 
     var onPlayerInitializedListener: OnPlayerInitializedListener? = null
 
-    private var volumeAnimator: ValueAnimator? = null
+    protected val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
     private val initialDeviceVolume = audioManager.getStreamVolume(streamType)
     private val minVolume = audioManager.getStreamMinVolume(streamType)
     private val maxVolume = audioManager.getStreamMaxVolume(streamType)
+    private var volumeAnimator: ValueAnimator? = null
 
     var fadeIn: Boolean = false
     var fadeInDuration: Long = 0
 
-    abstract fun init(context: Context)
+    abstract fun init()
 
-    abstract fun prepare(context: Context, uri: String)
+    abstract fun prepare(uri: String)
 
     abstract fun play()
 

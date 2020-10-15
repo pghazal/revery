@@ -4,7 +4,6 @@ import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.media.AudioManager
 import android.media.RingtoneManager
 import android.os.*
 import android.util.Log
@@ -43,8 +42,6 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
     private lateinit var vibrator: Vibrator
     private lateinit var notification: Notification
 
-    private lateinit var audioManager: AudioManager
-
     private lateinit var player: AbstractPlayer
 
     private val mBinder = AlarmServiceBinder()
@@ -72,7 +69,6 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
         alarmRepository = AlarmRepository(application)
 
         vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
     }
 
     override fun onStartCommand(alarmIntent: Intent?, flags: Int, startId: Int): Int {
@@ -92,11 +88,11 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
 
             player = when (alarmMetadata.type) {
                 RAlarmType.DEFAULT -> {
-                    DefaultPlayer(audioManager, shouldUseDeviceVolume)
+                    DefaultPlayer(this, shouldUseDeviceVolume)
                 }
 
                 RAlarmType.SPOTIFY -> {
-                    SpotifyPlayer(audioManager, shouldUseDeviceVolume)
+                    SpotifyPlayer(this, shouldUseDeviceVolume)
                 }
             }
 
@@ -104,17 +100,17 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
 
             when (alarmMetadata.type) {
                 RAlarmType.DEFAULT -> {
-                    (player as DefaultPlayer).init(this)
+                    (player as DefaultPlayer).init()
                     (player as DefaultPlayer).fadeIn = alarm.fadeIn
                     (player as DefaultPlayer).fadeInDuration = fadeInDuration
-                    (player as DefaultPlayer).prepare(this, alarmMetadata.uri!!)
+                    (player as DefaultPlayer).prepare(alarmMetadata.uri!!)
                 }
 
                 RAlarmType.SPOTIFY -> {
-                    (player as SpotifyPlayer).init(this)
+                    (player as SpotifyPlayer).init()
                     (player as SpotifyPlayer).fadeIn = alarm.fadeIn
                     (player as SpotifyPlayer).fadeInDuration = fadeInDuration
-                    (player as SpotifyPlayer).prepare(this, alarmMetadata.uri!!)
+                    (player as SpotifyPlayer).prepare(alarmMetadata.uri!!)
                 }
             }
 

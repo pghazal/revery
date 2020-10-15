@@ -13,44 +13,44 @@ import com.spotify.android.appremote.api.error.UserNotAuthorizedException
 import com.spotify.protocol.types.PlayerState
 import com.spotify.protocol.types.Track
 
-class SpotifyPlayer(audioManager: AudioManager, shouldUseDeviceVolume: Boolean) :
-    AbstractPlayer(audioManager, AudioManager.STREAM_MUSIC, shouldUseDeviceVolume) {
+class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
+    AbstractPlayer(context, AudioManager.STREAM_MUSIC, shouldUseDeviceVolume),
+    Connector.ConnectionListener {
 
-    private var spotifyAppRemote: SpotifyAppRemote? = null
     private var connectionParams: ConnectionParams? = null
+    private var spotifyAppRemote: SpotifyAppRemote? = null
 
     private lateinit var currentUri: String
 
-    private val spotifyConnector = object : Connector.ConnectionListener {
-        override fun onConnected(sar: SpotifyAppRemote?) {
-            spotifyAppRemote = sar
-            spotifyAppRemote?.playerApi?.setShuffle(true) // TODO: settings
-
-            onPlayerInitializedListener?.onPlayerInitialized()
-        }
-
-        override fun onFailure(error: Throwable?) {
-            Log.e(TAG, error?.message, error)
-
-            if (error is NotLoggedInException || error is UserNotAuthorizedException) {
-                // Show login button and trigger the login flow from auth library when clicked
-            } else if (error is CouldNotFindSpotifyApp) {
-                // Show button to download Spotify
-            }
-        }
-    }
-
-    override fun init(context: Context) {
+    override fun init() {
         connectionParams = ConnectionParams.Builder(context.getString(R.string.spotify_client_id))
             .setRedirectUri(context.getString(R.string.spotify_redirect_uri))
             .showAuthView(false)
             .build()
     }
 
-    override fun prepare(context: Context, uri: String) {
+    override fun prepare(uri: String) {
         // "spotify:playlist:3H8dsoJvkH7lUkaQlUNjPJ"
         currentUri = uri
-        SpotifyAppRemote.connect(context, connectionParams, spotifyConnector)
+        SpotifyAppRemote.connect(context, connectionParams, this)
+    }
+
+    override fun onConnected(spotifyAppRemote: SpotifyAppRemote) {
+        this.spotifyAppRemote = spotifyAppRemote
+
+        this.spotifyAppRemote?.playerApi?.setShuffle(true) // TODO: settings
+
+        onPlayerInitializedListener?.onPlayerInitialized()
+    }
+
+    override fun onFailure(error: Throwable?) {
+        Log.e(TAG, error?.message, error)
+
+        if (error is NotLoggedInException || error is UserNotAuthorizedException) {
+            // Show login button and trigger the login flow from auth library when clicked
+        } else if (error is CouldNotFindSpotifyApp) {
+            // Show button to download Spotify
+        }
     }
 
     override fun play() {
@@ -59,14 +59,14 @@ class SpotifyPlayer(audioManager: AudioManager, shouldUseDeviceVolume: Boolean) 
             initFadeIn()
         }
 
-        spotifyAppRemote?.playerApi?.play(currentUri)
+        getAppRemote()?.playerApi?.play(currentUri)
 
         if (fadeIn) {
             fadeIn()
         }
 
         // Subscribe to PlayerState
-        spotifyAppRemote?.playerApi
+        getAppRemote()?.playerApi
             ?.subscribeToPlayerState()
             ?.setEventCallback { playerState: PlayerState ->
                 val track: Track? = playerState.track
@@ -77,7 +77,7 @@ class SpotifyPlayer(audioManager: AudioManager, shouldUseDeviceVolume: Boolean) 
     }
 
     override fun pause() {
-        spotifyAppRemote?.playerApi?.pause()
+        getAppRemote()?.playerApi?.pause()
 
         if (fadeIn) {
             resetVolumeFromFadeIn()
@@ -86,6 +86,10 @@ class SpotifyPlayer(audioManager: AudioManager, shouldUseDeviceVolume: Boolean) 
 
     override fun release() {
         SpotifyAppRemote.disconnect(spotifyAppRemote)
+    }
+
+    private fun getAppRemote(): SpotifyAppRemote? {
+        return spotifyAppRemote
     }
 
     companion object {
