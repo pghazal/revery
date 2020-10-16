@@ -23,11 +23,9 @@ object DateTimeUtils {
 
         if (!alarm.recurring) {
             // if alarm time has already passed, increment day by 1
-            if (alarmCalendar.timeInMillis <= currentTimeInMillis) {
-                incrementByOneDay(alarmCalendar)
+            if (nextAlarmCalendar.timeInMillis <= currentTimeInMillis) {
+                incrementByOneDay(nextAlarmCalendar)
             }
-
-            nextAlarmCalendar.timeInMillis = alarmCalendar.timeInMillis
         } else {
             // We'll add in this list all future alarms and then we'll pick the closest to 'now'
             val allAlarmsInMillis = ArrayList<Long>()
@@ -113,13 +111,9 @@ object DateTimeUtils {
 
         val diff = nextAlarmCalendar.timeInMillis - currentTimeInMillis
 
-        val diffSeconds = diff / 1000 % 60
-        val diffMinutes = (diff / (60 * 1000) + 1) % 60
+        val diffMinutes = diff / (60 * 1000) % 60
         val diffHours = diff / (60 * 60 * 1000) % 24
         val diffDays = diff / (24 * 60 * 60 * 1000)
-
-        //val format = SimpleDateFormat("EEEE, MMMM d, yyyy 'at' h:mm a", Locale.getDefault())
-        //return format.format(nextAlarmCalendar.time)
 
         return TimeRemainingInfo(diffDays.toInt(), diffHours.toInt(), diffMinutes.toInt())
     }
@@ -178,7 +172,12 @@ object DateTimeUtils {
                     R.plurals.time_remaining_minutes,
                     timeRemainingInfo.minutes
                 )
-            ).append(" ")
+            )
+        }
+
+        // If days = 0 and hours = 0 and minutes = 0, it means it's less than a minute
+        if (stringBuilder.isEmpty()) {
+            stringBuilder.append(context.getString(R.string.alarm_less_than_one_minute))
         }
 
         return stringBuilder.toString()

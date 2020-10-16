@@ -55,6 +55,7 @@
     <string name="weekend">week-end</string>
     <string name="week">en semaine</string>
     <string name="alarm_of">Alarme:</string>
+    <string name="alarm_less_than_one_minute">moins d\'une minute</string>
 
     <!-- TIME REMAINING TEXTS -->
     <plurals name="time_remaining_days">

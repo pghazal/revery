@@ -60,6 +60,7 @@
     <string name="weekend">weekend</string>
     <string name="week">week</string>
     <string name="alarm_of">Alarm:</string>
+    <string name="alarm_less_than_one_minute">less than a minute</string>
 
     <!-- TIME REMAINING TEXTS -->
     <plurals name="time_remaining_days">
