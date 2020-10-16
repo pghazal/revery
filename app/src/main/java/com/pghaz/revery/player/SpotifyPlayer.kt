@@ -2,17 +2,19 @@ package com.pghaz.revery.player
 
 import android.content.Context
 import android.media.AudioManager
-import android.util.Log
 import com.pghaz.revery.R
 import com.pghaz.revery.extension.logError
+import com.pghaz.revery.spotify.util.ConnectionState
 import com.spotify.android.appremote.api.ConnectionParams
 import com.spotify.android.appremote.api.Connector
 import com.spotify.android.appremote.api.SpotifyAppRemote
 import com.spotify.android.appremote.api.error.CouldNotFindSpotifyApp
 import com.spotify.android.appremote.api.error.NotLoggedInException
+import com.spotify.android.appremote.api.error.SpotifyConnectionTerminatedException
 import com.spotify.android.appremote.api.error.UserNotAuthorizedException
 import com.spotify.protocol.types.PlayerState
 import com.spotify.protocol.types.Track
+import kotlinx.coroutines.*
 
 class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
     AbstractPlayer(context, AudioManager.STREAM_MUSIC, shouldUseDeviceVolume),
@@ -20,6 +22,13 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
 
     private var connectionParams: ConnectionParams? = null
     private var spotifyAppRemote: SpotifyAppRemote? = null
+
+    private var isInitialized = false
+    private var connectionState: ConnectionState = ConnectionState.DISCONNECTED
+
+    private val job = Job()
+    private val coroutinesScope: CoroutineScope = CoroutineScope(job + Dispatchers.Main)
+    private val connectionStateCallbacks = mutableListOf<ConnectionStateCallback>()
 
     private lateinit var currentUri: String
 
@@ -38,58 +47,131 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
 
     override fun onConnected(spotifyAppRemote: SpotifyAppRemote) {
         this.spotifyAppRemote = spotifyAppRemote
+        this.isInitialized = true
+        this.connectionState = ConnectionState.CONNECTED
 
         this.spotifyAppRemote?.playerApi?.setShuffle(true) // TODO: settings
 
         onPlayerInitializedListener?.onPlayerInitialized()
+
+        callSuspendFunctionStateCallbacks(ConnectionState.CONNECTED)
     }
 
     override fun onFailure(error: Throwable?) {
         context.logError(error?.message, error)
 
+        connectionState = ConnectionState.DISCONNECTED
+
         if (error is NotLoggedInException || error is UserNotAuthorizedException) {
             // Show login button and trigger the login flow from auth library when clicked
         } else if (error is CouldNotFindSpotifyApp) {
             // Show button to download Spotify
+        } else if (error is SpotifyConnectionTerminatedException) {
+            SpotifyAppRemote.connect(context, connectionParams, this)
+        } else {
+            callSuspendFunctionStateCallbacks(ConnectionState.DISCONNECTED)
         }
     }
 
+    @ExperimentalCoroutinesApi
     override fun play() {
-        // If fade in enabled, first set minimum volume
-        if (fadeIn) {
-            initFadeIn()
+        context.logError("play()")
+        coroutinesScope.launch {
+            context.logError("coroutinesScope.launch -> play()")
+            // If fade in enabled, first set minimum volume
+            if (fadeIn) {
+                initFadeIn()
+            }
+
+            getAppRemote()?.playerApi?.play(currentUri)
+
+            if (fadeIn) {
+                fadeIn()
+            }
+
+            // Subscribe to PlayerState
+            getAppRemote()?.playerApi
+                ?.subscribeToPlayerState()
+                ?.setEventCallback { playerState: PlayerState ->
+                    val track: Track? = playerState.track
+                    if (track != null) {
+                        context.logError(track.name.toString() + " by " + track.artist.name)
+                    }
+                }
+        }
+    }
+
+    @ExperimentalCoroutinesApi
+    override fun pause() {
+        context.logError("pause()")
+        coroutinesScope.launch {
+            context.logError("coroutinesScope.launch -> pause()")
+            getAppRemote()?.playerApi?.pause()
+
+            if (fadeIn) {
+                resetVolumeFromFadeIn()
+            }
+        }
+    }
+
+    @ExperimentalCoroutinesApi
+    override fun release() {
+        context.logError("release()")
+        coroutinesScope.launch {
+            context.logError("coroutinesScope.launch -> release()")
+            SpotifyAppRemote.disconnect(getAppRemote())
+
+            job.cancel()
+        }
+    }
+
+    private fun callSuspendFunctionStateCallbacks(connectionState: ConnectionState) {
+        val callbacksIterator = connectionStateCallbacks.iterator()
+
+        while (callbacksIterator.hasNext()) {
+            val callback = callbacksIterator.next()
+            callbacksIterator.remove()
+            callback.onResult(connectionState)
+        }
+    }
+
+    @ExperimentalCoroutinesApi
+    private suspend fun getAppRemote(): SpotifyAppRemote? {
+        if (!isInitialized) {
+            throw IllegalStateException("getAppRemote() -> Spotify not initialized")
         }
 
-        getAppRemote()?.playerApi?.play(currentUri)
-
-        if (fadeIn) {
-            fadeIn()
+        if (connectionState == ConnectionState.CONNECTED) {
+            context.logError("getAppRemote() -> CONNECTED: Cached App Remote")
+            return spotifyAppRemote
         }
 
-        // Subscribe to PlayerState
-        getAppRemote()?.playerApi
-            ?.subscribeToPlayerState()
-            ?.setEventCallback { playerState: PlayerState ->
-                val track: Track? = playerState.track
-                if (track != null) {
-                    context.logError(track.name.toString() + " by " + track.artist.name)
+        return suspendCancellableCoroutine { continuation ->
+            context.logError("getAppRemote() -> Reconnect and suspend")
+
+            val callback = object : ConnectionStateCallback {
+                override fun onResult(connectionState: ConnectionState) {
+                    when (connectionState) {
+                        ConnectionState.CONNECTED -> {
+                            continuation.resume(spotifyAppRemote) { cause: Throwable ->
+                                context.logError("callback CONNECTED -> resume cancelled")
+                                cause.printStackTrace()
+                            }
+                        }
+                        ConnectionState.DISCONNECTED -> {
+                            context.logError("callback DISCONNECTED -> cancel()")
+                            continuation.cancel()
+                        }
+                    }
                 }
             }
-    }
 
-    override fun pause() {
-        getAppRemote()?.playerApi?.pause()
-
-        if (fadeIn) {
-            resetVolumeFromFadeIn()
+            context.logError("Add ConnectionStateCallback to the list")
+            connectionStateCallbacks.add(callback)
         }
     }
 
-    override fun release() {
-        SpotifyAppRemote.disconnect(spotifyAppRemote)
-    }
-
-    private fun getAppRemote(): SpotifyAppRemote? {
-        return spotifyAppRemote
+    interface ConnectionStateCallback {
+        fun onResult(connectionState: ConnectionState)
     }
 }

@@ -22,7 +22,6 @@ import com.pghaz.revery.alarm.model.room.RAlarmType
 import com.pghaz.revery.alarm.repository.AlarmRepository
 import com.pghaz.revery.application.ReveryApplication
 import com.pghaz.revery.extension.logError
-import com.pghaz.revery.extension.toast
 import com.pghaz.revery.player.AbstractPlayer
 import com.pghaz.revery.player.DefaultPlayer
 import com.pghaz.revery.player.SpotifyPlayer
@@ -62,7 +61,6 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
         override fun onReceive(context: Context?, intent: Intent?) {
             intent?.let {
                 if (ACTION_ALARM_SERVICE_SHOULD_STOP == it.action) {
-                    toast("ACTION_ALARM_SERVICE_SHOULD_STOP")
                     logError(ACTION_ALARM_SERVICE_SHOULD_STOP)
                     vibrator.cancel()
 
