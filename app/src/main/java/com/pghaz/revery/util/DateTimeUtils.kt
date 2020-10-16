@@ -8,6 +8,8 @@ import kotlin.math.abs
 
 object DateTimeUtils {
 
+    data class TimeRemainingInfo(val days: Int, val hours: Int, val minutes: Int)
+
     fun getTimeRemaining(alarm: Alarm): TimeRemainingInfo {
         val currentTimeInMillis = System.currentTimeMillis()
 
