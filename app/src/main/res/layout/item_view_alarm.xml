@@ -30,7 +30,6 @@
             android:layout_alignTop="@+id/imageView"
             android:layout_marginStart="@dimen/half_base_margin"
             android:layout_marginTop="-4dp"
-            android:layout_toStartOf="@id/alarmSwitch"
             android:layout_toEndOf="@+id/imageView"
             android:fontFamily="@font/montserrat_semibold"
             android:includeFontPadding="false"
@@ -39,6 +38,19 @@
             android:textSize="28sp"
             app:fontFamily="@font/montserrat_semibold"
             tools:text="15:40" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/amPmTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/timeTextView"
+            android:layout_marginStart="@dimen/third_base_margin"
+            android:layout_toEndOf="@+id/timeTextView"
+            android:text="@string/am"
+            android:textColor="@color/selector_alarm_time_text_color"
+            android:textStyle="bold"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/labelTextView"

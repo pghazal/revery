@@ -10,13 +10,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.pghaz.revery.R
 import com.pghaz.revery.alarm.model.app.Alarm
 import com.pghaz.revery.image.ImageLoader
-import com.pghaz.revery.util.DayUtil
+import com.pghaz.revery.util.DateTimeUtils
 import java.util.*
 
 class AlarmViewHolder(view: View, private val alarmListener: OnAlarmClickListener) :
     RecyclerView.ViewHolder(view) {
 
     private val timeTextView: TextView = view.findViewById(R.id.timeTextView)
+    private val amPmTextView: TextView = view.findViewById(R.id.amPmTextView)
     private val labelTextView: TextView = view.findViewById(R.id.labelTextView)
     private val timeRemainingTextView: TextView = view.findViewById(R.id.timeRemainingTextView)
     private val imageView: ImageView = view.findViewById(R.id.imageView)
@@ -34,16 +35,36 @@ class AlarmViewHolder(view: View, private val alarmListener: OnAlarmClickListene
 
     val alarmSwitch: SwitchCompat = view.findViewById(R.id.alarmSwitch)
 
-    fun bind(alarm: Alarm) {
-        itemView.setOnClickListener {
-            alarmListener.onClick(alarm)
+    private fun setTimeText(alarm: Alarm, is24HourFormat: Boolean) {
+        val hour: Int
+
+        if (is24HourFormat) {
+            hour = alarm.hour
+            amPmTextView.visibility = View.GONE
+        } else {
+            hour = DateTimeUtils.get12HourFormatFrom24HourFormat(alarm.hour)
+            amPmTextView.visibility = View.VISIBLE
+
+            if (DateTimeUtils.isAM(alarm.hour)) {
+                amPmTextView.text = amPmTextView.context.getString(R.string.am)
+            } else {
+                amPmTextView.text = amPmTextView.context.getString(R.string.pm)
+            }
         }
 
         timeTextView.text = String.format(
             Locale.getDefault(), "%02d:%02d",
-            alarm.hour,
+            hour,
             alarm.minute
         )
+    }
+
+    fun bind(alarm: Alarm, is24HourFormat: Boolean) {
+        itemView.setOnClickListener {
+            alarmListener.onClick(alarm)
+        }
+
+        setTimeText(alarm, is24HourFormat)
 
         if (TextUtils.isEmpty(alarm.label)) {
             labelTextView.visibility = View.GONE
@@ -109,6 +130,7 @@ class AlarmViewHolder(view: View, private val alarmListener: OnAlarmClickListene
 
         imageView.isEnabled = alarm.enabled
         timeTextView.isEnabled = alarm.enabled
+        amPmTextView.isEnabled = alarm.enabled
         labelTextView.isEnabled = alarm.enabled
 
         ImageLoader.get().load(alarm.metadata?.imageUrl)
@@ -117,9 +139,9 @@ class AlarmViewHolder(view: View, private val alarmListener: OnAlarmClickListene
 
         if (alarm.enabled) {
             timeRemainingTextView.visibility = View.VISIBLE
-            val timeRemainingInfo = DayUtil.getTimeRemaining(alarm)
+            val timeRemainingInfo = DateTimeUtils.getTimeRemaining(alarm)
             timeRemainingTextView.text =
-                DayUtil.getRemainingTimeText(timeRemainingTextView.context, timeRemainingInfo)
+                DateTimeUtils.getRemainingTimeText(timeRemainingTextView.context, timeRemainingInfo)
         } else {
             timeRemainingTextView.visibility = View.GONE
             timeRemainingTextView.text = ""

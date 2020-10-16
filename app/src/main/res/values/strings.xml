@@ -25,6 +25,9 @@
     <string name="saturday_short">S</string>
     <string name="sunday_short">S</string>
 
+    <string name="am" translatable="false">AM</string>
+    <string name="pm" translatable="false">PM</string>
+
     <!-- SETTINGS -->
     <string name="about">About</string>
     <string name="alarm_snooze_duration_static">snooze duration</string>

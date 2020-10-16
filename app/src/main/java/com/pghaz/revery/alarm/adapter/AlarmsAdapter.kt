@@ -7,7 +7,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.pghaz.revery.R
 import com.pghaz.revery.alarm.model.app.Alarm
 
-class AlarmsAdapter(private val alarmListener: OnAlarmClickListener) :
+class AlarmsAdapter(
+    private val alarmListener: OnAlarmClickListener,
+    private val is24HourFormat: Boolean
+) :
     RecyclerView.Adapter<AlarmViewHolder>() {
 
     private var alarms: List<Alarm> = emptyList()
@@ -21,7 +24,7 @@ class AlarmsAdapter(private val alarmListener: OnAlarmClickListener) :
 
     override fun onBindViewHolder(holder: AlarmViewHolder, position: Int) {
         val alarm = alarms[position]
-        holder.bind(alarm)
+        holder.bind(alarm, is24HourFormat)
     }
 
     override fun getItemCount(): Int {

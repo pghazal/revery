@@ -86,8 +86,8 @@
                     android:layout_marginEnd="@dimen/minimum_base_margin"
                     app:np_dividerColor="@android:color/white"
                     app:np_height="180dp"
-                    app:np_max="23"
-                    app:np_min="0"
+                    app:np_max="@integer/format_24_hour_max"
+                    app:np_min="@integer/format_24_hour_min"
                     app:np_selectedTextColor="@android:color/white"
                     app:np_selectedTextSize="28sp"
                     app:np_textColor="@android:color/white"
@@ -120,6 +120,43 @@
                     app:np_width="64dp"
                     tools:np_value="3" />
             </LinearLayout>
+
+
+            <RadioGroup
+                android:id="@+id/amPmContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/timeSpinnerContainer"
+                android:layout_alignBottom="@+id/timeSpinnerContainer"
+                android:layout_marginStart="@dimen/half_base_margin"
+                android:layout_toEndOf="@+id/timeSpinnerContainer"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <RadioButton
+                    android:id="@+id/amRadioButton"
+                    style="@style/ReveryRadioButton"
+                    android:layout_width="@dimen/toggle_size"
+                    android:layout_height="@dimen/toggle_size"
+                    android:layout_marginBottom="@dimen/half_base_margin"
+                    android:checked="false"
+                    android:gravity="center"
+                    android:text="@string/am"
+                    tools:checked="true" />
+
+                <RadioButton
+                    android:id="@+id/pmRadioButton"
+                    style="@style/ReveryRadioButton"
+                    android:layout_width="@dimen/toggle_size"
+                    android:layout_height="@dimen/toggle_size"
+                    android:checked="true"
+                    android:gravity="center"
+                    android:text="@string/pm"
+                    tools:checked="false" />
+
+            </RadioGroup>
 
             <TextView
                 android:id="@+id/remainingLabel"

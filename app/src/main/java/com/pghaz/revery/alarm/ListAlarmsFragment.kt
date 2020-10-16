@@ -1,6 +1,7 @@
 package com.pghaz.revery.alarm
 
 import android.os.Bundle
+import android.text.format.DateFormat
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -28,7 +29,7 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        alarmsAdapter = AlarmsAdapter(this)
+        alarmsAdapter = AlarmsAdapter(this, DateFormat.is24HourFormat(context))
 
         listAlarmsViewModel = ViewModelProvider(this).get(ListAlarmsViewModel::class.java)
         listAlarmsViewModel.alarmsLiveData.observe(this, { alarms ->

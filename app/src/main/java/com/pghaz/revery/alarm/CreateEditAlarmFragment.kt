@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
+import android.text.format.DateFormat
 import android.view.View
 import android.view.View.OnTouchListener
 import androidx.core.content.res.ResourcesCompat
@@ -18,7 +19,7 @@ import com.pghaz.revery.animation.AnimatorUtils
 import com.pghaz.revery.image.ImageLoader
 import com.pghaz.revery.spotify.SpotifyActivity
 import com.pghaz.revery.util.Arguments
-import com.pghaz.revery.util.DayUtil
+import com.pghaz.revery.util.DateTimeUtils
 import com.shawnlin.numberpicker.NumberPicker
 import kaaes.spotify.webapi.android.models.PlaylistSimple
 import kotlinx.android.synthetic.main.floating_action_button_menu.*
@@ -42,10 +43,10 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         initAlarmFromArguments(arguments)
 
         createEditAlarmViewModel = ViewModelProvider(this).get(CreateEditAlarmViewModel::class.java)
-        createEditAlarmViewModel.timeChangedAlarmLiveData.observe(this, {
-            val timeRemainingInfo = DayUtil.getTimeRemaining(it)
+        createEditAlarmViewModel.timeChangedAlarmLiveData.observe(this, { updatedAlarm ->
+            val timeRemainingInfo = DateTimeUtils.getTimeRemaining(updatedAlarm)
             timeRemainingTextView.text =
-                DayUtil.getRemainingTimeText(timeRemainingTextView.context, timeRemainingInfo)
+                DateTimeUtils.getRemainingTimeText(timeRemainingTextView.context, timeRemainingInfo)
         })
 
         createEditAlarmViewModel.alarmMetadataLiveData.observe(this, {
@@ -78,10 +79,62 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         return R.layout.fragment_create_edit_alarm
     }
 
-    private fun updateViewsFromAlarm(alarm: Alarm) {
-        hourNumberPicker.value = alarm.hour
+    private fun initTimePicker(is24HourFormat: Boolean) {
+        context?.let {
+            val face = ResourcesCompat.getFont(it, R.font.montserrat_regular)
+            hourNumberPicker.setSelectedTypeface(face)
+            minuteNumberPicker.setSelectedTypeface(face)
+            hourNumberPicker.typeface = face
+            minuteNumberPicker.typeface = face
+            hourNumberPicker.formatter = NumberPicker.getTwoDigitFormatter()
+            minuteNumberPicker.formatter = NumberPicker.getTwoDigitFormatter()
+
+            if (is24HourFormat) {
+                amPmContainer.visibility = View.GONE
+                hourNumberPicker.maxValue = it.resources.getInteger(R.integer.format_24_hour_max)
+                hourNumberPicker.minValue = it.resources.getInteger(R.integer.format_24_hour_min)
+            } else {
+                amPmContainer.visibility = View.VISIBLE
+                hourNumberPicker.maxValue = it.resources.getInteger(R.integer.format_12_hour_max)
+                hourNumberPicker.minValue = it.resources.getInteger(R.integer.format_12_hour_min)
+            }
+        }
+    }
+
+    private fun configureTimePickerNow(is24HourFormat: Boolean) {
+        val calendar = Calendar.getInstance()
+        minuteNumberPicker.value = DateTimeUtils.getCurrentMinute(calendar)
+
+        if (is24HourFormat) {
+            hourNumberPicker.value = DateTimeUtils.getCurrentHourOfDay(calendar)
+        } else {
+            val amPM = calendar.get(Calendar.AM_PM)
+            if (amPM == Calendar.AM) {
+                amRadioButton.isChecked = true
+                pmRadioButton.isChecked = false
+            } else {
+                amRadioButton.isChecked = false
+                pmRadioButton.isChecked = true
+            }
+            hourNumberPicker.value = DateTimeUtils.getCurrentHour(calendar)
+        }
+    }
+
+    private fun configureTimePickerFromAlarm(alarm: Alarm, is24HourFormat: Boolean) {
+        val alarmHour = alarm.hour
+
+        hourNumberPicker.value = if (is24HourFormat) {
+            alarmHour
+        } else {
+            DateTimeUtils.get12HourFormatFrom24HourFormat(alarmHour)
+        }
         minuteNumberPicker.value = alarm.minute
 
+        amRadioButton.isChecked = DateTimeUtils.isAM(alarmHour)
+        pmRadioButton.isChecked = !DateTimeUtils.isAM(alarmHour)
+    }
+
+    private fun configureViewsFromAlarm(alarm: Alarm) {
         labelEditText.setText(alarm.label)
 
         mondayToggle.isChecked = alarm.monday
@@ -98,35 +151,37 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         createEditAlarmViewModel.alarmMetadataLiveData.value = alarm.metadata
     }
 
-    private fun initTimePicker() {
-        context?.let {
-            val face = ResourcesCompat.getFont(it, R.font.montserrat_regular)
-            hourNumberPicker.setSelectedTypeface(face)
-            minuteNumberPicker.setSelectedTypeface(face)
-            hourNumberPicker.typeface = face
-            minuteNumberPicker.typeface = face
+    private fun setAlarmHour(is24HourFormat: Boolean, hour: Int) {
+        alarm.hour = if (is24HourFormat) {
+            hour
+        } else {
+            DateTimeUtils.get24HourFormatFrom12HourFormat(
+                hour,
+                amRadioButton.isChecked
+            )
         }
+    }
 
-        val calendar = Calendar.getInstance()
-        hourNumberPicker.value = DayUtil.getCurrentHour(calendar)
-        minuteNumberPicker.value = DayUtil.getCurrentMinute(calendar)
-
-        hourNumberPicker.formatter = NumberPicker.getTwoDigitFormatter()
-        minuteNumberPicker.formatter = NumberPicker.getTwoDigitFormatter()
+    private fun setAlarmMinute(minute: Int) {
+        alarm.minute = minute
     }
 
     override fun configureViews(savedInstanceState: Bundle?) {
-        initTimePicker()
+        val is24HourFormat = DateFormat.is24HourFormat(context)
+
+        initTimePicker(is24HourFormat)
 
         // If we're editing an alarm, we set time/minute on the time picker
         if (alarm.id != Alarm.NO_ID) {
-            // Update views before any listeners are set
-            updateViewsFromAlarm(alarm)
-            // Also edit negative button
+            configureTimePickerFromAlarm(alarm, is24HourFormat)
+            // Set views data before any listeners are set
+            configureViewsFromAlarm(alarm)
+            // Also show negative button (delete button)
             negativeAlarmButton.visibility = View.VISIBLE
         } else {
-            alarm.hour = hourNumberPicker.value
-            alarm.minute = minuteNumberPicker.value
+            configureTimePickerNow(is24HourFormat)
+            setAlarmHour(is24HourFormat, hourNumberPicker.value)
+            setAlarmMinute(minuteNumberPicker.value)
             negativeAlarmButton.visibility = View.GONE
         }
 
@@ -156,12 +211,24 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         }
 
         hourNumberPicker.setOnValueChangedListener { _, _, hour ->
-            alarm.hour = hour
+            setAlarmHour(is24HourFormat, hour)
             createEditAlarmViewModel.timeChangedAlarmLiveData.value = alarm
         }
 
         minuteNumberPicker.setOnValueChangedListener { _, _, minute ->
-            alarm.minute = minute
+            setAlarmMinute(minute)
+            createEditAlarmViewModel.timeChangedAlarmLiveData.value = alarm
+        }
+
+        amRadioButton.setOnCheckedChangeListener { _, _ ->
+            setAlarmHour(is24HourFormat, hourNumberPicker.value)
+            setAlarmMinute(minuteNumberPicker.value)
+            createEditAlarmViewModel.timeChangedAlarmLiveData.value = alarm
+        }
+
+        pmRadioButton.setOnCheckedChangeListener { _, _ ->
+            setAlarmHour(is24HourFormat, hourNumberPicker.value)
+            setAlarmMinute(minuteNumberPicker.value)
             createEditAlarmViewModel.timeChangedAlarmLiveData.value = alarm
         }
 

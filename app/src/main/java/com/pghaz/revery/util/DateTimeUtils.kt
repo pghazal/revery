@@ -6,7 +6,7 @@ import com.pghaz.revery.alarm.model.app.Alarm
 import java.util.*
 import kotlin.math.abs
 
-object DayUtil {
+object DateTimeUtils {
 
     fun getTimeRemaining(alarm: Alarm): TimeRemainingInfo {
         val currentTimeInMillis = System.currentTimeMillis()
@@ -185,7 +185,39 @@ object DayUtil {
     }
 
     fun getCurrentHour(calendar: Calendar): Int {
+        return calendar.get(Calendar.HOUR)
+    }
+
+    fun getCurrentHourOfDay(calendar: Calendar): Int {
         return calendar.get(Calendar.HOUR_OF_DAY)
+    }
+
+    fun get12HourFormatFrom24HourFormat(_24HourFormat: Int): Int {
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.HOUR_OF_DAY, _24HourFormat)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+
+        return calendar.get(Calendar.HOUR)
+    }
+
+    fun get24HourFormatFrom12HourFormat(_12HourFormat: Int, isAM: Boolean): Int {
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.HOUR, _12HourFormat)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.AM_PM, if (isAM) Calendar.AM else Calendar.PM)
+
+        return calendar.get(Calendar.HOUR_OF_DAY)
+    }
+
+    fun isAM(_24HourFormat: Int): Boolean {
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.HOUR_OF_DAY, _24HourFormat)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+
+        return calendar.get(Calendar.AM_PM) == Calendar.AM
     }
 
     fun getCurrentMinute(calendar: Calendar): Int {

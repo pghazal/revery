@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="format_24_hour_max">23</integer>
+    <integer name="format_12_hour_max">12</integer>
+
+    <integer name="format_24_hour_min">0</integer>
+    <integer name="format_12_hour_min">1</integer>
+</resources>

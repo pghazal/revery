@@ -10,7 +10,7 @@ import com.pghaz.revery.alarm.broadcastreceiver.AlarmBroadcastReceiver
 import com.pghaz.revery.alarm.model.app.Alarm
 import com.pghaz.revery.alarm.model.app.AlarmMetadata
 import com.pghaz.revery.alarm.model.room.RAlarmType
-import com.pghaz.revery.util.DayUtil
+import com.pghaz.revery.util.DateTimeUtils
 import java.util.*
 
 object AlarmHandler {
@@ -31,7 +31,7 @@ object AlarmHandler {
         // add delay in seconds
         calendar.add(Calendar.SECOND, delayInSeconds)
 
-        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+        val hour = DateTimeUtils.getCurrentHourOfDay(calendar)
         val minute = calendar.get(Calendar.MINUTE)
         val second = calendar.get(Calendar.SECOND)
 
@@ -91,7 +91,7 @@ object AlarmHandler {
 
             // if alarm time has already passed, increment day by 1
             if (calendar.timeInMillis <= now) {
-                DayUtil.incrementByOneDay(calendar)
+                DateTimeUtils.incrementByOneDay(calendar)
             }
 
             if (!alarm.recurring) {
@@ -115,7 +115,7 @@ object AlarmHandler {
                 val toastText = String.format(
                     Locale.getDefault(),
                     "Alarm scheduled for %s at %02d:%02d with id %d",
-                    DayUtil.getDaysText(calendar[Calendar.DAY_OF_WEEK], alarm),
+                    DateTimeUtils.getDaysText(calendar[Calendar.DAY_OF_WEEK], alarm),
                     alarm.hour,
                     alarm.minute,
                     alarm.id
@@ -155,7 +155,7 @@ object AlarmHandler {
         // add delay in minutes
         calendar.add(Calendar.MINUTE, delayInMinutes)
 
-        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+        val hour = DateTimeUtils.getCurrentHourOfDay(calendar)
         val minute = calendar.get(Calendar.MINUTE)
 
         val snoozeAlarm =
