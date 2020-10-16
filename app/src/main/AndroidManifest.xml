@@ -17,6 +17,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
+            android:configChanges="orientation|screenSize"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,11 +27,14 @@
 
         <activity
             android:name=".alarm.RingActivity"
+            android:configChanges="orientation|screenSize"
             android:keepScreenOn="true"
             android:showOnLockScreen="true"
             android:theme="@style/Theme.Activity.FullScreen" />
 
-        <activity android:name=".spotify.SpotifyActivity" />
+        <activity
+            android:name=".spotify.SpotifyActivity"
+            android:configChanges="orientation|screenSize" />
 
         <receiver android:name="com.pghaz.revery.alarm.broadcastreceiver.AlarmBroadcastReceiver">
             <intent-filter>
