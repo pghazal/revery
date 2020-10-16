@@ -104,6 +104,8 @@ class DefaultPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
             it.release()
         }
 
+        mediaPlayer = null
+
         abandonAudioFocus()
     }
 
