@@ -121,6 +121,7 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
             context.logError("coroutinesScope.launch -> release()")
             SpotifyAppRemote.disconnect(getAppRemote())
 
+            spotifyAppRemote = null
             job.cancel()
         }
     }
