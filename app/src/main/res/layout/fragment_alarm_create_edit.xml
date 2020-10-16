@@ -314,6 +314,18 @@
                     android:textOn="@string/fade_in"
                     tools:checked="true" />
 
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/moreOptionsButton"
+                    style="@style/ReveryButton"
+                    android:layout_width="@dimen/toggle_size"
+                    android:layout_height="@dimen/toggle_size"
+                    android:layout_marginStart="@dimen/half_base_margin"
+                    android:contentDescription="@string/more_options"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_more_vertical"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
+
             </LinearLayout>
 
             <RelativeLayout

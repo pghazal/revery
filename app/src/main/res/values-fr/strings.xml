@@ -57,6 +57,10 @@
     <string name="alarm_of">Alarme:</string>
     <string name="alarm_less_than_one_minute">moins d\'une minute</string>
 
+    <string name="more_options">plus d\'options</string>
+    <string name="alarm_shuffle">lecture aléatoire</string>
+    <string name="alarm_keep_playing">continuer à jouer après l\'arrêt de l\'alarme</string>
+
     <!-- TIME REMAINING TEXTS -->
     <plurals name="time_remaining_days">
         <item quantity="one">%d jour</item>

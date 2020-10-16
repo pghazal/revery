@@ -17,13 +17,14 @@ import com.pghaz.revery.alarm.model.room.RAlarmType
 import com.pghaz.revery.alarm.viewmodel.CreateEditAlarmViewModel
 import com.pghaz.revery.animation.AnimatorUtils
 import com.pghaz.revery.image.ImageLoader
+import com.pghaz.revery.settings.SettingsFragment
 import com.pghaz.revery.spotify.SpotifyActivity
 import com.pghaz.revery.util.Arguments
 import com.pghaz.revery.util.DateTimeUtils
 import com.shawnlin.numberpicker.NumberPicker
 import kaaes.spotify.webapi.android.models.PlaylistSimple
 import kotlinx.android.synthetic.main.floating_action_button_menu.*
-import kotlinx.android.synthetic.main.fragment_create_edit_alarm.*
+import kotlinx.android.synthetic.main.fragment_alarm_create_edit.*
 import java.util.*
 
 class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
@@ -72,11 +73,17 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
                 imageView.visibility = View.VISIBLE
                 ImageLoader.get().load(it.imageUrl).into(imageView)
             }
+
+            if (it.type == RAlarmType.DEFAULT) {
+                moreOptionsButton.visibility = View.GONE
+            } else {
+                moreOptionsButton.visibility = View.VISIBLE
+            }
         })
     }
 
     override fun getLayoutResId(): Int {
-        return R.layout.fragment_create_edit_alarm
+        return R.layout.fragment_alarm_create_edit
     }
 
     private fun initTimePicker(is24HourFormat: Boolean) {
@@ -307,6 +314,19 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         defaultRingtoneButton.setOnClickListener {
             closeMusicMenu()
             selectDefaultRingtone()
+        }
+
+        moreOptionsButton.setOnClickListener {
+            showMoreOptionsFragment()
+        }
+    }
+
+    private fun showMoreOptionsFragment() {
+        var fragment =
+            childFragmentManager.findFragmentByTag(SettingsFragment.TAG) as MoreOptionsAlarmFragment?
+        if (fragment == null) {
+            fragment = MoreOptionsAlarmFragment.newInstance(getString(R.string.more_options))
+            fragment.show(childFragmentManager, MoreOptionsAlarmFragment.TAG)
         }
     }
 
