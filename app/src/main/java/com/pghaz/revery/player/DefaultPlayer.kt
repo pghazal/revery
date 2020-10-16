@@ -11,7 +11,7 @@ import com.pghaz.revery.extension.logError
 class DefaultPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
     AbstractPlayer(context, AudioManager.STREAM_ALARM, shouldUseDeviceVolume) {
 
-    private lateinit var mediaPlayer: MediaPlayer
+    private var mediaPlayer: MediaPlayer? = null
 
     private val onAudioFocusChangeListener =
         AudioManager.OnAudioFocusChangeListener { _ ->
@@ -29,21 +29,21 @@ class DefaultPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
 
     override fun init() {
         mediaPlayer = MediaPlayer()
-        mediaPlayer.isLooping = true
-        mediaPlayer.setAudioAttributes(
+        mediaPlayer!!.isLooping = true
+        mediaPlayer!!.setAudioAttributes(
             AudioAttributes.Builder()
                 .setUsage(if (streamType == AudioManager.STREAM_ALARM) AudioAttributes.USAGE_ALARM else AudioAttributes.USAGE_MEDIA)
                 .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                 .build()
         )
 
-        mediaPlayer.setOnPreparedListener {
+        mediaPlayer!!.setOnPreparedListener {
             onPlayerInitializedListener?.onPlayerInitialized()
         }
     }
 
     override fun prepare(uri: String) {
-        mediaPlayer.setDataSource(context, Uri.parse(uri))
+        mediaPlayer?.setDataSource(context, Uri.parse(uri))
 
         // Request audio focus for play back
         val result = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -57,7 +57,7 @@ class DefaultPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
         }
 
         if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-            mediaPlayer.prepareAsync()
+            mediaPlayer?.prepareAsync()
         } else {
             context.logError("# Request audio focus failed")
         }
@@ -68,7 +68,7 @@ class DefaultPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
             initFadeIn()
         }
 
-        mediaPlayer.start()
+        mediaPlayer?.start()
 
         if (fadeIn) {
             fadeIn()
@@ -76,7 +76,11 @@ class DefaultPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
     }
 
     override fun pause() {
-        mediaPlayer.pause()
+        mediaPlayer?.let {
+            if (it.isPlaying) {
+                it.pause()
+            }
+        }
 
         if (fadeIn) {
             resetVolumeFromFadeIn()
@@ -92,10 +96,13 @@ class DefaultPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
     }
 
     override fun release() {
-        if (mediaPlayer.isPlaying) {
-            mediaPlayer.stop()
+        mediaPlayer?.let {
+            if (it.isPlaying) {
+                it.stop()
+            }
+            it.reset()
+            it.release()
         }
-        mediaPlayer.release()
 
         abandonAudioFocus()
     }
