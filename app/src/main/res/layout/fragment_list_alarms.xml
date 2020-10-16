@@ -25,7 +25,7 @@
         app:backgroundTint="@color/colorAccent"
         app:fabSize="normal"
         app:layout_anchorGravity="center|bottom"
-        app:layout_behavior=".view.ScrollAwareFABBehavior"
+        app:layout_behavior="com.pghaz.revery.view.ScrollAwareFABBehavior"
         app:tint="@android:color/white" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

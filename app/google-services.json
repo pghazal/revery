@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "860790532800",
+    "firebase_url": "https://revery-cafe.firebaseio.com",
+    "project_id": "revery-cafe",
+    "storage_bucket": "revery-cafe.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:860790532800:android:2ee5d800241cca169a1b25",
+        "android_client_info": {
+          "package_name": "com.pghaz.revery"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "860790532800-hle41kt24u0fbdj8nfs63ak3ph4g4thi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQZVWQJiiO6eU4Z2p5FwbfbZG2rUaStBA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "860790532800-hle41kt24u0fbdj8nfs63ak3ph4g4thi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:860790532800:android:4a9f927ba4a5ab7c9a1b25",
+        "android_client_info": {
+          "package_name": "com.pghaz.revery.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "860790532800-hle41kt24u0fbdj8nfs63ak3ph4g4thi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQZVWQJiiO6eU4Z2p5FwbfbZG2rUaStBA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "860790532800-hle41kt24u0fbdj8nfs63ak3ph4g4thi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

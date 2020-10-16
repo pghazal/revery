@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- GENERAL -->
-    <string name="app_name">Revery</string>
     <string name="sleep_text">coucher</string>
     <string name="alarm_text">réveil</string>
 

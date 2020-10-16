@@ -1,6 +1,5 @@
 <resources>
     <!-- GENERAL -->
-    <string name="app_name">Revery</string>
     <string name="sleep_text">sleep</string>
     <string name="alarm_text">alarms</string>
 
