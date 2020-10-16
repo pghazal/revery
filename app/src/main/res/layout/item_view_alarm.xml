@@ -31,12 +31,12 @@
             android:layout_marginStart="@dimen/half_base_margin"
             android:layout_marginTop="-4dp"
             android:layout_toEndOf="@+id/imageView"
-            android:fontFamily="@font/montserrat_semibold"
+            android:fontFamily="@font/montserrat_semi_bold"
             android:includeFontPadding="false"
             android:lines="1"
             android:textColor="@color/selector_alarm_time_text_color"
             android:textSize="28sp"
-            app:fontFamily="@font/montserrat_semibold"
+            app:fontFamily="@font/montserrat_semi_bold"
             tools:text="15:40" />
 
         <androidx.appcompat.widget.AppCompatTextView

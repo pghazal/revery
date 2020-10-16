@@ -351,13 +351,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
-                        android:fontFamily="@font/montserrat_semibold"
+                        android:fontFamily="@font/montserrat_semi_bold"
                         android:maxLines="2"
                         android:textColor="@android:color/white"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:visibility="gone"
-                        app:fontFamily="@font/montserrat_semibold"
+                        app:fontFamily="@font/montserrat_semi_bold"
                         tools:text="title"
                         tools:visibility="visible" />
 
