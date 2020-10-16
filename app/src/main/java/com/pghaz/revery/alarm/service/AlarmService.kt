@@ -62,9 +62,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
             intent?.let {
                 if (ACTION_ALARM_SERVICE_SHOULD_STOP == it.action) {
                     logError(ACTION_ALARM_SERVICE_SHOULD_STOP)
-                    vibrator.cancel()
-
-                    player.pause()
+                    pausePlayerAndVibrator()
                     player.release()
 
                     stopSelf() // will call onDestroy()
@@ -127,28 +125,21 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
 
             val shouldUseDeviceVolume = SettingsHandler.getShouldUseDeviceVolume(this)
 
-            player = when (alarmMetadata.type) {
-                RAlarmType.DEFAULT -> {
-                    DefaultPlayer(this, shouldUseDeviceVolume)
-                }
-
-                RAlarmType.SPOTIFY -> {
-                    SpotifyPlayer(this, shouldUseDeviceVolume)
-                }
+            player = if (!this::player.isInitialized) {
+                getInitializedPlayer(alarmMetadata.type, shouldUseDeviceVolume)
+            } else {
+                pausePlayerAndVibrator()
+                getInitializedPlayer(alarmMetadata.type, shouldUseDeviceVolume)
             }
-
-            player.onPlayerInitializedListener = this
 
             when (alarmMetadata.type) {
                 RAlarmType.DEFAULT -> {
-                    (player as DefaultPlayer).init()
                     (player as DefaultPlayer).fadeIn = alarm.fadeIn
                     (player as DefaultPlayer).fadeInDuration = fadeInDuration
                     (player as DefaultPlayer).prepare(alarmMetadata.uri!!)
                 }
 
                 RAlarmType.SPOTIFY -> {
-                    (player as SpotifyPlayer).init()
                     (player as SpotifyPlayer).fadeIn = alarm.fadeIn
                     (player as SpotifyPlayer).fadeInDuration = fadeInDuration
                     (player as SpotifyPlayer).prepare(alarmMetadata.uri!!)
@@ -161,6 +152,41 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
         }
 
         return START_STICKY
+    }
+
+    private fun getInitializedPlayer(
+        type: RAlarmType,
+        shouldUseDeviceVolume: Boolean
+    ): AbstractPlayer {
+        return when (type) {
+            RAlarmType.DEFAULT -> {
+                DefaultPlayer(this, shouldUseDeviceVolume)
+            }
+
+            RAlarmType.SPOTIFY -> {
+                SpotifyPlayer(this, shouldUseDeviceVolume)
+            }
+        }.apply {
+            this.onPlayerInitializedListener = this@AlarmService
+
+            when (type) {
+                RAlarmType.DEFAULT -> {
+                    (this as DefaultPlayer).init()
+                }
+
+                RAlarmType.SPOTIFY -> {
+                    (this as SpotifyPlayer).init()
+                }
+            }
+        }
+    }
+
+    /**
+     * We don't call ´player.release()´ because we may need the player later
+     */
+    private fun pausePlayerAndVibrator() {
+        vibrator.cancel()
+        player.pause()
     }
 
     private fun safeInitMetadataIfNeeded(nullableMetadata: AlarmMetadata?): AlarmMetadata {
@@ -207,18 +233,19 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
 
         IntentUtils.safePutAlarmIntoIntent(notificationIntent, alarm)
 
-        val pendingIntent = PendingIntent.getActivity(
+        val notificationRequestCode = alarm.id.toInt()
+        val notificationPendingIntent = PendingIntent.getActivity(
             this,
-            alarm.id.toInt(),
+            notificationRequestCode,
             notificationIntent,
-            0
+            PendingIntent.FLAG_UPDATE_CURRENT
         )
 
         val snoozeIntent = AlarmBroadcastReceiver.getSnoozeActionIntent(this, alarm)
         val snoozePendingIntent: PendingIntent =
             PendingIntent.getBroadcast(
                 this,
-                alarm.id.toInt(),
+                notificationRequestCode,
                 snoozeIntent,
                 PendingIntent.FLAG_CANCEL_CURRENT
             )
@@ -233,7 +260,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
         val stopPendingIntent: PendingIntent =
             PendingIntent.getBroadcast(
                 this,
-                alarm.id.toInt(),
+                notificationRequestCode,
                 stopIntent,
                 PendingIntent.FLAG_CANCEL_CURRENT
             )
@@ -251,13 +278,14 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setContentTitle(String.format("%s %s", getString(R.string.alarm_of), time))
             .setContentText(alarm.label)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setContentIntent(pendingIntent)
+            .setSmallIcon(R.drawable.ic_alarm) // TODO change icon
+            .setContentIntent(notificationPendingIntent)
             .setPriority(NotificationCompat.PRIORITY_MAX)
-            .setFullScreenIntent(pendingIntent, true)
+            .setFullScreenIntent(notificationPendingIntent, true)
             .addAction(stopActionNotification)
             .addAction(snoozeActionNotification)
             .setColor(ContextCompat.getColor(this, R.color.colorAccent))
+            .setAutoCancel(false)
             .build()
     }
 
