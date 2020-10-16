@@ -6,23 +6,45 @@
     android:layout_height="wrap_content"
     tools:background="@color/colorPrimary">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/timeTextView"
+    <LinearLayout
+        android:id="@+id/timeContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:fontFamily="@font/montserrat_semibold"
-        android:lines="1"
-        android:textColor="@android:color/white"
-        android:textSize="60sp"
-        app:fontFamily="@font/montserrat_semibold"
-        tools:text="15:40" />
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/timeTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:fontFamily="@font/montserrat_semibold"
+            android:textColor="@android:color/white"
+            android:textSize="60sp"
+            app:fontFamily="@font/montserrat_semibold"
+            tools:text="15:40" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/amPmTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="@dimen/half_base_margin"
+            android:fontFamily="@font/montserrat_semibold"
+            android:textColor="@android:color/white"
+            android:textSize="30sp"
+            android:visibility="gone"
+            app:fontFamily="@font/montserrat_semibold"
+            tools:text="@string/am"
+            tools:visibility="visible" />
+    </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/dateTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/timeTextView"
+        android:layout_below="@+id/timeContainer"
         android:layout_centerHorizontal="true"
         android:textColor="@android:color/white"
         tools:text="Mercredi, 14 Octobre" />
