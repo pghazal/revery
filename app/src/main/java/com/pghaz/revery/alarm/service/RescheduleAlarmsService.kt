@@ -20,11 +20,14 @@ class RescheduleAlarmsService : LifecycleService() {
         alarmRepository.getAlarmsLiveData().observe(this, { alarms ->
             alarms.forEach {
                 if (it.enabled) {
+                    AlarmHandler.cancelAlarm(this, it)
                     AlarmHandler.scheduleAlarm(this, it)
                 }
             }
+
+            stopSelf()
         })
 
-        return START_STICKY
+        return START_NOT_STICKY
     }
 }

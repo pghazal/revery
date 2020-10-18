@@ -63,6 +63,12 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
 
             startRescheduleAlarmsService(context)
 
+        } else if (Intent.ACTION_TIME_CHANGED == intent.action ||
+            Intent.ACTION_TIMEZONE_CHANGED == intent.action ||
+            Intent.ACTION_DATE_CHANGED == intent.action
+        ) {
+            Toast.makeText(context, "Time changed: rescheduling", Toast.LENGTH_SHORT).show()
+            startRescheduleAlarmsService(context)
         } else if (ACTION_ALARM_SCHEDULE == intent.action) {
             val alarm = IntentUtils.safeGetAlarmFromIntent(intent)
 
