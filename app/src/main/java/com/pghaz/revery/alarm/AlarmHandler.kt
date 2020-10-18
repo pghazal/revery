@@ -3,7 +3,6 @@ package com.pghaz.revery.alarm
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.widget.Toast
 import com.pghaz.revery.BuildConfig
 import com.pghaz.revery.alarm.broadcastreceiver.AlarmBroadcastReceiver
@@ -14,8 +13,6 @@ import com.pghaz.revery.util.DateTimeUtils
 import java.util.*
 
 object AlarmHandler {
-
-    private const val RUN_DAILY = 24 * 60 * 60 * 1000.toLong()
 
     // This is for test purpose only
     fun fireAlarmNow(
@@ -48,6 +45,13 @@ object AlarmHandler {
             hour = hour,
             minute = minute,
             recurring = recurring,
+            monday = true,
+            tuesday = true,
+            wednesday = true,
+            thursday = true,
+            friday = true,
+            saturday = true,
+            sunday = true,
             fadeIn = fadeIn,
             fadeInDuration = fadeInDuration,
             metadata = metadata
@@ -94,31 +98,23 @@ object AlarmHandler {
                 DateTimeUtils.incrementByOneDay(calendar)
             }
 
-            if (!alarm.recurring) {
-                alarmManager.setExactAndAllowWhileIdle(
-                    AlarmManager.RTC_WAKEUP,
-                    calendar.timeInMillis,
-                    alarmPendingIntent
-                )
-            } else {
-                alarmManager.setRepeating(
-                    AlarmManager.RTC_WAKEUP,
-                    calendar.timeInMillis,
-                    RUN_DAILY,
-                    alarmPendingIntent
-                )
-            }
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                calendar.timeInMillis,
+                alarmPendingIntent
+            )
 
             alarm.enabled = true
 
             if (BuildConfig.DEBUG) {
                 val toastText = String.format(
                     Locale.getDefault(),
-                    "Alarm scheduled for %s at %02d:%02d with id %d",
-                    DateTimeUtils.getDaysText(calendar[Calendar.DAY_OF_WEEK], alarm),
+                    "Alarm scheduled for %s at %02d:%02d with id %d. Recurring: %s",
+                    DateTimeUtils.toDay(calendar[Calendar.DAY_OF_WEEK]),
                     alarm.hour,
                     alarm.minute,
-                    alarm.id
+                    alarm.id,
+                    DateTimeUtils.getDaysText(alarm)
                 )
                 Toast.makeText(context, toastText, Toast.LENGTH_LONG).show()
             }
@@ -129,7 +125,8 @@ object AlarmHandler {
         val alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager?
 
         alarmManager?.let {
-            val intent = Intent(context?.applicationContext, AlarmBroadcastReceiver::class.java)
+            val intent = AlarmBroadcastReceiver.getScheduleAlarmActionIntent(context, alarm)
+
             val alarmPendingIntent =
                 PendingIntent.getBroadcast(
                     context?.applicationContext,

@@ -18,13 +18,13 @@ import java.util.*
 class AlarmBroadcastReceiver : BroadcastReceiver() {
 
     companion object {
-        const val ACTION_ALARM_SCHEDULE = "com.pghaz.revery.ACTION_ALARM_SCHEDULE"
+        const val ACTION_ALARM_FIRES = "com.pghaz.revery.ACTION_ALARM_FIRES"
         const val ACTION_ALARM_STOP = "com.pghaz.revery.ACTION_ALARM_STOP"
         const val ACTION_ALARM_SNOOZE = "com.pghaz.revery.ACTION_ALARM_SNOOZE"
 
         fun getScheduleAlarmActionIntent(context: Context?, alarm: Alarm): Intent {
             val intent = Intent(context?.applicationContext, AlarmBroadcastReceiver::class.java)
-            intent.action = ACTION_ALARM_SCHEDULE
+            intent.action = ACTION_ALARM_FIRES
             // This is a workaround due to problems with Parcelables into Intent
             // See: https://stackoverflow.com/questions/39478422/pendingintent-getbroadcast-lost-parcelable-data
 
@@ -69,13 +69,17 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
         ) {
             Toast.makeText(context, "Time changed: rescheduling", Toast.LENGTH_SHORT).show()
             startRescheduleAlarmsService(context)
-        } else if (ACTION_ALARM_SCHEDULE == intent.action) {
+
+        } else if (ACTION_ALARM_FIRES == intent.action) {
             val alarm = IntentUtils.safeGetAlarmFromIntent(intent)
 
             if (!alarm.recurring) {
                 startAlarmService(context, alarm)
-            } else if (alarmIsToday(alarm)) {
+            } else if (alarm.recurring && alarmIsToday(alarm)) {
                 startAlarmService(context, alarm)
+
+                // Reschedule next alarm to same time the day after
+                AlarmHandler.scheduleAlarm(context, alarm)
             }
 
         } else if (ACTION_ALARM_SNOOZE == intent.action) {

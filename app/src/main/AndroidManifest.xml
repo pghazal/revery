@@ -36,7 +36,9 @@
             android:name=".spotify.SpotifyActivity"
             android:configChanges="orientation|screenSize" />
 
-        <receiver android:name="com.pghaz.revery.alarm.broadcastreceiver.AlarmBroadcastReceiver">
+        <receiver
+            android:name="com.pghaz.revery.alarm.broadcastreceiver.AlarmBroadcastReceiver"
+            android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.TIMEZONE_CHANGED" />

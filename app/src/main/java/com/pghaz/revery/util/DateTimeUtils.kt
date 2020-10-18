@@ -241,10 +241,7 @@ object DateTimeUtils {
     }
 
     // ´getDaysText()´ Used for debug only
-    fun getDaysText(day: Int, alarm: Alarm): String? {
-        if (!alarm.recurring) {
-            return toDay(day)
-        }
+    fun getDaysText(alarm: Alarm): String? {
         var days = ""
         if (alarm.monday) {
             days += "Mo "
