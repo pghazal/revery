@@ -97,44 +97,38 @@ class AlarmRepository(application: Application) {
         val mediatorLiveData = MediatorLiveData<List<RAbstractAlarm>>()
 
         mediatorLiveData.addSource(alarmsLiveData) {
-            AlarmDatabase.databaseCoroutinesScope.launch {
-                val alarms = ArrayList<RAbstractAlarm>()
-                alarms.addAll(it)
+            val alarms = ArrayList<RAbstractAlarm>()
+            alarms.addAll(it)
 
-                if (spotifyAlarmsLiveData.value != null) {
-                    alarms.addAll(spotifyAlarmsLiveData.value!!)
-                }
-
-                mediatorLiveData.postValue(alarms)
+            if (spotifyAlarmsLiveData.value != null) {
+                alarms.addAll(spotifyAlarmsLiveData.value!!)
             }
+
+            mediatorLiveData.postValue(alarms)
         }
 
         mediatorLiveData.addSource(spotifyAlarmsLiveData) {
-            AlarmDatabase.databaseCoroutinesScope.launch {
-                val alarms = ArrayList<RAbstractAlarm>()
-                alarms.addAll(it)
+            val alarms = ArrayList<RAbstractAlarm>()
+            alarms.addAll(it)
 
-                if (alarmsLiveData.value != null) {
-                    alarms.addAll(alarmsLiveData.value!!)
-                }
-
-                mediatorLiveData.postValue(alarms)
+            if (alarmsLiveData.value != null) {
+                alarms.addAll(alarmsLiveData.value!!)
             }
+
+            mediatorLiveData.postValue(alarms)
         }
 
         return Transformations.map(mediatorLiveData) { alarmsFromDb ->
             val result = ArrayList<AbstractAlarm>()
 
-            AlarmDatabase.databaseCoroutinesScope.launch {
-                alarmsFromDb.forEach { abstractAlarm ->
-                    when (abstractAlarm) {
-                        is RAlarm -> result.add(Alarm.fromDatabaseModel(abstractAlarm))
-                        is RSpotifyAlarm -> result.add(SpotifyAlarm.fromDatabaseModel(abstractAlarm))
-                    }
+            alarmsFromDb.forEach { abstractAlarm ->
+                when (abstractAlarm) {
+                    is RAlarm -> result.add(Alarm.fromDatabaseModel(abstractAlarm))
+                    is RSpotifyAlarm -> result.add(SpotifyAlarm.fromDatabaseModel(abstractAlarm))
                 }
-
-                result.sortBy { it.id }
             }
+
+            result.sortBy { it.id }
 
             return@map result
         }
