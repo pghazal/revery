@@ -30,19 +30,23 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
     private val coroutinesScope: CoroutineScope = CoroutineScope(job + Dispatchers.Main)
     private val connectionStateCallbacks = mutableListOf<ConnectionStateCallback>()
 
-    private lateinit var currentUri: String
+    override fun init(playerListener: PlayerListener?) {
+        super.init(playerListener)
 
-    override fun init() {
         connectionParams = ConnectionParams.Builder(context.getString(R.string.spotify_client_id))
             .setRedirectUri(context.getString(R.string.spotify_redirect_uri))
             .showAuthView(false)
             .build()
     }
 
-    override fun prepare(uri: String) {
+    override fun prepareAsync(uri: String?) {
         // "spotify:playlist:3H8dsoJvkH7lUkaQlUNjPJ"
-        currentUri = uri
+        currentUri = uri!!
         SpotifyAppRemote.connect(context, connectionParams, this)
+    }
+
+    override fun prepare(uri: String?) {
+        // do nothing
     }
 
     override fun onConnected(spotifyAppRemote: SpotifyAppRemote) {
@@ -52,7 +56,7 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
 
         this.spotifyAppRemote?.playerApi?.setShuffle(true) // TODO: settings
 
-        onPlayerInitializedListener?.onPlayerInitialized()
+        playerListener?.onPlayerInitialized()
 
         callSuspendFunctionStateCallbacks(ConnectionState.CONNECTED)
     }
@@ -64,8 +68,10 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
 
         if (error is NotLoggedInException || error is UserNotAuthorizedException) {
             // Show login button and trigger the login flow from auth library when clicked
+            playerListener?.onPlayerError(PlayerError.SpotifyPlayerUserNotAuthorized(error))
         } else if (error is CouldNotFindSpotifyApp) {
             // Show button to download Spotify
+            playerListener?.onPlayerError(PlayerError.SpotifyPlayerNotInstalled(error))
         } else if (error is SpotifyConnectionTerminatedException) {
             SpotifyAppRemote.connect(context, connectionParams, this)
         } else {
@@ -161,6 +167,8 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
                         }
                         ConnectionState.DISCONNECTED -> {
                             context.logError("callback DISCONNECTED -> cancel()")
+                            val throwable = Throwable(this@SpotifyPlayer.toString())
+                            playerListener?.onPlayerError(PlayerError.SpotifyPlayerUnknown(throwable))
                             continuation.cancel()
                         }
                     }
@@ -170,6 +178,12 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
             context.logError("Add ConnectionStateCallback to the list")
             connectionStateCallbacks.add(callback)
         }
+    }
+
+    override fun toString(): String {
+        return "SpotifyPlayer(isInitialized=$isInitialized," +
+                " connectionState=$connectionState)" +
+                " ${super.toString()}"
     }
 
     interface ConnectionStateCallback {

@@ -12,6 +12,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleService
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pghaz.revery.MainActivity
 import com.pghaz.revery.R
 import com.pghaz.revery.alarm.AlarmHandler
@@ -24,6 +25,7 @@ import com.pghaz.revery.application.ReveryApplication
 import com.pghaz.revery.extension.logError
 import com.pghaz.revery.player.AbstractPlayer
 import com.pghaz.revery.player.DefaultPlayer
+import com.pghaz.revery.player.PlayerError
 import com.pghaz.revery.player.SpotifyPlayer
 import com.pghaz.revery.settings.SettingsHandler
 import com.pghaz.revery.util.IntentUtils
@@ -31,7 +33,7 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
-class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListener {
+class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
 
     companion object {
         const val ACTION_ALARM_SERVICE_SHOULD_STOP =
@@ -117,36 +119,34 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
             alarm = IntentUtils.safeGetAlarmFromIntent(it)
             val fadeInDuration = SettingsHandler.getFadeInDuration(this)
 
-            safeAlarmIfNeeded(alarm)
-
             notification = buildAlarmNotification(alarm)
             disableOneShotAlarm(alarm)
 
             val shouldUseDeviceVolume = SettingsHandler.getShouldUseDeviceVolume(this)
 
-            player = if (!this::player.isInitialized) {
-                getInitializedPlayer(alarm, shouldUseDeviceVolume)
-            } else {
-                pausePlayerAndVibrator()
-                getInitializedPlayer(alarm, shouldUseDeviceVolume)
-            }
-
-            when (alarm) {
-                is Alarm -> {
-                    (player as DefaultPlayer).fadeIn = alarm.fadeIn
-                    (player as DefaultPlayer).fadeInDuration = fadeInDuration
-                    (player as DefaultPlayer).prepare(alarm.uri!!)
+            try {
+                player = if (!this::player.isInitialized) {
+                    getInitializedPlayer(alarm, shouldUseDeviceVolume)
+                } else {
+                    pausePlayerAndVibrator()
+                    getInitializedPlayer(alarm, shouldUseDeviceVolume)
                 }
 
-                is SpotifyAlarm -> {
-                    (player as SpotifyPlayer).fadeIn = alarm.fadeIn
-                    (player as SpotifyPlayer).fadeInDuration = fadeInDuration
-                    (player as SpotifyPlayer).prepare(alarm.uri!!)
-                }
-            }
+                when (alarm) {
+                    is Alarm -> {
+                        (player as DefaultPlayer).fadeIn = alarm.fadeIn
+                        (player as DefaultPlayer).fadeInDuration = fadeInDuration
+                        (player as DefaultPlayer).prepareAsync(alarm.uri)
+                    }
 
-            if (alarm.vibrate) {
-                vibrate()
+                    is SpotifyAlarm -> {
+                        (player as SpotifyPlayer).fadeIn = alarm.fadeIn
+                        (player as SpotifyPlayer).fadeInDuration = fadeInDuration
+                        (player as SpotifyPlayer).prepareAsync(alarm.uri)
+                    }
+                }
+            } catch (exception: Exception) {
+                onPlayerError(PlayerError.Initialization(exception))
             }
         }
 
@@ -169,15 +169,13 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
                 throw IllegalArgumentException("getInitializedPlayer(): invalid alarm type")
             }
         }.apply {
-            this.onPlayerInitializedListener = this@AlarmService
-
             when (alarm) {
                 is Alarm -> {
-                    (this as DefaultPlayer).init()
+                    (this as DefaultPlayer).init(this@AlarmService)
                 }
 
                 is SpotifyAlarm -> {
-                    (this as SpotifyPlayer).init()
+                    (this as SpotifyPlayer).init(this@AlarmService)
                 }
             }
         }
@@ -191,21 +189,36 @@ class AlarmService : LifecycleService(), AbstractPlayer.OnPlayerInitializedListe
         player.pause()
     }
 
-    private fun safeAlarmIfNeeded(alarm: AbstractAlarm): AbstractAlarm {
-        if (alarm.uri != null) {
-            return alarm
-        }
-
-        // default ringtone
-        alarm.uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM).toString()
-
-        return alarm
-    }
-
     override fun onPlayerInitialized() {
         startForeground(1, notification)
 
+        if (alarm.vibrate) {
+            vibrate()
+        }
+
         player.play()
+    }
+
+    override fun onPlayerError(error: PlayerError) {
+        logError("onPlayerError(): Play emergency alarm")
+        logError("onPlayerError(): $error")
+
+        FirebaseCrashlytics.getInstance().recordException(error)
+
+        playEmergencyAlarm(this, SettingsHandler.getShouldUseDeviceVolume(this))
+    }
+
+    private fun playEmergencyAlarm(context: Context, shouldUseDeviceVolume: Boolean) {
+        if (this::player.isInitialized) {
+            vibrator.cancel()
+            player.release()
+        }
+
+        player = DefaultPlayer(context, shouldUseDeviceVolume)
+        player.init(null)
+        player.prepare(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM).toString())
+
+        onPlayerInitialized()
     }
 
     private fun disableOneShotAlarm(alarm: AbstractAlarm) {

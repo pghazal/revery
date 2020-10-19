@@ -4,17 +4,21 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.media.AudioManager
 import android.view.animation.LinearInterpolator
+import androidx.annotation.CallSuper
 
 abstract class AbstractPlayer(
     protected val context: Context,
     protected val streamType: Int,
     private val shouldUseDeviceVolume: Boolean
 ) {
-    interface OnPlayerInitializedListener {
+    interface PlayerListener {
         fun onPlayerInitialized()
+
+        fun onPlayerError(error: PlayerError)
     }
 
-    var onPlayerInitializedListener: OnPlayerInitializedListener? = null
+    protected var currentUri: String? = null
+    protected var playerListener: PlayerListener? = null
 
     protected val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
     private val initialDeviceVolume = audioManager.getStreamVolume(streamType)
@@ -25,9 +29,14 @@ abstract class AbstractPlayer(
     var fadeIn: Boolean = false
     var fadeInDuration: Long = 0
 
-    abstract fun init()
+    @CallSuper
+    open fun init(playerListener: PlayerListener?) {
+        this.playerListener = playerListener
+    }
 
-    abstract fun prepare(uri: String)
+    abstract fun prepareAsync(uri: String?)
+
+    abstract fun prepare(uri: String?)
 
     abstract fun play()
 
@@ -60,12 +69,21 @@ abstract class AbstractPlayer(
             val volume = it.animatedValue as Int
             try {
                 audioManager.setStreamVolume(streamType, volume, 0)
-            } catch (e: Exception) {
+            } catch (error: Exception) {
                 it.cancel()
-                throw e // rethrow for now
+                playerListener?.onPlayerError(PlayerError.FadeIn(error))
             }
         }
 
         volumeAnimator?.start()
+    }
+
+    override fun toString(): String {
+        return "AbstractPlayer(streamType=$streamType," +
+                " shouldUseDeviceVolume=$shouldUseDeviceVolume," +
+                " currentUri=$currentUri, playerListener=$playerListener," +
+                " initialDeviceVolume=$initialDeviceVolume," +
+                " minVolume=$minVolume, maxVolume=$maxVolume," +
+                " fadeIn=$fadeIn, fadeInDuration=$fadeInDuration)"
     }
 }

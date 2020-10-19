@@ -25,7 +25,9 @@ class DefaultPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
             null
         }
 
-    override fun init() {
+    override fun init(playerListener: PlayerListener?) {
+        super.init(playerListener)
+
         mediaPlayer = MediaPlayer()
         mediaPlayer!!.isLooping = true
         mediaPlayer!!.setAudioAttributes(
@@ -35,16 +37,62 @@ class DefaultPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
                 .build()
         )
 
+        mediaPlayer!!.setOnErrorListener { _, _, extras ->
+            val throwable = Throwable(this.toString())
+
+            val error = when (extras) {
+                MediaPlayer.MEDIA_ERROR_IO -> PlayerError.DefaultPlayerIO(throwable)
+                MediaPlayer.MEDIA_ERROR_MALFORMED -> PlayerError.DefaultPlayerMalformed(throwable)
+                MediaPlayer.MEDIA_ERROR_UNSUPPORTED -> PlayerError.DefaultPlayerUnsupported(
+                    throwable
+                )
+                MediaPlayer.MEDIA_ERROR_TIMED_OUT -> PlayerError.DefaultPlayerTimedOut(throwable)
+                else -> PlayerError.DefaultPlayerUnknown(throwable)
+            }
+
+            playerListener?.onPlayerError(error)
+
+            return@setOnErrorListener true
+        }
+
         mediaPlayer!!.setOnPreparedListener {
-            onPlayerInitializedListener?.onPlayerInitialized()
+            playerListener?.onPlayerInitialized()
         }
     }
 
-    override fun prepare(uri: String) {
-        mediaPlayer?.setDataSource(context, Uri.parse(uri))
+    override fun prepareAsync(uri: String?) {
+        setDataSource(uri)
 
         // Request audio focus for play back
-        val result = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+        val result = requestAudioFocus()
+
+        if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+            mediaPlayer?.prepareAsync()
+        } else {
+            context.logError("# Request audio focus failed")
+        }
+    }
+
+    override fun prepare(uri: String?) {
+        setDataSource(uri)
+
+        // Request audio focus for play back
+        val result = requestAudioFocus()
+
+        if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+            mediaPlayer?.prepare()
+        } else {
+            context.logError("# Request audio focus failed")
+        }
+    }
+
+    private fun setDataSource(uri: String?) {
+        currentUri = uri
+        mediaPlayer?.setDataSource(context, Uri.parse(currentUri))
+    }
+
+    private fun requestAudioFocus(): Int? {
+        return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             audioFocusRequest?.let { audioManager.requestAudioFocus(it) }
         } else {
             audioManager.requestAudioFocus(
@@ -52,12 +100,6 @@ class DefaultPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
                 streamType,
                 AUDIO_FOCUS_PARAM
             )
-        }
-
-        if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-            mediaPlayer?.prepareAsync()
-        } else {
-            context.logError("# Request audio focus failed")
         }
     }
 

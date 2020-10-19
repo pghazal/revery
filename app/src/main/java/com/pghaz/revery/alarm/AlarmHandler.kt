@@ -3,6 +3,7 @@ package com.pghaz.revery.alarm
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
+import android.media.RingtoneManager
 import android.widget.Toast
 import com.pghaz.revery.BuildConfig
 import com.pghaz.revery.alarm.broadcastreceiver.AlarmBroadcastReceiver
@@ -36,26 +37,46 @@ object AlarmHandler {
         val uri: String? = if (spotify) {
             "spotify:playlist:3H8dsoJvkH7lUkaQlUNjPJ"
         } else {
-            null
+            RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM).toString()
         }
 
-        val alarm = Alarm(
-            id = System.currentTimeMillis(),
-            hour = hour,
-            minute = minute,
-            recurring = recurring,
-            monday = true,
-            tuesday = true,
-            wednesday = true,
-            thursday = true,
-            friday = true,
-            saturday = true,
-            sunday = true,
-            vibrate = vibrate,
-            fadeIn = fadeIn,
-            fadeInDuration = fadeInDuration,
-            uri = uri
-        )
+        val alarm = if (spotify) {
+            SpotifyAlarm(
+                id = System.currentTimeMillis(),
+                hour = hour,
+                minute = minute,
+                recurring = recurring,
+                monday = true,
+                tuesday = true,
+                wednesday = true,
+                thursday = true,
+                friday = true,
+                saturday = true,
+                sunday = true,
+                vibrate = vibrate,
+                fadeIn = fadeIn,
+                fadeInDuration = fadeInDuration,
+                uri = uri
+            )
+        } else {
+            Alarm(
+                id = System.currentTimeMillis(),
+                hour = hour,
+                minute = minute,
+                recurring = recurring,
+                monday = true,
+                tuesday = true,
+                wednesday = true,
+                thursday = true,
+                friday = true,
+                saturday = true,
+                sunday = true,
+                vibrate = vibrate,
+                fadeIn = fadeIn,
+                fadeInDuration = fadeInDuration,
+                uri = uri
+            )
+        }
 
         scheduleAlarm(context, alarm, alarm.minute, second)
     }
