@@ -11,6 +11,7 @@ import android.os.*
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleService
+import androidx.lifecycle.LiveData
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pghaz.revery.MainActivity
@@ -51,6 +52,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
     }
 
     private lateinit var alarmRepository: AlarmRepository
+    private lateinit var alarmLiveData: LiveData<AbstractAlarm>
 
     private lateinit var vibrator: Vibrator
     private lateinit var notification: Notification
@@ -223,11 +225,19 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
 
     private fun disableOneShotAlarm(alarm: AbstractAlarm) {
         if (!alarm.recurring) {
-            alarmRepository.get(alarm).observe(this, {
+            if (!this::alarmLiveData.isInitialized) {
+                alarmLiveData = alarmRepository.get(alarm)
+            }
+
+            alarmLiveData.observe(this, {
                 it?.let {
                     AlarmHandler.disableAlarm(it)
                     alarmRepository.update(it)
                 }
+
+                // Important: we remove the observer because otherwise, as we change the value inside the observer
+                // it would call the observer in a infinite loop
+                alarmLiveData.removeObservers(this)
             })
         }
     }

@@ -106,4 +106,58 @@ data class SpotifyAlarm(
             )
         }
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is SpotifyAlarm) return false
+        if (!super.equals(other)) return false
+
+        if (id != other.id) return false
+        if (hour != other.hour) return false
+        if (minute != other.minute) return false
+        if (label != other.label) return false
+        if (enabled != other.enabled) return false
+        if (recurring != other.recurring) return false
+        if (monday != other.monday) return false
+        if (tuesday != other.tuesday) return false
+        if (wednesday != other.wednesday) return false
+        if (thursday != other.thursday) return false
+        if (friday != other.friday) return false
+        if (saturday != other.saturday) return false
+        if (sunday != other.sunday) return false
+        if (vibrate != other.vibrate) return false
+        if (fadeIn != other.fadeIn) return false
+        if (fadeInDuration != other.fadeInDuration) return false
+        if (uri != other.uri) return false
+        if (name != other.name) return false
+        if (description != other.description) return false
+        if (imageUrl != other.imageUrl) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + id.hashCode()
+        result = 31 * result + hour
+        result = 31 * result + minute
+        result = 31 * result + label.hashCode()
+        result = 31 * result + enabled.hashCode()
+        result = 31 * result + recurring.hashCode()
+        result = 31 * result + monday.hashCode()
+        result = 31 * result + tuesday.hashCode()
+        result = 31 * result + wednesday.hashCode()
+        result = 31 * result + thursday.hashCode()
+        result = 31 * result + friday.hashCode()
+        result = 31 * result + saturday.hashCode()
+        result = 31 * result + sunday.hashCode()
+        result = 31 * result + vibrate.hashCode()
+        result = 31 * result + fadeIn.hashCode()
+        result = 31 * result + fadeInDuration.hashCode()
+        result = 31 * result + (uri?.hashCode() ?: 0)
+        result = 31 * result + (name?.hashCode() ?: 0)
+        result = 31 * result + (description?.hashCode() ?: 0)
+        result = 31 * result + (imageUrl?.hashCode() ?: 0)
+        return result
+    }
 }

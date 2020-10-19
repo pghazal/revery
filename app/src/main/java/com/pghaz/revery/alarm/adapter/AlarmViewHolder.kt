@@ -12,7 +12,6 @@ import com.pghaz.revery.alarm.model.BaseModel
 import com.pghaz.revery.alarm.model.app.AbstractAlarm
 import com.pghaz.revery.alarm.model.app.Alarm
 import com.pghaz.revery.alarm.model.app.SpotifyAlarm
-import com.pghaz.revery.extension.logError
 import com.pghaz.revery.image.ImageLoader
 import com.pghaz.revery.util.DateTimeUtils
 import java.util.*
@@ -66,10 +65,8 @@ open class AlarmViewHolder(view: View) : BaseViewHolder(view) {
 
     override fun bind(model: BaseModel) {
         val alarm = if (model is Alarm) {
-            itemView.context.logError("AlarmViewHolder bind: is Alarm")
             model
         } else {
-            itemView.context.logError("AlarmViewHolder bind: is SpotifyAlarm")
             model as SpotifyAlarm
         }
 
