@@ -24,8 +24,7 @@ class AlarmRepository(application: Application) {
 
     fun insert(alarm: AbstractAlarm) {
         AlarmDatabase.databaseCoroutinesScope.launch {
-            // This setter ´alarm.id =´ is not even used since we use ´System.currentTimeInMillis()´ as id
-            alarm.id = when (alarm) {
+            when (alarm) {
                 is SpotifyAlarm -> spotifyAlarmDao.insert(SpotifyAlarm.toDatabaseModel(alarm))
                 is Alarm -> alarmDao.insert(Alarm.toDatabaseModel(alarm))
                 else -> throw IllegalArgumentException("AlarmRepository insert: alarm unknown type")
@@ -35,9 +34,22 @@ class AlarmRepository(application: Application) {
 
     fun update(alarm: AbstractAlarm) {
         AlarmDatabase.databaseCoroutinesScope.launch {
+
+            alarmDao.getEntitySync(alarm.id)?.let {
+                alarmDao.delete(it)
+            }
+
+            spotifyAlarmDao.getEntitySync(alarm.id)?.let {
+                spotifyAlarmDao.delete(it)
+            }
+
             when (alarm) {
-                is SpotifyAlarm -> spotifyAlarmDao.update(SpotifyAlarm.toDatabaseModel(alarm))
-                is Alarm -> alarmDao.update(Alarm.toDatabaseModel(alarm))
+                is SpotifyAlarm -> {
+                    spotifyAlarmDao.insert(SpotifyAlarm.toDatabaseModel(alarm))
+                }
+                is Alarm -> {
+                    alarmDao.insert(Alarm.toDatabaseModel(alarm))
+                }
                 else -> throw IllegalArgumentException("AlarmRepository update: alarm unknown type")
             }
         }
