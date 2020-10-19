@@ -425,6 +425,10 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
             it.label = label
             it.enabled = true
 
+            if (it.uri.isNullOrEmpty()) {
+                it.uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM).toString()
+            }
+
             createEditAlarmViewModel.createAlarm(context, it)
         }
     }
