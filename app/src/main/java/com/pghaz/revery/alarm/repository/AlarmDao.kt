@@ -6,4 +6,4 @@ import com.pghaz.revery.alarm.model.room.RAlarm
 
 @Dao
 abstract class AlarmDao(roomDatabase: RoomDatabase) :
-    AbstractDao<RAlarm>(AlarmDatabase.ALARM_DEFAULT_TABLE_NAME, roomDatabase)
+    AbstractDao<RAlarm>(AlarmDatabase.ALARM_TABLE_NAME, roomDatabase)

@@ -2,7 +2,7 @@ package com.pghaz.revery.util
 
 import android.content.Context
 import com.pghaz.revery.R
-import com.pghaz.revery.alarm.model.app.AbstractAlarm
+import com.pghaz.revery.alarm.model.app.Alarm
 import java.util.*
 import kotlin.math.abs
 
@@ -10,7 +10,7 @@ object DateTimeUtils {
 
     data class TimeRemainingInfo(val days: Int, val hours: Int, val minutes: Int)
 
-    fun getTimeRemaining(alarm: AbstractAlarm): TimeRemainingInfo {
+    fun getTimeRemaining(alarm: Alarm): TimeRemainingInfo {
         val currentTimeInMillis = System.currentTimeMillis()
 
         val alarmCalendar: Calendar = Calendar.getInstance()
@@ -241,7 +241,7 @@ object DateTimeUtils {
     }
 
     // ´getDaysText()´ Used for debug only
-    fun getDaysText(alarm: AbstractAlarm): String? {
+    fun getDaysText(alarm: Alarm): String? {
         var days = ""
         if (alarm.monday) {
             days += "Mo "

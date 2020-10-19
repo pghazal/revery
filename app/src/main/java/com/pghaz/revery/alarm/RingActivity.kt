@@ -10,7 +10,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.pghaz.revery.BaseActivity
 import com.pghaz.revery.R
 import com.pghaz.revery.alarm.broadcastreceiver.AlarmBroadcastReceiver
-import com.pghaz.revery.alarm.model.app.AbstractAlarm
+import com.pghaz.revery.alarm.model.app.Alarm
 import com.pghaz.revery.alarm.service.AlarmService
 import com.pghaz.revery.extension.logError
 import com.pghaz.revery.player.AbstractPlayer
@@ -36,7 +36,7 @@ class RingActivity : BaseActivity() {
 
     private var player: AbstractPlayer? = null
 
-    private lateinit var alarm: AbstractAlarm
+    private lateinit var alarm: Alarm
 
     private val mServiceConnection: ServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName, service: IBinder) {

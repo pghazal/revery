@@ -1,30 +1,32 @@
 package com.pghaz.revery.alarm.model.room
 
 import androidx.annotation.NonNull
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.pghaz.revery.alarm.model.RBaseModel
 import com.pghaz.revery.alarm.repository.AlarmDatabase
 
-@Entity(tableName = AlarmDatabase.ALARM_DEFAULT_TABLE_NAME)
+@Entity(tableName = AlarmDatabase.ALARM_TABLE_NAME)
 data class RAlarm(
 
     @NonNull
     @PrimaryKey
-    override var id: Long = 0,
-    override var hour: Int = 0,
-    override var minute: Int = 0,
-    override var label: String = "",
-    override var enabled: Boolean = true,
-    override var recurring: Boolean = false,
-    override var monday: Boolean = false,
-    override var tuesday: Boolean = false,
-    override var wednesday: Boolean = false,
-    override var thursday: Boolean = false,
-    override var friday: Boolean = false,
-    override var saturday: Boolean = false,
-    override var sunday: Boolean = false,
-    override var vibrate: Boolean = false,
-    override var fadeIn: Boolean = false,
-    override var fadeInDuration: Long = 0,
-    override var uri: String? = null
-) : RAbstractAlarm()
+    var id: Long = 0,
+    var hour: Int = 0,
+    var minute: Int = 0,
+    var label: String = "",
+    var enabled: Boolean = true,
+    var recurring: Boolean = false,
+    var monday: Boolean = false,
+    var tuesday: Boolean = false,
+    var wednesday: Boolean = false,
+    var thursday: Boolean = false,
+    var friday: Boolean = false,
+    var saturday: Boolean = false,
+    var sunday: Boolean = false,
+    var vibrate: Boolean = false,
+    var fadeIn: Boolean = false,
+    var fadeInDuration: Long = 0,
+    @Embedded var metadata: RAlarmMetadata = RAlarmMetadata()
+) : RBaseModel()

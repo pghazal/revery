@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.pghaz.revery.alarm.model.BaseModel
 import com.pghaz.revery.alarm.model.app.Alarm
-import com.pghaz.revery.alarm.model.app.SpotifyAlarm
 
 abstract class BaseAdapter : RecyclerView.Adapter<BaseViewHolder>() {
 
@@ -24,7 +23,6 @@ abstract class BaseAdapter : RecyclerView.Adapter<BaseViewHolder>() {
     override fun getItemViewType(position: Int): Int {
         return when (items[position]) {
             is Alarm -> ListItemType.Alarm
-            is SpotifyAlarm -> ListItemType.SpotifyAlarm
             else -> ListItemType.Empty
         }.ordinal
     }

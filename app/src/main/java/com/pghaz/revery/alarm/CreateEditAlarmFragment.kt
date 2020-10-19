@@ -13,9 +13,9 @@ import androidx.lifecycle.ViewModelProvider
 import com.pghaz.revery.BaseBottomSheetDialogFragment
 import com.pghaz.revery.R
 import com.pghaz.revery.alarm.model.BaseModel
-import com.pghaz.revery.alarm.model.app.AbstractAlarm
 import com.pghaz.revery.alarm.model.app.Alarm
-import com.pghaz.revery.alarm.model.app.SpotifyAlarm
+import com.pghaz.revery.alarm.model.app.AlarmMetadata
+import com.pghaz.revery.alarm.model.app.AlarmType
 import com.pghaz.revery.alarm.viewmodel.CreateEditAlarmViewModel
 import com.pghaz.revery.animation.AnimatorUtils
 import com.pghaz.revery.image.ImageLoader
@@ -32,7 +32,7 @@ import java.util.*
 class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
 
     private lateinit var createEditAlarmViewModel: CreateEditAlarmViewModel
-    private var alarm: AbstractAlarm? = null
+    private var alarm: Alarm? = null
 
     private fun initAlarmFromArguments(arguments: Bundle?) {
         arguments?.let { args ->
@@ -53,37 +53,37 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         })
 
         createEditAlarmViewModel.alarmMetadataLiveData.observe(this, {
-            when (it) {
-                is Alarm -> {
+            when (it.metadata.alarmType) {
+                AlarmType.DEFAULT -> {
                     moreOptionsButton.visibility = View.GONE
                     ringtoneInfoContainer.visibility = View.GONE
                 }
 
-                is SpotifyAlarm -> {
+                AlarmType.SPOTIFY -> {
                     moreOptionsButton.visibility = View.VISIBLE
                     ringtoneInfoContainer.visibility = View.VISIBLE
 
-                    if (it.name.isNullOrEmpty()) {
+                    if (it.metadata.name.isNullOrEmpty()) {
                         titleTextView.text = ""
                         titleTextView.visibility = View.GONE
                     } else {
-                        titleTextView.text = it.name
+                        titleTextView.text = it.metadata.name
                         titleTextView.visibility = View.VISIBLE
                     }
 
-                    if (it.description.isNullOrEmpty()) {
+                    if (it.metadata.description.isNullOrEmpty()) {
                         subtitleTextView.text = ""
                         subtitleTextView.visibility = View.GONE
                     } else {
-                        subtitleTextView.text = it.description
+                        subtitleTextView.text = it.metadata.description
                         subtitleTextView.visibility = View.VISIBLE
                     }
 
-                    if (it.imageUrl.isNullOrEmpty()) {
+                    if (it.metadata.imageUrl.isNullOrEmpty()) {
                         imageView.visibility = View.GONE
                     } else {
                         imageView.visibility = View.VISIBLE
-                        ImageLoader.get().load(it.imageUrl).into(imageView)
+                        ImageLoader.get().load(it.metadata.imageUrl).into(imageView)
                     }
                 }
             }
@@ -135,7 +135,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         }
     }
 
-    private fun configureTimePickerFromAlarm(alarm: AbstractAlarm, is24HourFormat: Boolean) {
+    private fun configureTimePickerFromAlarm(alarm: Alarm, is24HourFormat: Boolean) {
         val alarmHour = alarm.hour
 
         hourNumberPicker.value = if (is24HourFormat) {
@@ -149,7 +149,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         pmRadioButton.isChecked = !DateTimeUtils.isAM(alarmHour)
     }
 
-    private fun configureViewsFromAlarm(alarm: AbstractAlarm) {
+    private fun configureViewsFromAlarm(alarm: Alarm) {
         labelEditText.setText(alarm.label)
 
         mondayToggle.isChecked = alarm.monday
@@ -340,10 +340,18 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
 
     private fun selectDefaultRingtone() {
         alarm?.let {
-            alarm = Alarm(it)
 
             // TODO
-            alarm!!.uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM).toString()
+            it.metadata.apply {
+                alarmType = AlarmType.DEFAULT
+                metadataId = null
+                uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM).toString()
+                href = null
+                type = null
+                name = null
+                description = null
+                imageUrl = null
+            }
 
             createEditAlarmViewModel.alarmMetadataLiveData.value = alarm
         }
@@ -425,8 +433,18 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
             it.label = label
             it.enabled = true
 
-            if (it.uri.isNullOrEmpty()) {
-                it.uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM).toString()
+            // Safe init
+            it.metadata.apply {
+                if (uri.isNullOrEmpty()) {
+                    alarmType = AlarmType.DEFAULT
+                    metadataId = null
+                    uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM).toString()
+                    href = null
+                    type = null
+                    name = null
+                    description = null
+                    imageUrl = null
+                }
             }
 
             createEditAlarmViewModel.createAlarm(context, it)
@@ -461,10 +479,16 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
                         ?.getParcelable(Arguments.ARGS_SPOTIFY_SELECTED_PLAYLIST) as PlaylistSimple?
 
                     alarm?.let {
-                        alarm = SpotifyAlarm(
-                            it, selectedPlaylist?.name, "", selectedPlaylist?.images?.get(0)?.url
-                        )
-                        alarm!!.uri = selectedPlaylist?.uri
+                        it.metadata.apply {
+                            alarmType = AlarmType.SPOTIFY
+                            metadataId = selectedPlaylist?.id
+                            uri = selectedPlaylist?.uri
+                            href = selectedPlaylist?.href
+                            type = selectedPlaylist?.type
+                            name = selectedPlaylist?.name
+                            description = ""
+                            imageUrl = selectedPlaylist?.images?.get(0)?.url
+                        }
 
                         createEditAlarmViewModel.alarmMetadataLiveData.value = alarm
                     }
@@ -496,13 +520,13 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
                 vibrate = false,
                 fadeIn = false,
                 fadeInDuration = 0,
-                uri = null
+                metadata = AlarmMetadata()
             )
 
             return newInstance(dialogTitle, newAlarm)
         }
 
-        fun newInstance(dialogTitle: String, alarm: AbstractAlarm): CreateEditAlarmFragment {
+        fun newInstance(dialogTitle: String, alarm: Alarm): CreateEditAlarmFragment {
             val args = Bundle()
 
             args.putString(Arguments.ARGS_DIALOG_TITLE, dialogTitle)

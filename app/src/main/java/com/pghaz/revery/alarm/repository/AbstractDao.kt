@@ -7,9 +7,9 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.room.*
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
-import com.pghaz.revery.alarm.model.room.RAbstractAlarm
+import com.pghaz.revery.alarm.model.RBaseModel
 
-abstract class AbstractDao<T : RAbstractAlarm>(
+abstract class AbstractDao<T : RBaseModel>(
     private val tableName: String,
     private val roomDatabase: RoomDatabase
 ) {

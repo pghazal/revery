@@ -18,9 +18,8 @@ import com.pghaz.revery.MainActivity
 import com.pghaz.revery.R
 import com.pghaz.revery.alarm.AlarmHandler
 import com.pghaz.revery.alarm.broadcastreceiver.AlarmBroadcastReceiver
-import com.pghaz.revery.alarm.model.app.AbstractAlarm
 import com.pghaz.revery.alarm.model.app.Alarm
-import com.pghaz.revery.alarm.model.app.SpotifyAlarm
+import com.pghaz.revery.alarm.model.app.AlarmType
 import com.pghaz.revery.alarm.repository.AlarmRepository
 import com.pghaz.revery.application.ReveryApplication
 import com.pghaz.revery.extension.logError
@@ -48,11 +47,11 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
         }
 
         var isRunning: Boolean = false // this is ugly: find a way to check if service is alive
-        lateinit var alarm: AbstractAlarm
+        lateinit var alarm: Alarm
     }
 
     private lateinit var alarmRepository: AlarmRepository
-    private lateinit var alarmLiveData: LiveData<AbstractAlarm>
+    private lateinit var alarmLiveData: LiveData<Alarm>
 
     private lateinit var vibrator: Vibrator
     private lateinit var notification: Notification
@@ -134,17 +133,17 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
                     getInitializedPlayer(alarm, shouldUseDeviceVolume)
                 }
 
-                when (alarm) {
-                    is Alarm -> {
+                when (alarm.metadata.alarmType) {
+                    AlarmType.DEFAULT -> {
                         (player as DefaultPlayer).fadeIn = alarm.fadeIn
                         (player as DefaultPlayer).fadeInDuration = fadeInDuration
-                        (player as DefaultPlayer).prepareAsync(alarm.uri)
+                        (player as DefaultPlayer).prepareAsync(alarm.metadata.uri)
                     }
 
-                    is SpotifyAlarm -> {
+                    AlarmType.SPOTIFY -> {
                         (player as SpotifyPlayer).fadeIn = alarm.fadeIn
                         (player as SpotifyPlayer).fadeInDuration = fadeInDuration
-                        (player as SpotifyPlayer).prepareAsync(alarm.uri)
+                        (player as SpotifyPlayer).prepareAsync(alarm.metadata.uri)
                     }
                 }
             } catch (exception: Exception) {
@@ -156,27 +155,24 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
     }
 
     private fun getInitializedPlayer(
-        alarm: AbstractAlarm,
+        alarm: Alarm,
         shouldUseDeviceVolume: Boolean
     ): AbstractPlayer {
-        return when (alarm) {
-            is Alarm -> {
+        return when (alarm.metadata.alarmType) {
+            AlarmType.DEFAULT -> {
                 DefaultPlayer(this, shouldUseDeviceVolume)
             }
 
-            is SpotifyAlarm -> {
+            AlarmType.SPOTIFY -> {
                 SpotifyPlayer(this, shouldUseDeviceVolume)
             }
-            else -> {
-                throw IllegalArgumentException("getInitializedPlayer(): invalid alarm type")
-            }
         }.apply {
-            when (alarm) {
-                is Alarm -> {
+            when (alarm.metadata.alarmType) {
+                AlarmType.DEFAULT -> {
                     (this as DefaultPlayer).init(this@AlarmService)
                 }
 
-                is SpotifyAlarm -> {
+                AlarmType.SPOTIFY -> {
                     (this as SpotifyPlayer).init(this@AlarmService)
                 }
             }
@@ -223,7 +219,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
         onPlayerInitialized()
     }
 
-    private fun disableOneShotAlarm(context: Context?, alarm: AbstractAlarm) {
+    private fun disableOneShotAlarm(context: Context?, alarm: Alarm) {
         if (!alarm.recurring) {
             if (!this::alarmLiveData.isInitialized) {
                 alarmLiveData = alarmRepository.get(alarm)
@@ -247,7 +243,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
      *  - set a requestCode different than 0 in the PendingIntent.getActivity()
      *  - add .setFullScreenIntent(pendingIntent, true) when creating the notification
      */
-    private fun buildAlarmNotification(alarm: AbstractAlarm): Notification {
+    private fun buildAlarmNotification(alarm: Alarm): Notification {
         val notificationIntent = Intent(this, MainActivity::class.java)
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
 

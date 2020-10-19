@@ -7,9 +7,9 @@ import android.media.RingtoneManager
 import android.widget.Toast
 import com.pghaz.revery.BuildConfig
 import com.pghaz.revery.alarm.broadcastreceiver.AlarmBroadcastReceiver
-import com.pghaz.revery.alarm.model.app.AbstractAlarm
 import com.pghaz.revery.alarm.model.app.Alarm
-import com.pghaz.revery.alarm.model.app.SpotifyAlarm
+import com.pghaz.revery.alarm.model.app.AlarmMetadata
+import com.pghaz.revery.alarm.model.app.AlarmType
 import com.pghaz.revery.util.DateTimeUtils
 import java.util.*
 
@@ -34,60 +34,44 @@ object AlarmHandler {
         val minute = calendar.get(Calendar.MINUTE)
         val second = calendar.get(Calendar.SECOND)
 
-        val uri: String? = if (spotify) {
-            "spotify:playlist:3H8dsoJvkH7lUkaQlUNjPJ"
+        val metadata = AlarmMetadata()
+
+        if (spotify) {
+            metadata.alarmType = AlarmType.SPOTIFY
+            metadata.uri = "spotify:playlist:3H8dsoJvkH7lUkaQlUNjPJ"
         } else {
-            RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM).toString()
+            metadata.alarmType = AlarmType.DEFAULT
+            metadata.uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM).toString()
         }
 
-        val alarm = if (spotify) {
-            SpotifyAlarm(
-                id = System.currentTimeMillis(),
-                hour = hour,
-                minute = minute,
-                recurring = recurring,
-                monday = true,
-                tuesday = true,
-                wednesday = true,
-                thursday = true,
-                friday = true,
-                saturday = true,
-                sunday = true,
-                vibrate = vibrate,
-                fadeIn = fadeIn,
-                fadeInDuration = fadeInDuration,
-                uri = uri
-            )
-        } else {
-            Alarm(
-                id = System.currentTimeMillis(),
-                hour = hour,
-                minute = minute,
-                recurring = recurring,
-                monday = true,
-                tuesday = true,
-                wednesday = true,
-                thursday = true,
-                friday = true,
-                saturday = true,
-                sunday = true,
-                vibrate = vibrate,
-                fadeIn = fadeIn,
-                fadeInDuration = fadeInDuration,
-                uri = uri
-            )
-        }
+        val alarm = Alarm(
+            id = System.currentTimeMillis(),
+            hour = hour,
+            minute = minute,
+            recurring = recurring,
+            monday = true,
+            tuesday = true,
+            wednesday = true,
+            thursday = true,
+            friday = true,
+            saturday = true,
+            sunday = true,
+            vibrate = vibrate,
+            fadeIn = fadeIn,
+            fadeInDuration = fadeInDuration,
+            metadata = metadata
+        )
 
         scheduleAlarm(context, alarm, alarm.minute, second)
     }
 
-    fun scheduleAlarm(context: Context?, alarm: AbstractAlarm) {
+    fun scheduleAlarm(context: Context?, alarm: Alarm) {
         scheduleAlarm(context, alarm, alarm.minute, 0)
     }
 
     private fun scheduleAlarm(
         context: Context?,
-        alarm: AbstractAlarm,
+        alarm: Alarm,
         minute: Int,
         second: Int
     ) {
@@ -142,7 +126,7 @@ object AlarmHandler {
         }
     }
 
-    fun cancelAlarm(context: Context?, alarm: AbstractAlarm) {
+    fun cancelAlarm(context: Context?, alarm: Alarm) {
         val alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager?
 
         alarmManager?.let {
@@ -161,7 +145,7 @@ object AlarmHandler {
         }
     }
 
-    fun snooze(context: Context?, alarm: AbstractAlarm, delayInMinutes: Int) {
+    fun snooze(context: Context?, alarm: Alarm, delayInMinutes: Int) {
         val now = System.currentTimeMillis()
 
         val calendar = Calendar.getInstance()
@@ -175,10 +159,6 @@ object AlarmHandler {
         val snoozeAlarm = when (alarm) {
             is Alarm -> {
                 Alarm(alarm)
-            }
-
-            is SpotifyAlarm -> {
-                SpotifyAlarm(alarm, alarm.name, alarm.description, alarm.imageUrl)
             }
 
             else -> {

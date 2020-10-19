@@ -8,10 +8,8 @@ import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
 import com.pghaz.revery.R
 import com.pghaz.revery.alarm.adapter.base.BaseViewHolder
-import com.pghaz.revery.alarm.model.BaseModel
-import com.pghaz.revery.alarm.model.app.AbstractAlarm
 import com.pghaz.revery.alarm.model.app.Alarm
-import com.pghaz.revery.alarm.model.app.SpotifyAlarm
+import com.pghaz.revery.alarm.model.BaseModel
 import com.pghaz.revery.image.ImageLoader
 import com.pghaz.revery.util.DateTimeUtils
 import java.util.*
@@ -39,7 +37,7 @@ open class AlarmViewHolder(view: View) : BaseViewHolder(view) {
 
     private val alarmSwitch: SwitchCompat = view.findViewById(R.id.alarmSwitch)
 
-    private fun setTimeText(alarm: AbstractAlarm, is24HourFormat: Boolean) {
+    private fun setTimeText(alarm: Alarm, is24HourFormat: Boolean) {
         val hour: Int
 
         if (is24HourFormat) {
@@ -64,11 +62,7 @@ open class AlarmViewHolder(view: View) : BaseViewHolder(view) {
     }
 
     override fun bind(model: BaseModel) {
-        val alarm = if (model is Alarm) {
-            model
-        } else {
-            model as SpotifyAlarm
-        }
+        val alarm = model as Alarm
 
         itemView.setOnClickListener {
             alarmListener?.onClick(alarm)
@@ -143,7 +137,7 @@ open class AlarmViewHolder(view: View) : BaseViewHolder(view) {
         amPmTextView.isEnabled = alarm.enabled
         labelTextView.isEnabled = alarm.enabled
 
-        ImageLoader.get().load(null)
+        ImageLoader.get().load(alarm.metadata.imageUrl)
             .placeholder(R.drawable.selector_alarm_image_background_color)
             .into(imageView)
 

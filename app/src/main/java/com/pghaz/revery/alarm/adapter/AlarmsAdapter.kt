@@ -4,7 +4,7 @@ import android.view.ViewGroup
 import com.pghaz.revery.alarm.adapter.base.BaseAdapter
 import com.pghaz.revery.alarm.adapter.base.BaseViewHolder
 import com.pghaz.revery.alarm.adapter.base.ListItemType
-import com.pghaz.revery.alarm.model.app.AbstractAlarm
+import com.pghaz.revery.alarm.model.app.Alarm
 
 class AlarmsAdapter(
     private val alarmListener: OnAlarmClickListener,
@@ -18,9 +18,6 @@ class AlarmsAdapter(
             ListItemType.Alarm -> {
                 (viewHolder as AlarmViewHolder).alarmListener = alarmListener
             }
-            ListItemType.SpotifyAlarm -> {
-                (viewHolder as SpotifyAlarmViewHolder).alarmListener = alarmListener
-            }
         }
 
         return viewHolder
@@ -29,14 +26,12 @@ class AlarmsAdapter(
     override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
         if (holder is AlarmViewHolder) {
             holder.is24HourFormat = is24HourFormat
-        } else if (holder is SpotifyAlarmViewHolder) {
-            holder.is24HourFormat = is24HourFormat
         }
 
         super.onBindViewHolder(holder, position)
     }
 
-    fun setAlarms(newAlarms: List<AbstractAlarm>) {
+    fun setAlarms(newAlarms: List<Alarm>) {
         this.items = newAlarms
         notifyDataSetChanged()
     }

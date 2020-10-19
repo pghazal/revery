@@ -2,114 +2,60 @@ package com.pghaz.revery.alarm.repository
 
 import android.app.Application
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Transformations
 import com.pghaz.revery.BuildConfig
-import com.pghaz.revery.alarm.model.app.AbstractAlarm
 import com.pghaz.revery.alarm.model.app.Alarm
-import com.pghaz.revery.alarm.model.app.SpotifyAlarm
-import com.pghaz.revery.alarm.model.room.RAbstractAlarm
 import com.pghaz.revery.alarm.model.room.RAlarm
-import com.pghaz.revery.alarm.model.room.RSpotifyAlarm
 import kotlinx.coroutines.launch
 
 class AlarmRepository(application: Application) {
 
     private val alarmDao: AlarmDao = AlarmDatabase.getDatabase(application).alarmDao()
-    private val spotifyAlarmDao: SpotifyAlarmDao =
-        AlarmDatabase.getDatabase(application).spotifyAlarmDao()
 
     private val alarmsLiveData: LiveData<List<RAlarm>> = alarmDao.getEntities()
-    private val spotifyAlarmsLiveData: LiveData<List<RSpotifyAlarm>> = spotifyAlarmDao.getEntities()
 
-    fun insert(alarm: AbstractAlarm) {
+    fun insert(alarm: Alarm) {
         AlarmDatabase.databaseCoroutinesScope.launch {
-            when (alarm) {
-                is SpotifyAlarm -> spotifyAlarmDao.insert(SpotifyAlarm.toDatabaseModel(alarm))
-                is Alarm -> alarmDao.insert(Alarm.toDatabaseModel(alarm))
-                else -> throw IllegalArgumentException("AlarmRepository insert: alarm unknown type")
-            }
+            alarmDao.insert(Alarm.toDatabaseModel(alarm))
         }
     }
 
-    fun update(alarm: AbstractAlarm) {
+    fun update(alarm: Alarm) {
         AlarmDatabase.databaseCoroutinesScope.launch {
-
-            alarmDao.getEntitySync(alarm.id)?.let {
-                alarmDao.delete(it)
-            }
-
-            spotifyAlarmDao.getEntitySync(alarm.id)?.let {
-                spotifyAlarmDao.delete(it)
-            }
-
-            when (alarm) {
-                is SpotifyAlarm -> {
-                    spotifyAlarmDao.insert(SpotifyAlarm.toDatabaseModel(alarm))
-                }
-                is Alarm -> {
-                    alarmDao.insert(Alarm.toDatabaseModel(alarm))
-                }
-                else -> throw IllegalArgumentException("AlarmRepository update: alarm unknown type")
-            }
+            alarmDao.update(Alarm.toDatabaseModel(alarm))
         }
     }
 
-    fun get(alarm: AbstractAlarm): LiveData<AbstractAlarm> {
-        when (alarm) {
-            is Alarm -> {
-                return Transformations.map(alarmDao.getEntity(alarm.id)) {
-                    // When we fire alarm that are not into DB, we just need an non null alarm
-                    if (BuildConfig.DEBUG) {
-                        if (it == null) {
-                            return@map Alarm.fromDatabaseModel(RAlarm(id = 0))
-                        }
-                    }
-
-                    return@map Alarm.fromDatabaseModel(it)
+    fun get(alarm: Alarm): LiveData<Alarm> {
+        return Transformations.map(alarmDao.getEntity(alarm.id)) {
+            // When we fire alarm that are not into DB, we just need an non null alarm
+            if (BuildConfig.DEBUG) {
+                if (it == null) {
+                    return@map Alarm.fromDatabaseModel(RAlarm(id = 0))
                 }
             }
 
-            is SpotifyAlarm -> {
-                return Transformations.map(spotifyAlarmDao.getEntity(alarm.id)) {
-                    // When we fire alarm that are not into DB, we just need an non null alarm
-                    if (BuildConfig.DEBUG) {
-                        if (it == null) {
-                            return@map SpotifyAlarm.fromDatabaseModel(RSpotifyAlarm(id = 0))
-                        }
-                    }
-
-
-                    return@map SpotifyAlarm.fromDatabaseModel(it)
-                }
-            }
-
-            else -> throw IllegalArgumentException("AlarmRepository get: alarm unknown type")
+            return@map Alarm.fromDatabaseModel(it)
         }
     }
 
-    fun delete(alarm: AbstractAlarm) {
+    fun delete(alarm: Alarm) {
         AlarmDatabase.databaseCoroutinesScope.launch {
-            when (alarm) {
-                is SpotifyAlarm -> spotifyAlarmDao.delete(SpotifyAlarm.toDatabaseModel(alarm))
-                is Alarm -> alarmDao.delete(Alarm.toDatabaseModel(alarm))
-                else -> throw IllegalArgumentException("AlarmRepository delete: alarm unknown type")
-            }
+            alarmDao.delete(Alarm.toDatabaseModel(alarm))
         }
     }
 
     fun deleteAll() {
         AlarmDatabase.databaseCoroutinesScope.launch {
             alarmDao.deleteAll()
-            spotifyAlarmDao.deleteAll()
         }
     }
 
-    fun getAllAlarmsLiveData(): LiveData<List<AbstractAlarm>> {
-        val mediatorLiveData = MediatorLiveData<List<RAbstractAlarm>>()
+    /*fun getAllAlarmsLiveData(): LiveData<List<Alarm>> {
+        val mediatorLiveData = MediatorLiveData<List<RAlarm>>()
 
         mediatorLiveData.addSource(alarmsLiveData) {
-            val alarms = ArrayList<RAbstractAlarm>()
+            val alarms = ArrayList<RAlarm>()
             alarms.addAll(it)
 
             if (spotifyAlarmsLiveData.value != null) {
@@ -120,7 +66,7 @@ class AlarmRepository(application: Application) {
         }
 
         mediatorLiveData.addSource(spotifyAlarmsLiveData) {
-            val alarms = ArrayList<RAbstractAlarm>()
+            val alarms = ArrayList<RAlarm>()
             alarms.addAll(it)
 
             if (alarmsLiveData.value != null) {
@@ -131,7 +77,7 @@ class AlarmRepository(application: Application) {
         }
 
         return Transformations.map(mediatorLiveData) { alarmsFromDb ->
-            val result = ArrayList<AbstractAlarm>()
+            val result = ArrayList<Alarm>()
 
             alarmsFromDb.forEach { abstractAlarm ->
                 when (abstractAlarm) {
@@ -144,9 +90,9 @@ class AlarmRepository(application: Application) {
 
             return@map result
         }
-    }
+    }*/
 
-    fun getAlarmsLiveData(): LiveData<List<AbstractAlarm>> {
+    fun getAlarmsLiveData(): LiveData<List<Alarm>> {
         return Transformations.map(alarmsLiveData) { alarmsFromDb ->
             val alarms = ArrayList<Alarm>()
 

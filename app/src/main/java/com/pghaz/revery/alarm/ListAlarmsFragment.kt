@@ -14,7 +14,7 @@ import com.pghaz.revery.R
 import com.pghaz.revery.alarm.adapter.AlarmItemDecoration
 import com.pghaz.revery.alarm.adapter.AlarmsAdapter
 import com.pghaz.revery.alarm.adapter.OnAlarmClickListener
-import com.pghaz.revery.alarm.model.app.AbstractAlarm
+import com.pghaz.revery.alarm.model.app.Alarm
 import com.pghaz.revery.alarm.viewmodel.ListAlarmsViewModel
 import com.pghaz.revery.settings.SettingsFragment
 import kotlinx.android.synthetic.main.fragment_list_alarms.*
@@ -171,7 +171,7 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
         }
     }
 
-    override fun onClick(alarm: AbstractAlarm) {
+    override fun onClick(alarm: Alarm) {
         var createAlarmFragment =
             childFragmentManager.findFragmentByTag(CreateEditAlarmFragment.TAG) as CreateEditAlarmFragment?
         if (createAlarmFragment == null) {
@@ -182,7 +182,7 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
         }
     }
 
-    override fun onToggle(alarm: AbstractAlarm) {
+    override fun onToggle(alarm: Alarm) {
         // if alarm was enabled, we cancel it
         if (alarm.enabled) {
             listAlarmsViewModel.cancelAlarm(context, alarm)
