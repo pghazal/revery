@@ -157,12 +157,8 @@ object AlarmHandler {
                 )
             it.cancel(alarmPendingIntent)
 
-            disableAlarm(alarm)
+            alarm.enabled = false
         }
-    }
-
-    fun disableAlarm(alarm: AbstractAlarm) {
-        alarm.enabled = false
     }
 
     fun snooze(context: Context?, alarm: AbstractAlarm, delayInMinutes: Int) {

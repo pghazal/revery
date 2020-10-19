@@ -122,7 +122,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
             val fadeInDuration = SettingsHandler.getFadeInDuration(this)
 
             notification = buildAlarmNotification(alarm)
-            disableOneShotAlarm(alarm)
+            disableOneShotAlarm(this, alarm)
 
             val shouldUseDeviceVolume = SettingsHandler.getShouldUseDeviceVolume(this)
 
@@ -223,7 +223,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
         onPlayerInitialized()
     }
 
-    private fun disableOneShotAlarm(alarm: AbstractAlarm) {
+    private fun disableOneShotAlarm(context: Context?, alarm: AbstractAlarm) {
         if (!alarm.recurring) {
             if (!this::alarmLiveData.isInitialized) {
                 alarmLiveData = alarmRepository.get(alarm)
@@ -231,7 +231,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
 
             alarmLiveData.observe(this, {
                 it?.let {
-                    AlarmHandler.disableAlarm(it)
+                    AlarmHandler.cancelAlarm(context, it)
                     alarmRepository.update(it)
                 }
 
