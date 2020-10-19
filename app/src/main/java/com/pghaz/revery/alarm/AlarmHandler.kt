@@ -21,7 +21,8 @@ object AlarmHandler {
         recurring: Boolean,
         spotify: Boolean,
         fadeIn: Boolean = false,
-        fadeInDuration: Long = 0
+        fadeInDuration: Long = 0,
+        vibrate: Boolean = false
     ) {
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
@@ -50,6 +51,7 @@ object AlarmHandler {
             friday = true,
             saturday = true,
             sunday = true,
+            vibrate = vibrate,
             fadeIn = fadeIn,
             fadeInDuration = fadeInDuration,
             uri = uri
