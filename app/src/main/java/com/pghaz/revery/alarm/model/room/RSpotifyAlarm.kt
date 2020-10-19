@@ -5,8 +5,8 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.pghaz.revery.alarm.repository.AlarmDatabase
 
-@Entity(tableName = AlarmDatabase.ALARM_DEFAULT_TABLE_NAME)
-data class RAlarm(
+@Entity(tableName = AlarmDatabase.ALARM_SPOTIFY_TABLE_NAME)
+data class RSpotifyAlarm(
 
     @NonNull
     @PrimaryKey
@@ -26,5 +26,10 @@ data class RAlarm(
     override var vibrate: Boolean = false,
     override var fadeIn: Boolean = false,
     override var fadeInDuration: Long = 0,
-    override var uri: String? = null
+    override var uri: String? = null,
+
+    // RAlarmSpotify specifics
+    var name: String? = null,
+    var description: String? = null,
+    var imageUrl: String? = null
 ) : RAbstractAlarm()

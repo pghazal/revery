@@ -329,6 +329,7 @@
             </LinearLayout>
 
             <RelativeLayout
+                android:id="@+id/ringtoneInfoContainer"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/ringtone_image_size"
                 android:layout_below="@+id/optionsContainer"

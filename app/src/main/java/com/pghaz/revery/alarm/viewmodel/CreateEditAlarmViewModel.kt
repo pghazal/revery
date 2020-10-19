@@ -5,30 +5,29 @@ import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.pghaz.revery.alarm.AlarmHandler
-import com.pghaz.revery.alarm.model.app.Alarm
-import com.pghaz.revery.alarm.model.app.AlarmMetadata
+import com.pghaz.revery.alarm.model.app.AbstractAlarm
 import com.pghaz.revery.alarm.repository.AlarmRepository
 
 class CreateEditAlarmViewModel(application: Application) : AndroidViewModel(application) {
 
     private val alarmRepository = AlarmRepository(application)
 
-    val timeChangedAlarmLiveData = MutableLiveData<Alarm>()
-    val alarmMetadataLiveData = MutableLiveData<AlarmMetadata>()
+    val timeChangedAlarmLiveData = MutableLiveData<AbstractAlarm>()
+    val alarmMetadataLiveData = MutableLiveData<AbstractAlarm>()
 
-    fun createAlarm(context: Context?, alarm: Alarm) {
+    fun createAlarm(context: Context?, alarm: AbstractAlarm) {
         alarmRepository.insert(alarm)
         AlarmHandler.scheduleAlarm(context, alarm)
     }
 
-    fun editAlarm(context: Context?, alarm: Alarm) {
+    fun editAlarm(context: Context?, alarm: AbstractAlarm) {
         AlarmHandler.cancelAlarm(context, alarm)
         AlarmHandler.scheduleAlarm(context, alarm)
 
         alarmRepository.update(alarm)
     }
 
-    fun delete(context: Context?, alarm: Alarm) {
+    fun delete(context: Context?, alarm: AbstractAlarm) {
         AlarmHandler.cancelAlarm(context, alarm)
         alarmRepository.delete(alarm)
     }

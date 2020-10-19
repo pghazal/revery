@@ -13,9 +13,7 @@ class DefaultPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
 
     private var mediaPlayer: MediaPlayer? = null
 
-    private val onAudioFocusChangeListener =
-        AudioManager.OnAudioFocusChangeListener { _ ->
-        }
+    private val onAudioFocusChangeListener = AudioManager.OnAudioFocusChangeListener {}
 
     // Used only for Android O and later
     private val audioFocusRequest =

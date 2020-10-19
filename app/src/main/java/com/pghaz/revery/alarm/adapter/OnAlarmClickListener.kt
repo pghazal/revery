@@ -1,8 +1,8 @@
 package com.pghaz.revery.alarm.adapter
 
-import com.pghaz.revery.alarm.model.app.Alarm
+import com.pghaz.revery.alarm.model.app.AbstractAlarm
 
 interface OnAlarmClickListener {
-    fun onClick(alarm: Alarm)
-    fun onToggle(alarm: Alarm)
+    fun onClick(alarm: AbstractAlarm)
+    fun onToggle(alarm: AbstractAlarm)
 }

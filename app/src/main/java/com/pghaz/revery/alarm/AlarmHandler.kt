@@ -6,9 +6,9 @@ import android.content.Context
 import android.widget.Toast
 import com.pghaz.revery.BuildConfig
 import com.pghaz.revery.alarm.broadcastreceiver.AlarmBroadcastReceiver
+import com.pghaz.revery.alarm.model.app.AbstractAlarm
 import com.pghaz.revery.alarm.model.app.Alarm
-import com.pghaz.revery.alarm.model.app.AlarmMetadata
-import com.pghaz.revery.alarm.model.room.RAlarmType
+import com.pghaz.revery.alarm.model.app.SpotifyAlarm
 import com.pghaz.revery.util.DateTimeUtils
 import java.util.*
 
@@ -32,12 +32,10 @@ object AlarmHandler {
         val minute = calendar.get(Calendar.MINUTE)
         val second = calendar.get(Calendar.SECOND)
 
-        val metadata = AlarmMetadata()
-        if (spotify) {
-            metadata.type = RAlarmType.SPOTIFY
-            metadata.uri = "spotify:playlist:3H8dsoJvkH7lUkaQlUNjPJ"
+        val uri: String? = if (spotify) {
+            "spotify:playlist:3H8dsoJvkH7lUkaQlUNjPJ"
         } else {
-            metadata.type = RAlarmType.DEFAULT
+            null
         }
 
         val alarm = Alarm(
@@ -54,19 +52,19 @@ object AlarmHandler {
             sunday = true,
             fadeIn = fadeIn,
             fadeInDuration = fadeInDuration,
-            metadata = metadata
+            uri = uri
         )
 
         scheduleAlarm(context, alarm, alarm.minute, second)
     }
 
-    fun scheduleAlarm(context: Context?, alarm: Alarm) {
+    fun scheduleAlarm(context: Context?, alarm: AbstractAlarm) {
         scheduleAlarm(context, alarm, alarm.minute, 0)
     }
 
     private fun scheduleAlarm(
         context: Context?,
-        alarm: Alarm,
+        alarm: AbstractAlarm,
         minute: Int,
         second: Int
     ) {
@@ -121,7 +119,7 @@ object AlarmHandler {
         }
     }
 
-    fun cancelAlarm(context: Context?, alarm: Alarm) {
+    fun cancelAlarm(context: Context?, alarm: AbstractAlarm) {
         val alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager?
 
         alarmManager?.let {
@@ -140,11 +138,11 @@ object AlarmHandler {
         }
     }
 
-    fun disableAlarm(alarm: Alarm) {
+    fun disableAlarm(alarm: AbstractAlarm) {
         alarm.enabled = false
     }
 
-    fun snooze(context: Context?, alarm: Alarm, delayInMinutes: Int) {
+    fun snooze(context: Context?, alarm: AbstractAlarm, delayInMinutes: Int) {
         val now = System.currentTimeMillis()
 
         val calendar = Calendar.getInstance()
@@ -155,9 +153,26 @@ object AlarmHandler {
         val hour = DateTimeUtils.getCurrentHourOfDay(calendar)
         val minute = calendar.get(Calendar.MINUTE)
 
-        val snoozeAlarm =
-            alarm.copy(id = now, recurring = false, enabled = true, hour = hour, minute = minute)
+        val snoozeAlarm = when (alarm) {
+            is Alarm -> {
+                Alarm(alarm)
+            }
 
-        scheduleAlarm(context, snoozeAlarm, snoozeAlarm.minute, 0)
+            is SpotifyAlarm -> {
+                SpotifyAlarm(alarm, alarm.name, alarm.description, alarm.imageUrl)
+            }
+
+            else -> {
+                throw IllegalArgumentException("AlarmHandler: snooze alarm type invalid")
+            }
+        }
+
+        snoozeAlarm.id = now
+        snoozeAlarm.recurring = false
+        snoozeAlarm.enabled = true
+        snoozeAlarm.hour = hour
+        snoozeAlarm.minute = minute
+
+        scheduleAlarm(context, snoozeAlarm)
     }
 }

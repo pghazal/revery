@@ -2,6 +2,7 @@ package com.pghaz.revery.alarm
 
 import android.app.Activity
 import android.content.Intent
+import android.media.RingtoneManager
 import android.os.Bundle
 import android.text.TextUtils
 import android.text.format.DateFormat
@@ -11,9 +12,10 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
 import com.pghaz.revery.BaseBottomSheetDialogFragment
 import com.pghaz.revery.R
+import com.pghaz.revery.alarm.model.BaseModel
+import com.pghaz.revery.alarm.model.app.AbstractAlarm
 import com.pghaz.revery.alarm.model.app.Alarm
-import com.pghaz.revery.alarm.model.app.AlarmMetadata
-import com.pghaz.revery.alarm.model.room.RAlarmType
+import com.pghaz.revery.alarm.model.app.SpotifyAlarm
 import com.pghaz.revery.alarm.viewmodel.CreateEditAlarmViewModel
 import com.pghaz.revery.animation.AnimatorUtils
 import com.pghaz.revery.image.ImageLoader
@@ -30,11 +32,11 @@ import java.util.*
 class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
 
     private lateinit var createEditAlarmViewModel: CreateEditAlarmViewModel
-    private lateinit var alarm: Alarm
+    private var alarm: AbstractAlarm? = null
 
     private fun initAlarmFromArguments(arguments: Bundle?) {
         arguments?.let { args ->
-            alarm = args.getParcelable(Arguments.ARGS_ALARM) ?: Alarm()
+            alarm = args.getParcelable(Arguments.ARGS_ALARM)
         }
     }
 
@@ -51,33 +53,39 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         })
 
         createEditAlarmViewModel.alarmMetadataLiveData.observe(this, {
-            if (it.name.isNullOrEmpty()) {
-                titleTextView.text = ""
-                titleTextView.visibility = View.GONE
-            } else {
-                titleTextView.text = it.name
-                titleTextView.visibility = View.VISIBLE
-            }
+            when (it) {
+                is Alarm -> {
+                    moreOptionsButton.visibility = View.GONE
+                    ringtoneInfoContainer.visibility = View.GONE
+                }
 
-            if (it.description.isNullOrEmpty()) {
-                subtitleTextView.text = ""
-                subtitleTextView.visibility = View.GONE
-            } else {
-                subtitleTextView.text = it.description
-                subtitleTextView.visibility = View.VISIBLE
-            }
+                is SpotifyAlarm -> {
+                    moreOptionsButton.visibility = View.VISIBLE
+                    ringtoneInfoContainer.visibility = View.VISIBLE
 
-            if (it.imageUrl.isNullOrEmpty()) {
-                imageView.visibility = View.GONE
-            } else {
-                imageView.visibility = View.VISIBLE
-                ImageLoader.get().load(it.imageUrl).into(imageView)
-            }
+                    if (it.name.isNullOrEmpty()) {
+                        titleTextView.text = ""
+                        titleTextView.visibility = View.GONE
+                    } else {
+                        titleTextView.text = it.name
+                        titleTextView.visibility = View.VISIBLE
+                    }
 
-            if (it.type == RAlarmType.DEFAULT) {
-                moreOptionsButton.visibility = View.GONE
-            } else {
-                moreOptionsButton.visibility = View.VISIBLE
+                    if (it.description.isNullOrEmpty()) {
+                        subtitleTextView.text = ""
+                        subtitleTextView.visibility = View.GONE
+                    } else {
+                        subtitleTextView.text = it.description
+                        subtitleTextView.visibility = View.VISIBLE
+                    }
+
+                    if (it.imageUrl.isNullOrEmpty()) {
+                        imageView.visibility = View.GONE
+                    } else {
+                        imageView.visibility = View.VISIBLE
+                        ImageLoader.get().load(it.imageUrl).into(imageView)
+                    }
+                }
             }
         })
     }
@@ -127,7 +135,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         }
     }
 
-    private fun configureTimePickerFromAlarm(alarm: Alarm, is24HourFormat: Boolean) {
+    private fun configureTimePickerFromAlarm(alarm: AbstractAlarm, is24HourFormat: Boolean) {
         val alarmHour = alarm.hour
 
         hourNumberPicker.value = if (is24HourFormat) {
@@ -141,7 +149,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         pmRadioButton.isChecked = !DateTimeUtils.isAM(alarmHour)
     }
 
-    private fun configureViewsFromAlarm(alarm: Alarm) {
+    private fun configureViewsFromAlarm(alarm: AbstractAlarm) {
         labelEditText.setText(alarm.label)
 
         mondayToggle.isChecked = alarm.monday
@@ -155,11 +163,11 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         vibrateToggle.isChecked = alarm.vibrate
         fadeInToggle.isChecked = alarm.fadeIn
 
-        createEditAlarmViewModel.alarmMetadataLiveData.value = alarm.metadata
+        createEditAlarmViewModel.alarmMetadataLiveData.value = alarm
     }
 
     private fun setAlarmHour(is24HourFormat: Boolean, hour: Int) {
-        alarm.hour = if (is24HourFormat) {
+        alarm?.hour = if (is24HourFormat) {
             hour
         } else {
             DateTimeUtils.get24HourFormatFrom12HourFormat(
@@ -170,7 +178,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
     }
 
     private fun setAlarmMinute(minute: Int) {
-        alarm.minute = minute
+        alarm?.minute = minute
     }
 
     override fun configureViews(savedInstanceState: Bundle?) {
@@ -179,10 +187,10 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         initTimePicker(is24HourFormat)
 
         // If we're editing an alarm, we set time/minute on the time picker
-        if (alarm.id != Alarm.NO_ID) {
-            configureTimePickerFromAlarm(alarm, is24HourFormat)
+        if (alarm?.id != BaseModel.NO_ID) {
+            configureTimePickerFromAlarm(alarm!!, is24HourFormat)
             // Set views data before any listeners are set
-            configureViewsFromAlarm(alarm)
+            configureViewsFromAlarm(alarm!!)
             // Also show negative button (delete button)
             negativeAlarmButton.visibility = View.VISIBLE
         } else {
@@ -197,7 +205,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
 
         positiveAlarmButton.setOnClickListener {
             // This is a creation
-            if (Alarm.NO_ID == alarm.id) {
+            if (BaseModel.NO_ID == alarm?.id) {
                 createAndScheduleAlarm()
             } else { // This is an update
                 editAndScheduleAlarm()
@@ -208,10 +216,10 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
 
         negativeAlarmButton.setOnClickListener {
             // If we were creating an alarm and click the negative button, just dismiss the dialog
-            if (Alarm.NO_ID == alarm.id) {
+            if (BaseModel.NO_ID == alarm?.id) {
                 // do nothing
             } else { // otherwise delete the existing alarm
-                createEditAlarmViewModel.delete(context, alarm)
+                createEditAlarmViewModel.delete(context, alarm!!)
             }
 
             dismiss()
@@ -240,53 +248,53 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         }
 
         mondayToggle.setOnCheckedChangeListener { _, _ ->
-            alarm.monday = mondayToggle.isChecked
-            alarm.recurring = isAlarmRecurring()
+            alarm?.monday = mondayToggle.isChecked
+            alarm?.recurring = isAlarmRecurring()
             createEditAlarmViewModel.timeChangedAlarmLiveData.value = alarm
         }
 
         tuesdayToggle.setOnCheckedChangeListener { _, _ ->
-            alarm.tuesday = tuesdayToggle.isChecked
-            alarm.recurring = isAlarmRecurring()
+            alarm?.tuesday = tuesdayToggle.isChecked
+            alarm?.recurring = isAlarmRecurring()
             createEditAlarmViewModel.timeChangedAlarmLiveData.value = alarm
         }
 
         wednesdayToggle.setOnCheckedChangeListener { _, _ ->
-            alarm.wednesday = wednesdayToggle.isChecked
-            alarm.recurring = isAlarmRecurring()
+            alarm?.wednesday = wednesdayToggle.isChecked
+            alarm?.recurring = isAlarmRecurring()
             createEditAlarmViewModel.timeChangedAlarmLiveData.value = alarm
         }
 
         thursdayToggle.setOnCheckedChangeListener { _, _ ->
-            alarm.thursday = thursdayToggle.isChecked
-            alarm.recurring = isAlarmRecurring()
+            alarm?.thursday = thursdayToggle.isChecked
+            alarm?.recurring = isAlarmRecurring()
             createEditAlarmViewModel.timeChangedAlarmLiveData.value = alarm
         }
 
         fridayToggle.setOnCheckedChangeListener { _, _ ->
-            alarm.friday = fridayToggle.isChecked
-            alarm.recurring = isAlarmRecurring()
+            alarm?.friday = fridayToggle.isChecked
+            alarm?.recurring = isAlarmRecurring()
             createEditAlarmViewModel.timeChangedAlarmLiveData.value = alarm
         }
 
         saturdayToggle.setOnCheckedChangeListener { _, _ ->
-            alarm.saturday = saturdayToggle.isChecked
-            alarm.recurring = isAlarmRecurring()
+            alarm?.saturday = saturdayToggle.isChecked
+            alarm?.recurring = isAlarmRecurring()
             createEditAlarmViewModel.timeChangedAlarmLiveData.value = alarm
         }
 
         sundayToggle.setOnCheckedChangeListener { _, _ ->
-            alarm.sunday = sundayToggle.isChecked
-            alarm.recurring = isAlarmRecurring()
+            alarm?.sunday = sundayToggle.isChecked
+            alarm?.recurring = isAlarmRecurring()
             createEditAlarmViewModel.timeChangedAlarmLiveData.value = alarm
         }
 
         vibrateToggle.setOnCheckedChangeListener { _, _ ->
-            alarm.vibrate = vibrateToggle.isChecked
+            alarm?.vibrate = vibrateToggle.isChecked
         }
 
         fadeInToggle.setOnCheckedChangeListener { _, _ ->
-            alarm.fadeIn = fadeInToggle.isChecked
+            alarm?.fadeIn = fadeInToggle.isChecked
             // This is not really useful for now because all alarms have same fade in duration
             //alarm.fadeInDuration = SettingsHandler.getFadeInDuration(buttonView.context)
         }
@@ -331,12 +339,14 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
     }
 
     private fun selectDefaultRingtone() {
-        alarm.metadata?.type = RAlarmType.DEFAULT
-        alarm.metadata?.uri = null
-        alarm.metadata?.name = null
-        alarm.metadata?.imageUrl = null
+        alarm?.let {
+            alarm = Alarm(it)
 
-        createEditAlarmViewModel.alarmMetadataLiveData.value = alarm.metadata
+            // TODO
+            alarm!!.uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM).toString()
+
+            createEditAlarmViewModel.alarmMetadataLiveData.value = alarm
+        }
     }
 
     private fun openMusicMenu() {
@@ -410,11 +420,13 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
             if (TextUtils.isEmpty(labelEditText.text?.trim())) "" else labelEditText.text?.trim()
                 .toString()
 
-        alarm.id = System.currentTimeMillis()
-        alarm.label = label
-        alarm.enabled = true
+        alarm?.let {
+            it.id = System.currentTimeMillis()
+            it.label = label
+            it.enabled = true
 
-        createEditAlarmViewModel.createAlarm(context, alarm)
+            createEditAlarmViewModel.createAlarm(context, it)
+        }
     }
 
     private fun editAndScheduleAlarm() {
@@ -422,10 +434,12 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
             if (TextUtils.isEmpty(labelEditText.text?.trim())) "" else labelEditText.text?.trim()
                 .toString()
 
-        alarm.label = label
-        alarm.enabled = true
+        alarm?.let {
+            it.label = label
+            it.enabled = true
 
-        createEditAlarmViewModel.editAlarm(context, alarm)
+            createEditAlarmViewModel.editAlarm(context, it)
+        }
     }
 
     private fun openSpotifyActivity() {
@@ -442,12 +456,14 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
                     val selectedPlaylist = data?.extras
                         ?.getParcelable(Arguments.ARGS_SPOTIFY_SELECTED_PLAYLIST) as PlaylistSimple?
 
-                    alarm.metadata?.type = RAlarmType.SPOTIFY
-                    alarm.metadata?.uri = selectedPlaylist?.uri
-                    alarm.metadata?.name = selectedPlaylist?.name
-                    alarm.metadata?.imageUrl = selectedPlaylist?.images?.get(0)?.url
+                    alarm?.let {
+                        alarm = SpotifyAlarm(
+                            it, selectedPlaylist?.name, "", selectedPlaylist?.images?.get(0)?.url
+                        )
+                        alarm!!.uri = selectedPlaylist?.uri
 
-                    createEditAlarmViewModel.alarmMetadataLiveData.value = alarm.metadata
+                        createEditAlarmViewModel.alarmMetadataLiveData.value = alarm
+                    }
                 }
             }
         }
@@ -460,9 +476,12 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
 
         fun newInstance(dialogTitle: String): CreateEditAlarmFragment {
             val newAlarm = Alarm(
-                Alarm.NO_ID, 0, 0, "",
-                recurring = false,
+                BaseModel.NO_ID,
+                hour = 0,
+                minute = 0,
+                label = "",
                 enabled = true,
+                recurring = false,
                 monday = false,
                 tuesday = false,
                 wednesday = false,
@@ -473,13 +492,13 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
                 vibrate = false,
                 fadeIn = false,
                 fadeInDuration = 0,
-                metadata = AlarmMetadata()
+                uri = null
             )
 
             return newInstance(dialogTitle, newAlarm)
         }
 
-        fun newInstance(dialogTitle: String, alarm: Alarm): CreateEditAlarmFragment {
+        fun newInstance(dialogTitle: String, alarm: AbstractAlarm): CreateEditAlarmFragment {
             val args = Bundle()
 
             args.putString(Arguments.ARGS_DIALOG_TITLE, dialogTitle)

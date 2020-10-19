@@ -5,19 +5,25 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.pghaz.revery.alarm.model.room.RAlarm
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
+import com.pghaz.revery.alarm.model.room.RSpotifyAlarm
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 
-@Database(entities = [RAlarm::class], version = 1, exportSchema = false)
+@Database(entities = [RAlarm::class, RSpotifyAlarm::class], version = 1, exportSchema = false)
 abstract class AlarmDatabase : RoomDatabase() {
+
     abstract fun alarmDao(): AlarmDao
+    abstract fun spotifyAlarmDao(): SpotifyAlarmDao
 
     companion object {
         private const val DATABASE_NAME = "revery_alarm_database"
-        const val ALARM_TABLE_NAME = "revery_alarm_table"
 
-        private const val NUMBER_OF_THREADS = 4
-        val databaseWriteExecutor: ExecutorService = Executors.newFixedThreadPool(NUMBER_OF_THREADS)
+        const val ALARM_DEFAULT_TABLE_NAME = "revery_alarm_default_table"
+        const val ALARM_SPOTIFY_TABLE_NAME = "revery_alarm_spotify_table"
+
+        private val job = Job()
+        val databaseCoroutinesScope: CoroutineScope = CoroutineScope(job + Dispatchers.IO)
 
         @Volatile
         private lateinit var INSTANCE: AlarmDatabase

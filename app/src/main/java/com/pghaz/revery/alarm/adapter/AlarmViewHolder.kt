@@ -6,21 +6,26 @@ import android.widget.CheckedTextView
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
-import androidx.recyclerview.widget.RecyclerView
 import com.pghaz.revery.R
+import com.pghaz.revery.alarm.adapter.base.BaseViewHolder
+import com.pghaz.revery.alarm.model.BaseModel
+import com.pghaz.revery.alarm.model.app.AbstractAlarm
 import com.pghaz.revery.alarm.model.app.Alarm
+import com.pghaz.revery.alarm.model.app.SpotifyAlarm
+import com.pghaz.revery.extension.logError
 import com.pghaz.revery.image.ImageLoader
 import com.pghaz.revery.util.DateTimeUtils
 import java.util.*
 
-class AlarmViewHolder(view: View, private val alarmListener: OnAlarmClickListener) :
-    RecyclerView.ViewHolder(view) {
+open class AlarmViewHolder(view: View) : BaseViewHolder(view) {
+    var is24HourFormat: Boolean = true
+    var alarmListener: OnAlarmClickListener? = null
 
     private val timeTextView: TextView = view.findViewById(R.id.timeTextView)
     private val amPmTextView: TextView = view.findViewById(R.id.amPmTextView)
     private val labelTextView: TextView = view.findViewById(R.id.labelTextView)
     private val timeRemainingTextView: TextView = view.findViewById(R.id.timeRemainingTextView)
-    private val imageView: ImageView = view.findViewById(R.id.imageView)
+    protected val imageView: ImageView = view.findViewById(R.id.imageView)
 
     private val recurringDaysContainer: View = view.findViewById(R.id.recurringDaysContainer)
     private val recurringLabelTextView: CheckedTextView =
@@ -33,9 +38,9 @@ class AlarmViewHolder(view: View, private val alarmListener: OnAlarmClickListene
     private val saturdayTextView: CheckedTextView = view.findViewById(R.id.saturdayTextView)
     private val sundayTextView: CheckedTextView = view.findViewById(R.id.sundayTextView)
 
-    val alarmSwitch: SwitchCompat = view.findViewById(R.id.alarmSwitch)
+    private val alarmSwitch: SwitchCompat = view.findViewById(R.id.alarmSwitch)
 
-    private fun setTimeText(alarm: Alarm, is24HourFormat: Boolean) {
+    private fun setTimeText(alarm: AbstractAlarm, is24HourFormat: Boolean) {
         val hour: Int
 
         if (is24HourFormat) {
@@ -59,9 +64,17 @@ class AlarmViewHolder(view: View, private val alarmListener: OnAlarmClickListene
         )
     }
 
-    fun bind(alarm: Alarm, is24HourFormat: Boolean) {
+    override fun bind(model: BaseModel) {
+        val alarm = if (model is Alarm) {
+            itemView.context.logError("AlarmViewHolder bind: is Alarm")
+            model
+        } else {
+            itemView.context.logError("AlarmViewHolder bind: is SpotifyAlarm")
+            model as SpotifyAlarm
+        }
+
         itemView.setOnClickListener {
-            alarmListener.onClick(alarm)
+            alarmListener?.onClick(alarm)
         }
 
         setTimeText(alarm, is24HourFormat)
@@ -125,7 +138,7 @@ class AlarmViewHolder(view: View, private val alarmListener: OnAlarmClickListene
 
         alarmSwitch.isChecked = alarm.enabled
         alarmSwitch.setOnCheckedChangeListener { _, _ ->
-            alarmListener.onToggle(alarm)
+            alarmListener?.onToggle(alarm)
         }
 
         imageView.isEnabled = alarm.enabled
@@ -133,7 +146,7 @@ class AlarmViewHolder(view: View, private val alarmListener: OnAlarmClickListene
         amPmTextView.isEnabled = alarm.enabled
         labelTextView.isEnabled = alarm.enabled
 
-        ImageLoader.get().load(alarm.metadata?.imageUrl)
+        ImageLoader.get().load(null)
             .placeholder(R.drawable.selector_alarm_image_background_color)
             .into(imageView)
 
@@ -156,5 +169,10 @@ class AlarmViewHolder(view: View, private val alarmListener: OnAlarmClickListene
         fridayTextView.visibility = visibility
         saturdayTextView.visibility = visibility
         sundayTextView.visibility = visibility
+    }
+
+    override fun onViewHolderRecycled() {
+        itemView.setOnClickListener(null)
+        alarmSwitch.setOnCheckedChangeListener(null)
     }
 }

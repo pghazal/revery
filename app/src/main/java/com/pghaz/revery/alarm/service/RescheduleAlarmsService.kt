@@ -17,7 +17,7 @@ class RescheduleAlarmsService : LifecycleService() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
 
-        alarmRepository.getAlarmsLiveData().observe(this, { alarms ->
+        alarmRepository.getAllAlarmsLiveData().observe(this, { alarms ->
             alarms.forEach {
                 if (it.enabled) {
                     AlarmHandler.cancelAlarm(this, it)

@@ -8,7 +8,7 @@ import android.widget.Toast
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.pghaz.revery.alarm.AlarmHandler
 import com.pghaz.revery.alarm.RingActivity
-import com.pghaz.revery.alarm.model.app.Alarm
+import com.pghaz.revery.alarm.model.app.AbstractAlarm
 import com.pghaz.revery.alarm.service.AlarmService
 import com.pghaz.revery.alarm.service.RescheduleAlarmsService
 import com.pghaz.revery.settings.SettingsHandler
@@ -22,7 +22,7 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
         const val ACTION_ALARM_STOP = "com.pghaz.revery.ACTION_ALARM_STOP"
         const val ACTION_ALARM_SNOOZE = "com.pghaz.revery.ACTION_ALARM_SNOOZE"
 
-        fun getScheduleAlarmActionIntent(context: Context?, alarm: Alarm): Intent {
+        fun getScheduleAlarmActionIntent(context: Context?, alarm: AbstractAlarm): Intent {
             val intent = Intent(context?.applicationContext, AlarmBroadcastReceiver::class.java)
             intent.action = ACTION_ALARM_FIRES
             // This is a workaround due to problems with Parcelables into Intent
@@ -33,7 +33,7 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
             return intent
         }
 
-        fun getStopAlarmActionIntent(context: Context?, alarm: Alarm): Intent {
+        fun getStopAlarmActionIntent(context: Context?, alarm: AbstractAlarm): Intent {
             val intent = Intent(context?.applicationContext, AlarmBroadcastReceiver::class.java)
             intent.action = ACTION_ALARM_STOP
 
@@ -42,7 +42,7 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
             return intent
         }
 
-        fun getSnoozeActionIntent(context: Context?, alarm: Alarm): Intent {
+        fun getSnoozeActionIntent(context: Context?, alarm: AbstractAlarm): Intent {
             val intent = Intent(context?.applicationContext, AlarmBroadcastReceiver::class.java)
             intent.action = ACTION_ALARM_SNOOZE
 
@@ -110,7 +110,7 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
         LocalBroadcastManager.getInstance(context).sendBroadcast(serviceShouldStopIntent)
     }
 
-    private fun alarmIsToday(alarm: Alarm): Boolean {
+    private fun alarmIsToday(alarm: AbstractAlarm): Boolean {
         val calendar: Calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
 
@@ -143,7 +143,7 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
         return false
     }
 
-    private fun startAlarmService(context: Context, alarm: Alarm) {
+    private fun startAlarmService(context: Context, alarm: AbstractAlarm) {
         val service = Intent(context, AlarmService::class.java)
 
         IntentUtils.safePutAlarmIntoIntent(service, alarm)

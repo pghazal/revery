@@ -1,44 +1,48 @@
 package com.pghaz.revery.alarm.adapter
 
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
-import com.pghaz.revery.R
-import com.pghaz.revery.alarm.model.app.Alarm
+import com.pghaz.revery.alarm.adapter.base.BaseAdapter
+import com.pghaz.revery.alarm.adapter.base.BaseViewHolder
+import com.pghaz.revery.alarm.adapter.base.ListItemType
+import com.pghaz.revery.alarm.model.app.AbstractAlarm
 
 class AlarmsAdapter(
     private val alarmListener: OnAlarmClickListener,
     private val is24HourFormat: Boolean
-) :
-    RecyclerView.Adapter<AlarmViewHolder>() {
+) : BaseAdapter() {
 
-    private var alarms: List<Alarm> = emptyList()
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
+        val viewHolder = super.onCreateViewHolder(parent, viewType)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlarmViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_view_alarm, parent, false) as View
+        when (ListItemType.values()[viewType]) {
+            ListItemType.Alarm -> {
+                (viewHolder as AlarmViewHolder).alarmListener = alarmListener
+            }
+            ListItemType.SpotifyAlarm -> {
+                (viewHolder as SpotifyAlarmViewHolder).alarmListener = alarmListener
+            }
+        }
 
-        return AlarmViewHolder(view, alarmListener)
+        return viewHolder
     }
 
-    override fun onBindViewHolder(holder: AlarmViewHolder, position: Int) {
-        val alarm = alarms[position]
-        holder.bind(alarm, is24HourFormat)
+    override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
+        if (holder is AlarmViewHolder) {
+            holder.is24HourFormat = is24HourFormat
+        } else if (holder is SpotifyAlarmViewHolder) {
+            holder.is24HourFormat = is24HourFormat
+        }
+
+        super.onBindViewHolder(holder, position)
     }
 
-    override fun getItemCount(): Int {
-        return alarms.count()
-    }
-
-    fun setAlarms(newAlarms: List<Alarm>) {
-        this.alarms = newAlarms
+    fun setAlarms(newAlarms: List<AbstractAlarm>) {
+        this.items = newAlarms
         notifyDataSetChanged()
     }
 
-    override fun onViewRecycled(holder: AlarmViewHolder) {
+    override fun onViewRecycled(holder: BaseViewHolder) {
         super.onViewRecycled(holder)
-        holder.itemView.setOnClickListener(null)
-        holder.alarmSwitch.setOnCheckedChangeListener(null)
+        holder.onViewHolderRecycled()
     }
 }

@@ -1,11 +1,11 @@
 package com.pghaz.revery.alarm.model.app
 
 import android.os.Parcelable
-import com.pghaz.revery.alarm.model.room.RAlarm
+import com.pghaz.revery.alarm.model.room.RSpotifyAlarm
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class Alarm(
+data class SpotifyAlarm(
     override var id: Long = NO_ID,
     override var hour: Int = 0,
     override var minute: Int = 0,
@@ -22,10 +22,20 @@ data class Alarm(
     override var vibrate: Boolean = false,
     override var fadeIn: Boolean = false,
     override var fadeInDuration: Long = 0,
-    override var uri: String? = null
+    override var uri: String? = null,
+
+    // SpotifyAlarm specifics
+    var name: String? = null,
+    var description: String? = null,
+    var imageUrl: String? = null
 ) : AbstractAlarm(), Parcelable {
 
-    constructor(alarm: AbstractAlarm) : this(
+    constructor(
+        alarm: AbstractAlarm,
+        name: String?,
+        description: String?,
+        imageUrl: String?
+    ) : this(
         id = alarm.id,
         hour = alarm.hour,
         minute = alarm.minute,
@@ -42,12 +52,16 @@ data class Alarm(
         vibrate = alarm.vibrate,
         fadeIn = alarm.fadeIn,
         fadeInDuration = alarm.fadeInDuration,
-        uri = alarm.uri
-    )
+        uri = alarm.uri,
+    ) {
+        this.name = name
+        this.description = description
+        this.imageUrl = imageUrl
+    }
 
     companion object {
-        fun fromDatabaseModel(alarm: RAlarm): Alarm {
-            return Alarm(
+        fun fromDatabaseModel(alarm: RSpotifyAlarm): SpotifyAlarm {
+            return SpotifyAlarm(
                 id = alarm.id,
                 hour = alarm.hour,
                 minute = alarm.minute,
@@ -64,12 +78,13 @@ data class Alarm(
                 vibrate = alarm.vibrate,
                 fadeIn = alarm.fadeIn,
                 fadeInDuration = alarm.fadeInDuration,
-                uri = alarm.uri
+                uri = alarm.uri,
+                alarm.name, alarm.description, alarm.imageUrl
             )
         }
 
-        fun toDatabaseModel(alarm: Alarm): RAlarm {
-            return RAlarm(
+        fun toDatabaseModel(alarm: SpotifyAlarm): RSpotifyAlarm {
+            return RSpotifyAlarm(
                 id = alarm.id,
                 hour = alarm.hour,
                 minute = alarm.minute,
@@ -86,7 +101,8 @@ data class Alarm(
                 vibrate = alarm.vibrate,
                 fadeIn = alarm.fadeIn,
                 fadeInDuration = alarm.fadeInDuration,
-                uri = alarm.uri
+                uri = alarm.uri,
+                alarm.name, alarm.description, alarm.imageUrl
             )
         }
     }
