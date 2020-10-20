@@ -32,7 +32,7 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
 
         listAlarmsViewModel = ViewModelProvider(this).get(ListAlarmsViewModel::class.java)
         listAlarmsViewModel.alarmsLiveData.observe(this, { alarms ->
-            alarmsAdapter.setList(alarms)
+            alarmsAdapter.submitList(alarms)
 
             showAddAlarmButtonIfHidden()
         })
