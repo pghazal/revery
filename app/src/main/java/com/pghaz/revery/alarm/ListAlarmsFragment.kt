@@ -19,7 +19,6 @@ import com.pghaz.revery.alarm.viewmodel.ListAlarmsViewModel
 import com.pghaz.revery.settings.SettingsFragment
 import kotlinx.android.synthetic.main.fragment_list_alarms.*
 
-
 class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
 
     private lateinit var listAlarmsViewModel: ListAlarmsViewModel
@@ -33,7 +32,7 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
 
         listAlarmsViewModel = ViewModelProvider(this).get(ListAlarmsViewModel::class.java)
         listAlarmsViewModel.alarmsLiveData.observe(this, { alarms ->
-            alarmsAdapter.setAlarms(alarms)
+            alarmsAdapter.setList(alarms)
 
             showAddAlarmButtonIfHidden()
         })

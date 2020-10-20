@@ -8,8 +8,8 @@ import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
 import com.pghaz.revery.R
 import com.pghaz.revery.alarm.adapter.base.BaseViewHolder
-import com.pghaz.revery.alarm.model.app.Alarm
 import com.pghaz.revery.alarm.model.BaseModel
+import com.pghaz.revery.alarm.model.app.Alarm
 import com.pghaz.revery.image.ImageLoader
 import com.pghaz.revery.util.DateTimeUtils
 import java.util.*
@@ -22,7 +22,7 @@ open class AlarmViewHolder(view: View) : BaseViewHolder(view) {
     private val amPmTextView: TextView = view.findViewById(R.id.amPmTextView)
     private val labelTextView: TextView = view.findViewById(R.id.labelTextView)
     private val timeRemainingTextView: TextView = view.findViewById(R.id.timeRemainingTextView)
-    protected val imageView: ImageView = view.findViewById(R.id.imageView)
+    private val imageView: ImageView = view.findViewById(R.id.imageView)
 
     private val recurringDaysContainer: View = view.findViewById(R.id.recurringDaysContainer)
     private val recurringLabelTextView: CheckedTextView =
@@ -65,7 +65,7 @@ open class AlarmViewHolder(view: View) : BaseViewHolder(view) {
         val alarm = model as Alarm
 
         itemView.setOnClickListener {
-            alarmListener?.onClick(alarm)
+            alarmListener?.onClick(Alarm(alarm))
         }
 
         setTimeText(alarm, is24HourFormat)
@@ -129,7 +129,7 @@ open class AlarmViewHolder(view: View) : BaseViewHolder(view) {
 
         alarmSwitch.isChecked = alarm.enabled
         alarmSwitch.setOnCheckedChangeListener { _, _ ->
-            alarmListener?.onToggle(alarm)
+            alarmListener?.onToggle(Alarm(alarm))
         }
 
         imageView.isEnabled = alarm.enabled

@@ -3,13 +3,14 @@ package com.pghaz.revery.alarm.adapter.base
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.pghaz.revery.alarm.model.BaseModel
+import com.pghaz.revery.alarm.adapter.AlarmDiffUtil
 import com.pghaz.revery.alarm.model.app.Alarm
 
-abstract class BaseAdapter : RecyclerView.Adapter<BaseViewHolder>() {
+abstract class BaseAdapter() : RecyclerView.Adapter<BaseViewHolder>() {
 
-    protected var items: List<BaseModel> = emptyList()
+    private var items = ArrayList<Alarm>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
         val itemType = ListItemType.values()[viewType]
@@ -33,6 +34,16 @@ abstract class BaseAdapter : RecyclerView.Adapter<BaseViewHolder>() {
     }
 
     override fun getItemCount(): Int {
-        return items.count()
+        return items.size
+    }
+
+    fun setList(list: List<Alarm>) {
+        val diffUtil = AlarmDiffUtil(items, list)
+        val differResult = DiffUtil.calculateDiff(diffUtil)
+
+        items.clear()
+        items.addAll(list)
+
+        differResult.dispatchUpdatesTo(this)
     }
 }

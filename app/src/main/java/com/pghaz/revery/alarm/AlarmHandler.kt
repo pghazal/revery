@@ -48,6 +48,8 @@ object AlarmHandler {
             id = System.currentTimeMillis(),
             hour = hour,
             minute = minute,
+            label = "",
+            enabled = true,
             recurring = recurring,
             monday = true,
             tuesday = true,
@@ -156,15 +158,7 @@ object AlarmHandler {
         val hour = DateTimeUtils.getCurrentHourOfDay(calendar)
         val minute = calendar.get(Calendar.MINUTE)
 
-        val snoozeAlarm = when (alarm) {
-            is Alarm -> {
-                Alarm(alarm)
-            }
-
-            else -> {
-                throw IllegalArgumentException("AlarmHandler: snooze alarm type invalid")
-            }
-        }
+        val snoozeAlarm = Alarm(alarm)
 
         snoozeAlarm.id = now
         snoozeAlarm.recurring = false
