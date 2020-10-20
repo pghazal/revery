@@ -315,12 +315,10 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         })
 
         spotifyButton.setOnClickListener {
-            closeMusicMenu()
             openSpotifyActivity()
         }
 
         defaultRingtoneButton.setOnClickListener {
-            closeMusicMenu()
             selectDefaultRingtone()
         }
 
@@ -402,7 +400,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
             AnimatorUtils.TranslationAxis.VERTICAL,
             AnimatorUtils.TranslationDirection.FROM_TOP_TO_BOTTOM,
             true,
-            100,
+            0,
             400
         )
 

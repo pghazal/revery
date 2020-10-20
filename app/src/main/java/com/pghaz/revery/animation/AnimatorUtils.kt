@@ -210,7 +210,8 @@ object AnimatorUtils {
         )
 
         val animatorSet = AnimatorSet()
-        animatorSet.interpolator = OvershootInterpolator()
+        animatorSet.interpolator =
+            if (isEnterAnimation) OvershootInterpolator() else AnticipateOvershootInterpolator()
         animatorSet.play(initialStateAnimator).before(mainAnimator)
 
         bindAnimator(animatorSet, view)
