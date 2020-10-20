@@ -15,5 +15,6 @@
 
     <color name="color_image_disabled">#80180D3D</color>
     <color name="color_image_enabled">#180D3D</color>
+    <color name="color_image_dark_enabled">#0B0525</color>
 
 </resources>

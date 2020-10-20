@@ -9,12 +9,12 @@
     android:orientation="vertical">
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/defaultRingtoneButton"
+        android:id="@+id/deviceRingtoneButton"
         style="@style/fab_extended_music_menu_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/half_base_margin"
-        android:text="@string/default_ringtone"
+        android:text="@string/select_ringtone_from_device"
         android:visibility="invisible"
         app:icon="@drawable/ic_phone_android"
         tools:visibility="visible" />
@@ -25,9 +25,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/half_base_margin"
-        android:layout_marginBottom="@dimen/half_base_margin"
         android:text="@string/spotify"
         android:visibility="invisible"
         app:icon="@drawable/ic_spotify_icon_white"
+        tools:visibility="visible" />
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/defaultRingtoneButton"
+        style="@style/fab_extended_music_menu_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/half_base_margin"
+        android:layout_marginBottom="@dimen/half_base_margin"
+        android:text="@string/by_default"
+        android:visibility="invisible"
         tools:visibility="visible" />
 </LinearLayout>

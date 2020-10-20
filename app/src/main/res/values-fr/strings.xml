@@ -50,7 +50,8 @@
     <string name="alarm_turn_off">arrêter</string>
     <string name="alarm_snooze">rappel d\'alarme</string>
     <string name="spotify">Spotify</string>
-    <string name="default_ringtone">Par défaut</string>
+    <string name="by_default">Par défaut</string>
+    <string name="select_ringtone_from_device">Mes sons</string>
     <string name="everyday">tous les jours</string>
     <string name="weekend">week-end</string>
     <string name="week">en semaine</string>

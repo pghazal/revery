@@ -3,6 +3,7 @@ package com.pghaz.revery.alarm
 import android.app.Activity
 import android.content.Intent
 import android.media.RingtoneManager
+import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.text.format.DateFormat
@@ -18,6 +19,7 @@ import com.pghaz.revery.alarm.model.app.AlarmMetadata
 import com.pghaz.revery.alarm.model.app.AlarmType
 import com.pghaz.revery.alarm.viewmodel.CreateEditAlarmViewModel
 import com.pghaz.revery.animation.AnimatorUtils
+import com.pghaz.revery.extension.logError
 import com.pghaz.revery.image.ImageLoader
 import com.pghaz.revery.settings.SettingsFragment
 import com.pghaz.revery.spotify.SpotifyActivity
@@ -33,6 +35,10 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
 
     private lateinit var createEditAlarmViewModel: CreateEditAlarmViewModel
     private var alarm: Alarm? = null
+
+    override fun getLayoutResId(): Int {
+        return R.layout.fragment_alarm_create_edit
+    }
 
     override fun parseArguments(arguments: Bundle?) {
         super.parseArguments(arguments)
@@ -57,45 +63,49 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         })
 
         createEditAlarmViewModel.alarmMetadataLiveData.observe(this, {
-            when (it.metadata.alarmType) {
-                AlarmType.DEFAULT -> {
-                    moreOptionsButton.visibility = View.GONE
-                    ringtoneInfoContainer.visibility = View.GONE
-                }
-
-                AlarmType.SPOTIFY -> {
-                    moreOptionsButton.visibility = View.VISIBLE
-                    ringtoneInfoContainer.visibility = View.VISIBLE
-
-                    if (it.metadata.name.isNullOrEmpty()) {
-                        titleTextView.text = ""
-                        titleTextView.visibility = View.GONE
-                    } else {
-                        titleTextView.text = it.metadata.name
-                        titleTextView.visibility = View.VISIBLE
-                    }
-
-                    if (it.metadata.description.isNullOrEmpty()) {
-                        subtitleTextView.text = ""
-                        subtitleTextView.visibility = View.GONE
-                    } else {
-                        subtitleTextView.text = it.metadata.description
-                        subtitleTextView.visibility = View.VISIBLE
-                    }
-
-                    if (it.metadata.imageUrl.isNullOrEmpty()) {
-                        imageView.visibility = View.GONE
-                    } else {
-                        imageView.visibility = View.VISIBLE
-                        ImageLoader.get().load(it.metadata.imageUrl).into(imageView)
-                    }
-                }
-            }
+            updateMetadataViews(it)
         })
     }
 
-    override fun getLayoutResId(): Int {
-        return R.layout.fragment_alarm_create_edit
+    private fun updateMetadataViews(alarm: Alarm) {
+        if (alarm.metadata.alarmType == AlarmType.SPOTIFY) {
+            moreOptionsButton.visibility = View.VISIBLE
+        } else {
+            moreOptionsButton.visibility = View.GONE
+        }
+
+        ringtoneInfoContainer.visibility = View.VISIBLE
+
+        if (alarm.metadata.name.isNullOrEmpty()) {
+            titleTextView.text = ""
+            titleTextView.visibility = View.GONE
+        } else {
+            titleTextView.text = alarm.metadata.name
+            titleTextView.visibility = View.VISIBLE
+        }
+
+        if (alarm.metadata.description.isNullOrEmpty()) {
+            subtitleTextView.text = ""
+            subtitleTextView.visibility = View.GONE
+        } else {
+            subtitleTextView.text = alarm.metadata.description
+            subtitleTextView.visibility = View.VISIBLE
+        }
+
+        if (alarm.metadata.imageUrl.isNullOrEmpty()) {
+            imageView.visibility = View.GONE
+        } else {
+            imageView.visibility = View.VISIBLE
+            val placeholder = if (alarm.metadata.alarmType == AlarmType.SPOTIFY) {
+                R.drawable.selector_alarm_image_background_color
+            } else {
+                R.drawable.shape_alarm_ringtone_phone
+            }
+
+            ImageLoader.get().load(alarm.metadata.imageUrl)
+                .placeholder(placeholder)
+                .into(imageView)
+        }
     }
 
     private fun initTimePicker(is24HourFormat: Boolean) {
@@ -322,8 +332,12 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
             openSpotifyActivity()
         }
 
+        deviceRingtoneButton.setOnClickListener {
+            openRingtonePicker()
+        }
+
         defaultRingtoneButton.setOnClickListener {
-            selectDefaultRingtone()
+            setDefaultRingtone()
         }
 
         moreOptionsButton.setOnClickListener {
@@ -340,21 +354,37 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         }
     }
 
-    private fun selectDefaultRingtone() {
+    private fun setDefaultRingtone() {
         alarm?.let {
-
-            // TODO
             it.metadata = AlarmMetadata().apply {
                 uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM).toString()
             }
 
-            createEditAlarmViewModel.alarmMetadataLiveData.value = alarm
+            createEditAlarmViewModel.alarmMetadataLiveData.value = it
         }
     }
 
+    private fun openRingtonePicker() {
+        val defaultUri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+
+        val intent = Intent(RingtoneManager.ACTION_RINGTONE_PICKER)
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALARM)
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true)
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, true)
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_DEFAULT_URI, defaultUri)
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, defaultUri)
+
+        startActivityForResult(intent, REQUEST_CODE_PICK_RINGTONE)
+    }
+
+    private fun openSpotifyActivity() {
+        val intent = Intent(context, SpotifyActivity::class.java)
+        startActivityForResult(intent, REQUEST_CODE_SPOTIFY_GET_PLAYLIST)
+    }
+
     private fun openMusicMenu() {
-        val spotifyAnimator = AnimatorUtils.getTranslationAnimatorSet(
-            spotifyButton,
+        val defaultRingtoneAnimator = AnimatorUtils.getTranslationAnimatorSet(
+            defaultRingtoneButton,
             true,
             AnimatorUtils.TranslationAxis.VERTICAL,
             AnimatorUtils.TranslationDirection.FROM_BOTTOM_TO_TOP,
@@ -363,8 +393,8 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
             400
         )
 
-        val defaultAnimator = AnimatorUtils.getTranslationAnimatorSet(
-            defaultRingtoneButton,
+        val spotifyAnimator = AnimatorUtils.getTranslationAnimatorSet(
+            spotifyButton,
             true,
             AnimatorUtils.TranslationAxis.VERTICAL,
             AnimatorUtils.TranslationDirection.FROM_BOTTOM_TO_TOP,
@@ -373,7 +403,17 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
             400
         )
 
-        spotifyAnimator.playTogether(defaultAnimator)
+        val phoneRingtoneAnimator = AnimatorUtils.getTranslationAnimatorSet(
+            deviceRingtoneButton,
+            true,
+            AnimatorUtils.TranslationAxis.VERTICAL,
+            AnimatorUtils.TranslationDirection.FROM_BOTTOM_TO_TOP,
+            true,
+            200,
+            400
+        )
+
+        spotifyAnimator.playTogether(phoneRingtoneAnimator, defaultRingtoneAnimator)
         spotifyAnimator.start()
 
         chooseRingtoneButton.isExpanded = true
@@ -381,6 +421,16 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
     }
 
     private fun closeMusicMenu() {
+        val defaultRingtoneAnimator = AnimatorUtils.getTranslationAnimatorSet(
+            defaultRingtoneButton,
+            false,
+            AnimatorUtils.TranslationAxis.VERTICAL,
+            AnimatorUtils.TranslationDirection.FROM_TOP_TO_BOTTOM,
+            true,
+            0,
+            400
+        )
+
         val spotifyAnimator = AnimatorUtils.getTranslationAnimatorSet(
             spotifyButton,
             false,
@@ -391,8 +441,8 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
             400
         )
 
-        val defaultAnimator = AnimatorUtils.getTranslationAnimatorSet(
-            defaultRingtoneButton,
+        val phoneRingtoneAnimator = AnimatorUtils.getTranslationAnimatorSet(
+            deviceRingtoneButton,
             false,
             AnimatorUtils.TranslationAxis.VERTICAL,
             AnimatorUtils.TranslationDirection.FROM_TOP_TO_BOTTOM,
@@ -401,7 +451,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
             400
         )
 
-        spotifyAnimator.playTogether(defaultAnimator)
+        spotifyAnimator.playTogether(phoneRingtoneAnimator, defaultRingtoneAnimator)
         spotifyAnimator.start()
 
         chooseRingtoneButton.isExpanded = false
@@ -452,35 +502,49 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         }
     }
 
-    private fun openSpotifyActivity() {
-        val intent = Intent(context, SpotifyActivity::class.java)
-        startActivityForResult(intent, REQUEST_CODE_SPOTIFY_GET_PLAYLIST)
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == REQUEST_CODE_SPOTIFY_GET_PLAYLIST) {
-            when (resultCode) {
-                Activity.RESULT_OK -> {
-                    val selectedPlaylist = data?.extras
-                        ?.getParcelable(Arguments.ARGS_SPOTIFY_SELECTED_PLAYLIST) as PlaylistSimple?
+        if (requestCode == REQUEST_CODE_SPOTIFY_GET_PLAYLIST && resultCode == Activity.RESULT_OK) {
+            val selectedPlaylist =
+                data?.getParcelableExtra(Arguments.ARGS_SPOTIFY_SELECTED_PLAYLIST) as PlaylistSimple?
 
-                    alarm?.let {
-                        it.metadata.apply {
-                            alarmType = AlarmType.SPOTIFY
-                            metadataId = selectedPlaylist?.id
-                            uri = selectedPlaylist?.uri
-                            href = selectedPlaylist?.href
-                            type = selectedPlaylist?.type
-                            name = selectedPlaylist?.name
-                            description = ""
-                            imageUrl = selectedPlaylist?.images?.get(0)?.url
-                        }
-
-                        createEditAlarmViewModel.alarmMetadataLiveData.value = alarm
-                    }
+            alarm?.let {
+                it.metadata.apply {
+                    alarmType = AlarmType.SPOTIFY
+                    metadataId = selectedPlaylist?.id
+                    uri = selectedPlaylist?.uri
+                    href = selectedPlaylist?.href
+                    type = selectedPlaylist?.type
+                    name = selectedPlaylist?.name
+                    description = ""
+                    imageUrl = selectedPlaylist?.images?.get(0)?.url
                 }
+
+                createEditAlarmViewModel.alarmMetadataLiveData.value = it
+            }
+
+        } else if (requestCode == REQUEST_CODE_PICK_RINGTONE && resultCode == Activity.RESULT_OK) {
+            val ringtoneUri: Uri? =
+                data?.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
+            val title = RingtoneManager.getRingtone(context, ringtoneUri)?.getTitle(context)
+                ?.substringBeforeLast(".")
+
+            alarm?.let {
+                it.metadata.apply {
+                    alarmType = AlarmType.DEFAULT
+                    metadataId = null
+                    uri = ringtoneUri.toString()
+                    href = null
+                    type = null
+                    name = title
+                    description = ""
+                    imageUrl = title
+
+                    context?.logError("Uri selected: $uri")
+                }
+
+                createEditAlarmViewModel.alarmMetadataLiveData.value = it
             }
         }
     }
@@ -489,6 +553,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         const val TAG = "CreateEditAlarmFragment"
 
         private const val REQUEST_CODE_SPOTIFY_GET_PLAYLIST = 21
+        private const val REQUEST_CODE_PICK_RINGTONE = 22
 
         fun newInstance(dialogTitle: String): CreateEditAlarmFragment {
             val newAlarm = Alarm(
