@@ -329,14 +329,23 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         })
 
         spotifyButton.setOnClickListener {
+            if (chooseRingtoneButton.isExpanded) {
+                closeMusicMenu()
+            }
             openSpotifyActivity()
         }
 
         deviceRingtoneButton.setOnClickListener {
+            if (chooseRingtoneButton.isExpanded) {
+                closeMusicMenu()
+            }
             openRingtonePicker()
         }
 
         defaultRingtoneButton.setOnClickListener {
+            if (chooseRingtoneButton.isExpanded) {
+                closeMusicMenu()
+            }
             setDefaultRingtone()
         }
 
@@ -413,6 +422,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
             400
         )
 
+        AnimatorUtils.fadeIn(floatingMenuTouchInterceptor, 400, 0)
         spotifyAnimator.playTogether(phoneRingtoneAnimator, defaultRingtoneAnimator)
         spotifyAnimator.start()
 
@@ -451,6 +461,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
             400
         )
 
+        AnimatorUtils.fadeOut(floatingMenuTouchInterceptor, 400, 0)
         spotifyAnimator.playTogether(phoneRingtoneAnimator, defaultRingtoneAnimator)
         spotifyAnimator.start()
 

@@ -391,27 +391,6 @@
         </RelativeLayout>
     </ScrollView>
 
-    <include
-        layout="@layout/floating_action_button_menu"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/chooseRingtoneButton"
-        android:layout_alignEnd="@+id/chooseRingtoneButton" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/chooseRingtoneButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/buttonsContainer"
-        android:layout_alignEnd="@+id/buttonsContainer"
-        android:backgroundTint="@color/colorAccent"
-        android:src="@drawable/ic_music_note"
-        android:tint="@android:color/white"
-        app:backgroundTint="@color/colorAccent"
-        app:fabSize="normal"
-        app:srcCompat="@drawable/ic_music_note"
-        app:tint="@android:color/white" />
-
     <LinearLayout
         android:id="@+id/buttonsContainer"
         android:layout_width="match_parent"
@@ -447,5 +426,30 @@
         android:id="@+id/floatingMenuTouchInterceptor"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:descendantFocusability="blocksDescendants" />
+        android:alpha="0.0"
+        android:background="#B3000000"
+        android:descendantFocusability="blocksDescendants"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <include
+        layout="@layout/floating_action_button_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/chooseRingtoneButton"
+        android:layout_alignEnd="@+id/chooseRingtoneButton" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/chooseRingtoneButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/buttonsContainer"
+        android:layout_alignEnd="@+id/buttonsContainer"
+        android:backgroundTint="@color/colorAccent"
+        android:src="@drawable/ic_music_note"
+        android:tint="@android:color/white"
+        app:backgroundTint="@color/colorAccent"
+        app:fabSize="normal"
+        app:srcCompat="@drawable/ic_music_note"
+        app:tint="@android:color/white" />
 </RelativeLayout>

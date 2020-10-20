@@ -5,7 +5,8 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.view.View
-import android.view.animation.*
+import android.view.animation.AnticipateOvershootInterpolator
+import android.view.animation.OvershootInterpolator
 import androidx.annotation.NonNull
 
 object AnimatorUtils {
@@ -34,93 +35,23 @@ object AnimatorUtils {
     }
 
     fun fadeIn(view: View, duration: Long, startOffset: Long) {
-        fadeIn(view, TranslationDirection.FROM_BOTTOM_TO_TOP, duration, startOffset)
+        view.animate().alpha(1f).setStartDelay(startOffset).setDuration(duration)
+            .setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationStart(animation: Animator?) {
+                    super.onAnimationStart(animation)
+                    view.visibility = View.VISIBLE
+                }
+            })
     }
 
     fun fadeOut(view: View, duration: Long, startOffset: Long) {
-        fadeOut(view, TranslationDirection.FROM_TOP_TO_BOTTOM, duration, startOffset)
-    }
-
-    private fun fadeOut(
-        view: View,
-        direction: TranslationDirection,
-        duration: Long,
-        startOffset: Long
-    ) {
-        val animationSet = AnimationSet(true)
-        animationSet.interpolator = OvershootInterpolator()
-        animationSet.startOffset = startOffset
-        animationSet.fillAfter = true
-        animationSet.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationStart(animation: Animation?) {
-            }
-
-            override fun onAnimationEnd(animation: Animation?) {
-                view.visibility = View.INVISIBLE
-            }
-
-            override fun onAnimationRepeat(animation: Animation?) {
-            }
-        })
-
-        val y = if (direction == TranslationDirection.FROM_BOTTOM_TO_TOP) {
-            (-view.height).toFloat()
-        } else {
-            view.height.toFloat()
-        }
-
-        val translateAnimation = TranslateAnimation(0f, 0f, 0f, y)
-        translateAnimation.duration = duration
-
-        val alphaAnimation = AlphaAnimation(1f, 0f)
-        alphaAnimation.duration = duration
-
-        animationSet.addAnimation(translateAnimation)
-        animationSet.addAnimation(alphaAnimation)
-
-        view.startAnimation(animationSet)
-
-        view.visibility = View.INVISIBLE
-    }
-
-    private fun fadeIn(
-        view: View,
-        direction: TranslationDirection,
-        duration: Long,
-        startOffset: Long
-    ) {
-        val animationSet = AnimationSet(true)
-        animationSet.interpolator = OvershootInterpolator()
-        animationSet.startOffset = startOffset
-        animationSet.fillAfter = true
-        animationSet.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationStart(animation: Animation?) {
-                view.visibility = View.VISIBLE
-            }
-
-            override fun onAnimationEnd(animation: Animation?) {
-            }
-
-            override fun onAnimationRepeat(animation: Animation?) {
-            }
-        })
-
-        val y = if (direction == TranslationDirection.FROM_BOTTOM_TO_TOP) {
-            view.height.toFloat()
-        } else {
-            (-view.height).toFloat()
-        }
-
-        val translateAnimation = TranslateAnimation(0f, 0f, y, 0f)
-        translateAnimation.duration = duration
-
-        val alphaAnimation = AlphaAnimation(0f, 1f)
-        alphaAnimation.duration = duration
-
-        animationSet.addAnimation(translateAnimation)
-        animationSet.addAnimation(alphaAnimation)
-
-        view.startAnimation(animationSet)
+        view.animate().alpha(0f).setStartDelay(startOffset).setDuration(duration)
+            .setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator?) {
+                    super.onAnimationEnd(animation)
+                    view.visibility = View.GONE
+                }
+            })
     }
 
     @NonNull
