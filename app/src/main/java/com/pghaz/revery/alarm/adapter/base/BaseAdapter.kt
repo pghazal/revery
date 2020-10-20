@@ -12,6 +12,8 @@ import java.util.*
 
 abstract class BaseAdapter : ListAdapter<BaseModel, BaseViewHolder>(DiffUtilCallback) {
 
+    var onListChangedListener: OnListChangedListener? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
         val itemType = ListItemType.values()[viewType]
 
@@ -31,6 +33,18 @@ abstract class BaseAdapter : ListAdapter<BaseModel, BaseViewHolder>(DiffUtilCall
     override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
         val item = getItem(position)
         holder.bind(item)
+    }
+
+    override fun onCurrentListChanged(
+        previousList: MutableList<BaseModel>,
+        currentList: MutableList<BaseModel>
+    ) {
+        super.onCurrentListChanged(previousList, currentList)
+        onListChangedListener?.onListChanged(previousList, currentList)
+    }
+
+    interface OnListChangedListener {
+        fun onListChanged(previousList: MutableList<BaseModel>, currentList: MutableList<BaseModel>)
     }
 
     companion object {

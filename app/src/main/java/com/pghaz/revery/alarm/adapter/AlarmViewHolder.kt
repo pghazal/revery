@@ -16,7 +16,7 @@ import java.util.*
 
 open class AlarmViewHolder(view: View) : BaseViewHolder(view) {
     var is24HourFormat: Boolean = true
-    var alarmListener: OnAlarmClickListener? = null
+    var alarmClickListener: OnAlarmClickListener? = null
 
     private val timeTextView: TextView = view.findViewById(R.id.timeTextView)
     private val amPmTextView: TextView = view.findViewById(R.id.amPmTextView)
@@ -65,7 +65,7 @@ open class AlarmViewHolder(view: View) : BaseViewHolder(view) {
         val alarm = model as Alarm
 
         itemView.setOnClickListener {
-            alarmListener?.onClick(Alarm(alarm))
+            alarmClickListener?.onClick(Alarm(alarm))
         }
 
         setTimeText(alarm, is24HourFormat)
@@ -129,7 +129,7 @@ open class AlarmViewHolder(view: View) : BaseViewHolder(view) {
 
         alarmSwitch.isChecked = alarm.enabled
         alarmSwitch.setOnCheckedChangeListener { _, _ ->
-            alarmListener?.onToggle(Alarm(alarm))
+            alarmClickListener?.onToggle(Alarm(alarm))
         }
 
         imageView.isEnabled = alarm.enabled

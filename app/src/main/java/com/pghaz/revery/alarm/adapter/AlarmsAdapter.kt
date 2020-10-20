@@ -6,7 +6,7 @@ import com.pghaz.revery.alarm.adapter.base.BaseViewHolder
 import com.pghaz.revery.alarm.adapter.base.ListItemType
 
 class AlarmsAdapter(
-    private val alarmListener: OnAlarmClickListener,
+    private val alarmClickListener: OnAlarmClickListener,
     private val is24HourFormat: Boolean
 ) : BaseAdapter() {
 
@@ -15,7 +15,7 @@ class AlarmsAdapter(
 
         when (ListItemType.values()[viewType]) {
             ListItemType.Alarm -> {
-                (viewHolder as AlarmViewHolder).alarmListener = alarmListener
+                (viewHolder as AlarmViewHolder).alarmClickListener = alarmClickListener
             }
             else -> {
                 // do nothing for now

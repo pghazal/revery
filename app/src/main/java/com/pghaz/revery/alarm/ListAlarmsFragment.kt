@@ -14,6 +14,8 @@ import com.pghaz.revery.R
 import com.pghaz.revery.alarm.adapter.AlarmItemDecoration
 import com.pghaz.revery.alarm.adapter.AlarmsAdapter
 import com.pghaz.revery.alarm.adapter.OnAlarmClickListener
+import com.pghaz.revery.alarm.adapter.base.BaseAdapter
+import com.pghaz.revery.alarm.model.BaseModel
 import com.pghaz.revery.alarm.model.app.Alarm
 import com.pghaz.revery.alarm.viewmodel.ListAlarmsViewModel
 import com.pghaz.revery.settings.SettingsFragment
@@ -29,6 +31,17 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
         setHasOptionsMenu(true)
 
         alarmsAdapter = AlarmsAdapter(this, DateFormat.is24HourFormat(context))
+        alarmsAdapter.onListChangedListener = object : BaseAdapter.OnListChangedListener {
+            override fun onListChanged(
+                previousList: MutableList<BaseModel>,
+                currentList: MutableList<BaseModel>
+            ) {
+                // Scroll to new added item (except when app started: previousSize == 0)
+                if (previousList.size > 0 && currentList.size > previousList.size) {
+                    recyclerView.smoothScrollToPosition(alarmsAdapter.itemCount - 1)
+                }
+            }
+        }
 
         listAlarmsViewModel = ViewModelProvider(this).get(ListAlarmsViewModel::class.java)
         listAlarmsViewModel.alarmsLiveData.observe(this, { alarms ->
