@@ -34,16 +34,20 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
     private lateinit var createEditAlarmViewModel: CreateEditAlarmViewModel
     private var alarm: Alarm? = null
 
-    private fun initAlarmFromArguments(arguments: Bundle?) {
-        arguments?.let { args ->
-            alarm = args.getParcelable(Arguments.ARGS_ALARM)
+    override fun parseArguments(arguments: Bundle?) {
+        super.parseArguments(arguments)
+        arguments?.let {
+            alarm = it.getParcelable(Arguments.ARGS_ALARM)
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelable(Arguments.ARGS_ALARM, alarm)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        initAlarmFromArguments(arguments)
 
         createEditAlarmViewModel = ViewModelProvider(this).get(CreateEditAlarmViewModel::class.java)
         createEditAlarmViewModel.timeChangedAlarmLiveData.observe(this, { updatedAlarm ->
@@ -331,7 +335,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         var fragment =
             childFragmentManager.findFragmentByTag(SettingsFragment.TAG) as MoreOptionsAlarmFragment?
         if (fragment == null) {
-            fragment = MoreOptionsAlarmFragment.newInstance(getString(R.string.more_options))
+            fragment = MoreOptionsAlarmFragment.newInstance(getString(R.string.more_options), alarm)
             fragment.show(childFragmentManager, MoreOptionsAlarmFragment.TAG)
         }
     }
@@ -340,15 +344,8 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         alarm?.let {
 
             // TODO
-            it.metadata.apply {
-                alarmType = AlarmType.DEFAULT
-                metadataId = null
+            it.metadata = AlarmMetadata().apply {
                 uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM).toString()
-                href = null
-                type = null
-                name = null
-                description = null
-                imageUrl = null
             }
 
             createEditAlarmViewModel.alarmMetadataLiveData.value = alarm
@@ -431,17 +428,10 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
             it.label = label
             it.enabled = true
 
-            // Safe init
-            it.metadata.apply {
-                if (uri.isNullOrEmpty()) {
-                    alarmType = AlarmType.DEFAULT
-                    metadataId = null
+            // Safe init of uri
+            if (it.metadata.uri.isNullOrEmpty()) {
+                it.metadata = AlarmMetadata().apply {
                     uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM).toString()
-                    href = null
-                    type = null
-                    name = null
-                    description = null
-                    imageUrl = null
                 }
             }
 

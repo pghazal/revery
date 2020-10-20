@@ -15,18 +15,22 @@ data class AlarmMetadata(
     var type: String? = null,
     var name: String? = null,
     var description: String? = null,
-    var imageUrl: String? = null
+    var imageUrl: String? = null,
+    var shuffle: Boolean = false,
+    var shouldKeepPlaying: Boolean = false
 ) : BaseModel(), Parcelable {
 
-    constructor(alarmMetadata: AlarmMetadata) : this(
-        alarmMetadata.alarmType,
-        alarmMetadata.metadataId,
-        alarmMetadata.uri,
-        alarmMetadata.href,
-        alarmMetadata.type,
-        alarmMetadata.name,
-        alarmMetadata.description,
-        alarmMetadata.imageUrl
+    constructor(metadata: AlarmMetadata) : this(
+        metadata.alarmType,
+        metadata.metadataId,
+        metadata.uri,
+        metadata.href,
+        metadata.type,
+        metadata.name,
+        metadata.description,
+        metadata.imageUrl,
+        metadata.shuffle,
+        metadata.shouldKeepPlaying
     )
 
     companion object {
@@ -39,7 +43,9 @@ data class AlarmMetadata(
                 type = metadata.type,
                 name = metadata.name,
                 description = metadata.description,
-                imageUrl = metadata.imageUrl
+                imageUrl = metadata.imageUrl,
+                shuffle = metadata.shuffle,
+                shouldKeepPlaying = metadata.shouldKeepPlaying
             )
         }
 
@@ -52,7 +58,9 @@ data class AlarmMetadata(
                 type = metadata.type,
                 name = metadata.name,
                 description = metadata.description,
-                imageUrl = metadata.imageUrl
+                imageUrl = metadata.imageUrl,
+                shuffle = metadata.shuffle,
+                shouldKeepPlaying = metadata.shouldKeepPlaying
             )
         }
     }

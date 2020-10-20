@@ -48,8 +48,6 @@ data class Alarm(
 
     companion object {
         fun fromDatabaseModel(alarm: RAlarm): Alarm {
-            val metadata = AlarmMetadata.fromDatabaseModel(alarm.metadata)
-
             return Alarm(
                 id = alarm.id,
                 hour = alarm.hour,
@@ -67,13 +65,11 @@ data class Alarm(
                 vibrate = alarm.vibrate,
                 fadeIn = alarm.fadeIn,
                 fadeInDuration = alarm.fadeInDuration,
-                metadata = metadata
+                metadata = AlarmMetadata.fromDatabaseModel(alarm.metadata)
             )
         }
 
         fun toDatabaseModel(alarm: Alarm): RAlarm {
-            val metadata = AlarmMetadata.toDatabaseModel(alarm.metadata)
-
             return RAlarm(
                 id = alarm.id,
                 hour = alarm.hour,
@@ -91,7 +87,7 @@ data class Alarm(
                 vibrate = alarm.vibrate,
                 fadeIn = alarm.fadeIn,
                 fadeInDuration = alarm.fadeInDuration,
-                metadata = metadata
+                metadata = AlarmMetadata.toDatabaseModel(alarm.metadata)
             )
         }
     }

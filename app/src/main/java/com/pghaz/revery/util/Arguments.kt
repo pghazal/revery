@@ -4,6 +4,7 @@ object Arguments {
 
     // General
     const val ARGS_DIALOG_TITLE = "ARGS_DIALOG_TITLE"
+    const val ARGS_DIALOG_CLOSE_ICON = "ARGS_DIALOG_CLOSE_ICON"
 
     // Alarms
     const val ARGS_ALARM = "ARGS_ALARM"

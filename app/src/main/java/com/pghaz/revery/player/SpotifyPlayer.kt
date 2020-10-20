@@ -30,6 +30,8 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
     private val coroutinesScope: CoroutineScope = CoroutineScope(job + Dispatchers.Main)
     private val connectionStateCallbacks = mutableListOf<ConnectionStateCallback>()
 
+    var shuffle: Boolean = false
+
     override fun init(playerListener: PlayerListener?) {
         super.init(playerListener)
 
@@ -54,7 +56,7 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
         this.isInitialized = true
         this.connectionState = ConnectionState.CONNECTED
 
-        this.spotifyAppRemote?.playerApi?.setShuffle(true) // TODO: settings
+        this.spotifyAppRemote?.playerApi?.setShuffle(shuffle)
 
         playerListener?.onPlayerInitialized()
 

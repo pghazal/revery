@@ -115,6 +115,7 @@ class SettingsFragment : BaseBottomSheetDialogFragment() {
             val fragment = SettingsFragment()
 
             val args = Bundle()
+            args.putInt(Arguments.ARGS_DIALOG_CLOSE_ICON, R.drawable.ic_validate)
             args.putString(Arguments.ARGS_DIALOG_TITLE, title)
 
             fragment.arguments = args

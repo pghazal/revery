@@ -13,5 +13,7 @@ data class RAlarmMetadata(
     var type: String? = null,
     var name: String? = null,
     var description: String? = null,
-    var imageUrl: String? = null
+    var imageUrl: String? = null,
+    var shuffle: Boolean = false,
+    var shouldKeepPlaying: Boolean = false
 ) : RBaseModel()

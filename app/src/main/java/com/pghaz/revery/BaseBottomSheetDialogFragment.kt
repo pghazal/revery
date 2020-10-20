@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.annotation.CallSuper
+import androidx.annotation.DrawableRes
 import androidx.annotation.LayoutRes
 import androidx.core.view.ViewCompat
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -19,12 +21,40 @@ import kotlinx.android.synthetic.main.header_bottom_sheet.*
 
 abstract class BaseBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
+    private var dialogTitle: String? = null
+
+    @DrawableRes
+    private var closeButtonDrawableRes: Int = R.drawable.ic_close
+
     @LayoutRes
     abstract fun getLayoutResId(): Int
     abstract fun configureViews(savedInstanceState: Bundle?)
 
     override fun getTheme(): Int {
         return R.style.ReveryBottomSheetDialog
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        if (savedInstanceState != null) {
+            parseArguments(savedInstanceState)
+        } else {
+            parseArguments(arguments)
+        }
+    }
+
+    @CallSuper
+    open fun parseArguments(arguments: Bundle?) {
+        closeButtonDrawableRes =
+            arguments?.getInt(Arguments.ARGS_DIALOG_CLOSE_ICON, R.drawable.ic_close) ?: 0
+        dialogTitle = arguments?.getString(Arguments.ARGS_DIALOG_TITLE, "")
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putInt(Arguments.ARGS_DIALOG_CLOSE_ICON, closeButtonDrawableRes)
+        outState.putString(Arguments.ARGS_DIALOG_TITLE, dialogTitle)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onCreateView(
@@ -38,11 +68,12 @@ abstract class BaseBottomSheetDialogFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        closeButton.setImageResource(closeButtonDrawableRes)
         closeButton.setOnClickListener {
             dismiss()
         }
 
-        dialogTitleTextView.text = arguments?.getString(Arguments.ARGS_DIALOG_TITLE, "")
+        dialogTitleTextView.text = dialogTitle
 
         configureViews(savedInstanceState)
     }

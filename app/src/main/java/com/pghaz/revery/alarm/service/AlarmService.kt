@@ -19,6 +19,7 @@ import com.pghaz.revery.R
 import com.pghaz.revery.alarm.AlarmHandler
 import com.pghaz.revery.alarm.broadcastreceiver.AlarmBroadcastReceiver
 import com.pghaz.revery.alarm.model.app.Alarm
+import com.pghaz.revery.alarm.model.app.AlarmMetadata
 import com.pghaz.revery.alarm.model.app.AlarmType
 import com.pghaz.revery.alarm.repository.AlarmRepository
 import com.pghaz.revery.application.ReveryApplication
@@ -65,7 +66,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
             intent?.let {
                 if (ACTION_ALARM_SERVICE_SHOULD_STOP == it.action) {
                     logError(ACTION_ALARM_SERVICE_SHOULD_STOP)
-                    pausePlayerAndVibrator()
+                    pausePlayerAndVibrator(false, alarm.metadata)
                     player.release()
 
                     stopSelf() // will call onDestroy()
@@ -127,25 +128,25 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
 
             try {
                 player = if (!this::player.isInitialized) {
-                    getInitializedPlayer(alarm, shouldUseDeviceVolume)
+                    getInitializedPlayer(alarm, shouldUseDeviceVolume, alarm.fadeIn, fadeInDuration)
                 } else {
-                    pausePlayerAndVibrator()
-                    getInitializedPlayer(alarm, shouldUseDeviceVolume)
+                    pausePlayerAndVibrator(true, alarm.metadata)
+                    getInitializedPlayer(alarm, shouldUseDeviceVolume, alarm.fadeIn, fadeInDuration)
                 }
 
+                // Additional settings such as shuffle
                 when (alarm.metadata.alarmType) {
                     AlarmType.DEFAULT -> {
-                        (player as DefaultPlayer).fadeIn = alarm.fadeIn
-                        (player as DefaultPlayer).fadeInDuration = fadeInDuration
-                        (player as DefaultPlayer).prepareAsync(alarm.metadata.uri)
+                        // do nothing
                     }
 
                     AlarmType.SPOTIFY -> {
-                        (player as SpotifyPlayer).fadeIn = alarm.fadeIn
-                        (player as SpotifyPlayer).fadeInDuration = fadeInDuration
-                        (player as SpotifyPlayer).prepareAsync(alarm.metadata.uri)
+                        (player as SpotifyPlayer).shuffle = alarm.metadata.shuffle
                     }
                 }
+
+                player.prepareAsync(alarm.metadata.uri)
+
             } catch (exception: Exception) {
                 onPlayerError(PlayerError.Initialization(exception))
             }
@@ -156,7 +157,9 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
 
     private fun getInitializedPlayer(
         alarm: Alarm,
-        shouldUseDeviceVolume: Boolean
+        shouldUseDeviceVolume: Boolean,
+        fadeIn: Boolean,
+        fadeInDuration: Long,
     ): AbstractPlayer {
         return when (alarm.metadata.alarmType) {
             AlarmType.DEFAULT -> {
@@ -169,11 +172,15 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
         }.apply {
             when (alarm.metadata.alarmType) {
                 AlarmType.DEFAULT -> {
-                    (this as DefaultPlayer).init(this@AlarmService)
+                    this.init(this@AlarmService)
+                    this.fadeIn = fadeIn
+                    this.fadeInDuration = fadeInDuration
                 }
 
                 AlarmType.SPOTIFY -> {
-                    (this as SpotifyPlayer).init(this@AlarmService)
+                    this.init(this@AlarmService)
+                    this.fadeIn = fadeIn
+                    this.fadeInDuration = fadeInDuration
                 }
             }
         }
@@ -182,9 +189,19 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
     /**
      * We don't call ´player.release()´ because we may need the player later
      */
-    private fun pausePlayerAndVibrator() {
+    private fun pausePlayerAndVibrator(forceShouldPausePlayback: Boolean, metadata: AlarmMetadata) {
         vibrator.cancel()
-        player.pause()
+
+        if (forceShouldPausePlayback) {
+            player.pause()
+            return
+        }
+
+        if (metadata.alarmType == AlarmType.DEFAULT) {
+            player.pause()
+        } else if (!metadata.shouldKeepPlaying) {
+            player.pause()
+        }
     }
 
     override fun onPlayerInitialized() {
