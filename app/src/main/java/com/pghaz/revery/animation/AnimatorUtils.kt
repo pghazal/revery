@@ -188,8 +188,6 @@ object AnimatorUtils {
             )
         )
 
-        restoreFinalVisibility(view, isEnterAnimation)
-
         // build the real animation
         val mainAnimator = AnimatorSet()
         mainAnimator.duration = animationDuration
@@ -214,31 +212,27 @@ object AnimatorUtils {
             if (isEnterAnimation) OvershootInterpolator() else AnticipateOvershootInterpolator()
         animatorSet.play(initialStateAnimator).before(mainAnimator)
 
-        bindAnimator(animatorSet, view)
+        bindAnimator(animatorSet, view, isEnterAnimation)
 
         return animatorSet
     }
 
-    private fun restoreFinalVisibility(view: View, isEnterAnimation: Boolean) {
-        if (isEnterAnimation) {
-            view.visibility = View.VISIBLE
-        } else {
-            view.visibility = View.INVISIBLE
-        }
-    }
-
-    private fun bindAnimator(animator: Animator?, target: View?) {
+    private fun bindAnimator(animator: Animator?, target: View?, isEnterAnimation: Boolean) {
         if (animator == null || target == null) {
             return
         }
-        animator.addListener(animatorCallback)
-        animator.setTarget(target)
-    }
+        animator.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationStart(animator: Animator) {
+                updateTargetView(animator, View.VISIBLE)
+            }
 
-    private val animatorCallback: Animator.AnimatorListener = object : AnimatorListenerAdapter() {
-        override fun onAnimationStart(animator: Animator) {
-            updateTargetView(animator, View.VISIBLE)
-        }
+            override fun onAnimationEnd(animation: Animator?, isReverse: Boolean) {
+                if (!isEnterAnimation) {
+                    updateTargetView(animator, View.INVISIBLE)
+                }
+            }
+        })
+        animator.setTarget(target)
     }
 
     private fun updateTargetView(animator: Animator, visibility: Int) {
