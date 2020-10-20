@@ -28,7 +28,7 @@
     <string name="alarm_snooze_duration_static">durée de rappel d\'alarme</string>
     <string name="alarm_fade_in_duration_static">durée du réveil en douceur</string>
     <string name="alarm_should_use_device_volume">Utiliser le volume du téléphone</string>
-    <string name="alarm_should_use_device_volume_explanation"><b>ATTENTION:</b> si <b>activé</b> et si vous choisissez une sonnerie par défaut pour votre alarme, l\'application utilisera le volume du <b>flux d\'alarme</b>. Sinon, il utilisera le volume du <b>flux de musique</b> (par exemple: lorsque l\'alarme joue une playlist Spotify). Si <b>désactivé</b>, l\'application utilisera le volume <b>maximum</b> du flux correspondant.</string>
+    <string name="alarm_should_use_device_volume_explanation"><b>ATTENTION:</b> si <b>activé</b> et si vous choisissez une sonnerie par défaut pour votre alarme, l\'application utilisera le volume du <b>flux d\'alarme</b>. Sinon, l\'application utilisera le volume du <b>flux de musique</b> (par exemple: lorsque l\'alarme joue une playlist Spotify). Si <b>désactivé</b>, l\'application utilisera le volume <b>maximum</b> du flux correspondant.</string>
 
     <!-- MENU -->
     <string name="menu_disable_all_alarms">Désactiver toutes les alarmes</string>

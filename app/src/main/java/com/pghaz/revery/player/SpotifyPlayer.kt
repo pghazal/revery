@@ -101,6 +101,8 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
             // If fade in enabled, first set minimum volume
             if (fadeIn) {
                 initFadeIn()
+            } else {
+                initVolume()
             }
 
             getAppRemote()?.playerApi?.play(currentUri)
@@ -129,9 +131,7 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
         coroutinesScope.launch {
             getAppRemote()?.playerApi?.pause()
 
-            if (fadeIn) {
-                resetVolumeFromFadeIn()
-            }
+            resetInitialDeviceVolume()
         }
     }
 

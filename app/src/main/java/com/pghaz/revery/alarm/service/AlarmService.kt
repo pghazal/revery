@@ -128,10 +128,16 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
 
             try {
                 player = if (!this::player.isInitialized) {
-                    getInitializedPlayer(alarm, shouldUseDeviceVolume, alarm.fadeIn, fadeInDuration)
+                    getInitializedPlayer(
+                        alarm.metadata.alarmType, shouldUseDeviceVolume, this,
+                        alarm.fadeIn, fadeInDuration
+                    )
                 } else {
                     pausePlayerAndVibrator(true, alarm.metadata)
-                    getInitializedPlayer(alarm, shouldUseDeviceVolume, alarm.fadeIn, fadeInDuration)
+                    getInitializedPlayer(
+                        alarm.metadata.alarmType, shouldUseDeviceVolume, this,
+                        alarm.fadeIn, fadeInDuration
+                    )
                 }
 
                 // Additional settings such as shuffle
@@ -156,12 +162,13 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
     }
 
     private fun getInitializedPlayer(
-        alarm: Alarm,
+        alarmType: AlarmType,
         shouldUseDeviceVolume: Boolean,
+        playerListener: AbstractPlayer.PlayerListener?,
         fadeIn: Boolean,
         fadeInDuration: Long,
     ): AbstractPlayer {
-        return when (alarm.metadata.alarmType) {
+        return when (alarmType) {
             AlarmType.DEFAULT -> {
                 DefaultPlayer(this, shouldUseDeviceVolume)
             }
@@ -170,15 +177,15 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
                 SpotifyPlayer(this, shouldUseDeviceVolume)
             }
         }.apply {
-            when (alarm.metadata.alarmType) {
+            when (alarmType) {
                 AlarmType.DEFAULT -> {
-                    this.init(this@AlarmService)
+                    this.init(playerListener)
                     this.fadeIn = fadeIn
                     this.fadeInDuration = fadeInDuration
                 }
 
                 AlarmType.SPOTIFY -> {
-                    this.init(this@AlarmService)
+                    this.init(playerListener)
                     this.fadeIn = fadeIn
                     this.fadeInDuration = fadeInDuration
                 }
@@ -220,17 +227,21 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
 
         FirebaseCrashlytics.getInstance().recordException(error)
 
-        playEmergencyAlarm(this, SettingsHandler.getShouldUseDeviceVolume(this))
+        val shouldUseDeviceVolume = SettingsHandler.getShouldUseDeviceVolume(this)
+        val fadeInDuration = SettingsHandler.getFadeInDuration(this)
+
+        playEmergencyAlarm(shouldUseDeviceVolume, fadeInDuration)
     }
 
-    private fun playEmergencyAlarm(context: Context, shouldUseDeviceVolume: Boolean) {
+    private fun playEmergencyAlarm(shouldUseDeviceVolume: Boolean, fadeInDuration: Long) {
         if (this::player.isInitialized) {
             vibrator.cancel()
             player.release()
         }
 
-        player = DefaultPlayer(context, shouldUseDeviceVolume)
-        player.init(null)
+        player = getInitializedPlayer(
+            AlarmType.DEFAULT, shouldUseDeviceVolume, null, alarm.fadeIn, fadeInDuration
+        )
         player.prepare(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM).toString())
 
         onPlayerInitialized()

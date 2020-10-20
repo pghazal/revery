@@ -106,6 +106,8 @@ class DefaultPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
     override fun play() {
         if (fadeIn) {
             initFadeIn()
+        } else {
+            initVolume()
         }
 
         mediaPlayer?.start()
@@ -122,9 +124,7 @@ class DefaultPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
             }
         }
 
-        if (fadeIn) {
-            resetVolumeFromFadeIn()
-        }
+        resetInitialDeviceVolume()
     }
 
     private fun abandonAudioFocus() {

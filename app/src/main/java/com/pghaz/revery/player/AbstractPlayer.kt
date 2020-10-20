@@ -48,9 +48,16 @@ abstract class AbstractPlayer(
         audioManager.setStreamVolume(streamType, minVolume, 0)
     }
 
-    protected fun resetVolumeFromFadeIn() {
-        volumeAnimator?.cancel()
-        volumeAnimator = null
+    protected fun initVolume() {
+        if (shouldUseDeviceVolume) {
+            audioManager.setStreamVolume(streamType, initialDeviceVolume, 0)
+        } else {
+            audioManager.setStreamVolume(streamType, maxVolume, 0)
+        }
+    }
+
+    protected fun resetInitialDeviceVolume() {
+        stopFadeIn()
 
         // Reset user volume
         audioManager.setStreamVolume(streamType, initialDeviceVolume, 0)
@@ -70,12 +77,17 @@ abstract class AbstractPlayer(
             try {
                 audioManager.setStreamVolume(streamType, volume, 0)
             } catch (error: Exception) {
-                resetVolumeFromFadeIn()
+                resetInitialDeviceVolume()
                 playerListener?.onPlayerError(PlayerError.FadeIn(error))
             }
         }
 
         volumeAnimator?.start()
+    }
+
+    private fun stopFadeIn() {
+        volumeAnimator?.cancel()
+        volumeAnimator = null
     }
 
     override fun toString(): String {
