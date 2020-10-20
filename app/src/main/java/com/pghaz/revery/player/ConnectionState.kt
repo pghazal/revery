@@ -1,4 +1,4 @@
-package com.pghaz.revery.spotify.util
+package com.pghaz.revery.player
 
 enum class ConnectionState {
     DISCONNECTED, CONNECTED

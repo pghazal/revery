@@ -70,7 +70,7 @@ abstract class AbstractPlayer(
             try {
                 audioManager.setStreamVolume(streamType, volume, 0)
             } catch (error: Exception) {
-                it.cancel()
+                resetVolumeFromFadeIn()
                 playerListener?.onPlayerError(PlayerError.FadeIn(error))
             }
         }

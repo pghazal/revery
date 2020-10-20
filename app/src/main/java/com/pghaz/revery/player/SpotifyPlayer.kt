@@ -4,7 +4,6 @@ import android.content.Context
 import android.media.AudioManager
 import com.pghaz.revery.R
 import com.pghaz.revery.extension.logError
-import com.pghaz.revery.spotify.util.ConnectionState
 import com.spotify.android.appremote.api.ConnectionParams
 import com.spotify.android.appremote.api.Connector
 import com.spotify.android.appremote.api.SpotifyAppRemote
@@ -25,6 +24,7 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
 
     private var isInitialized = false
     private var connectionState: ConnectionState = ConnectionState.DISCONNECTED
+    private var playerAction: PlayerAction = PlayerAction.ACTION_NONE
 
     private val job = Job()
     private val coroutinesScope: CoroutineScope = CoroutineScope(job + Dispatchers.Main)
@@ -41,30 +41,41 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
             .build()
     }
 
+    // "spotify:playlist:3H8dsoJvkH7lUkaQlUNjPJ"
     override fun prepareAsync(uri: String?) {
-        // "spotify:playlist:3H8dsoJvkH7lUkaQlUNjPJ"
+        playerAction = PlayerAction.ACTION_PLAY
         currentUri = uri!!
         SpotifyAppRemote.connect(context, connectionParams, this)
     }
 
     override fun prepare(uri: String?) {
-        // do nothing
+        playerAction = PlayerAction.ACTION_PLAY
+        currentUri = uri!!
+        // sync prepared is not used for this player
     }
 
+    @ExperimentalCoroutinesApi
     override fun onConnected(spotifyAppRemote: SpotifyAppRemote) {
         this.spotifyAppRemote = spotifyAppRemote
         this.isInitialized = true
         this.connectionState = ConnectionState.CONNECTED
+        this.spotifyAppRemote!!.playerApi.setShuffle(shuffle)
 
-        this.spotifyAppRemote?.playerApi?.setShuffle(shuffle)
-
-        playerListener?.onPlayerInitialized()
+        // When AppRemote disconnected and auto-reconnect, ´playerAction´ will exec unhandled action
+        when (playerAction) {
+            PlayerAction.ACTION_PLAY -> playerListener?.onPlayerInitialized()
+            PlayerAction.ACTION_PAUSE -> pause()
+            PlayerAction.ACTION_RELEASE -> release()
+            else -> {
+                // do nothing
+            }
+        }
 
         callSuspendFunctionStateCallbacks(ConnectionState.CONNECTED)
     }
 
     override fun onFailure(error: Throwable?) {
-        context.logError(error?.message, error)
+        context.logError(error?.stackTraceToString(), error)
 
         connectionState = ConnectionState.DISCONNECTED
 
@@ -83,9 +94,10 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
 
     @ExperimentalCoroutinesApi
     override fun play() {
+        playerAction = PlayerAction.ACTION_PLAY
+
         context.logError("play()")
         coroutinesScope.launch {
-            context.logError("coroutinesScope.launch -> play()")
             // If fade in enabled, first set minimum volume
             if (fadeIn) {
                 initFadeIn()
@@ -111,9 +123,10 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
 
     @ExperimentalCoroutinesApi
     override fun pause() {
+        playerAction = PlayerAction.ACTION_PAUSE
+
         context.logError("pause()")
         coroutinesScope.launch {
-            context.logError("coroutinesScope.launch -> pause()")
             getAppRemote()?.playerApi?.pause()
 
             if (fadeIn) {
@@ -124,12 +137,12 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
 
     @ExperimentalCoroutinesApi
     override fun release() {
+        playerAction = PlayerAction.ACTION_RELEASE
+
         context.logError("release()")
         coroutinesScope.launch {
-            context.logError("coroutinesScope.launch -> release()")
             SpotifyAppRemote.disconnect(getAppRemote())
 
-            spotifyAppRemote = null
             job.cancel()
         }
     }
@@ -184,7 +197,8 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
 
     override fun toString(): String {
         return "SpotifyPlayer(isInitialized=$isInitialized," +
-                " connectionState=$connectionState)" +
+                " connectionState=$connectionState" +
+                " playerAction=$playerAction)" +
                 " ${super.toString()}"
     }
 
