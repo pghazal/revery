@@ -159,9 +159,10 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
     private fun cancelAllAlarms() {
         val alarms = listAlarmsViewModel.alarmsLiveData.value
         alarms?.forEach {
-            if (it.enabled) {
-                listAlarmsViewModel.cancelAlarm(context, it)
-                listAlarmsViewModel.update(it)
+            val alarm = Alarm(it)
+            if (alarm.enabled) {
+                listAlarmsViewModel.cancelAlarm(context, alarm)
+                listAlarmsViewModel.update(alarm)
             }
         }
     }
