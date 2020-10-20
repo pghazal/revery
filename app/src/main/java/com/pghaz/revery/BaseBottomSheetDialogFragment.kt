@@ -89,6 +89,11 @@ abstract class BaseBottomSheetDialogFragment : BottomSheetDialogFragment() {
         return bottomSheetDialog
     }
 
+    override fun onStop() {
+        super.onStop()
+        dialog?.window?.setWindowAnimations(-1)
+    }
+
     private fun configureBottomSheetDialog(bottomSheetDialog: BottomSheetDialog) {
         val bottomSheet =
             bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as FrameLayout
