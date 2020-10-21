@@ -19,7 +19,9 @@ import kotlinx.android.synthetic.main.fragment_spotify_playlists.*
 class SpotifyPlaylistsFragment : BaseFragment(), ResultListScrollListener.OnLoadMoreListener,
     OnSpotifyItemClickListener {
 
+    private lateinit var accessToken: String
     private lateinit var spotifyItemsViewModel: SpotifyItemsViewModel
+
     private lateinit var scrollListener: ResultListScrollListener
     private lateinit var itemsAdapter: SpotifyItemsAdapter
 
@@ -30,8 +32,6 @@ class SpotifyPlaylistsFragment : BaseFragment(), ResultListScrollListener.OnLoad
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val accessToken = arguments?.getString(Arguments.ARGS_ACCESS_TOKEN)
-
         itemsAdapter = SpotifyItemsAdapter(this)
 
         spotifyItemsViewModel = ViewModelProvider(this, SpotifyViewModelFactory(accessToken))
@@ -40,6 +40,16 @@ class SpotifyPlaylistsFragment : BaseFragment(), ResultListScrollListener.OnLoad
             itemsAdapter.submitList(it)
         })
         spotifyItemsViewModel.getFirstPage()
+    }
+
+    override fun parseArguments(arguments: Bundle?) {
+        super.parseArguments(arguments)
+        accessToken = arguments?.getString(Arguments.ARGS_ACCESS_TOKEN)!!
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putString(Arguments.ARGS_ACCESS_TOKEN, accessToken)
+        super.onSaveInstanceState(outState)
     }
 
     override fun configureViews(savedInstanceState: Bundle?) {
