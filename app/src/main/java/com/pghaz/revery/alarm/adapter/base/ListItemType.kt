@@ -9,4 +9,5 @@ enum class ListItemType(@LayoutRes val layoutResId: Int) {
     SpotifyPlaylist(R.layout.item_view_playlist),
     SpotifyArtist(R.layout.item_view_artist),
     SpotifyTrack(R.layout.item_view_track),
+    SpotifyAlbum(R.layout.item_view_album),
 }
