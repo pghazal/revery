@@ -18,18 +18,25 @@ class SpotifyItemViewHolder(view: View) : BaseViewHolder(view) {
     private val imageView: ImageView = view.findViewById(R.id.imageView)
 
     override fun bind(model: BaseModel) {
-        val item = model as PlaylistWrapper
+        val wrapper = model as PlaylistWrapper
 
         itemView.setOnClickListener {
-            onSpotifyItemClickListener?.onClick(item)
+            onSpotifyItemClickListener?.onClick(wrapper)
         }
 
-        titleTextView.text = item.playlistSimple.name
-        subtitleTextView.text = String.format("by %s", item.playlistSimple.owner.display_name)
+        titleTextView.text = wrapper.playlistSimple.name
 
-        if (item.playlistSimple.images.size > 0) {
+        if (wrapper.playlistSimple.description.isNullOrEmpty()) {
+            subtitleTextView.text = ""
+            subtitleTextView.visibility = View.GONE
+        } else {
+            subtitleTextView.text = wrapper.playlistSimple.description
+            subtitleTextView.visibility = View.VISIBLE
+        }
+
+        if (wrapper.playlistSimple.images.size > 0) {
             ImageLoader.get()
-                .load(item.playlistSimple.images[0].url)
+                .load(wrapper.playlistSimple.images[0].url)
                 .into(imageView)
         }
     }

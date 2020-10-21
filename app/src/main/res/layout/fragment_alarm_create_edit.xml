@@ -368,7 +368,6 @@
                         android:maxLines="2"
                         android:textColor="@android:color/white"
                         android:textSize="16sp"
-                        android:textStyle="bold"
                         android:visibility="gone"
                         app:fontFamily="@font/montserrat_semi_bold"
                         tools:text="title"
