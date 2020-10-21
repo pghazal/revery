@@ -1,6 +1,7 @@
 package com.pghaz.revery.spotify.adapter
 
 import android.view.View
+import com.pghaz.revery.R
 import com.pghaz.revery.alarm.model.BaseModel
 import com.pghaz.revery.image.ImageLoader
 import com.pghaz.revery.spotify.model.PlaylistWrapper
@@ -12,14 +13,7 @@ class SpotifyPlaylistViewHolder(view: View) : BaseSpotifyViewHolder(view) {
 
         val wrapper = model as PlaylistWrapper
         titleTextView.text = wrapper.playlistSimple.name
-
-        if (wrapper.playlistSimple.description.isNullOrEmpty()) {
-            subtitleTextView.text = ""
-            subtitleTextView.visibility = View.GONE
-        } else {
-            subtitleTextView.text = wrapper.playlistSimple.description
-            subtitleTextView.visibility = View.VISIBLE
-        }
+        subtitleTextView.text = subtitleTextView.context.getString(R.string.playlist)
 
         if (wrapper.playlistSimple.images.size > 0) {
             ImageLoader.get()

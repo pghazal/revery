@@ -62,6 +62,12 @@
     <string name="alarm_shuffle">lecture aléatoire</string>
     <string name="alarm_keep_playing">continuer à jouer après l\'arrêt de l\'alarme</string>
 
+    <string name="track">Titre</string>
+    <string name="album">Album</string>
+    <string name="playlist">Playlist</string>
+    <string name="podcast">Podcast</string>
+    <string name="artist">Artiste</string>
+
     <!-- TIME REMAINING TEXTS -->
     <plurals name="time_remaining_days">
         <item quantity="one">%d jour</item>

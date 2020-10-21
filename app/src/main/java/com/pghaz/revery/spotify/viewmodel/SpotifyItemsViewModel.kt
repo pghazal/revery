@@ -6,11 +6,9 @@ import androidx.lifecycle.ViewModel
 import com.pghaz.revery.alarm.model.BaseModel
 import com.pghaz.revery.spotify.model.ArtistWrapper
 import com.pghaz.revery.spotify.model.PlaylistWrapper
+import com.pghaz.revery.spotify.model.TrackWrapper
 import io.github.kaaes.spotify.webapi.core.Options
-import io.github.kaaes.spotify.webapi.core.models.Artist
-import io.github.kaaes.spotify.webapi.core.models.FeaturedPlaylists
-import io.github.kaaes.spotify.webapi.core.models.Pager
-import io.github.kaaes.spotify.webapi.core.models.PlaylistSimple
+import io.github.kaaes.spotify.webapi.core.models.*
 import io.github.kaaes.spotify.webapi.retrofit.v2.Spotify
 import io.github.kaaes.spotify.webapi.retrofit.v2.SpotifyCallback
 import io.github.kaaes.spotify.webapi.retrofit.v2.SpotifyError
@@ -28,16 +26,56 @@ class SpotifyItemsViewModel(accessToken: String?) : ViewModel() {
 
     private var mCurrentOffset = 0
     private var mPageSize = 0
+    private var mBefore: String? = null
 
     fun getFirstPage() {
         mCurrentOffset = 0
         mPageSize = PAGE_SIZE
-        getMyTopArtists(0, mPageSize)
+        getRecentlyPlayed(null, mPageSize)
     }
 
     fun getNextPage() {
         mCurrentOffset += mPageSize
-        getMyTopArtists(mCurrentOffset, mPageSize)
+        getRecentlyPlayed(mBefore, mPageSize)
+    }
+
+    private fun getRecentlyPlayed(before: String?, limit: Int) {
+        val options: MutableMap<String, Any> = HashMap()
+        options[Options.LIMIT] = limit
+
+        if (!before.isNullOrEmpty()) {
+            options[Options.BEFORE] = before
+        }
+
+        val call = spotifyService.getRecentlyPlayed(options)
+
+        call.enqueue(object : SpotifyCallback<CursorPager<RecentlyPlayedTrack>>() {
+            override fun onResponse(
+                call: Call<CursorPager<RecentlyPlayedTrack>>?,
+                response: Response<CursorPager<RecentlyPlayedTrack>>?,
+                payload: CursorPager<RecentlyPlayedTrack>?
+            ) {
+                mBefore = payload?.cursors?.before
+
+                val newItems = ArrayList<BaseModel>()
+
+                spotifyItemsLiveData.value?.let { newItems.addAll(it) }
+
+                payload?.items?.forEach {
+                    newItems.add(TrackWrapper(it.track))
+                }
+
+                spotifyItemsLiveData.value = newItems
+            }
+
+            override fun onFailure(
+                call: Call<CursorPager<RecentlyPlayedTrack>>?,
+                error: SpotifyError?
+            ) {
+                //listener.onError(error)
+                Log.e(TAG, "getFeaturedPlaylists() failed: ${error?.message}")
+            }
+        })
     }
 
     private fun getFeaturedPlaylists(offset: Int, limit: Int) {

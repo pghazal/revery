@@ -6,6 +6,7 @@ import com.pghaz.revery.alarm.adapter.base.BaseViewHolder
 import com.pghaz.revery.alarm.adapter.base.ListItemType
 import com.pghaz.revery.spotify.model.ArtistWrapper
 import com.pghaz.revery.spotify.model.PlaylistWrapper
+import com.pghaz.revery.spotify.model.TrackWrapper
 
 class SpotifyItemsAdapter(private val onSpotifyItemClickListener: OnSpotifyItemClickListener) :
     BaseAdapter() {
@@ -14,6 +15,7 @@ class SpotifyItemsAdapter(private val onSpotifyItemClickListener: OnSpotifyItemC
         val viewHolder = super.onCreateViewHolder(parent, viewType)
 
         when (ListItemType.values()[viewType]) {
+            ListItemType.SpotifyTrack,
             ListItemType.SpotifyArtist,
             ListItemType.SpotifyPlaylist -> {
                 (viewHolder as BaseSpotifyViewHolder).onSpotifyItemClickListener =
@@ -36,6 +38,7 @@ class SpotifyItemsAdapter(private val onSpotifyItemClickListener: OnSpotifyItemC
         return when (getItem(position)) {
             is PlaylistWrapper -> ListItemType.SpotifyPlaylist
             is ArtistWrapper -> ListItemType.SpotifyArtist
+            is TrackWrapper -> ListItemType.SpotifyTrack
             else -> ListItemType.Empty
         }.ordinal
     }

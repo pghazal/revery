@@ -67,6 +67,12 @@
     <string name="alarm_shuffle">shuffle play</string>
     <string name="alarm_keep_playing">keep playing after alarm turns off</string>
 
+    <string name="track">Track</string>
+    <string name="album">Album</string>
+    <string name="playlist">Playlist</string>
+    <string name="podcast">Podcast</string>
+    <string name="artist">Artist</string>
+
     <!-- TIME REMAINING TEXTS -->
     <plurals name="time_remaining_days">
         <item quantity="one">%d day</item>

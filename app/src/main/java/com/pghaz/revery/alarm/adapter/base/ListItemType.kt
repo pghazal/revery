@@ -8,4 +8,5 @@ enum class ListItemType(@LayoutRes val layoutResId: Int) {
     Alarm(R.layout.item_view_alarm),
     SpotifyPlaylist(R.layout.item_view_playlist),
     SpotifyArtist(R.layout.item_view_artist),
+    SpotifyTrack(R.layout.item_view_track),
 }
