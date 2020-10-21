@@ -422,7 +422,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
             400
         )
 
-        AnimatorUtils.fadeIn(floatingMenuTouchInterceptor, 400, 0)
+        AnimatorUtils.fadeIn(floatingMenuTouchInterceptor, 300, 0)
         spotifyAnimator.playTogether(phoneRingtoneAnimator, defaultRingtoneAnimator)
         spotifyAnimator.start()
 
@@ -461,7 +461,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
             400
         )
 
-        AnimatorUtils.fadeOut(floatingMenuTouchInterceptor, 400, 0)
+        AnimatorUtils.fadeOut(floatingMenuTouchInterceptor, 300, 0)
         spotifyAnimator.playTogether(phoneRingtoneAnimator, defaultRingtoneAnimator)
         spotifyAnimator.start()
 

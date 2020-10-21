@@ -61,6 +61,12 @@
 
     <style name="ReveryBottomSheetDialog" parent="@style/ThemeOverlay.MaterialComponents.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/ReveryBottomSheet</item>
+        <item name="android:windowAnimationStyle">@style/Animation.ReveryBottomSheetDialog</item>
+    </style>
+
+    <style name="Animation.ReveryBottomSheetDialog" parent="Animation.MaterialComponents.BottomSheetDialog">
+        <item name="android:windowEnterAnimation">@anim/bottom_sheet_enter_anim</item>
+        <item name="android:windowExitAnimation">@anim/bottom_sheet_exit_anim</item>
     </style>
 
     <style name="ReveryBottomSheet" parent="Widget.MaterialComponents.BottomSheet">
