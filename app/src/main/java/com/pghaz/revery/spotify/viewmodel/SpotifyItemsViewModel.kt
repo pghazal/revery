@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.pghaz.revery.alarm.model.BaseModel
+import com.pghaz.revery.spotify.model.AlbumWrapper
 import com.pghaz.revery.spotify.model.ArtistWrapper
 import com.pghaz.revery.spotify.model.PlaylistWrapper
 import com.pghaz.revery.spotify.model.TrackWrapper
@@ -28,15 +29,103 @@ class SpotifyItemsViewModel(accessToken: String?) : ViewModel() {
     private var mPageSize = 0
     private var mBefore: String? = null
 
+    private var mCurrentSearchOffset = 0
+    private var mSearchPageSize = 0
+
     fun getFirstPage() {
         mCurrentOffset = 0
         mPageSize = PAGE_SIZE
-        getRecentlyPlayed(null, mPageSize)
+
+        mCurrentSearchOffset = 0
+        mSearchPageSize = SEARCH_PAGE_SIZE
+        //getRecentlyPlayed(null, mPageSize)
+        //getMyPlaylists(0, mPageSize)
+        //getMyTopArtists(0, mPageSize)
+        //searchAlbums("PNL", 0, mSearchPageSize)
+        search("PNL", "artist,album", 0, mSearchPageSize)
     }
 
     fun getNextPage() {
         mCurrentOffset += mPageSize
-        getRecentlyPlayed(mBefore, mPageSize)
+        mCurrentSearchOffset += mSearchPageSize
+        //getRecentlyPlayed(mBefore, mPageSize)
+        //getMyPlaylists(mCurrentOffset, mPageSize)
+        //getMyTopArtists(mCurrentOffset, mPageSize)
+        //searchAlbums("PNL", mCurrentSearchOffset, mSearchPageSize)
+        search("PNL", "artist,album", mCurrentSearchOffset, mSearchPageSize)
+    }
+
+    private fun search(query: String?, type: String?, offset: Int, limit: Int) {
+        val options: MutableMap<String, Any> = HashMap()
+        options[Options.MARKET] = "FR" // TODO ?
+        options[Options.OFFSET] = offset
+        options[Options.LIMIT] = limit
+
+        val call = spotifyService.search(query, type, options)
+
+        call.enqueue(object : SpotifyCallback<SearchResult>() {
+            override fun onResponse(
+                call: Call<SearchResult>?,
+                response: Response<SearchResult>?,
+                payload: SearchResult?
+            ) {
+                val newItems = ArrayList<BaseModel>()
+
+                spotifyItemsLiveData.value?.let { newItems.addAll(it) }
+
+                payload?.artists?.items?.forEach {
+                    newItems.add(ArtistWrapper(it))
+                }
+                payload?.albums?.items?.forEach {
+                    newItems.add(AlbumWrapper(it))
+                }
+                payload?.tracks?.items?.forEach {
+                    newItems.add(TrackWrapper(it))
+                }
+                payload?.playlists?.items?.forEach {
+                    newItems.add(PlaylistWrapper(it))
+                }
+
+                spotifyItemsLiveData.value = newItems
+            }
+
+            override fun onFailure(call: Call<SearchResult>?, error: SpotifyError?) {
+                //listener.onError(error)
+                Log.e(TAG, "search() failed: ${error?.message}")
+            }
+        })
+    }
+
+    private fun searchAlbums(query: String?, offset: Int, limit: Int) {
+        val options: MutableMap<String, Any> = HashMap()
+        options[Options.MARKET] = "FR" // TODO ?
+        options[Options.OFFSET] = offset
+        options[Options.LIMIT] = limit
+
+        val call = spotifyService.searchAlbums(query, options)
+
+        call.enqueue(object : SpotifyCallback<AlbumsPager>() {
+            override fun onResponse(
+                call: Call<AlbumsPager>?,
+                response: Response<AlbumsPager>?,
+                payload: AlbumsPager?
+            ) {
+                val newItems = ArrayList<BaseModel>()
+
+                spotifyItemsLiveData.value?.let { newItems.addAll(it) }
+
+                payload?.albums?.items?.forEach {
+                    newItems.add(AlbumWrapper(it))
+                }
+
+                spotifyItemsLiveData.value = newItems
+            }
+
+            override fun onFailure(call: Call<AlbumsPager>?, error: SpotifyError?) {
+                //listener.onError(error)
+                Log.e(TAG, "searchAlbums() failed: ${error?.message}")
+            }
+        })
     }
 
     private fun getRecentlyPlayed(before: String?, limit: Int) {
@@ -73,7 +162,7 @@ class SpotifyItemsViewModel(accessToken: String?) : ViewModel() {
                 error: SpotifyError?
             ) {
                 //listener.onError(error)
-                Log.e(TAG, "getFeaturedPlaylists() failed: ${error?.message}")
+                Log.e(TAG, "getRecentlyPlayed() failed: ${error?.message}")
             }
         })
     }
@@ -134,7 +223,7 @@ class SpotifyItemsViewModel(accessToken: String?) : ViewModel() {
 
             override fun onFailure(call: Call<Pager<Artist>>?, error: SpotifyError?) {
                 //listener.onError(error)
-                Log.e(TAG, "getTopArtists() failed: ${error?.message}")
+                Log.e(TAG, "getMyTopArtists() failed: ${error?.message}")
             }
         })
     }
@@ -172,5 +261,6 @@ class SpotifyItemsViewModel(accessToken: String?) : ViewModel() {
     companion object {
         private const val TAG = "SpotifyItemsViewModel"
         private const val PAGE_SIZE = 20
+        private const val SEARCH_PAGE_SIZE = 3
     }
 }
