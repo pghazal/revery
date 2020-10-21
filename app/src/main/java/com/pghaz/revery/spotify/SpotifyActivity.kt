@@ -69,7 +69,9 @@ class SpotifyActivity : BaseActivity() {
                     arrayOf(
                         "app-remote-control",
                         "playlist-read-private",
-                        "playlist-read-collaborative"
+                        "playlist-read-collaborative",
+                        "user-top-read",
+                        "user-read-recently-played" // TODO
                     )
                 )
                 .setShowDialog(false)

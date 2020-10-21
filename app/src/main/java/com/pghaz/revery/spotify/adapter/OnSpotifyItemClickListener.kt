@@ -1,7 +1,7 @@
 package com.pghaz.revery.spotify.adapter
 
-import com.pghaz.revery.spotify.model.PlaylistWrapper
+import com.pghaz.revery.alarm.model.BaseModel
 
 interface OnSpotifyItemClickListener {
-    fun onClick(playlistWrapper: PlaylistWrapper)
+    fun onClick(model: BaseModel)
 }

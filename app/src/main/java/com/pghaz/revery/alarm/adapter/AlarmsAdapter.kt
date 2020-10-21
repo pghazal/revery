@@ -4,6 +4,7 @@ import android.view.ViewGroup
 import com.pghaz.revery.alarm.adapter.base.BaseAdapter
 import com.pghaz.revery.alarm.adapter.base.BaseViewHolder
 import com.pghaz.revery.alarm.adapter.base.ListItemType
+import com.pghaz.revery.alarm.model.app.Alarm
 
 class AlarmsAdapter(
     private val alarmClickListener: OnAlarmClickListener,
@@ -31,6 +32,13 @@ class AlarmsAdapter(
         }
 
         super.onBindViewHolder(holder, position)
+    }
+
+    override fun getAddedItemViewType(position: Int): Int {
+        return when (getItem(position)) {
+            is Alarm -> ListItemType.Alarm
+            else -> ListItemType.Empty
+        }.ordinal
     }
 
     override fun onViewRecycled(holder: BaseViewHolder) {

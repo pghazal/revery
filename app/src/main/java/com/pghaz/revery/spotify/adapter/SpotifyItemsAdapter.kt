@@ -4,6 +4,8 @@ import android.view.ViewGroup
 import com.pghaz.revery.alarm.adapter.base.BaseAdapter
 import com.pghaz.revery.alarm.adapter.base.BaseViewHolder
 import com.pghaz.revery.alarm.adapter.base.ListItemType
+import com.pghaz.revery.spotify.model.ArtistWrapper
+import com.pghaz.revery.spotify.model.PlaylistWrapper
 
 class SpotifyItemsAdapter(private val onSpotifyItemClickListener: OnSpotifyItemClickListener) :
     BaseAdapter() {
@@ -12,8 +14,9 @@ class SpotifyItemsAdapter(private val onSpotifyItemClickListener: OnSpotifyItemC
         val viewHolder = super.onCreateViewHolder(parent, viewType)
 
         when (ListItemType.values()[viewType]) {
-            ListItemType.Spotify -> {
-                (viewHolder as SpotifyItemViewHolder).onSpotifyItemClickListener =
+            ListItemType.SpotifyArtist,
+            ListItemType.SpotifyPlaylist -> {
+                (viewHolder as BaseSpotifyViewHolder).onSpotifyItemClickListener =
                     onSpotifyItemClickListener
             }
             else -> {
@@ -27,5 +30,13 @@ class SpotifyItemsAdapter(private val onSpotifyItemClickListener: OnSpotifyItemC
     override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
         val item = getItem(position)
         holder.bind(item)
+    }
+
+    override fun getAddedItemViewType(position: Int): Int {
+        return when (getItem(position)) {
+            is PlaylistWrapper -> ListItemType.SpotifyPlaylist
+            is ArtistWrapper -> ListItemType.SpotifyArtist
+            else -> ListItemType.Empty
+        }.ordinal
     }
 }

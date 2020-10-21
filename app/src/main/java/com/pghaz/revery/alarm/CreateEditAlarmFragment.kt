@@ -23,6 +23,7 @@ import com.pghaz.revery.extension.logError
 import com.pghaz.revery.image.ImageLoader
 import com.pghaz.revery.settings.SettingsFragment
 import com.pghaz.revery.spotify.SpotifyActivity
+import com.pghaz.revery.spotify.model.ArtistWrapper
 import com.pghaz.revery.spotify.model.PlaylistWrapper
 import com.pghaz.revery.util.Arguments
 import com.pghaz.revery.util.DateTimeUtils
@@ -518,23 +519,8 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
 
         if (requestCode == REQUEST_CODE_SPOTIFY_GET_PLAYLIST && resultCode == Activity.RESULT_OK) {
             val result =
-                data?.getParcelableExtra(Arguments.ARGS_SPOTIFY_ITEM_SELECTED) as PlaylistWrapper?
-
-            alarm?.let {
-                it.metadata.apply {
-                    alarmType = AlarmType.SPOTIFY
-                    metadataId = result?.playlistSimple?.id
-                    uri = result?.playlistSimple?.uri
-                    href = result?.playlistSimple?.href
-                    type = result?.playlistSimple?.type
-                    name = result?.playlistSimple?.name
-                    description = result?.playlistSimple?.description
-                    imageUrl = result?.playlistSimple?.images?.get(0)?.url
-                }
-
-                createEditAlarmViewModel.alarmMetadataLiveData.value = it
-            }
-
+                data?.getParcelableExtra(Arguments.ARGS_SPOTIFY_ITEM_SELECTED) as BaseModel?
+            handleSpotifySelection(result)
         } else if (requestCode == REQUEST_CODE_PICK_RINGTONE && resultCode == Activity.RESULT_OK) {
             val ringtoneUri: Uri? =
                 data?.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
@@ -557,6 +543,40 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
 
                 createEditAlarmViewModel.alarmMetadataLiveData.value = it
             }
+        }
+    }
+
+    private fun handleSpotifySelection(result: BaseModel?) {
+        alarm?.let {
+            it.metadata.apply {
+                alarmType = AlarmType.SPOTIFY
+            }
+
+            it.metadata.apply {
+                when (result) {
+                    is PlaylistWrapper -> {
+                        metadataId = result.playlistSimple.id
+                        uri = result.playlistSimple.uri
+                        href = result.playlistSimple.href
+                        type = result.playlistSimple.type
+                        name = result.playlistSimple.name
+                        description = result.playlistSimple.description
+                        imageUrl = result.playlistSimple.images?.get(0)?.url
+                    }
+
+                    is ArtistWrapper -> {
+                        metadataId = result.artist.id
+                        uri = result.artist.uri
+                        href = result.artist.href
+                        type = result.artist.type
+                        name = result.artist.name
+                        description = null
+                        imageUrl = result.artist.images?.get(0)?.url
+                    }
+                }
+            }
+
+            createEditAlarmViewModel.alarmMetadataLiveData.value = it
         }
     }
 

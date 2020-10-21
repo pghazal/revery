@@ -7,9 +7,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pghaz.revery.BaseFragment
 import com.pghaz.revery.R
+import com.pghaz.revery.alarm.model.BaseModel
 import com.pghaz.revery.spotify.adapter.OnSpotifyItemClickListener
 import com.pghaz.revery.spotify.adapter.SpotifyItemsAdapter
-import com.pghaz.revery.spotify.model.PlaylistWrapper
 import com.pghaz.revery.spotify.viewmodel.SpotifyItemsViewModel
 import com.pghaz.revery.spotify.viewmodel.SpotifyViewModelFactory
 import com.pghaz.revery.util.Arguments
@@ -65,9 +65,9 @@ class SpotifyPlaylistsFragment : BaseFragment(), ResultListScrollListener.OnLoad
         spotifyItemsViewModel.getNextPage()
     }
 
-    override fun onClick(playlistWrapper: PlaylistWrapper) {
+    override fun onClick(model: BaseModel) {
         val data = Intent()
-        data.putExtra(Arguments.ARGS_SPOTIFY_ITEM_SELECTED, playlistWrapper)
+        data.putExtra(Arguments.ARGS_SPOTIFY_ITEM_SELECTED, model)
         activity?.setResult(Activity.RESULT_OK, data)
         activity?.finish()
     }

@@ -1,6 +1,8 @@
 package com.pghaz.revery.alarm.model
 
-abstract class BaseModel {
+import android.os.Parcelable
+
+abstract class BaseModel : Parcelable {
     companion object {
         const val NO_ID: Long = 0
     }
