@@ -22,6 +22,7 @@ class SpotifyArtistViewHolder(view: View) : BaseSpotifyViewHolder(view) {
         }
 
         if (wrapper.artist.images.size > 0) {
+            imageView.clipToOutline = true
             ImageLoader.get()
                 .load(wrapper.artist.images[0].url)
                 .into(imageView)
