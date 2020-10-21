@@ -122,7 +122,7 @@ class SpotifyActivity : BaseActivity() {
                 }
 
                 RESULT_CANCELED -> {
-                    // handle
+                    finish()
                 }
             }
         }
