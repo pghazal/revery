@@ -67,7 +67,10 @@ dependencies {
     // Spotify Authentification Single-sign
     implementation 'com.spotify.android:auth:1.2.3'
     // Spotify Web API library
-    implementation 'com.github.kaaes:spotify-web-api-android:0.4.1'
+    implementation project(':spotify-api-core')
+    implementation project(':spotify-api-retrofit2')
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.2.0'
 
     // Firebase
     implementation platform('com.google.firebase:firebase-bom:25.12.0')

@@ -1,7 +1,7 @@
 package com.pghaz.revery.spotify.adapter
 
-import kaaes.spotify.webapi.android.models.PlaylistSimple
+import com.pghaz.revery.spotify.model.PlaylistWrapper
 
 interface OnSpotifyItemClickListener {
-    fun onClick(playlist: PlaylistSimple)
+    fun onClick(playlistWrapper: PlaylistWrapper)
 }

@@ -9,14 +9,15 @@ import com.pghaz.revery.BaseFragment
 import com.pghaz.revery.R
 import com.pghaz.revery.spotify.adapter.OnSpotifyItemClickListener
 import com.pghaz.revery.spotify.adapter.SpotifyItemsAdapter
+import com.pghaz.revery.spotify.model.PlaylistWrapper
 import com.pghaz.revery.spotify.viewmodel.SpotifyItemsViewModel
 import com.pghaz.revery.spotify.viewmodel.SpotifyViewModelFactory
 import com.pghaz.revery.util.Arguments
 import com.pghaz.revery.view.ResultListScrollListener
-import kaaes.spotify.webapi.android.models.PlaylistSimple
 import kotlinx.android.synthetic.main.fragment_spotify_playlists.*
 
-class SpotifyPlaylistsFragment : BaseFragment(), ResultListScrollListener.OnLoadMoreListener {
+class SpotifyPlaylistsFragment : BaseFragment(), ResultListScrollListener.OnLoadMoreListener,
+    OnSpotifyItemClickListener {
 
     private lateinit var spotifyItemsViewModel: SpotifyItemsViewModel
     private lateinit var scrollListener: ResultListScrollListener
@@ -31,19 +32,12 @@ class SpotifyPlaylistsFragment : BaseFragment(), ResultListScrollListener.OnLoad
 
         val accessToken = arguments?.getString(Arguments.ARGS_ACCESS_TOKEN)
 
-        itemsAdapter = SpotifyItemsAdapter(object : OnSpotifyItemClickListener {
-            override fun onClick(playlist: PlaylistSimple) {
-                val data = Intent()
-                data.putExtra(Arguments.ARGS_SPOTIFY_SELECTED_PLAYLIST, playlist)
-                activity?.setResult(Activity.RESULT_OK, data)
-                activity?.finish()
-            }
-        })
+        itemsAdapter = SpotifyItemsAdapter(this)
 
         spotifyItemsViewModel = ViewModelProvider(this, SpotifyViewModelFactory(accessToken))
             .get(SpotifyItemsViewModel::class.java)
         spotifyItemsViewModel.spotifyItemsLiveData.observe(this, {
-            itemsAdapter.addItems(it)
+            itemsAdapter.submitList(it)
         })
         spotifyItemsViewModel.getFirstPage()
     }
@@ -59,6 +53,13 @@ class SpotifyPlaylistsFragment : BaseFragment(), ResultListScrollListener.OnLoad
 
     override fun onLoadMore() {
         spotifyItemsViewModel.getNextPage()
+    }
+
+    override fun onClick(playlistWrapper: PlaylistWrapper) {
+        val data = Intent()
+        data.putExtra(Arguments.ARGS_SPOTIFY_ITEM_SELECTED, playlistWrapper)
+        activity?.setResult(Activity.RESULT_OK, data)
+        activity?.finish()
     }
 
     companion object {

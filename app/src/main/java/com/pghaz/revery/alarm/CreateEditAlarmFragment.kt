@@ -23,10 +23,10 @@ import com.pghaz.revery.extension.logError
 import com.pghaz.revery.image.ImageLoader
 import com.pghaz.revery.settings.SettingsFragment
 import com.pghaz.revery.spotify.SpotifyActivity
+import com.pghaz.revery.spotify.model.PlaylistWrapper
 import com.pghaz.revery.util.Arguments
 import com.pghaz.revery.util.DateTimeUtils
 import com.shawnlin.numberpicker.NumberPicker
-import kaaes.spotify.webapi.android.models.PlaylistSimple
 import kotlinx.android.synthetic.main.floating_action_button_menu.*
 import kotlinx.android.synthetic.main.fragment_alarm_create_edit.*
 import java.util.*
@@ -517,19 +517,19 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == REQUEST_CODE_SPOTIFY_GET_PLAYLIST && resultCode == Activity.RESULT_OK) {
-            val selectedPlaylist =
-                data?.getParcelableExtra(Arguments.ARGS_SPOTIFY_SELECTED_PLAYLIST) as PlaylistSimple?
+            val result =
+                data?.getParcelableExtra(Arguments.ARGS_SPOTIFY_ITEM_SELECTED) as PlaylistWrapper?
 
             alarm?.let {
                 it.metadata.apply {
                     alarmType = AlarmType.SPOTIFY
-                    metadataId = selectedPlaylist?.id
-                    uri = selectedPlaylist?.uri
-                    href = selectedPlaylist?.href
-                    type = selectedPlaylist?.type
-                    name = selectedPlaylist?.name
-                    description = ""
-                    imageUrl = selectedPlaylist?.images?.get(0)?.url
+                    metadataId = result?.playlistSimple?.id
+                    uri = result?.playlistSimple?.uri
+                    href = result?.playlistSimple?.href
+                    type = result?.playlistSimple?.type
+                    name = result?.playlistSimple?.name
+                    description = result?.playlistSimple?.description
+                    imageUrl = result?.playlistSimple?.images?.get(0)?.url
                 }
 
                 createEditAlarmViewModel.alarmMetadataLiveData.value = it

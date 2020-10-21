@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.pghaz.revery.alarm.model.BaseModel
 import com.pghaz.revery.alarm.model.app.Alarm
+import com.pghaz.revery.spotify.model.PlaylistWrapper
 import java.util.*
 
 abstract class BaseAdapter : ListAdapter<BaseModel, BaseViewHolder>(DiffUtilCallback) {
@@ -26,6 +27,7 @@ abstract class BaseAdapter : ListAdapter<BaseModel, BaseViewHolder>(DiffUtilCall
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
             is Alarm -> ListItemType.Alarm
+            is PlaylistWrapper -> ListItemType.Spotify
             else -> ListItemType.Empty
         }.ordinal
     }

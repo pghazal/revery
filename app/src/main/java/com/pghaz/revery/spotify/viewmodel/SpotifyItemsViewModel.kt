@@ -3,32 +3,27 @@ package com.pghaz.revery.spotify.viewmodel
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import kaaes.spotify.webapi.android.SpotifyApi
-import kaaes.spotify.webapi.android.SpotifyCallback
-import kaaes.spotify.webapi.android.SpotifyError
-import kaaes.spotify.webapi.android.SpotifyService
-import kaaes.spotify.webapi.android.models.Pager
-import kaaes.spotify.webapi.android.models.PlaylistSimple
-import retrofit.client.Response
+import com.pghaz.revery.spotify.model.PlaylistWrapper
+import io.github.kaaes.spotify.webapi.core.Options
+import io.github.kaaes.spotify.webapi.core.models.Pager
+import io.github.kaaes.spotify.webapi.core.models.PlaylistSimple
+import io.github.kaaes.spotify.webapi.retrofit.v2.Spotify
+import io.github.kaaes.spotify.webapi.retrofit.v2.SpotifyCallback
+import io.github.kaaes.spotify.webapi.retrofit.v2.SpotifyError
+import io.github.kaaes.spotify.webapi.retrofit.v2.SpotifyService
+import retrofit2.Call
+import retrofit2.Response
 import java.util.*
+import kotlin.collections.ArrayList
 
 class SpotifyItemsViewModel(accessToken: String?) : ViewModel() {
 
-    val spotifyItemsLiveData = MutableLiveData<List<PlaylistSimple>>()
+    val spotifyItemsLiveData = MutableLiveData<List<PlaylistWrapper>>()
 
-    private val spotifyApi: SpotifyApi = SpotifyApi()
-    private val spotifyService: SpotifyService = spotifyApi.service
+    private val spotifyService: SpotifyService = Spotify.createAuthenticatedService(accessToken)
 
     private var mCurrentOffset = 0
     private var mPageSize = 0
-
-    init {
-        if (accessToken != null) {
-            spotifyApi.setAccessToken(accessToken)
-        } else {
-            Log.e(TAG, "Access token not valid")
-        }
-    }
 
     fun getFirstPage() {
         mCurrentOffset = 0
@@ -43,15 +38,28 @@ class SpotifyItemsViewModel(accessToken: String?) : ViewModel() {
 
     private fun getMyPlaylists(offset: Int, limit: Int) {
         val options: MutableMap<String, Any> = HashMap()
-        options[SpotifyService.OFFSET] = offset
-        options[SpotifyService.LIMIT] = limit
+        options[Options.OFFSET] = offset
+        options[Options.LIMIT] = limit
 
-        spotifyService.getMyPlaylists(options, object : SpotifyCallback<Pager<PlaylistSimple>>() {
-            override fun success(pager: Pager<PlaylistSimple>?, response: Response?) {
-                spotifyItemsLiveData.value = pager?.items
+        val call = spotifyService.getMyPlaylists(options)
+
+        call.enqueue(object : SpotifyCallback<Pager<PlaylistSimple>>() {
+            override fun onResponse(
+                call: Call<Pager<PlaylistSimple>>?, response: Response<Pager<PlaylistSimple>>?,
+                payload: Pager<PlaylistSimple>?
+            ) {
+                val newItems = ArrayList<PlaylistWrapper>()
+
+                spotifyItemsLiveData.value?.let { newItems.addAll(it) }
+
+                payload?.items?.forEach {
+                    newItems.add(PlaylistWrapper(it))
+                }
+
+                spotifyItemsLiveData.value = newItems
             }
 
-            override fun failure(error: SpotifyError?) {
+            override fun onFailure(call: Call<Pager<PlaylistSimple>>?, error: SpotifyError?) {
                 //listener.onError(error)
                 Log.e(TAG, "getMyPlaylists() failed: ${error?.message}")
             }
