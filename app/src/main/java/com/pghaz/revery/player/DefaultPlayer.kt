@@ -56,7 +56,7 @@ class DefaultPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
         }
 
         mediaPlayer!!.setOnPreparedListener {
-            playerListener?.onPlayerInitialized()
+            playerListener?.onPlayerInitialized(this)
         }
     }
 

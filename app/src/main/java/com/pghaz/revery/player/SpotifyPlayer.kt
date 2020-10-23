@@ -66,7 +66,7 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
 
         // When AppRemote disconnected and auto-reconnect, ´playerAction´ will exec unhandled action
         when (playerAction) {
-            PlayerAction.ACTION_PLAY -> playerListener?.onPlayerInitialized()
+            PlayerAction.ACTION_PLAY -> playerListener?.onPlayerInitialized(this)
             PlayerAction.ACTION_PAUSE -> pause()
             PlayerAction.ACTION_RELEASE -> release()
             else -> {
@@ -163,7 +163,7 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
     @ExperimentalCoroutinesApi
     private suspend fun getAppRemote(): SpotifyAppRemote? {
         if (!isInitialized) {
-            throw IllegalStateException("getAppRemote() -> Spotify not initialized")
+            SpotifyAppRemote.connect(context, connectionParams, this)
         }
 
         if (connectionState == ConnectionState.CONNECTED) {

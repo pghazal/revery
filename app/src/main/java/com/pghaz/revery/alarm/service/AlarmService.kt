@@ -213,7 +213,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
         }
     }
 
-    override fun onPlayerInitialized() {
+    override fun onPlayerInitialized(player: AbstractPlayer) {
         if (alarm.vibrate) {
             vibrate()
         }
@@ -239,12 +239,12 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
             player.release()
         }
 
-        player = getInitializedPlayer(
+        val player = getInitializedPlayer(
             AlarmType.DEFAULT, shouldUseDeviceVolume, null, alarm.fadeIn, fadeInDuration
         )
         player.prepare(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM).toString())
 
-        onPlayerInitialized()
+        onPlayerInitialized(player)
     }
 
     private fun disableOneShotAlarm(context: Context?, alarm: Alarm) {

@@ -12,7 +12,7 @@ abstract class AbstractPlayer(
     private val shouldUseDeviceVolume: Boolean
 ) {
     interface PlayerListener {
-        fun onPlayerInitialized()
+        fun onPlayerInitialized(player: AbstractPlayer)
 
         fun onPlayerError(error: PlayerError)
     }
