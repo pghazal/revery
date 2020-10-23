@@ -31,4 +31,9 @@
         android:id="@+id/menu_alarms_delete_all"
         android:title="delete"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_spotify_clear_token"
+        android:title="clear access token"
+        app:showAsAction="ifRoom" />
 </menu>

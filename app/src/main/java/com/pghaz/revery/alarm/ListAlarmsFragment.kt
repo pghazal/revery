@@ -19,6 +19,7 @@ import com.pghaz.revery.alarm.model.BaseModel
 import com.pghaz.revery.alarm.model.app.Alarm
 import com.pghaz.revery.alarm.viewmodel.ListAlarmsViewModel
 import com.pghaz.revery.settings.SettingsFragment
+import com.pghaz.spotify.webapi.auth.SpotifyAuthorizationClient
 import kotlinx.android.synthetic.main.fragment_list_alarms.*
 
 class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
@@ -144,6 +145,16 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
                     // Useless for now
                     // fadeInDuration = SettingsHandler.getFadeInDuration(context!!)
                 )
+                true
+            }
+            R.id.menu_spotify_clear_token -> {
+                context?.let {
+                    val spotifyAuthClient = SpotifyAuthorizationClient.Builder(
+                        getString(R.string.spotify_client_id),
+                        getString(R.string.spotify_redirect_uri)
+                    ).build(it)
+                    spotifyAuthClient.setNeedsTokenRefresh(true)
+                }
                 true
             }
             else -> super.onOptionsItemSelected(item)
