@@ -52,7 +52,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
     }
 
     private lateinit var alarmRepository: AlarmRepository
-    private lateinit var alarmLiveData: LiveData<Alarm>
+    private var alarmLiveData: LiveData<Alarm>? = null
 
     private lateinit var vibrator: Vibrator
     private lateinit var notification: Notification
@@ -122,6 +122,8 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
             val fadeInDuration = SettingsHandler.getFadeInDuration(this)
 
             notification = buildAlarmNotification(alarm)
+            startForeground(1, notification)
+
             disableOneShotAlarm(this, alarm)
 
             val shouldUseDeviceVolume = SettingsHandler.getShouldUseDeviceVolume(this)
@@ -212,8 +214,6 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
     }
 
     override fun onPlayerInitialized() {
-        startForeground(1, notification)
-
         if (alarm.vibrate) {
             vibrate()
         }
@@ -249,11 +249,8 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
 
     private fun disableOneShotAlarm(context: Context?, alarm: Alarm) {
         if (!alarm.recurring) {
-            if (!this::alarmLiveData.isInitialized) {
-                alarmLiveData = alarmRepository.get(alarm)
-            }
-
-            alarmLiveData.observe(this, {
+            alarmLiveData = alarmRepository.get(alarm)
+            alarmLiveData?.observe(this, {
                 it?.let {
                     AlarmHandler.cancelAlarm(context, it)
                     alarmRepository.update(it)
@@ -261,7 +258,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
 
                 // Important: we remove the observer because otherwise, as we change the value inside the observer
                 // it would call the observer in a infinite loop
-                alarmLiveData.removeObservers(this)
+                alarmLiveData?.removeObservers(this)
             })
         }
     }
