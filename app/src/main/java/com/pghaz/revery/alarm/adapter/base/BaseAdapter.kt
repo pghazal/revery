@@ -36,6 +36,11 @@ abstract class BaseAdapter : ListAdapter<BaseModel, BaseViewHolder>(DiffUtilCall
         holder.bind(item)
     }
 
+    override fun onViewRecycled(holder: BaseViewHolder) {
+        super.onViewRecycled(holder)
+        holder.onViewHolderRecycled()
+    }
+
     override fun onCurrentListChanged(
         previousList: MutableList<BaseModel>,
         currentList: MutableList<BaseModel>

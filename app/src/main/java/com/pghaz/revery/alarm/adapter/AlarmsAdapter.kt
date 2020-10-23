@@ -40,9 +40,4 @@ class AlarmsAdapter(
             else -> ListItemType.Empty
         }.ordinal
     }
-
-    override fun onViewRecycled(holder: BaseViewHolder) {
-        super.onViewRecycled(holder)
-        holder.onViewHolderRecycled()
-    }
 }
