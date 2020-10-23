@@ -2,6 +2,7 @@ package com.pghaz.revery.player
 
 import android.content.Context
 import android.media.AudioManager
+import com.pghaz.revery.BuildConfig
 import com.pghaz.revery.R
 import com.pghaz.revery.extension.logError
 import com.spotify.android.appremote.api.ConnectionParams
@@ -34,6 +35,8 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
 
     override fun init(playerListener: PlayerListener?) {
         super.init(playerListener)
+
+        SpotifyAppRemote.setDebugMode(BuildConfig.DEBUG)
 
         connectionParams = ConnectionParams.Builder(context.getString(R.string.spotify_client_id))
             .setRedirectUri(context.getString(R.string.spotify_redirect_uri))
