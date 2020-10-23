@@ -39,20 +39,20 @@ class SpotifyItemsViewModel(accessToken: String?) : ViewModel() {
         mCurrentSearchOffset = 0
         mSearchPageSize = SEARCH_PAGE_SIZE
         //getRecentlyPlayed(null, mPageSize)
-        //getMyPlaylists(0, mPageSize)
+        getMyPlaylists(0, mPageSize)
         //getMyTopArtists(0, mPageSize)
         //searchAlbums("PNL", 0, mSearchPageSize)
-        search("PNL", "artist,album", 0, mSearchPageSize)
+        //search("PNL", "artist,album", 0, mSearchPageSize)
     }
 
     fun getNextPage() {
         mCurrentOffset += mPageSize
         mCurrentSearchOffset += mSearchPageSize
         //getRecentlyPlayed(mBefore, mPageSize)
-        //getMyPlaylists(mCurrentOffset, mPageSize)
+        getMyPlaylists(mCurrentOffset, mPageSize)
         //getMyTopArtists(mCurrentOffset, mPageSize)
         //searchAlbums("PNL", mCurrentSearchOffset, mSearchPageSize)
-        search("PNL", "artist,album", mCurrentSearchOffset, mSearchPageSize)
+        //search("PNL", "artist,album", mCurrentSearchOffset, mSearchPageSize)
     }
 
     private fun search(query: String?, type: String?, offset: Int, limit: Int) {
