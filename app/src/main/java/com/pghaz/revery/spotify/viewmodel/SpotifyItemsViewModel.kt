@@ -19,7 +19,13 @@ import retrofit2.Response
 import java.util.*
 import kotlin.collections.ArrayList
 
-class SpotifyItemsViewModel(accessToken: String?) : ViewModel() {
+class SpotifyItemsViewModel(accessToken: String, private val filter: SpotifyFilter) : ViewModel() {
+
+    companion object {
+        private const val TAG = "SpotifyItemsViewModel"
+        private const val PAGE_SIZE = 20
+        private const val SEARCH_PAGE_SIZE = 5
+    }
 
     val spotifyItemsLiveData = MutableLiveData<List<BaseModel>>()
 
@@ -28,31 +34,57 @@ class SpotifyItemsViewModel(accessToken: String?) : ViewModel() {
     private var mCurrentOffset = 0
     private var mPageSize = 0
     private var mBefore: String? = null
+    private var mCurrentQuery: String? = null
 
-    private var mCurrentSearchOffset = 0
-    private var mSearchPageSize = 0
-
-    fun getFirstPage() {
+    fun fetchFirstPage() {
         mCurrentOffset = 0
         mPageSize = PAGE_SIZE
 
-        mCurrentSearchOffset = 0
-        mSearchPageSize = SEARCH_PAGE_SIZE
-        //getRecentlyPlayed(null, mPageSize)
-        getMyPlaylists(0, mPageSize)
-        //getMyTopArtists(0, mPageSize)
         //searchAlbums("PNL", 0, mSearchPageSize)
         //search("PNL", "artist,album", 0, mSearchPageSize)
+
+        fetch(0)
     }
 
-    fun getNextPage() {
+    fun fetchNextPage() {
         mCurrentOffset += mPageSize
-        mCurrentSearchOffset += mSearchPageSize
-        //getRecentlyPlayed(mBefore, mPageSize)
-        getMyPlaylists(mCurrentOffset, mPageSize)
-        //getMyTopArtists(mCurrentOffset, mPageSize)
+
         //searchAlbums("PNL", mCurrentSearchOffset, mSearchPageSize)
         //search("PNL", "artist,album", mCurrentSearchOffset, mSearchPageSize)
+
+        fetch(mCurrentOffset)
+    }
+
+    private fun fetch(offset: Int) {
+        when (filter) {
+            SpotifyFilter.FEATURED_PLAYLISTS -> {
+                getFeaturedPlaylists(offset, mPageSize)
+            }
+            SpotifyFilter.MY_PLAYLISTS -> {
+                getMyPlaylists(offset, mPageSize)
+            }
+            SpotifyFilter.MY_TOP_ARTISTS -> {
+                getMyTopArtists(offset, mPageSize)
+            }
+            SpotifyFilter.RECENTLY_PLAYED -> {
+                getRecentlyPlayed(mBefore, mPageSize)
+            }
+        }
+    }
+
+    fun searchFirstPage(query: String?) {
+        if (!query.isNullOrEmpty() && query != mCurrentQuery) {
+            mCurrentOffset = 0
+            mPageSize = SEARCH_PAGE_SIZE
+            mCurrentQuery = query
+
+            search(query, "artist,album,track", 0, mPageSize)
+        }
+    }
+
+    fun searchNextPage() {
+        mCurrentOffset += mPageSize
+        search(mCurrentQuery, "artist,album,track", mCurrentOffset, mPageSize)
     }
 
     private fun search(query: String?, type: String?, offset: Int, limit: Int) {
@@ -256,11 +288,5 @@ class SpotifyItemsViewModel(accessToken: String?) : ViewModel() {
                 Log.e(TAG, "getMyPlaylists() failed: ${error?.message}")
             }
         })
-    }
-
-    companion object {
-        private const val TAG = "SpotifyItemsViewModel"
-        private const val PAGE_SIZE = 20
-        private const val SEARCH_PAGE_SIZE = 3
     }
 }

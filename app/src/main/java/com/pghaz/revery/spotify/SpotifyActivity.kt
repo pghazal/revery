@@ -2,14 +2,17 @@ package com.pghaz.revery.spotify
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.core.content.ContextCompat
 import com.pghaz.revery.BaseActivity
 import com.pghaz.revery.BuildConfig
 import com.pghaz.revery.R
 import com.pghaz.revery.extension.toast
+import com.pghaz.revery.spotify.viewmodel.SpotifyFilter
 import com.pghaz.spotify.webapi.auth.SpotifyAuthorizationCallback
 import com.pghaz.spotify.webapi.auth.SpotifyAuthorizationClient
 import io.github.kaaes.spotify.webapi.core.models.UserPrivate
+import kotlinx.android.synthetic.main.activity_spotify.*
 import net.openid.appauth.TokenResponse
 
 class SpotifyActivity : BaseActivity(), SpotifyAuthorizationCallback.Authorize,
@@ -23,10 +26,6 @@ class SpotifyActivity : BaseActivity(), SpotifyAuthorizationCallback.Authorize,
 
     override fun getLayoutResId(): Int {
         return R.layout.activity_spotify
-    }
-
-    override fun configureViews(savedInstanceState: Bundle?) {
-        // do nothing yet
     }
 
     override fun shouldAnimateOnCreate(): Boolean {
@@ -69,16 +68,56 @@ class SpotifyActivity : BaseActivity(), SpotifyAuthorizationCallback.Authorize,
             if (spotifyAuthClient.getNeedsTokenRefresh()) {
                 spotifyAuthClient.refreshAccessToken()
             } else {
-                // We already have an access token, we can display user's playlist
-                showPlaylistsFragment(spotifyAuthClient.getLastTokenResponse()?.accessToken!!)
+                // We already have an access token, we can filters and default tab
+                showDefaultSpotifyFragment()
             }
         } else {
             spotifyAuthClient.authorize(this, REQUEST_CODE_SPOTIFY_LOGIN)
         }
     }
 
+    private fun showDefaultSpotifyFragment() {
+        showFilter()
+        showPlaylistsFragment(SpotifyFilter.FEATURED_PLAYLISTS)
+    }
+
+    private fun showFilter() {
+        filtersContainer.visibility = View.VISIBLE
+    }
+
     override fun parseArguments(args: Bundle?) {
         // do nothing
+    }
+
+    override fun configureViews(savedInstanceState: Bundle?) {
+        configureFilters()
+    }
+
+    private fun configureFilters() {
+        filterAllChip.setOnClickListener {
+            showPlaylistsFragment(SpotifyFilter.FEATURED_PLAYLISTS)
+        }
+
+        filterMyPlaylistsChip.setOnClickListener {
+            showPlaylistsFragment(SpotifyFilter.MY_PLAYLISTS)
+        }
+
+        filterMyTopArtistsChip.setOnClickListener {
+            showPlaylistsFragment(SpotifyFilter.MY_TOP_ARTISTS)
+        }
+
+        filterRecentlyPlayerChip.setOnClickListener {
+            showPlaylistsFragment(SpotifyFilter.RECENTLY_PLAYED)
+        }
+    }
+
+    private fun showPlaylistsFragment(filter: SpotifyFilter) {
+        val accessToken = spotifyAuthClient.getLastTokenResponse()?.accessToken!!
+
+        replaceFragment(
+            SpotifyFragment.newInstance(accessToken, filter),
+            SpotifyFragment.TAG
+        )
     }
 
     override fun onStart() {
@@ -103,23 +142,18 @@ class SpotifyActivity : BaseActivity(), SpotifyAuthorizationCallback.Authorize,
         spotifyAuthClient.onActivityResult(requestCode, resultCode, data)
     }
 
-    private fun showPlaylistsFragment(accessToken: String) {
-        replaceFragment(
-            SpotifyPlaylistsFragment.newInstance(accessToken),
-            SpotifyPlaylistsFragment.TAG
-        )
-    }
-
     override fun onAuthorizationCanceled() {
         finish()
     }
 
     override fun onAuthorizationFailed(error: String?) {
         toast("Failed")
+        finish()
     }
 
     override fun onAuthorizationRefused(error: String?) {
         toast("Refused")
+        finish()
     }
 
     override fun onAuthorizationStarted() {
@@ -127,7 +161,7 @@ class SpotifyActivity : BaseActivity(), SpotifyAuthorizationCallback.Authorize,
     }
 
     override fun onAuthorizationSucceed(tokenResponse: TokenResponse?, user: UserPrivate?) {
-        showPlaylistsFragment(spotifyAuthClient.getLastTokenResponse()?.accessToken!!)
+        showDefaultSpotifyFragment()
     }
 
     override fun onRefreshAccessTokenStarted() {
@@ -135,6 +169,6 @@ class SpotifyActivity : BaseActivity(), SpotifyAuthorizationCallback.Authorize,
     }
 
     override fun onRefreshAccessTokenSucceed(tokenResponse: TokenResponse?, user: UserPrivate?) {
-        showPlaylistsFragment(spotifyAuthClient.getLastTokenResponse()?.accessToken!!)
+        showDefaultSpotifyFragment()
     }
 }
