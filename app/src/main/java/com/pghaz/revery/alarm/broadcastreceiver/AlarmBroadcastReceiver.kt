@@ -157,10 +157,6 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
 
     private fun startRescheduleAlarmsService(context: Context) {
         val intentService = Intent(context, RescheduleAlarmsService::class.java)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.startForegroundService(intentService)
-        } else {
-            context.startService(intentService)
-        }
+        context.startService(intentService)
     }
 }
