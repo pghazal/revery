@@ -1,11 +1,12 @@
 package com.pghaz.revery.adapter.spotify
 
+import android.text.Html
 import android.view.View
 import com.pghaz.revery.R
-import com.pghaz.revery.model.app.alarm.AlarmMetadata
-import com.pghaz.revery.model.app.BaseModel
-import com.pghaz.revery.model.app.spotify.PlaylistWrapper
 import com.pghaz.revery.image.ImageLoader
+import com.pghaz.revery.model.app.BaseModel
+import com.pghaz.revery.model.app.alarm.AlarmMetadata
+import com.pghaz.revery.model.app.spotify.PlaylistWrapper
 import java.util.*
 
 class SpotifyPlaylistViewHolder(view: View) : BaseSpotifyViewHolder(view) {
@@ -45,7 +46,11 @@ class SpotifyPlaylistViewHolder(view: View) : BaseSpotifyViewHolder(view) {
             subtitleTextView.visibility = View.GONE
             format = "%s"
         } else {
-            subtitleTextView.text = subtitle
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                subtitleTextView.text = Html.fromHtml(subtitle, Html.FROM_HTML_MODE_COMPACT)
+            } else {
+                subtitleTextView.text = Html.fromHtml(subtitle)
+            }
             subtitleTextView.visibility = View.VISIBLE
             format = "%s • "
         }
