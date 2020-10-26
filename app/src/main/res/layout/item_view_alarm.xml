@@ -20,8 +20,8 @@
             android:layout_width="@dimen/item_view_alarm_image_size"
             android:layout_height="@dimen/item_view_alarm_image_size"
             android:layout_alignParentStart="true"
-            android:scaleType="centerCrop"
-            tools:background="@drawable/selector_alarm_image_background_color" />
+            android:background="@drawable/placeholder_square"
+            android:scaleType="centerCrop" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/timeTextView"

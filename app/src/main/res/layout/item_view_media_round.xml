@@ -17,7 +17,7 @@
         android:layout_width="@dimen/item_view_alarm_image_size"
         android:layout_height="@dimen/item_view_alarm_image_size"
         android:layout_marginEnd="@dimen/half_base_margin"
-        android:background="@drawable/shape_circle"
+        android:background="@drawable/placeholder_circle"
         android:scaleType="centerCrop" />
 
     <LinearLayout

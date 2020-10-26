@@ -2,10 +2,10 @@ package com.pghaz.revery.adapter.spotify
 
 import android.view.View
 import com.pghaz.revery.R
-import com.pghaz.revery.model.app.alarm.AlarmMetadata
-import com.pghaz.revery.model.app.BaseModel
-import com.pghaz.revery.model.app.spotify.ArtistWrapper
 import com.pghaz.revery.image.ImageLoader
+import com.pghaz.revery.model.app.BaseModel
+import com.pghaz.revery.model.app.alarm.AlarmMetadata
+import com.pghaz.revery.model.app.spotify.ArtistWrapper
 
 class SpotifyArtistViewHolder(view: View) : BaseSpotifyViewHolder(view) {
 
@@ -45,6 +45,9 @@ class SpotifyArtistViewHolder(view: View) : BaseSpotifyViewHolder(view) {
         staticTextView.text = ""
 
         imageView.clipToOutline = true
-        ImageLoader.get().load(imageUrl).into(imageView)
+        ImageLoader.get()
+            .placeholder(R.drawable.placeholder_circle)
+            .load(imageUrl)
+            .into(imageView)
     }
 }

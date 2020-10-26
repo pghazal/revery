@@ -57,6 +57,9 @@ class SpotifyPlaylistViewHolder(view: View) : BaseSpotifyViewHolder(view) {
             subtitleTextView.context.getString(R.string.playlist)
         )
 
-        ImageLoader.get().load(imageUrl).into(imageView)
+        ImageLoader.get()
+            .placeholder(R.drawable.placeholder_square)
+            .load(imageUrl)
+            .into(imageView)
     }
 }
