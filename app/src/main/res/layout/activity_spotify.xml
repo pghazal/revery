@@ -23,29 +23,29 @@
             app:singleSelection="true">
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/filterAllChip"
+                android:id="@+id/filterRecentlyPlayerChip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:text="all" />
+                android:text="@string/recently_played" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/filterMyPlaylistsChip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="my playlists" />
+                android:text="@string/my_playlists" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/filterMyTopArtistsChip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="my top artists" />
+                android:text="@string/my_top_artists" />
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/filterRecentlyPlayerChip"
+                android:id="@+id/filterMyTopTracksChip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="recently played" />
+                android:text="@string/my_top_tracks" />
 
         </com.google.android.material.chip.ChipGroup>
     </HorizontalScrollView>
@@ -68,7 +68,8 @@
         android:paddingTop="@dimen/half_base_margin"
         android:paddingBottom="@dimen/half_base_margin"
         android:text="@string/search"
-        android:visibility="visible"
-        app:icon="@drawable/ic_search" />
+        android:visibility="gone"
+        app:icon="@drawable/ic_search"
+        tools:visibility="visible" />
 
 </RelativeLayout>

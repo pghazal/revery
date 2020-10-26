@@ -4,10 +4,10 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.widget.Toast
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.pghaz.revery.alarm.AlarmHandler
 import com.pghaz.revery.alarm.RingActivity
+import com.pghaz.revery.extension.toastDebug
 import com.pghaz.revery.model.app.alarm.Alarm
 import com.pghaz.revery.service.AlarmService
 import com.pghaz.revery.service.RescheduleAlarmsService
@@ -58,18 +58,14 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
         }
 
         if (Intent.ACTION_BOOT_COMPLETED == intent.action) {
-            // TODO
-            val toastText = String.format("Alarm Reboot")
-            Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show()
-
+            context.toastDebug("Alarm Reboot")
             startRescheduleAlarmsService(context)
 
         } else if (Intent.ACTION_TIME_CHANGED == intent.action ||
             Intent.ACTION_TIMEZONE_CHANGED == intent.action ||
             Intent.ACTION_DATE_CHANGED == intent.action
         ) {
-            // TODO
-            Toast.makeText(context, "Time changed: rescheduling", Toast.LENGTH_SHORT).show()
+            context.toastDebug("Time changed: rescheduling")
             startRescheduleAlarmsService(context)
 
         } else if (ACTION_ALARM_FIRES == intent.action) {

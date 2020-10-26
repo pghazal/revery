@@ -74,6 +74,12 @@
     <string name="artist">Artist</string>
 
     <string name="search">Search</string>
+    <string name="search_in_spotify">Search in Spotify</string>
+
+    <string name="my_playlists">My playlists</string>
+    <string name="my_top_artists">My top artists</string>
+    <string name="my_top_tracks">My top tracks</string>
+    <string name="recently_played">Recently played</string>
 
     <!-- TIME REMAINING TEXTS -->
     <plurals name="time_remaining_days">

@@ -5,9 +5,10 @@ import androidx.recyclerview.widget.RecyclerView
 
 class ResultListScrollListener(
     private val mLayoutManager: LinearLayoutManager,
-    private val onLoadMoreListener: OnLoadMoreListener?,
-    private val floatingActionListener: ExtendedFloatingActionListener?
+    private val onLoadMoreListener: OnLoadMoreListener?
 ) : RecyclerView.OnScrollListener() {
+
+    var floatingActionListener: ExtendedFloatingActionListener? = null
 
     private var mCurrentItemCount = 0
     private var mAwaitingItems = true

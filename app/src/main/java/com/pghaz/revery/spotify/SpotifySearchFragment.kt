@@ -1,37 +1,20 @@
 package com.pghaz.revery.spotify
 
-import android.content.Context
 import android.os.Bundle
 import com.pghaz.revery.R
 import com.pghaz.revery.model.app.spotify.SpotifyFilter
 import com.pghaz.revery.util.Arguments
-import com.pghaz.revery.view.ExtendedFloatingActionListener
 
-class SpotifyFragment : BaseSpotifyFragment() {
-
-    private var floatingActionListener: ExtendedFloatingActionListener? = null
+class SpotifySearchFragment : BaseSpotifyFragment(), SpotifySearchListener {
 
     override fun getLayoutResId(): Int {
-        return R.layout.fragment_spotify
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        spotifyItemsViewModel.fetchFirstPage()
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        floatingActionListener = context as? ExtendedFloatingActionListener
+        return R.layout.fragment_spotify_search
     }
 
     override fun configureViews(savedInstanceState: Bundle?) {
         super.configureViews(savedInstanceState)
-        scrollListener.floatingActionListener = floatingActionListener
 
-        /*searchView.inputType = InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        /* searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 scrollListener.reset()
                 spotifyItemsViewModel.spotifyItemsLiveData.value = emptyList()
@@ -54,11 +37,21 @@ class SpotifyFragment : BaseSpotifyFragment() {
         })*/
     }
 
-    companion object {
-        const val TAG = "SpotifyFragment"
+    override fun search(query: String?) {
+        clear()
+        spotifyItemsViewModel.searchFirstPage(query)
+    }
 
-        fun newInstance(accessToken: String, filter: SpotifyFilter): SpotifyFragment {
-            val fragment = SpotifyFragment()
+    override fun clear() {
+        scrollListener.reset()
+        spotifyItemsViewModel.spotifyItemsLiveData.value = emptyList()
+    }
+
+    companion object {
+        const val TAG = "SpotifySearchFragment"
+
+        fun newInstance(accessToken: String, filter: SpotifyFilter): SpotifySearchFragment {
+            val fragment = SpotifySearchFragment()
 
             val args = Bundle()
             args.putString(Arguments.ARGS_ACCESS_TOKEN, accessToken)

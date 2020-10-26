@@ -412,7 +412,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
 
     private fun openSpotifyActivity() {
         val intent = Intent(context, SpotifyActivity::class.java)
-        startActivityForResult(intent, REQUEST_CODE_SPOTIFY_SELECT_MEDIA)
+        startActivityForResult(intent, SpotifyActivity.REQUEST_CODE_SPOTIFY_SEARCH)
     }
 
     private fun openMusicMenu() {
@@ -542,7 +542,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == REQUEST_CODE_SPOTIFY_SELECT_MEDIA && resultCode == Activity.RESULT_OK) {
+        if (requestCode == SpotifyActivity.REQUEST_CODE_SPOTIFY_SEARCH && resultCode == Activity.RESULT_OK) {
             handleSpotifySelection(data)
         } else if (requestCode == REQUEST_CODE_PICK_RINGTONE && resultCode == Activity.RESULT_OK) {
             handleMySoundsSelection(data)
@@ -605,7 +605,6 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
     companion object {
         const val TAG = "CreateEditAlarmFragment"
 
-        private const val REQUEST_CODE_SPOTIFY_SELECT_MEDIA = 21
         private const val REQUEST_CODE_PICK_RINGTONE = 22
 
         fun newInstance(dialogTitle: String): CreateEditAlarmFragment {

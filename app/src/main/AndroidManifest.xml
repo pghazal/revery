@@ -35,7 +35,14 @@
 
         <activity
             android:name=".spotify.SpotifyActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize"
+            android:windowSoftInputMode="adjustNothing" />
+
+        <activity
+            android:name=".spotify.SpotifySearchActivity"
+            android:configChanges="orientation|screenSize"
+            android:label=""
+            android:windowSoftInputMode="adjustNothing" />
 
         <receiver
             android:name="com.pghaz.revery.broadcastreceiver.AlarmBroadcastReceiver"

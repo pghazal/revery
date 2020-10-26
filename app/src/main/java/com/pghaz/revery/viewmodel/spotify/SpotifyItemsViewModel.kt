@@ -4,11 +4,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.pghaz.revery.model.app.BaseModel
-import com.pghaz.revery.model.app.spotify.AlbumWrapper
-import com.pghaz.revery.model.app.spotify.ArtistWrapper
-import com.pghaz.revery.model.app.spotify.PlaylistWrapper
-import com.pghaz.revery.model.app.spotify.TrackWrapper
-import com.pghaz.revery.model.app.spotify.SpotifyFilter
+import com.pghaz.revery.model.app.spotify.*
 import io.github.kaaes.spotify.webapi.core.Options
 import io.github.kaaes.spotify.webapi.core.models.*
 import io.github.kaaes.spotify.webapi.retrofit.v2.Spotify
@@ -70,6 +66,9 @@ class SpotifyItemsViewModel(accessToken: String, private val filter: SpotifyFilt
             SpotifyFilter.RECENTLY_PLAYED -> {
                 getRecentlyPlayed(mBefore, mPageSize)
             }
+            SpotifyFilter.MY_TOP_TRACKS -> {
+                getMyTopTracks(offset, mPageSize)
+            }
         }
     }
 
@@ -79,18 +78,18 @@ class SpotifyItemsViewModel(accessToken: String, private val filter: SpotifyFilt
             mPageSize = SEARCH_PAGE_SIZE
             mCurrentQuery = query
 
-            search(query, "artist,album,track", 0, mPageSize)
+            search(query, "artist,album,track,playlist", 0, mPageSize)
         }
     }
 
     fun searchNextPage() {
         mCurrentOffset += mPageSize
-        search(mCurrentQuery, "artist,album,track", mCurrentOffset, mPageSize)
+        search(mCurrentQuery, "artist,album,track,playlist", mCurrentOffset, mPageSize)
     }
 
     private fun search(query: String?, type: String?, offset: Int, limit: Int) {
         val options: MutableMap<String, Any> = HashMap()
-        options[Options.MARKET] = "FR" // TODO ?
+        options[Options.MARKET] = "from_token"
         options[Options.OFFSET] = offset
         options[Options.LIMIT] = limit
 
@@ -131,7 +130,7 @@ class SpotifyItemsViewModel(accessToken: String, private val filter: SpotifyFilt
 
     private fun searchAlbums(query: String?, offset: Int, limit: Int) {
         val options: MutableMap<String, Any> = HashMap()
-        options[Options.MARKET] = "FR" // TODO ?
+        options[Options.MARKET] = "from_token"
         options[Options.OFFSET] = offset
         options[Options.LIMIT] = limit
 
@@ -255,6 +254,36 @@ class SpotifyItemsViewModel(accessToken: String, private val filter: SpotifyFilt
             }
 
             override fun onFailure(call: Call<Pager<Artist>>?, error: SpotifyError?) {
+                //listener.onError(error)
+                Log.e(TAG, "getMyTopArtists() failed: ${error?.message}")
+            }
+        })
+    }
+
+    private fun getMyTopTracks(offset: Int, limit: Int) {
+        val options: MutableMap<String, Any> = HashMap()
+        options[Options.OFFSET] = offset
+        options[Options.LIMIT] = limit
+
+        val call = spotifyService.getTopTracks(options)
+
+        call.enqueue(object : SpotifyCallback<Pager<Track>>() {
+            override fun onResponse(
+                call: Call<Pager<Track>>?, response: Response<Pager<Track>>?,
+                payload: Pager<Track>?
+            ) {
+                val newItems = ArrayList<BaseModel>()
+
+                spotifyItemsLiveData.value?.let { newItems.addAll(it) }
+
+                payload?.items?.forEach {
+                    newItems.add(TrackWrapper(it))
+                }
+
+                spotifyItemsLiveData.value = newItems
+            }
+
+            override fun onFailure(call: Call<Pager<Track>>?, error: SpotifyError?) {
                 //listener.onError(error)
                 Log.e(TAG, "getMyTopArtists() failed: ${error?.message}")
             }
