@@ -1,7 +1,4 @@
 <resources>
-    <string name="spotify_client_id" translatable="false">7cb7f4b08ff748cc9f19c84cc627f9d9</string>
-    <string name="spotify_redirect_uri" translatable="false">com.pghaz.revery://connect</string>
-
     <!-- GENERAL -->
     <string name="sleep_text">sleep</string>
     <string name="alarm_text">alarms</string>

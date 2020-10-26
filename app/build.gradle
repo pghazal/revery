@@ -16,11 +16,6 @@ android {
         versionCode 1
         versionName "1.0"
 
-        // Make sure this is consistent with the redirect URI scheme used in res/raw/client_config.json
-        manifestPlaceholders = [
-                'appAuthRedirectScheme': 'com.pghaz.revery'
-        ]
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -28,9 +23,19 @@ android {
         debug {
             applicationIdSuffix ".debug"
             pseudoLocalesEnabled true
+
+            // Make sure this is consistent with the redirect URI scheme used in debug/strings.xml
+            manifestPlaceholders = [
+                    'appAuthRedirectScheme': 'com.pghaz.revery.debug'
+            ]
         }
 
         release {
+            // Make sure this is consistent with the redirect URI scheme in release/strings.xml
+            manifestPlaceholders = [
+                    'appAuthRedirectScheme': 'com.pghaz.revery'
+            ]
+
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
