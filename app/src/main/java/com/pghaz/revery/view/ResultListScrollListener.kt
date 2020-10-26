@@ -5,9 +5,9 @@ import androidx.recyclerview.widget.RecyclerView
 
 class ResultListScrollListener(
     private val mLayoutManager: LinearLayoutManager,
-    private val onLoadMoreListener: OnLoadMoreListener?
-) :
-    RecyclerView.OnScrollListener() {
+    private val onLoadMoreListener: OnLoadMoreListener?,
+    private val floatingActionListener: ExtendedFloatingActionListener?
+) : RecyclerView.OnScrollListener() {
 
     private var mCurrentItemCount = 0
     private var mAwaitingItems = true
@@ -28,6 +28,12 @@ class ResultListScrollListener(
         if (!mAwaitingItems && itemPosition + 1 >= itemCount - SCROLL_BUFFER) {
             mAwaitingItems = true
             onLoadMoreListener?.onLoadMore()
+        }
+
+        if (dy <= 0) {
+            floatingActionListener?.extendFloatingActionButton()
+        } else {
+            floatingActionListener?.shrinkFloatingActionButton()
         }
     }
 

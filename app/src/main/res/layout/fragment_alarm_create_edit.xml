@@ -390,15 +390,11 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/chooseRingtoneButton"
+        style="@style/ReveryFloatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/buttonsContainer"
         android:layout_alignEnd="@+id/buttonsContainer"
-        android:backgroundTint="@color/colorAccent"
         android:src="@drawable/ic_music_note"
-        android:tint="@android:color/white"
-        app:backgroundTint="@color/colorAccent"
-        app:fabSize="normal"
-        app:srcCompat="@drawable/ic_music_note"
-        app:tint="@android:color/white" />
+        app:srcCompat="@drawable/ic_music_note" />
 </RelativeLayout>

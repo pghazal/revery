@@ -1,6 +1,7 @@
 package com.pghaz.revery.spotify
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.SearchView
@@ -8,14 +9,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pghaz.revery.BaseFragment
 import com.pghaz.revery.R
-import com.pghaz.revery.model.app.BaseModel
 import com.pghaz.revery.adapter.spotify.OnSpotifyItemClickListener
 import com.pghaz.revery.adapter.spotify.SpotifyItemsAdapter
+import com.pghaz.revery.model.app.BaseModel
 import com.pghaz.revery.model.app.spotify.SpotifyFilter
+import com.pghaz.revery.util.Arguments
+import com.pghaz.revery.view.ExtendedFloatingActionListener
+import com.pghaz.revery.view.ResultListScrollListener
 import com.pghaz.revery.viewmodel.spotify.SpotifyItemsViewModel
 import com.pghaz.revery.viewmodel.spotify.SpotifyViewModelFactory
-import com.pghaz.revery.util.Arguments
-import com.pghaz.revery.view.ResultListScrollListener
 import kotlinx.android.synthetic.main.fragment_spotify.*
 
 class SpotifyFragment : BaseFragment(), ResultListScrollListener.OnLoadMoreListener,
@@ -26,6 +28,7 @@ class SpotifyFragment : BaseFragment(), ResultListScrollListener.OnLoadMoreListe
 
     private lateinit var spotifyItemsViewModel: SpotifyItemsViewModel
 
+    private lateinit var floatingActionListener: ExtendedFloatingActionListener
     private lateinit var scrollListener: ResultListScrollListener
     private lateinit var itemsAdapter: SpotifyItemsAdapter
 
@@ -61,9 +64,15 @@ class SpotifyFragment : BaseFragment(), ResultListScrollListener.OnLoadMoreListe
         super.onSaveInstanceState(outState)
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        floatingActionListener = context as ExtendedFloatingActionListener
+    }
+
     override fun configureViews(savedInstanceState: Bundle?) {
         val layoutManager = LinearLayoutManager(context)
-        scrollListener = ResultListScrollListener(layoutManager, this)
+        scrollListener =
+            ResultListScrollListener(layoutManager, this, floatingActionListener)
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = itemsAdapter
         recyclerView.setHasFixedSize(true)

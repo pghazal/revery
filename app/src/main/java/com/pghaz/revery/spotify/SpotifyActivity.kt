@@ -9,6 +9,7 @@ import com.pghaz.revery.BuildConfig
 import com.pghaz.revery.R
 import com.pghaz.revery.extension.toast
 import com.pghaz.revery.model.app.spotify.SpotifyFilter
+import com.pghaz.revery.view.ExtendedFloatingActionListener
 import com.pghaz.spotify.webapi.auth.SpotifyAuthorizationCallback
 import com.pghaz.spotify.webapi.auth.SpotifyAuthorizationClient
 import io.github.kaaes.spotify.webapi.core.models.UserPrivate
@@ -16,7 +17,8 @@ import kotlinx.android.synthetic.main.activity_spotify.*
 import net.openid.appauth.TokenResponse
 
 class SpotifyActivity : BaseActivity(), SpotifyAuthorizationCallback.Authorize,
-    SpotifyAuthorizationCallback.RefreshToken {
+    SpotifyAuthorizationCallback.RefreshToken,
+    ExtendedFloatingActionListener {
 
     companion object {
         private const val REQUEST_CODE_SPOTIFY_LOGIN = 1337
@@ -118,6 +120,14 @@ class SpotifyActivity : BaseActivity(), SpotifyAuthorizationCallback.Authorize,
             SpotifyFragment.newInstance(accessToken, filter),
             SpotifyFragment.TAG
         )
+    }
+
+    override fun extendFloatingActionButton() {
+        searchButton.extend()
+    }
+
+    override fun shrinkFloatingActionButton() {
+        searchButton.shrink()
     }
 
     override fun onStart() {

@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_main_background_view"
-    android:orientation="vertical">
-
+    android:background="@color/color_main_background_view">
 
     <HorizontalScrollView
         android:id="@+id/filtersContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:scrollbars="none"
         android:visibility="gone"
         tools:visibility="visible">
@@ -55,6 +54,21 @@
         android:id="@+id/fragmentContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/color_main_background_view" />
+        android:layout_below="@+id/filtersContainer" />
 
-</LinearLayout>
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/searchButton"
+        style="@style/ReveryExtendedFloatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/base_margin"
+        android:paddingTop="@dimen/half_base_margin"
+        android:paddingBottom="@dimen/half_base_margin"
+        android:text="@string/search"
+        android:visibility="visible"
+        app:icon="@drawable/ic_search" />
+
+</RelativeLayout>

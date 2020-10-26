@@ -68,6 +68,8 @@
     <string name="podcast">Podcast</string>
     <string name="artist">Artiste</string>
 
+    <string name="search">Rechercher</string>
+
     <!-- TIME REMAINING TEXTS -->
     <plurals name="time_remaining_days">
         <item quantity="one">%d jour</item>
