@@ -543,40 +543,52 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == SpotifyActivity.REQUEST_CODE_SPOTIFY_SEARCH && resultCode == Activity.RESULT_OK) {
-            handleSpotifySelection(data)
+            handleSpotifySelection(alarm, data)
         } else if (requestCode == REQUEST_CODE_PICK_RINGTONE && resultCode == Activity.RESULT_OK) {
             handleMySoundsSelection(data)
         }
     }
 
-    private fun handleSpotifySelection(data: Intent?) {
+    private fun handleSpotifySelection(alarm: Alarm?, data: Intent?) {
         val result =
             data?.getParcelableExtra(Arguments.ARGS_SPOTIFY_ITEM_SELECTED) as BaseModel?
 
         if (result != null) {
             alarm?.let {
-                it.metadata = spotifyItemToMetadata(result)
+                it.metadata = spotifyItemToMetadata(it, result)
                 createEditAlarmViewModel.alarmMetadataLiveData.value = it
             }
         }
     }
 
-    private fun spotifyItemToMetadata(item: BaseModel): AlarmMetadata {
+    private fun spotifyItemToMetadata(alarm: Alarm, item: BaseModel): AlarmMetadata {
         return when (item) {
             is TrackWrapper -> {
-                item.toAlarmMetadata()
+                item.toAlarmMetadata().apply {
+                    shuffle = alarm.metadata.shuffle
+                    shouldKeepPlaying = alarm.metadata.shouldKeepPlaying
+                }
             }
             is AlbumWrapper -> {
-                item.toAlarmMetadata()
+                item.toAlarmMetadata().apply {
+                    shuffle = alarm.metadata.shuffle
+                    shouldKeepPlaying = alarm.metadata.shouldKeepPlaying
+                }
             }
             is ArtistWrapper -> {
-                item.toAlarmMetadata()
+                item.toAlarmMetadata().apply {
+                    shuffle = alarm.metadata.shuffle
+                    shouldKeepPlaying = alarm.metadata.shouldKeepPlaying
+                }
             }
             is PlaylistWrapper -> {
-                item.toAlarmMetadata()
+                item.toAlarmMetadata().apply {
+                    shuffle = alarm.metadata.shuffle
+                    shouldKeepPlaying = alarm.metadata.shouldKeepPlaying
+                }
             }
             else -> {
-                AlarmMetadata()
+                AlarmMetadata(alarm.metadata)
             }
         }
     }
