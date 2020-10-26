@@ -11,6 +11,8 @@
         <item name="fontFamily">@font/montserrat</item>
 
         <item name="android:buttonStyle">@style/ReveryButton</item>
+
+        <item name="chipStyle">@style/ReveryChip</item>
     </style>
 
     <style name="Theme.Activity.FullScreen" parent="@style/AppTheme">
@@ -106,6 +108,23 @@
         <item name="android:textColorSecondary">@android:color/white</item>
         <item name="android:textColorTertiary">@android:color/white</item>
         <item name="android:textColorPrimaryDisableOnly">@android:color/white</item>
+    </style>
+
+    <style name="ReveryChip" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="android:textColor">@color/selector_toggle_text_color</item>
+        <item name="android:textAppearance">@style/ReveryChipText</item>
+
+        <item name="chipBackgroundColor">@color/selector_chip_background_color</item>
+        <item name="chipIconTint">@android:color/white</item>
+        <item name="checkedIconVisible">false</item>
+    </style>
+
+    <style name="ReveryChipText" parent="TextAppearance.MaterialComponents.Body2">
+        <item name="android:fontFamily">@font/montserrat</item>
+        <item name="fontFamily">@font/montserrat</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">10sp</item>
     </style>
 
 </resources>

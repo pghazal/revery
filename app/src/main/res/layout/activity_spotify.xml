@@ -25,7 +25,6 @@
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/filterAllChip"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
@@ -33,21 +32,18 @@
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/filterMyPlaylistsChip"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="my playlists" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/filterMyTopArtistsChip"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="my top artists" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/filterRecentlyPlayerChip"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="recently played" />
