@@ -7,30 +7,39 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.text.format.DateFormat
+import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnTouchListener
+import android.widget.RelativeLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
 import com.pghaz.revery.BaseBottomSheetDialogFragment
 import com.pghaz.revery.R
-import com.pghaz.revery.alarm.model.BaseModel
-import com.pghaz.revery.alarm.model.app.Alarm
-import com.pghaz.revery.alarm.model.app.AlarmMetadata
-import com.pghaz.revery.alarm.model.app.AlarmType
-import com.pghaz.revery.alarm.viewmodel.CreateEditAlarmViewModel
+import com.pghaz.revery.adapter.alarm.DefaultMediaViewHolder
+import com.pghaz.revery.adapter.base.BaseViewHolder
+import com.pghaz.revery.adapter.spotify.SpotifyAlbumViewHolder
+import com.pghaz.revery.adapter.spotify.SpotifyArtistViewHolder
+import com.pghaz.revery.adapter.spotify.SpotifyPlaylistViewHolder
+import com.pghaz.revery.adapter.spotify.SpotifyTrackViewHolder
 import com.pghaz.revery.animation.AnimatorUtils
-import com.pghaz.revery.extension.logError
-import com.pghaz.revery.image.ImageLoader
+import com.pghaz.revery.model.app.BaseModel
+import com.pghaz.revery.model.app.alarm.Alarm
+import com.pghaz.revery.model.app.alarm.AlarmMetadata
+import com.pghaz.revery.model.app.alarm.MediaType
+import com.pghaz.revery.model.app.spotify.AlbumWrapper
+import com.pghaz.revery.model.app.spotify.ArtistWrapper
+import com.pghaz.revery.model.app.spotify.PlaylistWrapper
+import com.pghaz.revery.model.app.spotify.TrackWrapper
 import com.pghaz.revery.settings.SettingsFragment
 import com.pghaz.revery.spotify.SpotifyActivity
-import com.pghaz.revery.spotify.model.ArtistWrapper
-import com.pghaz.revery.spotify.model.PlaylistWrapper
 import com.pghaz.revery.util.Arguments
 import com.pghaz.revery.util.DateTimeUtils
+import com.pghaz.revery.viewmodel.alarm.CreateEditAlarmViewModel
 import com.shawnlin.numberpicker.NumberPicker
 import kotlinx.android.synthetic.main.floating_action_button_menu.*
 import kotlinx.android.synthetic.main.fragment_alarm_create_edit.*
 import java.util.*
+
 
 class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
 
@@ -69,44 +78,56 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
     }
 
     private fun updateMetadataViews(alarm: Alarm) {
-        if (alarm.metadata.alarmType == AlarmType.SPOTIFY) {
+        if (alarm.metadata.type != MediaType.DEFAULT) {
             moreOptionsButton.visibility = View.VISIBLE
         } else {
             moreOptionsButton.visibility = View.GONE
         }
 
+        ringtoneInfoContainer.removeAllViews()
         ringtoneInfoContainer.visibility = View.VISIBLE
 
-        if (alarm.metadata.name.isNullOrEmpty()) {
-            titleTextView.text = ""
-            titleTextView.visibility = View.GONE
-        } else {
-            titleTextView.text = alarm.metadata.name
-            titleTextView.visibility = View.VISIBLE
-        }
+        val view: View
+        val holder: BaseViewHolder
 
-        if (alarm.metadata.description.isNullOrEmpty()) {
-            subtitleTextView.text = ""
-            subtitleTextView.visibility = View.GONE
-        } else {
-            subtitleTextView.text = alarm.metadata.description
-            subtitleTextView.visibility = View.VISIBLE
-        }
-
-        if (alarm.metadata.imageUrl.isNullOrEmpty()) {
-            imageView.visibility = View.GONE
-        } else {
-            imageView.visibility = View.VISIBLE
-            val placeholder = if (alarm.metadata.alarmType == AlarmType.SPOTIFY) {
-                R.drawable.selector_alarm_image_background_color
-            } else {
-                R.drawable.shape_alarm_ringtone_phone
+        when (alarm.metadata.type) {
+            MediaType.DEFAULT -> {
+                view = LayoutInflater.from(context)
+                    .inflate(R.layout.item_view_alarm_media_square, ringtoneInfoContainer, false)
+                holder = DefaultMediaViewHolder(view)
             }
 
-            ImageLoader.get().load(alarm.metadata.imageUrl)
-                .placeholder(placeholder)
-                .into(imageView)
+            MediaType.SPOTIFY_TRACK -> {
+                view = LayoutInflater.from(context)
+                    .inflate(R.layout.item_view_alarm_media_square, ringtoneInfoContainer, false)
+                holder = SpotifyTrackViewHolder(view)
+            }
+
+            MediaType.SPOTIFY_ALBUM -> {
+                view = LayoutInflater.from(context)
+                    .inflate(R.layout.item_view_alarm_media_square, ringtoneInfoContainer, false)
+                holder = SpotifyAlbumViewHolder(view)
+            }
+
+            MediaType.SPOTIFY_ARTIST -> {
+                view = LayoutInflater.from(context)
+                    .inflate(R.layout.item_view_alarm_media_round, ringtoneInfoContainer, false)
+                holder = SpotifyArtistViewHolder(view)
+            }
+
+            MediaType.SPOTIFY_PLAYLIST -> {
+                view = LayoutInflater.from(context)
+                    .inflate(R.layout.item_view_alarm_media_square, ringtoneInfoContainer, false)
+                holder = SpotifyPlaylistViewHolder(view)
+            }
         }
+
+        holder.bind(alarm.metadata)
+
+        val params = view.layoutParams as RelativeLayout.LayoutParams
+        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
+        params.addRule(RelativeLayout.ALIGN_PARENT_START)
+        ringtoneInfoContainer.addView(view, params)
     }
 
     private fun initTimePicker(is24HourFormat: Boolean) {
@@ -367,6 +388,8 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
     private fun setDefaultRingtone() {
         alarm?.let {
             it.metadata = AlarmMetadata().apply {
+                name = getString(R.string.by_default)
+                type = MediaType.DEFAULT
                 uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM).toString()
             }
 
@@ -389,7 +412,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
 
     private fun openSpotifyActivity() {
         val intent = Intent(context, SpotifyActivity::class.java)
-        startActivityForResult(intent, REQUEST_CODE_SPOTIFY_GET_PLAYLIST)
+        startActivityForResult(intent, REQUEST_CODE_SPOTIFY_SELECT_MEDIA)
     }
 
     private fun openMusicMenu() {
@@ -493,6 +516,8 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
             // Safe init of uri
             if (it.metadata.uri.isNullOrEmpty()) {
                 it.metadata = AlarmMetadata().apply {
+                    name = getString(R.string.by_default)
+                    type = MediaType.DEFAULT
                     uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM).toString()
                 }
             }
@@ -517,63 +542,60 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == REQUEST_CODE_SPOTIFY_GET_PLAYLIST && resultCode == Activity.RESULT_OK) {
-            val result =
-                data?.getParcelableExtra(Arguments.ARGS_SPOTIFY_ITEM_SELECTED) as BaseModel?
-            handleSpotifySelection(result)
+        if (requestCode == REQUEST_CODE_SPOTIFY_SELECT_MEDIA && resultCode == Activity.RESULT_OK) {
+            handleSpotifySelection(data)
         } else if (requestCode == REQUEST_CODE_PICK_RINGTONE && resultCode == Activity.RESULT_OK) {
-            val ringtoneUri: Uri? =
-                data?.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
-            val title = RingtoneManager.getRingtone(context, ringtoneUri)?.getTitle(context)
-                ?.substringBeforeLast(".")
+            handleMySoundsSelection(data)
+        }
+    }
 
+    private fun handleSpotifySelection(data: Intent?) {
+        val result =
+            data?.getParcelableExtra(Arguments.ARGS_SPOTIFY_ITEM_SELECTED) as BaseModel?
+
+        if (result != null) {
             alarm?.let {
-                it.metadata.apply {
-                    alarmType = AlarmType.DEFAULT
-                    metadataId = null
-                    uri = ringtoneUri.toString()
-                    href = null
-                    type = null
-                    name = title
-                    description = ""
-                    imageUrl = title
-
-                    context?.logError("Uri selected: $uri")
-                }
-
+                it.metadata = spotifyItemToMetadata(result)
                 createEditAlarmViewModel.alarmMetadataLiveData.value = it
             }
         }
     }
 
-    private fun handleSpotifySelection(result: BaseModel?) {
-        alarm?.let {
-            it.metadata.apply {
-                alarmType = AlarmType.SPOTIFY
+    private fun spotifyItemToMetadata(item: BaseModel): AlarmMetadata {
+        return when (item) {
+            is TrackWrapper -> {
+                item.toAlarmMetadata()
             }
+            is AlbumWrapper -> {
+                item.toAlarmMetadata()
+            }
+            is ArtistWrapper -> {
+                item.toAlarmMetadata()
+            }
+            is PlaylistWrapper -> {
+                item.toAlarmMetadata()
+            }
+            else -> {
+                AlarmMetadata()
+            }
+        }
+    }
 
-            it.metadata.apply {
-                when (result) {
-                    is PlaylistWrapper -> {
-                        metadataId = result.playlistSimple.id
-                        uri = result.playlistSimple.uri
-                        href = result.playlistSimple.href
-                        type = result.playlistSimple.type
-                        name = result.playlistSimple.name
-                        description = result.playlistSimple.description
-                        imageUrl = result.playlistSimple.images?.get(0)?.url
-                    }
+    private fun handleMySoundsSelection(data: Intent?) {
+        val ringtoneUri: Uri? =
+            data?.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
 
-                    is ArtistWrapper -> {
-                        metadataId = result.artist.id
-                        uri = result.artist.uri
-                        href = result.artist.href
-                        type = result.artist.type
-                        name = result.artist.name
-                        description = null
-                        imageUrl = result.artist.images?.get(0)?.url
-                    }
-                }
+        val title = RingtoneManager.getRingtone(context, ringtoneUri)?.getTitle(context)
+            ?.substringBeforeLast(".")
+
+        alarm?.let {
+            it.metadata = AlarmMetadata().apply {
+                uri = ringtoneUri.toString()
+                href = null
+                type = MediaType.DEFAULT
+                name = title
+                description = null
+                imageUrl = null
             }
 
             createEditAlarmViewModel.alarmMetadataLiveData.value = it
@@ -583,12 +605,12 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
     companion object {
         const val TAG = "CreateEditAlarmFragment"
 
-        private const val REQUEST_CODE_SPOTIFY_GET_PLAYLIST = 21
+        private const val REQUEST_CODE_SPOTIFY_SELECT_MEDIA = 21
         private const val REQUEST_CODE_PICK_RINGTONE = 22
 
         fun newInstance(dialogTitle: String): CreateEditAlarmFragment {
             val newAlarm = Alarm(
-                BaseModel.NO_ID,
+                id = BaseModel.NO_ID, // Let this ´NO_ID´ value. It defines if it's creation or edition of alarm
                 hour = 0,
                 minute = 0,
                 label = "",

@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.pghaz.revery.alarm.ListAlarmsFragment
 import com.pghaz.revery.alarm.RingActivity
-import com.pghaz.revery.alarm.service.AlarmService
+import com.pghaz.revery.service.AlarmService
 import com.pghaz.revery.sleep.SleepFragment
 import com.pghaz.revery.util.IntentUtils
 import kotlinx.android.synthetic.main.activity_main.*

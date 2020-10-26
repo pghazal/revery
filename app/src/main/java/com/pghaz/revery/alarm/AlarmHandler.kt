@@ -6,10 +6,10 @@ import android.content.Context
 import android.media.RingtoneManager
 import android.widget.Toast
 import com.pghaz.revery.BuildConfig
-import com.pghaz.revery.alarm.broadcastreceiver.AlarmBroadcastReceiver
-import com.pghaz.revery.alarm.model.app.Alarm
-import com.pghaz.revery.alarm.model.app.AlarmMetadata
-import com.pghaz.revery.alarm.model.app.AlarmType
+import com.pghaz.revery.broadcastreceiver.AlarmBroadcastReceiver
+import com.pghaz.revery.model.app.alarm.Alarm
+import com.pghaz.revery.model.app.alarm.AlarmMetadata
+import com.pghaz.revery.model.app.alarm.MediaType
 import com.pghaz.revery.util.DateTimeUtils
 import java.util.*
 
@@ -37,10 +37,10 @@ object AlarmHandler {
         val metadata = AlarmMetadata()
 
         if (spotify) {
-            metadata.alarmType = AlarmType.SPOTIFY
+            metadata.type = MediaType.SPOTIFY_PLAYLIST
             metadata.uri = "spotify:playlist:3H8dsoJvkH7lUkaQlUNjPJ"
         } else {
-            metadata.alarmType = AlarmType.DEFAULT
+            metadata.type = MediaType.DEFAULT
             metadata.uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM).toString()
         }
 

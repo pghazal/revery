@@ -38,7 +38,7 @@
             android:configChanges="orientation|screenSize" />
 
         <receiver
-            android:name="com.pghaz.revery.alarm.broadcastreceiver.AlarmBroadcastReceiver"
+            android:name="com.pghaz.revery.broadcastreceiver.AlarmBroadcastReceiver"
             android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -49,12 +49,12 @@
         </receiver>
 
         <service
-            android:name="com.pghaz.revery.alarm.service.AlarmService"
+            android:name="com.pghaz.revery.service.AlarmService"
             android:enabled="true"
             android:exported="false" />
 
         <service
-            android:name="com.pghaz.revery.alarm.service.RescheduleAlarmsService"
+            android:name="com.pghaz.revery.service.RescheduleAlarmsService"
             android:enabled="true"
             android:exported="false" />
 

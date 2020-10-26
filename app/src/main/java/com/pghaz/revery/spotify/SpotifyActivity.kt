@@ -8,7 +8,7 @@ import com.pghaz.revery.BaseActivity
 import com.pghaz.revery.BuildConfig
 import com.pghaz.revery.R
 import com.pghaz.revery.extension.toast
-import com.pghaz.revery.spotify.viewmodel.SpotifyFilter
+import com.pghaz.revery.model.app.spotify.SpotifyFilter
 import com.pghaz.spotify.webapi.auth.SpotifyAuthorizationCallback
 import com.pghaz.spotify.webapi.auth.SpotifyAuthorizationClient
 import io.github.kaaes.spotify.webapi.core.models.UserPrivate

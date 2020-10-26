@@ -9,9 +9,9 @@ import android.view.WindowManager
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.pghaz.revery.BaseActivity
 import com.pghaz.revery.R
-import com.pghaz.revery.alarm.broadcastreceiver.AlarmBroadcastReceiver
-import com.pghaz.revery.alarm.model.app.Alarm
-import com.pghaz.revery.alarm.service.AlarmService
+import com.pghaz.revery.broadcastreceiver.AlarmBroadcastReceiver
+import com.pghaz.revery.model.app.alarm.Alarm
+import com.pghaz.revery.service.AlarmService
 import com.pghaz.revery.extension.logError
 import com.pghaz.revery.player.AbstractPlayer
 import com.pghaz.revery.settings.SettingsHandler
