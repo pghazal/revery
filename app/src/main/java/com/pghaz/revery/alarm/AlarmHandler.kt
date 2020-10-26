@@ -4,9 +4,9 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.media.RingtoneManager
-import android.widget.Toast
 import com.pghaz.revery.BuildConfig
 import com.pghaz.revery.broadcastreceiver.AlarmBroadcastReceiver
+import com.pghaz.revery.extension.toastDebug
 import com.pghaz.revery.model.app.alarm.Alarm
 import com.pghaz.revery.model.app.alarm.AlarmMetadata
 import com.pghaz.revery.model.app.alarm.MediaType
@@ -123,7 +123,7 @@ object AlarmHandler {
                     alarm.id,
                     DateTimeUtils.getDaysText(alarm)
                 )
-                Toast.makeText(context, toastText, Toast.LENGTH_LONG).show()
+                context?.toastDebug(toastText)
             }
         }
     }
