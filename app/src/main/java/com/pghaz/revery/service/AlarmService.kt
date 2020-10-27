@@ -316,7 +316,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setContentTitle(String.format("%s %s", getString(R.string.alarm_of), time))
             .setContentText(alarm.label)
-            .setSmallIcon(R.drawable.ic_alarm) // TODO change icon
+            .setSmallIcon(R.drawable.ic_revery_transparent)
             .setContentIntent(notificationPendingIntent)
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setFullScreenIntent(notificationPendingIntent, true)

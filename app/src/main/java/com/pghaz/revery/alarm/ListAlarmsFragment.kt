@@ -5,6 +5,7 @@ import android.text.format.DateFormat
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,8 +18,8 @@ import com.pghaz.revery.adapter.alarm.OnAlarmClickListener
 import com.pghaz.revery.adapter.base.BaseAdapter
 import com.pghaz.revery.model.app.BaseModel
 import com.pghaz.revery.model.app.alarm.Alarm
-import com.pghaz.revery.viewmodel.alarm.ListAlarmsViewModel
 import com.pghaz.revery.settings.SettingsFragment
+import com.pghaz.revery.viewmodel.alarm.ListAlarmsViewModel
 import com.pghaz.spotify.webapi.auth.SpotifyAuthorizationClient
 import kotlinx.android.synthetic.main.fragment_list_alarms.*
 
@@ -40,6 +41,12 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
                 // Scroll to new added item (except when app started: previousSize == 0)
                 if (previousList.size > 0 && currentList.size > previousList.size) {
                     recyclerView.smoothScrollToPosition(alarmsAdapter.itemCount - 1)
+                }
+
+                if (currentList.size == 0) {
+                    placeholderListAlarms.visibility = View.VISIBLE
+                } else {
+                    placeholderListAlarms.visibility = View.GONE
                 }
             }
         }

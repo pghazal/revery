@@ -43,6 +43,7 @@
     <string name="menu_settings">Settings</string>
 
     <!-- ALARM -->
+    <string name="no_alarms_scheduled">No alarms created yet</string>
     <string name="recurring">recurring</string>
     <string name="create_alarm">add alarm</string>
     <string name="edit_alarm">edit alarm</string>

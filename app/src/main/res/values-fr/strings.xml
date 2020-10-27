@@ -41,6 +41,7 @@
     <string name="menu_settings">Paramètres</string>
 
     <!-- ALARM -->
+    <string name="no_alarms_scheduled">Aucune alarme créée</string>
     <string name="recurring">répéter</string>
     <string name="create_alarm">ajouter une alarme</string>
     <string name="edit_alarm">éditer l\'alarme</string>
