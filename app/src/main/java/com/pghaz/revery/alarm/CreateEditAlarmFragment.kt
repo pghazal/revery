@@ -32,6 +32,9 @@ import com.pghaz.revery.model.app.spotify.AlbumWrapper
 import com.pghaz.revery.model.app.spotify.ArtistWrapper
 import com.pghaz.revery.model.app.spotify.PlaylistWrapper
 import com.pghaz.revery.model.app.spotify.TrackWrapper
+import com.pghaz.revery.permission.PermissionDialogFactory
+import com.pghaz.revery.permission.PermissionManager
+import com.pghaz.revery.permission.ReveryPermission
 import com.pghaz.revery.settings.SettingsFragment
 import com.pghaz.revery.spotify.SpotifyActivity
 import com.pghaz.revery.util.Arguments
@@ -367,7 +370,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
             if (chooseRingtoneButton.isExpanded) {
                 closeMusicMenu()
             }
-            openRingtonePicker()
+            handleOpenDeviceRingtone()
         }
 
         defaultRingtoneButton.setOnClickListener {
@@ -592,6 +595,22 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         }
     }
 
+    private fun handleOpenDeviceRingtone() {
+        activity?.let {
+            val permission = ReveryPermission.WRITE_EXTERNAL_STORAGE
+
+            if (PermissionManager.isBlocked(it, permission) &&
+                !PermissionManager.hasPermissionBeenGranted(it, permission)
+            ) {
+                PermissionDialogFactory.showPermissionDialog(it)
+            } else if (!PermissionManager.hasPermissionBeenGranted(it, permission)) {
+                PermissionManager.askForPermission(this, permission)
+            } else {
+                openRingtonePicker()
+            }
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -599,6 +618,24 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
             handleSpotifySelection(alarm, data)
         } else if (requestCode == REQUEST_CODE_PICK_RINGTONE && resultCode == Activity.RESULT_OK) {
             handleMySoundsSelection(data)
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        val storagePermission = ReveryPermission.WRITE_EXTERNAL_STORAGE
+        when (requestCode) {
+            storagePermission.requestCode -> {
+                context?.let {
+                    if (PermissionManager.hasPermissionBeenGranted(it, storagePermission)) {
+                        openRingtonePicker()
+                    }
+                }
+            }
         }
     }
 
