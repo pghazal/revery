@@ -15,6 +15,7 @@ class ResultListScrollListener(
 
     fun reset() {
         mCurrentItemCount = 0
+        mAwaitingItems = true
     }
 
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
