@@ -1,6 +1,7 @@
 package com.pghaz.revery.alarm
 
 import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Intent
 import android.media.RingtoneManager
@@ -47,6 +48,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
     private lateinit var createEditAlarmViewModel: CreateEditAlarmViewModel
     private var alarm: Alarm? = null
 
+    private lateinit var chooseRingtoneButtonAnimatorSet: AnimatorSet
     private lateinit var openMenuMusicAnimation: AnimatorSet
     private lateinit var closeMenuMusicAnimation: AnimatorSet
 
@@ -378,6 +380,31 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         moreOptionsButton.setOnClickListener {
             showMoreOptionsFragment()
         }
+
+        startChooseRingtoneButtonAnimation()
+    }
+
+    private fun startChooseRingtoneButtonAnimation() {
+        val scaleXPlayButtonAnimator = ObjectAnimator.ofFloat(
+            chooseRingtoneButton,
+            View.SCALE_X, 1f, 0.8f
+        )
+        scaleXPlayButtonAnimator.repeatCount = ObjectAnimator.INFINITE
+        scaleXPlayButtonAnimator.repeatMode = ObjectAnimator.REVERSE
+        scaleXPlayButtonAnimator.duration = 1000L
+
+        val scaleYPlayButtonAnimator = ObjectAnimator.ofFloat(
+            chooseRingtoneButton,
+            View.SCALE_Y, 1f, 0.8f
+        )
+        scaleYPlayButtonAnimator.repeatCount = ObjectAnimator.INFINITE
+        scaleYPlayButtonAnimator.repeatMode = ObjectAnimator.REVERSE
+        scaleYPlayButtonAnimator.duration = 1000L
+
+        chooseRingtoneButtonAnimatorSet = AnimatorSet()
+        chooseRingtoneButtonAnimatorSet.play(scaleXPlayButtonAnimator)
+            .with(scaleYPlayButtonAnimator)
+        chooseRingtoneButtonAnimatorSet.start()
     }
 
     private fun showMoreOptionsFragment() {
@@ -460,6 +487,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         if (!this::closeMenuMusicAnimation.isInitialized || !closeMenuMusicAnimation.isRunning) {
             AnimatorUtils.fadeIn(floatingMenuTouchInterceptor, 300, 0)
             openMenuMusicAnimation.start()
+            chooseRingtoneButtonAnimatorSet.pause()
 
             chooseRingtoneButton.isExpanded = true
             chooseRingtoneButton.setImageResource(R.drawable.ic_close)
@@ -507,6 +535,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         if (!this::openMenuMusicAnimation.isInitialized || !openMenuMusicAnimation.isRunning) {
             AnimatorUtils.fadeOut(floatingMenuTouchInterceptor, 300, 0)
             closeMenuMusicAnimation.start()
+            chooseRingtoneButtonAnimatorSet.resume()
 
             chooseRingtoneButton.isExpanded = false
             chooseRingtoneButton.setImageResource(R.drawable.ic_music_note)
