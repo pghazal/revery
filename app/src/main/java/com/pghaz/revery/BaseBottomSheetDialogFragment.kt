@@ -91,7 +91,9 @@ abstract class BaseBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
     override fun onStop() {
         super.onStop()
-        dialog?.window?.setWindowAnimations(-1)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+            dialog?.window?.setWindowAnimations(-1)
+        }
     }
 
     private fun configureBottomSheetDialog(bottomSheetDialog: BottomSheetDialog) {
