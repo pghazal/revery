@@ -1,5 +1,6 @@
 package com.pghaz.revery.alarm
 
+import android.animation.AnimatorSet
 import android.app.Activity
 import android.content.Intent
 import android.media.RingtoneManager
@@ -45,6 +46,9 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
 
     private lateinit var createEditAlarmViewModel: CreateEditAlarmViewModel
     private var alarm: Alarm? = null
+
+    private lateinit var openMenuMusicAnimation: AnimatorSet
+    private lateinit var closeMenuMusicAnimation: AnimatorSet
 
     override fun getLayoutResId(): Int {
         return R.layout.fragment_alarm_create_edit
@@ -432,8 +436,8 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
             AnimatorUtils.TranslationAxis.VERTICAL,
             AnimatorUtils.TranslationDirection.FROM_BOTTOM_TO_TOP,
             true,
-            100,
-            400
+            0,
+            500
         )
 
         val phoneRingtoneAnimator = AnimatorUtils.getTranslationAnimatorSet(
@@ -442,16 +446,24 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
             AnimatorUtils.TranslationAxis.VERTICAL,
             AnimatorUtils.TranslationDirection.FROM_BOTTOM_TO_TOP,
             true,
-            200,
-            400
+            0,
+            600
         )
 
-        AnimatorUtils.fadeIn(floatingMenuTouchInterceptor, 300, 0)
-        spotifyAnimator.playTogether(phoneRingtoneAnimator, defaultRingtoneAnimator)
-        spotifyAnimator.start()
+        openMenuMusicAnimation = AnimatorSet()
+        openMenuMusicAnimation.playTogether(
+            defaultRingtoneAnimator,
+            spotifyAnimator,
+            phoneRingtoneAnimator
+        )
 
-        chooseRingtoneButton.isExpanded = true
-        chooseRingtoneButton.setImageResource(R.drawable.ic_close)
+        if (!this::closeMenuMusicAnimation.isInitialized || !closeMenuMusicAnimation.isRunning) {
+            AnimatorUtils.fadeIn(floatingMenuTouchInterceptor, 300, 0)
+            openMenuMusicAnimation.start()
+
+            chooseRingtoneButton.isExpanded = true
+            chooseRingtoneButton.setImageResource(R.drawable.ic_close)
+        }
     }
 
     private fun closeMusicMenu() {
@@ -485,12 +497,20 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
             400
         )
 
-        AnimatorUtils.fadeOut(floatingMenuTouchInterceptor, 300, 0)
-        spotifyAnimator.playTogether(phoneRingtoneAnimator, defaultRingtoneAnimator)
-        spotifyAnimator.start()
+        closeMenuMusicAnimation = AnimatorSet()
+        closeMenuMusicAnimation.playTogether(
+            defaultRingtoneAnimator,
+            spotifyAnimator,
+            phoneRingtoneAnimator
+        )
 
-        chooseRingtoneButton.isExpanded = false
-        chooseRingtoneButton.setImageResource(R.drawable.ic_music_note)
+        if (!this::openMenuMusicAnimation.isInitialized || !openMenuMusicAnimation.isRunning) {
+            AnimatorUtils.fadeOut(floatingMenuTouchInterceptor, 300, 0)
+            closeMenuMusicAnimation.start()
+
+            chooseRingtoneButton.isExpanded = false
+            chooseRingtoneButton.setImageResource(R.drawable.ic_music_note)
+        }
     }
 
     private fun isAlarmRecurring(): Boolean {
