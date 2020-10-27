@@ -5,6 +5,11 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
 
+Properties properties = new Properties()
+if (project.rootProject.file('local.properties').canRead()) {
+    properties.load(project.rootProject.file("local.properties").newDataInputStream())
+}
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
@@ -19,10 +24,19 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        release_signing_config {
+            storeFile file('/Users/pghaz/AndroidStudioProjects/revery/misc/revery.keystore')
+            keyPassword properties.getProperty('KEY_PASSWORD')
+            storePassword properties.getProperty('STORE_PASSWORD')
+            keyAlias 'revery'
+        }
+    }
+
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
-            pseudoLocalesEnabled true
+            debuggable true
 
             // Make sure this is consistent with the redirect URI scheme used in debug/strings.xml
             manifestPlaceholders = [
@@ -36,7 +50,10 @@ android {
                     'appAuthRedirectScheme': 'com.pghaz.revery'
             ]
 
-            minifyEnabled false
+            debuggable false
+            signingConfig signingConfigs.release_signing_config
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
