@@ -3,10 +3,12 @@ package com.pghaz.revery
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.pghaz.revery.alarm.ListAlarmsFragment
 import com.pghaz.revery.alarm.RingActivity
+import com.pghaz.revery.application.ReveryApplication
 import com.pghaz.revery.service.AlarmService
 import com.pghaz.revery.sleep.SleepFragment
 import com.pghaz.revery.util.IntentUtils
@@ -94,6 +96,30 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
 
         // Select the first tab (alarms) which will call the listener as it is already set
         bottomNavigationView.selectedItemId = R.id.alarm_tab
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (!ReveryApplication.isNotificationEnabled(this)) {
+            showNotificationDisabledDialog()
+        }
+    }
+
+    private fun showNotificationDisabledDialog() {
+        AlertDialog.Builder(this).apply {
+            setPositiveButton(R.string.go_to_settings) { dialog, _ ->
+                dialog.dismiss()
+                ReveryApplication.openAppNotificationSettings(this@MainActivity)
+            }
+
+            setNegativeButton(R.string.close) { dialog, _ ->
+                dialog.dismiss()
+            }
+
+            setCancelable(true)
+            setTitle(R.string.notification_disabled)
+            setMessage(R.string.notification_disabled_message)
+        }.create().show()
     }
 
     private fun selectNavigationItem(fragment: Fragment, tag: String) {

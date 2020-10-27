@@ -3,6 +3,12 @@
     <string name="sleep_text">sleep</string>
     <string name="alarm_text">alarms</string>
 
+    <!-- NOTIFICATION -->
+    <string name="go_to_settings">Open settings</string>
+    <string name="close">Close</string>
+    <string name="notification_disabled">Notifications disabled</string>
+    <string name="notification_disabled_message">It seems that Revery notifications are disabled. In order for alarms to go off properly, notifications have to be enabled.</string>
+
     <string name="sleep_fragment">Sleep</string>
 
     <!-- DAYS -->
