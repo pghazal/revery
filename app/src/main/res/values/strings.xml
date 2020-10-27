@@ -33,6 +33,11 @@
 
     <!-- SETTINGS -->
     <string name="about">About</string>
+    <string name="about_ok">That\'s great bro</string>
+    <string name="about_developed_by">Developed by Pierre Ghazal</string>
+    <string name="about_copyright">© 2020 Revery, all rights reserved</string>
+    <string name="about_email">Support: pghaz.apps@gmail.com</string>
+    <string name="about_version">Version</string>
     <string name="alarm_snooze_duration_static">snooze duration</string>
     <string name="alarm_fade_in_duration_static">fade in duration</string>
     <string name="alarm_should_use_device_volume">Use device\'s volume</string>

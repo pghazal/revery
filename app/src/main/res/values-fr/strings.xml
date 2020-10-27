@@ -31,6 +31,11 @@
 
     <!-- SETTINGS -->
     <string name="about">À propos</string>
+    <string name="about_ok">Cool mon pote</string>
+    <string name="about_developed_by">Développé par Pierre Ghazal</string>
+    <string name="about_copyright">© 2020 Revery, tous droits réservés</string>
+    <string name="about_email">Support: pghaz.apps@gmail.com</string>
+    <string name="about_version">Version</string>
     <string name="alarm_snooze_duration_static">durée de rappel d\'alarme</string>
     <string name="alarm_fade_in_duration_static">durée du réveil en douceur</string>
     <string name="alarm_should_use_device_volume">Utiliser le volume du téléphone</string>

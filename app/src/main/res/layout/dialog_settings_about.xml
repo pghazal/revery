@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/half_base_margin">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/third_base_margin"
+        android:fontFamily="@font/montserrat_semi_bold"
+        android:text="@string/about"
+        android:textColor="@android:color/black"
+        android:textSize="24sp"
+        app:fontFamily="@font/montserrat_semi_bold" />
+
+    <TextView
+        android:id="@+id/versionTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/third_base_margin"
+        android:text=""
+        android:textColor="@android:color/black"
+        tools:text="Version" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/third_base_margin"
+        android:text="@string/about_developed_by"
+        android:textColor="@android:color/black" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/third_base_margin"
+        android:text="@string/about_email"
+        android:textColor="@android:color/black" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/half_base_margin"
+        android:text="@string/about_copyright"
+        android:textColor="@android:color/black" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/aboutOKButton"
+        style="@style/ReveryButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:paddingStart="@dimen/half_base_margin"
+        android:paddingEnd="@dimen/half_base_margin"
+        android:text="@string/about_ok"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white" />
+
+</LinearLayout>

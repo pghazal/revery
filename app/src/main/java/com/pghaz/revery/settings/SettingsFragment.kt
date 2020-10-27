@@ -1,9 +1,14 @@
 package com.pghaz.revery.settings
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
+import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatButton
 import com.pghaz.revery.BaseBottomSheetDialogFragment
+import com.pghaz.revery.BuildConfig
 import com.pghaz.revery.R
 import com.pghaz.revery.util.Arguments
 import kotlinx.android.synthetic.main.fragment_settings.*
@@ -105,6 +110,34 @@ class SettingsFragment : BaseBottomSheetDialogFragment() {
 
         shouldUseDeviceVolumeSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
             SettingsHandler.setShouldUseDeviceVolume(buttonView.context, isChecked)
+        }
+
+        aboutButton.setOnClickListener {
+            showNotificationDisabledDialog()
+        }
+    }
+
+    private fun showNotificationDisabledDialog() {
+        context?.let {
+            val view = LayoutInflater.from(it).inflate(R.layout.dialog_settings_about, null)
+            val versionTextView = view.findViewById<TextView>(R.id.versionTextView)
+            versionTextView.text = String.format(
+                "%s %s (%d)",
+                it.getString(R.string.about_version),
+                BuildConfig.VERSION_NAME,
+                BuildConfig.VERSION_CODE
+            )
+
+            val dialog = AlertDialog.Builder(it).apply {
+                setCancelable(true)
+                setView(view)
+            }.create()
+            dialog.show()
+
+            val aboutOKButton = view.findViewById<AppCompatButton>(R.id.aboutOKButton)
+            aboutOKButton.setOnClickListener {
+                dialog.dismiss()
+            }
         }
     }
 
