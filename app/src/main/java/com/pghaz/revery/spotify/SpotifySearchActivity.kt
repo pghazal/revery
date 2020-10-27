@@ -5,10 +5,12 @@ import android.os.Bundle
 import android.text.InputType
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.widget.SearchView
 import com.pghaz.revery.R
 import com.pghaz.revery.model.app.spotify.SpotifyFilter
 import com.pghaz.spotify.webapi.auth.SpotifyAuthorizationCallback
+import kotlinx.android.synthetic.main.activity_spotify.*
 
 class SpotifySearchActivity : BaseSpotifyActivity(), SpotifyAuthorizationCallback.Authorize,
     SpotifyAuthorizationCallback.RefreshToken {
@@ -30,6 +32,7 @@ class SpotifySearchActivity : BaseSpotifyActivity(), SpotifyAuthorizationCallbac
     }
 
     override fun onSpotifyAuthorizedAndAvailable() {
+        progressBar.visibility = View.GONE
         showDefaultSpotifyFragment()
     }
 
@@ -93,5 +96,15 @@ class SpotifySearchActivity : BaseSpotifyActivity(), SpotifyAuthorizationCallbac
         })
 
         return true
+    }
+
+    override fun onAuthorizationStarted() {
+        super.onAuthorizationStarted()
+        progressBar.visibility = View.VISIBLE
+    }
+
+    override fun onRefreshAccessTokenStarted() {
+        super.onRefreshAccessTokenStarted()
+        progressBar.visibility = View.VISIBLE
     }
 }

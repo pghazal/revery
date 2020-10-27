@@ -8,7 +8,9 @@ import com.google.android.material.chip.Chip
 import com.pghaz.revery.R
 import com.pghaz.revery.model.app.spotify.SpotifyFilter
 import com.pghaz.revery.view.ExtendedFloatingActionListener
+import io.github.kaaes.spotify.webapi.core.models.UserPrivate
 import kotlinx.android.synthetic.main.activity_spotify.*
+import net.openid.appauth.TokenResponse
 
 class SpotifyActivity : BaseSpotifyActivity(), ExtendedFloatingActionListener {
 
@@ -29,6 +31,7 @@ class SpotifyActivity : BaseSpotifyActivity(), ExtendedFloatingActionListener {
     }
 
     override fun onSpotifyAuthorizedAndAvailable() {
+        progressBar.visibility = View.GONE
         showDefaultSpotifyFragment()
     }
 
@@ -125,5 +128,15 @@ class SpotifyActivity : BaseSpotifyActivity(), ExtendedFloatingActionListener {
                 finish()
             }
         }
+    }
+
+    override fun onAuthorizationStarted() {
+        super.onAuthorizationStarted()
+        progressBar.visibility = View.VISIBLE
+    }
+
+    override fun onRefreshAccessTokenStarted() {
+        super.onRefreshAccessTokenStarted()
+        progressBar.visibility = View.VISIBLE
     }
 }
