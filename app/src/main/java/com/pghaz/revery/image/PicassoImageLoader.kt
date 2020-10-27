@@ -1,7 +1,6 @@
 package com.pghaz.revery.image
 
 import android.widget.ImageView
-import com.pghaz.revery.BuildConfig
 import com.pghaz.revery.R
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Transformation
@@ -31,7 +30,6 @@ class PicassoImageLoader : IImageLoader {
     }
 
     override fun into(imageView: ImageView?) {
-        picasso.setIndicatorsEnabled(BuildConfig.DEBUG)
         val requestCreator = picasso.load(url)
 
         placeholderResId?.let {
