@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import com.google.android.material.chip.Chip
 import com.pghaz.revery.R
 import com.pghaz.revery.model.app.spotify.SpotifyFilter
 import com.pghaz.revery.view.ExtendedFloatingActionListener
@@ -58,20 +59,42 @@ class SpotifyActivity : BaseSpotifyActivity(), ExtendedFloatingActionListener {
         }
     }
 
+    private fun scrollToChip(chip: Chip) {
+        filterChipGroup.post {
+            val screenWidth = resources.displayMetrics.widthPixels
+            val point = IntArray(2)
+            chip.getLocationOnScreen(point)
+            val x = point[0]
+
+            if (x + chip.width + chip.paddingRight > screenWidth) {
+                filtersContainer.smoothScrollBy(
+                    (x + chip.width + chip.paddingRight) - screenWidth,
+                    0
+                )
+            } else if (x < 0) {
+                filtersContainer.smoothScrollBy(x - chip.paddingRight, 0)
+            }
+        }
+    }
+
     private fun configureFilters() {
         filterMyPlaylistsChip.setOnClickListener {
+            scrollToChip(filterMyPlaylistsChip)
             showSpotifyFragment(SpotifyFilter.MY_PLAYLISTS)
         }
 
         filterMyTopArtistsChip.setOnClickListener {
+            scrollToChip(filterMyTopArtistsChip)
             showSpotifyFragment(SpotifyFilter.MY_TOP_ARTISTS)
         }
 
         filterMyTopTracksChip.setOnClickListener {
+            scrollToChip(filterMyTopTracksChip)
             showSpotifyFragment(SpotifyFilter.MY_TOP_TRACKS)
         }
 
         filterRecentlyPlayerChip.setOnClickListener {
+            scrollToChip(filterRecentlyPlayerChip)
             showSpotifyFragment(SpotifyFilter.RECENTLY_PLAYED)
         }
     }
