@@ -122,7 +122,6 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
             val fadeInDuration = SettingsHandler.getFadeInDuration(this)
 
             notification = buildAlarmNotification(alarm)
-            startForeground(1, notification)
 
             disableOneShotAlarm(this, alarm)
 
@@ -148,6 +147,8 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
             } catch (exception: Exception) {
                 onPlayerError(PlayerError.Initialization(exception))
             }
+
+            startForeground(1, notification)
         }
 
         return START_STICKY
@@ -236,7 +237,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
             player.release()
         }
 
-        val player = getInitializedPlayer(
+        player = getInitializedPlayer(
             MediaType.DEFAULT, shouldUseDeviceVolume, null, alarm.fadeIn, fadeInDuration
         )
         player.prepare(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM).toString())
