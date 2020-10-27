@@ -92,6 +92,8 @@
     <string name="my_top_artists">My top artists</string>
     <string name="my_top_tracks">My top tracks</string>
     <string name="recently_played">Recently played</string>
+    <string name="error_network">Network error occurred: check your connectivity and try again</string>
+    <string name="error_unexpected">Unexpected error occurred</string>
 
     <!-- TIME REMAINING TEXTS -->
     <plurals name="time_remaining_days">

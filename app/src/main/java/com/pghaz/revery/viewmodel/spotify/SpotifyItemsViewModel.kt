@@ -25,6 +25,7 @@ class SpotifyItemsViewModel(accessToken: String, private val filter: SpotifyFilt
     }
 
     val spotifyItemsLiveData = MutableLiveData<List<BaseModel>>()
+    var spotifyErrorListener: SpotifyErrorListener? = null
 
     private val spotifyService: SpotifyService = Spotify.createAuthenticatedService(accessToken)
 
@@ -125,8 +126,11 @@ class SpotifyItemsViewModel(accessToken: String, private val filter: SpotifyFilt
             }
 
             override fun onFailure(call: Call<SearchResult>?, error: SpotifyError?) {
-                //listener.onError(error)
                 Log.e(TAG, "search() failed: ${error?.message}")
+
+                error?.let {
+                    spotifyErrorListener?.onSpotifyError(error)
+                }
             }
         })
     }
@@ -157,8 +161,11 @@ class SpotifyItemsViewModel(accessToken: String, private val filter: SpotifyFilt
             }
 
             override fun onFailure(call: Call<AlbumsPager>?, error: SpotifyError?) {
-                //listener.onError(error)
                 Log.e(TAG, "searchAlbums() failed: ${error?.message}")
+
+                error?.let {
+                    spotifyErrorListener?.onSpotifyError(error)
+                }
             }
         })
     }
@@ -196,8 +203,11 @@ class SpotifyItemsViewModel(accessToken: String, private val filter: SpotifyFilt
                 call: Call<CursorPager<RecentlyPlayedTrack>>?,
                 error: SpotifyError?
             ) {
-                //listener.onError(error)
                 Log.e(TAG, "getRecentlyPlayed() failed: ${error?.message}")
+
+                error?.let {
+                    spotifyErrorListener?.onSpotifyError(error)
+                }
             }
         })
     }
@@ -227,8 +237,11 @@ class SpotifyItemsViewModel(accessToken: String, private val filter: SpotifyFilt
             }
 
             override fun onFailure(call: Call<FeaturedPlaylists>?, error: SpotifyError?) {
-                //listener.onError(error)
                 Log.e(TAG, "getFeaturedPlaylists() failed: ${error?.message}")
+
+                error?.let {
+                    spotifyErrorListener?.onSpotifyError(error)
+                }
             }
         })
     }
@@ -257,8 +270,11 @@ class SpotifyItemsViewModel(accessToken: String, private val filter: SpotifyFilt
             }
 
             override fun onFailure(call: Call<Pager<Artist>>?, error: SpotifyError?) {
-                //listener.onError(error)
                 Log.e(TAG, "getMyTopArtists() failed: ${error?.message}")
+
+                error?.let {
+                    spotifyErrorListener?.onSpotifyError(error)
+                }
             }
         })
     }
@@ -287,8 +303,11 @@ class SpotifyItemsViewModel(accessToken: String, private val filter: SpotifyFilt
             }
 
             override fun onFailure(call: Call<Pager<Track>>?, error: SpotifyError?) {
-                //listener.onError(error)
                 Log.e(TAG, "getMyTopArtists() failed: ${error?.message}")
+
+                error?.let {
+                    spotifyErrorListener?.onSpotifyError(error)
+                }
             }
         })
     }
@@ -317,8 +336,11 @@ class SpotifyItemsViewModel(accessToken: String, private val filter: SpotifyFilt
             }
 
             override fun onFailure(call: Call<Pager<PlaylistSimple>>?, error: SpotifyError?) {
-                //listener.onError(error)
                 Log.e(TAG, "getMyPlaylists() failed: ${error?.message}")
+
+                error?.let {
+                    spotifyErrorListener?.onSpotifyError(error)
+                }
             }
         })
     }

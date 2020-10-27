@@ -3,21 +3,25 @@ package com.pghaz.revery.spotify
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pghaz.revery.BaseFragment
+import com.pghaz.revery.R
 import com.pghaz.revery.adapter.spotify.OnSpotifyItemClickListener
 import com.pghaz.revery.adapter.spotify.SpotifyItemsAdapter
 import com.pghaz.revery.model.app.BaseModel
 import com.pghaz.revery.model.app.spotify.SpotifyFilter
 import com.pghaz.revery.util.Arguments
 import com.pghaz.revery.view.ResultListScrollListener
+import com.pghaz.revery.viewmodel.spotify.SpotifyErrorListener
 import com.pghaz.revery.viewmodel.spotify.SpotifyItemsViewModel
 import com.pghaz.revery.viewmodel.spotify.SpotifyViewModelFactory
+import io.github.kaaes.spotify.webapi.retrofit.v2.SpotifyError
 import kotlinx.android.synthetic.main.fragment_spotify.*
 
 abstract class BaseSpotifyFragment : BaseFragment(), ResultListScrollListener.OnLoadMoreListener,
-    OnSpotifyItemClickListener {
+    OnSpotifyItemClickListener, SpotifyErrorListener {
 
     private lateinit var accessToken: String
     private lateinit var filter: SpotifyFilter
@@ -35,6 +39,7 @@ abstract class BaseSpotifyFragment : BaseFragment(), ResultListScrollListener.On
         spotifyItemsViewModel =
             ViewModelProvider(this, SpotifyViewModelFactory(accessToken, filter))
                 .get(SpotifyItemsViewModel::class.java)
+        spotifyItemsViewModel.spotifyErrorListener = this
         spotifyItemsViewModel.spotifyItemsLiveData.observe(this, {
             itemsAdapter.submitList(it)
         })
@@ -67,5 +72,13 @@ abstract class BaseSpotifyFragment : BaseFragment(), ResultListScrollListener.On
         data.putExtra(Arguments.ARGS_SPOTIFY_ITEM_SELECTED, model)
         activity?.setResult(Activity.RESULT_OK, data)
         activity?.finish()
+    }
+
+    override fun onSpotifyError(error: SpotifyError) {
+        val errorMessage = when (error.details.status) {
+            SpotifyError.ERROR_NETWORK -> getString(R.string.error_network)
+            else -> getString(R.string.error_unexpected)
+        }
+        Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
     }
 }

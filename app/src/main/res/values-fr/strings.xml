@@ -90,6 +90,8 @@
     <string name="my_top_artists">Mes artistes favoris</string>
     <string name="my_top_tracks">Mes titres favoris</string>
     <string name="recently_played">Joué récemment</string>
+    <string name="error_network">Erreur réseau: vérifiez votre connectivité puis rééssayez</string>
+    <string name="error_unexpected">Une erreur inattendue est survenue</string>
 
     <!-- TIME REMAINING TEXTS -->
     <plurals name="time_remaining_days">
