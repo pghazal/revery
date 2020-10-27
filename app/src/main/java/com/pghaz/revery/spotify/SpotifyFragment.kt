@@ -29,29 +29,10 @@ class SpotifyFragment : BaseSpotifyFragment() {
     override fun configureViews(savedInstanceState: Bundle?) {
         super.configureViews(savedInstanceState)
         scrollListener.floatingActionListener = floatingActionListener
+    }
 
-        /*searchView.inputType = InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String): Boolean {
-                scrollListener.reset()
-                spotifyItemsViewModel.spotifyItemsLiveData.value = emptyList()
-                spotifyItemsViewModel.searchFirstPage(query)
-                searchView.clearFocus()
-                return true
-            }
-
-            override fun onQueryTextChange(newText: String): Boolean {
-                if (newText.isEmpty()) {
-                    isSearching = false
-                    scrollListener.reset()
-                    spotifyItemsViewModel.spotifyItemsLiveData.value = emptyList()
-                    spotifyItemsViewModel.fetchFirstPage()
-                } else {
-                    isSearching = true
-                }
-                return false
-            }
-        })*/
+    override fun onLoadMore() {
+        spotifyItemsViewModel.fetchNextPage()
     }
 
     companion object {

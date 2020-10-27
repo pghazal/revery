@@ -27,8 +27,6 @@ abstract class BaseSpotifyFragment : BaseFragment(), ResultListScrollListener.On
     protected lateinit var scrollListener: ResultListScrollListener
     private lateinit var itemsAdapter: SpotifyItemsAdapter
 
-    private var isSearching = false
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -62,14 +60,6 @@ abstract class BaseSpotifyFragment : BaseFragment(), ResultListScrollListener.On
         recyclerView.adapter = itemsAdapter
         recyclerView.setHasFixedSize(true)
         recyclerView.addOnScrollListener(scrollListener)
-    }
-
-    override fun onLoadMore() {
-        if (isSearching) {
-            spotifyItemsViewModel.searchNextPage()
-        } else {
-            spotifyItemsViewModel.fetchNextPage()
-        }
     }
 
     override fun onClick(model: BaseModel) {

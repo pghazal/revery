@@ -11,32 +11,6 @@ class SpotifySearchFragment : BaseSpotifyFragment(), SpotifySearchListener {
         return R.layout.fragment_spotify_search
     }
 
-    override fun configureViews(savedInstanceState: Bundle?) {
-        super.configureViews(savedInstanceState)
-
-        /* searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String): Boolean {
-                scrollListener.reset()
-                spotifyItemsViewModel.spotifyItemsLiveData.value = emptyList()
-                spotifyItemsViewModel.searchFirstPage(query)
-                searchView.clearFocus()
-                return true
-            }
-
-            override fun onQueryTextChange(newText: String): Boolean {
-                if (newText.isEmpty()) {
-                    isSearching = false
-                    scrollListener.reset()
-                    spotifyItemsViewModel.spotifyItemsLiveData.value = emptyList()
-                    spotifyItemsViewModel.fetchFirstPage()
-                } else {
-                    isSearching = true
-                }
-                return false
-            }
-        })*/
-    }
-
     override fun search(query: String?) {
         clear()
         spotifyItemsViewModel.searchFirstPage(query)
@@ -44,7 +18,12 @@ class SpotifySearchFragment : BaseSpotifyFragment(), SpotifySearchListener {
 
     override fun clear() {
         scrollListener.reset()
+        spotifyItemsViewModel.cancelSearch()
         spotifyItemsViewModel.spotifyItemsLiveData.value = emptyList()
+    }
+
+    override fun onLoadMore() {
+        spotifyItemsViewModel.searchNextPage()
     }
 
     companion object {

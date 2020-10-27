@@ -33,21 +33,17 @@ class SpotifyItemsViewModel(accessToken: String, private val filter: SpotifyFilt
     private var mBefore: String? = null
     private var mCurrentQuery: String? = null
 
+    private var searchCalls: ArrayList<Call<SearchResult>> = ArrayList()
+
     fun fetchFirstPage() {
         mCurrentOffset = 0
         mPageSize = PAGE_SIZE
-
-        //searchAlbums("PNL", 0, mSearchPageSize)
-        //search("PNL", "artist,album", 0, mSearchPageSize)
 
         fetch(0)
     }
 
     fun fetchNextPage() {
         mCurrentOffset += mPageSize
-
-        //searchAlbums("PNL", mCurrentSearchOffset, mSearchPageSize)
-        //search("PNL", "artist,album", mCurrentSearchOffset, mSearchPageSize)
 
         fetch(mCurrentOffset)
     }
@@ -87,6 +83,12 @@ class SpotifyItemsViewModel(accessToken: String, private val filter: SpotifyFilt
         search(mCurrentQuery, "artist,album,track,playlist", mCurrentOffset, mPageSize)
     }
 
+    fun cancelSearch() {
+        searchCalls.forEach {
+            it.cancel()
+        }
+    }
+
     private fun search(query: String?, type: String?, offset: Int, limit: Int) {
         val options: MutableMap<String, Any> = HashMap()
         options[Options.MARKET] = "from_token"
@@ -94,6 +96,7 @@ class SpotifyItemsViewModel(accessToken: String, private val filter: SpotifyFilt
         options[Options.LIMIT] = limit
 
         val call = spotifyService.search(query, type, options)
+        searchCalls.add(call)
 
         call.enqueue(object : SpotifyCallback<SearchResult>() {
             override fun onResponse(
