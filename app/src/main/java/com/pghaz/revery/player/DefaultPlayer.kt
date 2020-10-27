@@ -7,6 +7,10 @@ import android.media.AudioManager
 import android.media.MediaPlayer
 import android.net.Uri
 import com.pghaz.revery.extension.logError
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileNotFoundException
+
 
 class DefaultPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
     AbstractPlayer(context, AudioManager.STREAM_ALARM, shouldUseDeviceVolume) {
@@ -86,9 +90,27 @@ class DefaultPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
         }
     }
 
-    private fun setDataSource(uri: String?) {
-        currentUri = uri
-        mediaPlayer?.setDataSource(context, Uri.parse(currentUri))
+    private fun setDataSource(stringUri: String?) {
+        if (stringUri == null) {
+            throw NullPointerException("setDataSource(): currentUri cannot be null")
+        }
+
+        currentUri = stringUri
+
+        val uri: Uri = Uri.parse(currentUri)
+
+        if ("content" == uri.scheme) {
+            mediaPlayer?.setDataSource(context, uri)
+        } else {
+            val file = File(uri.path!!)
+
+            if (!file.exists()) {
+                throw FileNotFoundException("setDataSource(): file at currentUri not found")
+            }
+
+            val inputStream = FileInputStream(file)
+            mediaPlayer?.setDataSource(inputStream.fd)
+        }
     }
 
     private fun requestAudioFocus(): Int? {
