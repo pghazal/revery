@@ -2,8 +2,10 @@ package com.pghaz.revery
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.MenuItem
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.pghaz.revery.alarm.ListAlarmsFragment
@@ -106,20 +108,19 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
     }
 
     private fun showNotificationDisabledDialog() {
-        AlertDialog.Builder(this).apply {
-            setPositiveButton(R.string.go_to_settings) { dialog, _ ->
-                dialog.dismiss()
-                ReveryApplication.openAppNotificationSettings(this@MainActivity)
-            }
+        val view = LayoutInflater.from(this).inflate(R.layout.dialog_notification_disabled, null)
+        val goToSettingsButton = view.findViewById<AppCompatButton>(R.id.goToSettingsButton)
 
-            setNegativeButton(R.string.close) { dialog, _ ->
-                dialog.dismiss()
-            }
-
+        val dialog = AlertDialog.Builder(this).apply {
             setCancelable(true)
-            setTitle(R.string.notification_disabled)
-            setMessage(R.string.notification_disabled_message)
-        }.create().show()
+            setView(view)
+        }.create()
+        dialog.show()
+
+        goToSettingsButton.setOnClickListener {
+            dialog.dismiss()
+            ReveryApplication.openAppNotificationSettings(this@MainActivity)
+        }
     }
 
     private fun selectNavigationItem(fragment: Fragment, tag: String) {

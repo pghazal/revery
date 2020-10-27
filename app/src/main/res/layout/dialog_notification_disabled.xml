@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -12,50 +11,28 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/third_base_margin"
         android:fontFamily="@font/montserrat_semi_bold"
-        android:text="@string/about"
+        android:text="@string/notification_disabled"
         android:textColor="@android:color/black"
         android:textSize="20sp"
         app:fontFamily="@font/montserrat_semi_bold" />
 
-    <TextView
-        android:id="@+id/versionTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/third_base_margin"
-        android:text=""
-        android:textColor="@android:color/black"
-        tools:text="Version" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/third_base_margin"
-        android:text="@string/about_developed_by"
-        android:textColor="@android:color/black" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/third_base_margin"
-        android:text="@string/about_email"
-        android:textColor="@android:color/black" />
-
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/half_base_margin"
-        android:text="@string/about_copyright"
+        android:text="@string/notification_disabled_message"
         android:textColor="@android:color/black" />
 
+
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/aboutOKButton"
+        android:id="@+id/goToSettingsButton"
         style="@style/ReveryButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:paddingStart="@dimen/half_base_margin"
         android:paddingEnd="@dimen/half_base_margin"
-        android:text="@string/about_ok"
+        android:text="@string/go_to_settings"
         android:textAllCaps="false"
         android:textColor="@android:color/white" />
 

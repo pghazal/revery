@@ -6,7 +6,6 @@
 
     <!-- NOTIFICATION -->
     <string name="go_to_settings">Aller aux paramètres</string>
-    <string name="close">Fermer</string>
     <string name="notification_disabled">Notifications désactivées</string>
     <string name="notification_disabled_message">Il semble que les notifications Revery soient désactivées. Pour que les alarmes se déclenchent correctement, les notifications doivent être activées.</string>
 
