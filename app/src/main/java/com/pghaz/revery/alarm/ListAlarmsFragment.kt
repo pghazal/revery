@@ -157,8 +157,8 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
             R.id.menu_spotify_clear_token -> {
                 context?.let {
                     val spotifyAuthClient = SpotifyAuthorizationClient.Builder(
-                        getString(R.string.spotify_client_id),
-                        getString(R.string.spotify_redirect_uri)
+                        BuildConfig.SPOTIFY_CLIENT_ID,
+                        BuildConfig.SPOTIFY_REDIRECT_URI
                     ).build(it)
                     spotifyAuthClient.setNeedsTokenRefresh(true)
                 }

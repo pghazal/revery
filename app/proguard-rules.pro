@@ -19,3 +19,16 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Retrofit does reflection on generic parameters. InnerClasses is required to use Signature and
+# EnclosingMethod is required to use InnerClasses.
+
+# Spotify Retrofit
+-keep class io.github.kaaes.spotify.webapi.retrofit.** { *; }
+-keep interface io.github.kaaes.spotify.webapi.retrofit.** { *; }
+# Spotify Core
+-keep class io.github.kaaes.spotify.webapi.core.** { *; }
+-keep interface io.github.kaaes.spotify.webapi.core.** { *; }
+# Spotify Auth
+-keep class com.pghaz.spotify.webapi.auth.** { *; }
+-keep interface com.pghaz.spotify.webapi.auth.** { *; }

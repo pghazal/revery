@@ -24,8 +24,8 @@ abstract class BaseSpotifyActivity : BaseActivity(), SpotifyAuthorizationCallbac
 
     private fun initSpotifyAuthClient() {
         spotifyAuthClient = SpotifyAuthorizationClient.Builder(
-            getString(R.string.spotify_client_id),
-            getString(R.string.spotify_redirect_uri)
+            BuildConfig.SPOTIFY_CLIENT_ID,
+            BuildConfig.SPOTIFY_REDIRECT_URI
         )
             .setScopes(
                 arrayOf(

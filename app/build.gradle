@@ -42,6 +42,9 @@ android {
             manifestPlaceholders = [
                     'appAuthRedirectScheme': 'com.pghaz.revery.debug'
             ]
+
+            buildConfigField "String", "SPOTIFY_CLIENT_ID", "\"7cb7f4b08ff748cc9f19c84cc627f9d9\""
+            buildConfigField "String", "SPOTIFY_REDIRECT_URI", "\"com.pghaz.revery.debug://connect\""
         }
 
         release {
@@ -49,6 +52,9 @@ android {
             manifestPlaceholders = [
                     'appAuthRedirectScheme': 'com.pghaz.revery'
             ]
+
+            buildConfigField "String", "SPOTIFY_CLIENT_ID", "\"7cb7f4b08ff748cc9f19c84cc627f9d9\""
+            buildConfigField "String", "SPOTIFY_REDIRECT_URI", "\"com.pghaz.revery://connect\""
 
             debuggable false
             signingConfig signingConfigs.release_signing_config
