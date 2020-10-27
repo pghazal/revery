@@ -2,7 +2,10 @@ package com.pghaz.revery.spotify
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.MenuItem
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
 import com.pghaz.revery.BaseActivity
 import com.pghaz.revery.BuildConfig
@@ -68,6 +71,30 @@ abstract class BaseSpotifyActivity : BaseActivity(), SpotifyAuthorizationCallbac
     override fun onStart() {
         super.onStart()
         spotifyAuthClient.onStart()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (!SpotifyAuthorizationClient.isSpotifyInstalled(this)) {
+            showSpotifyNotInstalledDialog()
+        }
+    }
+
+    private fun showSpotifyNotInstalledDialog() {
+        val view = LayoutInflater.from(this).inflate(R.layout.dialog_spotify_not_installed, null)
+        val spotifyInstallButton = view.findViewById<AppCompatButton>(R.id.spotifyInstallButton)
+
+        val dialog = AlertDialog.Builder(this).apply {
+            setCancelable(true)
+            setView(view)
+        }.create()
+        dialog.show()
+
+        spotifyInstallButton.setOnClickListener {
+            dialog.dismiss()
+            SpotifyAuthorizationClient.openDownloadSpotifyActivity(this, "com.pghaz.revery")
+        }
     }
 
     override fun onStop() {

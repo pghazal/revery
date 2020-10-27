@@ -10,6 +10,10 @@
 
     <string name="sleep_fragment">Sleep</string>
 
+    <string name="spotify_not_installed">Spotify not found</string>
+    <string name="spotify_not_installed_message">It seems that Spotify is not installed on your device. In order to play Spotify\'s content you need to install Spotify.</string>
+    <string name="spotify_install">Install Spotify</string>
+
     <!-- DAYS -->
     <string name="monday_long">monday</string>
     <string name="tuesday_long">tuesday</string>
