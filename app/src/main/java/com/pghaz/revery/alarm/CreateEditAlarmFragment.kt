@@ -484,14 +484,16 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
             phoneRingtoneAnimator
         )
 
-        if (!this::closeMenuMusicAnimation.isInitialized || !closeMenuMusicAnimation.isRunning) {
-            AnimatorUtils.fadeIn(floatingMenuTouchInterceptor, 300, 0)
-            openMenuMusicAnimation.start()
-            chooseRingtoneButtonAnimatorSet.pause()
-
-            chooseRingtoneButton.isExpanded = true
-            chooseRingtoneButton.setImageResource(R.drawable.ic_close)
+        if (this::closeMenuMusicAnimation.isInitialized && closeMenuMusicAnimation.isRunning) {
+            closeMenuMusicAnimation.cancel()
         }
+
+        AnimatorUtils.fadeIn(floatingMenuTouchInterceptor, 300, 0)
+        openMenuMusicAnimation.start()
+        chooseRingtoneButtonAnimatorSet.pause()
+
+        chooseRingtoneButton.isExpanded = true
+        chooseRingtoneButton.setImageResource(R.drawable.ic_close)
     }
 
     private fun closeMusicMenu() {
@@ -532,14 +534,16 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
             phoneRingtoneAnimator
         )
 
-        if (!this::openMenuMusicAnimation.isInitialized || !openMenuMusicAnimation.isRunning) {
-            AnimatorUtils.fadeOut(floatingMenuTouchInterceptor, 300, 0)
-            closeMenuMusicAnimation.start()
-            chooseRingtoneButtonAnimatorSet.resume()
-
-            chooseRingtoneButton.isExpanded = false
-            chooseRingtoneButton.setImageResource(R.drawable.ic_music_note)
+        if (this::openMenuMusicAnimation.isInitialized && openMenuMusicAnimation.isRunning) {
+            openMenuMusicAnimation.cancel()
         }
+
+        AnimatorUtils.fadeOut(floatingMenuTouchInterceptor, 300, 0)
+        closeMenuMusicAnimation.start()
+        chooseRingtoneButtonAnimatorSet.resume()
+
+        chooseRingtoneButton.isExpanded = false
+        chooseRingtoneButton.setImageResource(R.drawable.ic_music_note)
     }
 
     private fun isAlarmRecurring(): Boolean {
