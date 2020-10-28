@@ -8,20 +8,20 @@ object SettingsHandler {
     private const val SETTINGS_SHARED_PREF = "com.pghaz.revery.settings"
 
     // Snooze
-    private const val SETTINGS_SNOOZE_DURATION = "com.pghaz.revery.settings.snooze_duration"
+    private const val SETTINGS_SNOOZE_DURATION = "$SETTINGS_SHARED_PREF.snooze_duration"
     private const val SETTINGS_SNOOZE_DURATION_POSITION =
-        "com.pghaz.revery.settings.snooze_duration.position"
+        "$SETTINGS_SHARED_PREF.snooze_duration.position"
     private val DEFAULT_SNOOZE_DURATION = SnoozeDuration.TEN_MINUTES
 
     // Fade in
-    private const val SETTINGS_FADE_IN = "com.pghaz.revery.settings.fade_in"
-    private const val SETTINGS_FADE_IN_POSITION = "com.pghaz.revery.settings.fade_in.position"
+    private const val SETTINGS_FADE_IN = "$SETTINGS_SHARED_PREF.fade_in"
+    private const val SETTINGS_FADE_IN_POSITION = "$SETTINGS_SHARED_PREF.fade_in.position"
     private val DEFAULT_FADE_IN_DURATION = FadeInDuration.THIRTY_SECONDS
 
     // Volume
     // Should use user device volume or the max possible
     private const val SETTINGS_SHOULD_USE_DEVICE_VOLUME =
-        "com.pghaz.revery.settings.alarm.volume.device"
+        "$SETTINGS_SHARED_PREF.alarm.volume.device"
     private const val DEFAULT_SHOULD_USE_DEVICE_VOLUME = true
 
     private fun getSharedPreferences(context: Context): SharedPreferences {

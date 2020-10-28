@@ -634,6 +634,8 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
                     if (PermissionManager.hasPermissionBeenGranted(it, storagePermission)) {
                         openRingtonePicker()
                     }
+
+                    PermissionManager.setStoragePermissionHasBeenAsked(it, true)
                 }
             }
         }
