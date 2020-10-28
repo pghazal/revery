@@ -57,7 +57,10 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
             return
         }
 
-        if (Intent.ACTION_BOOT_COMPLETED == intent.action) {
+        if (Intent.ACTION_BOOT_COMPLETED == intent.action ||
+            "android.intent.action.QUICKBOOT_POWERON" == intent.action ||
+            "com.htc.intent.action.QUICKBOOT_POWERON" == intent.action
+        ) {
             context.toastDebug("Alarm Reboot")
             startRescheduleAlarmsService(context)
 
@@ -154,7 +157,11 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
     }
 
     private fun startRescheduleAlarmsService(context: Context) {
-        val intentService = Intent(context, RescheduleAlarmsService::class.java)
-        context.startService(intentService)
+        val service = Intent(context, RescheduleAlarmsService::class.java)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(service)
+        } else {
+            context.startService(service)
+        }
     }
 }

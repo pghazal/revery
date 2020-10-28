@@ -4,6 +4,7 @@
     <string name="alarm_text">alarms</string>
 
     <!-- NOTIFICATION -->
+    <string name="rescheduling_in_progress">Rescheduling alarms in progress</string>
     <string name="go_to_settings">Open settings</string>
     <string name="notification_disabled">Notifications disabled</string>
     <string name="notification_disabled_message">It seems that Revery notifications are disabled. In order for alarms to go off properly, notifications have to be enabled.</string>
