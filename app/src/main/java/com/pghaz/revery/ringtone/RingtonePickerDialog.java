@@ -182,7 +182,7 @@ public final class RingtonePickerDialog extends DialogFragment implements Ringto
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        //No call for super(). Bug on API Level > 11.
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -318,6 +318,13 @@ public final class RingtonePickerDialog extends DialogFragment implements Ringto
         return new AlertDialog.Builder(mContext)
                 .setView(customView)
                 .create();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        mRingTonePlayer.pause();
     }
 
     /**

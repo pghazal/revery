@@ -16,9 +16,10 @@ package com.pghaz.revery.ringtone;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import android.util.Log;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -73,6 +74,12 @@ final class RingTonePlayer implements Closeable {
         mMediaPlayer.setDataSource(mContext, uri);
         mMediaPlayer.prepare();
         mMediaPlayer.start();
+    }
+
+    void pause() {
+        if (mMediaPlayer.isPlaying()) {
+            mMediaPlayer.pause();
+        }
     }
 
     /**
