@@ -9,7 +9,7 @@
     android:orientation="vertical">
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/deviceRingtoneButton"
+        android:id="@+id/ringtonePickerButton"
         style="@style/ReveryExtendedFloatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -17,6 +17,17 @@
         android:text="@string/select_ringtone_from_device"
         android:visibility="invisible"
         app:icon="@drawable/ic_phone_android"
+        tools:visibility="visible" />
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/musicPickerButton"
+        style="@style/ReveryExtendedFloatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/half_base_margin"
+        android:text="@string/select_music_from_device"
+        android:visibility="invisible"
+        app:icon="@drawable/ic_music_note"
         tools:visibility="visible" />
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton

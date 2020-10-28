@@ -1,5 +1,6 @@
 package com.pghaz.revery.adapter.alarm
 
+import android.net.Uri
 import android.text.TextUtils
 import android.view.View
 import android.widget.CheckedTextView
@@ -8,9 +9,10 @@ import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
 import com.pghaz.revery.R
 import com.pghaz.revery.adapter.base.BaseViewHolder
-import com.pghaz.revery.model.app.alarm.Alarm
-import com.pghaz.revery.model.app.BaseModel
+import com.pghaz.revery.alarm.AudioPickerHelper
 import com.pghaz.revery.image.ImageLoader
+import com.pghaz.revery.model.app.BaseModel
+import com.pghaz.revery.model.app.alarm.Alarm
 import com.pghaz.revery.util.DateTimeUtils
 import java.util.*
 
@@ -137,7 +139,18 @@ open class AlarmViewHolder(view: View) : BaseViewHolder(view) {
         amPmTextView.isEnabled = alarm.enabled
         labelTextView.isEnabled = alarm.enabled
 
-        ImageLoader.get().load(alarm.metadata.imageUrl)
+        val imageUri = Uri.parse(alarm.metadata.imageUrl)
+        val imageUrl = if (AudioPickerHelper.isInternalFile(imageUri)) {
+            if (AudioPickerHelper.isCoverArtExists(imageUri)) {
+                alarm.metadata.imageUrl
+            } else {
+                AudioPickerHelper.getCoverArtFilePath(imageView.context, Uri.parse(alarm.metadata.uri))
+            }
+        } else {
+            alarm.metadata.imageUrl
+        }
+
+        ImageLoader.get().load(imageUrl)
             .placeholder(R.drawable.selector_alarm_image_background_color)
             .into(imageView)
 

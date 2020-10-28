@@ -49,6 +49,12 @@
     <string name="permissions">Storage access</string>
     <string name="permissions_message">In order to select a file from your device, you need to give storage permission to the application.</string>
 
+    <string name="ringtone_picker_default_title">Select ringtone</string>
+    <string name="title_default_list_item">Default</string>
+    <string name="title_silent_list_item">Silent</string>
+    <string name="select">Select</string>
+    <string name="close">Cancel</string>
+
     <!-- MENU -->
     <string name="menu_disable_all_alarms">Turn all alarms off</string>
     <string name="menu_settings">Settings</string>
@@ -71,7 +77,8 @@
     <string name="alarm_snooze">snooze</string>
     <string name="spotify">Spotify</string>
     <string name="by_default">Default</string>
-    <string name="select_ringtone_from_device">My sounds</string>
+    <string name="select_music_from_device">My sounds</string>
+    <string name="select_ringtone_from_device">Ringtone</string>
     <string name="everyday">everyday</string>
     <string name="weekend">weekend</string>
     <string name="week">week</string>

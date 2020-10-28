@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/half_base_margin"
+    android:paddingBottom="@dimen/third_base_margin">
+
+    <TextView
+        android:id="@+id/dialogTitleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="@dimen/half_base_margin"
+        android:layout_marginEnd="@dimen/half_base_margin"
+        android:layout_marginBottom="@dimen/half_base_margin"
+        android:textSize="20sp" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="60dp"
+        android:layout_height="80dp"
+        android:layout_centerInParent="true"
+        android:visibility="visible" />
+
+    <!--1. Ringtone list-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dialogTitleTextView"
+        android:orientation="vertical">
+
+        <ListView
+            android:id="@+id/ringtone_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/positiveButton"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/positiveButton"
+            style="@style/ReveryButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="end"
+            android:layout_marginStart="@dimen/half_base_margin"
+            android:layout_marginTop="@dimen/third_base_margin"
+            android:layout_marginEnd="@dimen/half_base_margin"
+            android:paddingStart="@dimen/half_base_margin"
+            android:paddingEnd="@dimen/half_base_margin"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/negativeButton"
+            style="@style/ReveryButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="end"
+            android:layout_toStartOf="@+id/positiveButton"
+            android:paddingStart="@dimen/half_base_margin"
+            android:paddingEnd="@dimen/half_base_margin"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white" />
+    </RelativeLayout>
+</RelativeLayout>
