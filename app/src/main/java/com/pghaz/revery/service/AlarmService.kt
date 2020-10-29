@@ -39,11 +39,20 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
     companion object {
         const val ACTION_ALARM_SERVICE_SHOULD_STOP =
             "com.pghaz.revery.ACTION_ALARM_SERVICE_SHOULD_STOP"
+        const val ACTION_ALARM_SERVICE_SNOOZE =
+            "com.pghaz.revery.ACTION_ALARM_SERVICE_SNOOZE"
 
         fun getServiceShouldStopIntent(context: Context): Intent {
             val intent =
                 Intent(context.applicationContext, AlarmServiceBroadcastReceiver::class.java)
             intent.action = ACTION_ALARM_SERVICE_SHOULD_STOP
+            return intent
+        }
+
+        fun getServiceSnoozeIntent(context: Context): Intent {
+            val intent =
+                Intent(context.applicationContext, AlarmServiceBroadcastReceiver::class.java)
+            intent.action = ACTION_ALARM_SERVICE_SNOOZE
             return intent
         }
 
@@ -68,10 +77,13 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
                 if (ACTION_ALARM_SERVICE_SHOULD_STOP == it.action) {
                     logError(ACTION_ALARM_SERVICE_SHOULD_STOP)
                     pausePlayerAndVibrator(false, alarm.metadata)
-                    player.release()
-
-                    stopSelf() // will call onDestroy()
+                } else if (ACTION_ALARM_SERVICE_SNOOZE == it.action) {
+                    pausePlayerAndVibrator(true, alarm.metadata)
                 }
+
+                player.release()
+
+                stopSelf() // will call onDestroy()
             }
         }
     }
@@ -101,6 +113,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
     private fun registerToLocalAlarmBroadcastReceiver() {
         val intentFilter = IntentFilter()
         intentFilter.addAction(ACTION_ALARM_SERVICE_SHOULD_STOP)
+        intentFilter.addAction(ACTION_ALARM_SERVICE_SNOOZE)
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, intentFilter)
     }
 

@@ -90,15 +90,12 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
             val snoozeMinutes = SettingsHandler.getSnoozeDuration(context)
             AlarmHandler.snooze(context, alarm, snoozeMinutes)
 
-            initiateServiceShutdown(context)
+            broadcastFinishRingActivity(context)
+            broadcastServiceSnooze(context)
         } else if (ACTION_ALARM_STOP == intent.action) {
-            initiateServiceShutdown(context)
+            broadcastFinishRingActivity(context)
+            broadcastServiceShouldStop(context)
         }
-    }
-
-    private fun initiateServiceShutdown(context: Context) {
-        broadcastFinishRingActivity(context)
-        broadcastServiceShouldStop(context)
     }
 
     private fun broadcastFinishRingActivity(context: Context) {
@@ -108,6 +105,11 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
 
     private fun broadcastServiceShouldStop(context: Context) {
         val serviceShouldStopIntent = AlarmService.getServiceShouldStopIntent(context)
+        LocalBroadcastManager.getInstance(context).sendBroadcast(serviceShouldStopIntent)
+    }
+
+    private fun broadcastServiceSnooze(context: Context) {
+        val serviceShouldStopIntent = AlarmService.getServiceSnoozeIntent(context)
         LocalBroadcastManager.getInstance(context).sendBroadcast(serviceShouldStopIntent)
     }
 
