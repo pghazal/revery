@@ -48,8 +48,9 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
         }
 
         var isRunning: Boolean = false // this is ugly: find a way to check if service is alive
-        lateinit var alarm: Alarm
     }
+
+    private lateinit var alarm: Alarm
 
     private lateinit var alarmRepository: AlarmRepository
     private var alarmLiveData: LiveData<Alarm>? = null
@@ -78,8 +79,12 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
     private val mBinder = AlarmServiceBinder()
 
     inner class AlarmServiceBinder : Binder() {
-        fun getService(): AbstractPlayer? {
+        fun getPlayer(): AbstractPlayer? {
             return player
+        }
+
+        fun getAlarm(): Alarm {
+            return alarm
         }
     }
 

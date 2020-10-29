@@ -10,10 +10,10 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.pghaz.revery.BaseActivity
 import com.pghaz.revery.R
 import com.pghaz.revery.broadcastreceiver.AlarmBroadcastReceiver
-import com.pghaz.revery.model.app.alarm.Alarm
-import com.pghaz.revery.service.AlarmService
 import com.pghaz.revery.extension.logError
+import com.pghaz.revery.model.app.alarm.Alarm
 import com.pghaz.revery.player.AbstractPlayer
+import com.pghaz.revery.service.AlarmService
 import com.pghaz.revery.settings.SettingsHandler
 import com.pghaz.revery.util.IntentUtils
 import kotlinx.android.synthetic.main.activity_ring.*
@@ -36,15 +36,18 @@ class RingActivity : BaseActivity() {
 
     private var player: AbstractPlayer? = null
 
+    private var mAlarmServiceBound: Boolean = false
     private lateinit var alarm: Alarm
 
     private val mServiceConnection: ServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
             logError("onServiceConnected")
-            player = (service as AlarmService.AlarmServiceBinder).getService()
+            mAlarmServiceBound = true
+            player = (service as AlarmService.AlarmServiceBinder).getPlayer()
         }
 
         override fun onServiceDisconnected(name: ComponentName) {
+            mAlarmServiceBound = false
             player = null
         }
     }
@@ -62,10 +65,6 @@ class RingActivity : BaseActivity() {
     }
 
     private var receiver = FinishRingActivityBroadcastReceiver()
-
-    private fun isServiceBound(): Boolean {
-        return player != null
-    }
 
     override fun getLayoutResId(): Int {
         return R.layout.activity_ring
@@ -95,7 +94,10 @@ class RingActivity : BaseActivity() {
     }
 
     private fun unbindFromAlarmService() {
-        unbindService(mServiceConnection)
+        if (mAlarmServiceBound) {
+            unbindService(mServiceConnection)
+            mAlarmServiceBound = false
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

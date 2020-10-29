@@ -1,7 +1,11 @@
 package com.pghaz.revery
 
+import android.app.Activity
+import android.content.ComponentName
 import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Bundle
+import android.os.IBinder
 import android.view.LayoutInflater
 import android.view.MenuItem
 import androidx.appcompat.app.AlertDialog
@@ -11,8 +15,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.pghaz.revery.alarm.ListAlarmsFragment
 import com.pghaz.revery.alarm.RingActivity
 import com.pghaz.revery.application.ReveryApplication
+import com.pghaz.revery.extension.logError
+import com.pghaz.revery.model.app.alarm.Alarm
 import com.pghaz.revery.service.AlarmService
 import com.pghaz.revery.sleep.SleepFragment
+import com.pghaz.revery.util.Arguments
 import com.pghaz.revery.util.IntentUtils
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -20,6 +27,9 @@ import kotlinx.android.synthetic.main.activity_main.*
  * MainActivity has launchMode = "singleTask" in Manifest
  */
 class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
+
+    private var mAlarmServiceBound: Boolean = false
+    private lateinit var alarm: Alarm
 
     override fun getLayoutResId(): Int {
         return R.layout.activity_main
@@ -35,7 +45,7 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        startRingActivityForResultIfAlarmFired()
+        bindToAlarmServiceIfAlarmFired()
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -44,21 +54,7 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
         // If the MainActivity is active (meaning instanciated background or foreground)
         // we receive the alarm intent in onNewIntent()
         // because launchMode in Manifest is "singleTask"
-        startRingActivityForResultIfAlarmFired()
-    }
-
-    private fun startRingActivityForResultIfAlarmFired() {
-        // If alarm is ringing then show RingActivity so that user can stop it
-        if (AlarmService.isRunning) {
-            val ringIntent = Intent(this, RingActivity::class.java)
-            ringIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-            ringIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-            ringIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-
-            IntentUtils.safePutAlarmIntoIntent(ringIntent, AlarmService.alarm)
-
-            startActivityForResult(ringIntent, RingActivity.REQUEST_CODE_ALARM_RINGING)
-        }
+        bindToAlarmServiceIfAlarmFired()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -66,7 +62,8 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
         if (requestCode == RingActivity.REQUEST_CODE_ALARM_RINGING) {
             when (resultCode) {
                 RESULT_OK -> {
-                    // alarm has been stopped successfully: nothing else to do here
+                    // alarm has been stopped successfully: we unbind from service
+                    unbindFromAlarmService()
                 }
 
                 RESULT_CANCELED -> {
@@ -79,7 +76,19 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
     }
 
     override fun parseArguments(args: Bundle?) {
-        // do nothin
+        args?.let {
+            val nullableAlarm = it.getParcelable(Arguments.ARGS_ALARM) as Alarm?
+            nullableAlarm?.let { nonNullAlarm ->
+                alarm = nonNullAlarm
+            }
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        if (this::alarm.isInitialized) {
+            outState.putParcelable(Arguments.ARGS_ALARM, alarm)
+        }
+        super.onSaveInstanceState(outState)
     }
 
     override fun configureViews(savedInstanceState: Bundle?) {
@@ -163,5 +172,55 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
             sleepFragment = SleepFragment.newInstance()
         }
         selectNavigationItem(sleepFragment, SleepFragment.TAG)
+    }
+
+    private val mServiceConnection: ServiceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName, service: IBinder) {
+            logError("onServiceConnected")
+            mAlarmServiceBound = true
+
+            alarm = (service as AlarmService.AlarmServiceBinder).getAlarm()
+
+            startRingActivityForResult(alarm)
+        }
+
+        override fun onServiceDisconnected(name: ComponentName) {
+            mAlarmServiceBound = false
+        }
+    }
+
+    private fun bindToAlarmServiceIfAlarmFired() {
+        // If alarm is ringing then bind to AlarmService to get Alarm
+        if (AlarmService.isRunning) {
+            if (!mAlarmServiceBound) {
+                val service = Intent(applicationContext, AlarmService::class.java)
+                bindService(service, mServiceConnection, Activity.BIND_AUTO_CREATE)
+            } else {
+                startRingActivityForResult(alarm)
+            }
+        }
+    }
+
+    private fun unbindFromAlarmService() {
+        if (mAlarmServiceBound) {
+            mAlarmServiceBound = false
+            unbindService(mServiceConnection)
+        }
+    }
+
+    private fun startRingActivityForResult(alarm: Alarm) {
+        val ringIntent = Intent(this@MainActivity, RingActivity::class.java)
+        ringIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+        ringIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        ringIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+
+        IntentUtils.safePutAlarmIntoIntent(ringIntent, alarm)
+
+        startActivityForResult(ringIntent, RingActivity.REQUEST_CODE_ALARM_RINGING)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unbindFromAlarmService()
     }
 }
