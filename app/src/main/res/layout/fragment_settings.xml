@@ -75,6 +75,7 @@
                 android:justificationMode="inter_word"
                 android:text="@string/alarm_should_use_device_volume_explanation"
                 android:textAllCaps="false"
+                android:textSize="10.5sp"
                 android:textStyle="normal" />
 
             <Button
