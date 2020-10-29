@@ -18,6 +18,7 @@ import com.pghaz.revery.application.ReveryApplication
 import com.pghaz.revery.extension.logError
 import com.pghaz.revery.model.app.alarm.Alarm
 import com.pghaz.revery.service.AlarmService
+import com.pghaz.revery.service.RescheduleAlarmsService
 import com.pghaz.revery.sleep.SleepFragment
 import com.pghaz.revery.util.Arguments
 import com.pghaz.revery.util.IntentUtils
@@ -46,6 +47,8 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         bindToAlarmServiceIfAlarmFired()
+
+        RescheduleAlarmsService.rescheduleEnabledAlarms(application, this)
     }
 
     override fun onNewIntent(intent: Intent?) {

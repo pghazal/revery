@@ -1,9 +1,11 @@
 package com.pghaz.revery.service
 
+import android.app.Application
 import android.app.Notification
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleService
 import com.pghaz.revery.R
 import com.pghaz.revery.alarm.AlarmHandler
@@ -13,6 +15,23 @@ import com.pghaz.revery.repository.AlarmRepository
 class RescheduleAlarmsService : LifecycleService() {
 
     private lateinit var alarmRepository: AlarmRepository
+
+    companion object {
+        fun rescheduleEnabledAlarms(application: Application, lifecycleOwner: LifecycleOwner) {
+            val alarmRepository = AlarmRepository(application)
+
+            val liveData = alarmRepository.getAlarmsLiveData()
+            liveData.observe(lifecycleOwner, { alarms ->
+                alarms.forEach {
+                    if (it.enabled) {
+                        AlarmHandler.cancelAlarm(application, it)
+                        AlarmHandler.scheduleAlarm(application, it)
+                    }
+                }
+                liveData.removeObservers(lifecycleOwner)
+            })
+        }
+    }
 
     override fun onCreate() {
         super.onCreate()
