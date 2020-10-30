@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
 import com.pghaz.revery.R
 import com.pghaz.revery.adapter.base.BaseViewHolder
-import com.pghaz.revery.alarm.AudioPickerHelper
+import com.pghaz.revery.ringtone.AudioPickerHelper
 import com.pghaz.revery.image.ImageLoader
 import com.pghaz.revery.model.app.BaseModel
 import com.pghaz.revery.model.app.alarm.Alarm

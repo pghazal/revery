@@ -35,6 +35,7 @@ import com.pghaz.revery.model.app.spotify.TrackWrapper
 import com.pghaz.revery.permission.PermissionDialogFactory
 import com.pghaz.revery.permission.PermissionManager
 import com.pghaz.revery.permission.ReveryPermission
+import com.pghaz.revery.ringtone.AudioPickerHelper
 import com.pghaz.revery.settings.SettingsFragment
 import com.pghaz.revery.spotify.SpotifyActivity
 import com.pghaz.revery.util.Arguments
@@ -431,10 +432,14 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
             it.metadata = AlarmMetadata().apply {
                 val uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
 
-                this.name = getString(R.string.by_default)
+                val audioMetadata: AudioPickerHelper.AudioMetadata =
+                    AudioPickerHelper.getAudioMetadata(context, uri)
+
                 this.type = MediaType.DEFAULT
                 this.uri = uri.toString()
-                this.imageUrl = AudioPickerHelper.getCoverArtFilePath(context, uri)
+                this.name = audioMetadata.title
+                this.description = audioMetadata.artistName
+                this.imageUrl = audioMetadata.imageUrl
             }
 
             createEditAlarmViewModel.alarmMetadataLiveData.value = it
@@ -593,10 +598,14 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
                 it.metadata = AlarmMetadata().apply {
                     val uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
 
-                    this.name = getString(R.string.by_default)
+                    val audioMetadata: AudioPickerHelper.AudioMetadata =
+                        AudioPickerHelper.getAudioMetadata(context, uri)
+
                     this.type = MediaType.DEFAULT
                     this.uri = uri.toString()
-                    this.imageUrl = AudioPickerHelper.getCoverArtFilePath(context, uri)
+                    this.name = audioMetadata.title
+                    this.description = audioMetadata.artistName
+                    this.imageUrl = audioMetadata.imageUrl
                 }
             }
 
@@ -723,14 +732,17 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         if (ringtoneUri != null) {
             AudioPickerHelper.grantPermissionForUri(context, data)
 
+            val audioMetadata: AudioPickerHelper.AudioMetadata =
+                AudioPickerHelper.getAudioMetadata(context, ringtoneUri)
+
             alarm?.let {
                 it.metadata = AlarmMetadata().apply {
                     this.uri = ringtoneUri.toString()
                     this.href = null
                     this.type = MediaType.DEFAULT
-                    this.name = AudioPickerHelper.getTitle(context, ringtoneUri)
-                    this.description = null
-                    this.imageUrl = AudioPickerHelper.getCoverArtFilePath(context, ringtoneUri)
+                    this.name = audioMetadata.title
+                    this.description = audioMetadata.artistName
+                    this.imageUrl = audioMetadata.imageUrl
                 }
 
                 createEditAlarmViewModel.alarmMetadataLiveData.value = it

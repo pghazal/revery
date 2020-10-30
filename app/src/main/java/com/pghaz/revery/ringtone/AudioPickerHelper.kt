@@ -1,22 +1,28 @@
-package com.pghaz.revery.alarm
+package com.pghaz.revery.ringtone
 
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.media.RingtoneManager
 import android.net.Uri
+import android.provider.MediaStore
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.pghaz.revery.R
-import com.pghaz.revery.ringtone.RingtonePickerDialog
-import com.pghaz.revery.ringtone.RingtonePickerListener
 import java.io.File
 import java.io.FileOutputStream
 
 object AudioPickerHelper {
+
+    class AudioMetadata {
+        var title: String? = null
+        var artistName: String? = null
+        var imageUrl: String? = null
+    }
 
     fun showRingtonePicker(
         context: Context?,
@@ -101,15 +107,58 @@ object AudioPickerHelper {
         }
     }
 
-    fun getTitle(context: Context?, uri: Uri?): String? {
+    fun getAudioMetadata(context: Context?, uri: Uri): AudioMetadata {
+        val contentResolver = context?.contentResolver
+
+        val cursor: Cursor? = contentResolver?.query(
+            uri, null, null, null, null, null
+        )
+
         val mediaMetadataRetriever = MediaMetadataRetriever()
         mediaMetadataRetriever.setDataSource(context, uri)
-        return if (mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE) != null) {
-            mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)
-        } else {
-            RingtoneManager.getRingtone(context, uri)?.getTitle(context)
-                ?.substringBeforeLast(".")
+
+        val audioMetadata = AudioMetadata()
+
+        cursor?.use {
+            if (it.moveToFirst()) {
+                audioMetadata.title =
+                    when {
+                        it.columnNames.contains(MediaStore.Audio.Media.TITLE) &&
+                                it.getString(it.getColumnIndex(MediaStore.Audio.Media.TITLE)) != null -> {
+                            it.getString(it.getColumnIndex(MediaStore.Audio.Media.TITLE))
+                        }
+                        it.columnNames.contains(MediaStore.Audio.Media.DISPLAY_NAME) &&
+                                it.getString(it.getColumnIndex(MediaStore.Audio.Media.DISPLAY_NAME)) != null -> {
+                            it.getString(it.getColumnIndex(MediaStore.Audio.Media.DISPLAY_NAME))
+                        }
+                        mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE) != null -> {
+                            mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)
+                        }
+                        else -> {
+                            RingtoneManager.getRingtone(context, uri)?.getTitle(context)
+                                ?.substringBeforeLast(".")
+                        }
+                    }
+
+                audioMetadata.artistName =
+                    when {
+                        it.columnNames.contains(MediaStore.Audio.Media.ARTIST) &&
+                                it.getString(it.getColumnIndex(MediaStore.Audio.Media.ARTIST)) != null -> {
+                            it.getString(it.getColumnIndex(MediaStore.Audio.Media.ARTIST))
+                        }
+                        mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST) != null -> {
+                            mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST)
+                        }
+                        else -> null
+                    }
+            }
+
+            it.close()
         }
+
+        audioMetadata.imageUrl = getCoverArtFilePath(context, uri)
+
+        return audioMetadata
     }
 
     fun getCoverArtFilePath(context: Context?, uri: Uri?): String {
