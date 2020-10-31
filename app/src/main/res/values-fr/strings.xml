@@ -4,23 +4,30 @@
     <string name="sleep_text">coucher</string>
     <string name="alarm_text">réveil</string>
 
+    <string name="sleep_fragment">Sleep</string>
+
     <!-- NOTIFICATION -->
     <string name="rescheduling_in_progress">Reprogrammation des alarmes en cours</string>
-    <string name="go_to_settings">Aller aux paramètres</string>
+    <string name="go_to_settings">Ouvrir les paramètres</string>
     <string name="notification_disabled">Notifications désactivées</string>
     <string name="notification_disabled_message">Il semble que les notifications Revery soient désactivées. Pour que les alarmes se déclenchent correctement, les notifications doivent être activées.</string>
 
-    <string name="sleep_fragment">Sleep</string>
-
+    <!-- SPOTIFY NOT INSTALLED -->
     <string name="spotify_not_installed">Spotify non installé</string>
     <string name="spotify_not_installed_message">Il semble que Spotify ne soit pas installé sur votre téléphone. Pour pouvoir jouer du contenu Spotify, ce dernier doit être installé.</string>
     <string name="spotify_install">Installer Spotify</string>
 
+    <!-- RINGTONE PICKER -->
     <string name="ringtone_picker_default_title">Sélectionner une sonnerie</string>
     <string name="title_default_list_item">Défaut</string>
     <string name="title_silent_list_item">Silencieux</string>
     <string name="select">Valider</string>
     <string name="close">Fermer</string>
+
+    <!-- BATTERY OPTIMIZATION -->
+    <string name="do_not_show_again">Ne plus afficher</string>
+    <string name="protected_apps">Applications Prioritaires</string>
+    <string name="protected_apps_message">nécessite d\'être activée dans les \'Applications Prioritaires\' pour fonctionner correctement.\n\nCochez \'Ne plus afficher\' si l\'application est déjà activée.</string>
 
     <!-- DAYS -->
     <string name="monday_long">lundi</string>
@@ -51,6 +58,7 @@
     <string name="alarm_should_use_device_volume">Utiliser le volume du téléphone</string>
     <string name="alarm_should_use_device_volume_explanation"><b>ATTENTION:</b> si <b>activé</b> et si vous choisissez une sonnerie ou bien un de vos sons pour votre alarme, l\'application utilisera le volume du <b>flux d\'alarme</b>. Sinon, l\'application utilisera le volume du <b>flux de musique</b> (par exemple: lorsque l\'alarme joue une playlist Spotify). Si <b>désactivé</b>, l\'application utilisera le volume <b>maximum</b> du flux correspondant.</string>
 
+    <!-- PERMISSIONS -->
     <string name="permissions">Accès au stockage</string>
     <string name="permissions_message">Afin de sélectionner un fichier dans votre téléphone, vous devez autorisé l\'application à accéder à votre espace de stockage.</string>
 

@@ -3,17 +3,30 @@
     <string name="sleep_text">sleep</string>
     <string name="alarm_text">alarms</string>
 
+    <string name="sleep_fragment">Sleep</string>
+
     <!-- NOTIFICATION -->
     <string name="rescheduling_in_progress">Rescheduling alarms in progress</string>
-    <string name="go_to_settings">Open settings</string>
+    <string name="go_to_settings">Go to settings</string>
     <string name="notification_disabled">Notifications disabled</string>
     <string name="notification_disabled_message">It seems that Revery notifications are disabled. In order for alarms to go off properly, notifications have to be enabled.</string>
 
-    <string name="sleep_fragment">Sleep</string>
-
+    <!-- SPOTIFY NOT INSTALLED -->
     <string name="spotify_not_installed">Spotify not found</string>
     <string name="spotify_not_installed_message">It seems that Spotify is not installed on your device. In order to play Spotify\'s content you need to install Spotify.</string>
     <string name="spotify_install">Install Spotify</string>
+
+    <!-- RINGTONE PICKER -->
+    <string name="ringtone_picker_default_title">Select ringtone</string>
+    <string name="title_default_list_item">Default</string>
+    <string name="title_silent_list_item">Silent</string>
+    <string name="select">Select</string>
+    <string name="close">Cancel</string>
+
+    <!-- BATTERY OPTIMIZATION -->
+    <string name="do_not_show_again">Do not show again</string>
+    <string name="protected_apps">Protected Apps</string>
+    <string name="protected_apps_message">requires to be enabled in \'Protected Apps\' to function properly.\n\nCheck \'Do not show again\' if application is already enabled.</string>
 
     <!-- DAYS -->
     <string name="monday_long">monday</string>
@@ -47,14 +60,9 @@
     <string name="alarm_should_use_device_volume">Use device\'s volume</string>
     <string name="alarm_should_use_device_volume_explanation"><b>WARNING:</b> if <b>enabled</b> and if you choose a default ringtone or one of your own sounds for your alarm, the application will use the <b>alarm stream</b> volume. Otherwise, the application will use the <b>music stream</b> volume (e.g: when alarm plays a Spotify playlist). If <b>disabled</b>, the app will use the <b>maximum</b> volume of the according stream volume.</string>
 
+    <!-- PERMISSIONS -->
     <string name="permissions">Storage access</string>
     <string name="permissions_message">In order to select a file from your device, you need to give storage permission to the application.</string>
-
-    <string name="ringtone_picker_default_title">Select ringtone</string>
-    <string name="title_default_list_item">Default</string>
-    <string name="title_silent_list_item">Silent</string>
-    <string name="select">Select</string>
-    <string name="close">Cancel</string>
 
     <!-- MENU -->
     <string name="menu_disable_all_alarms">Turn all alarms off</string>

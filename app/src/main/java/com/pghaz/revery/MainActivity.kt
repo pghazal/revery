@@ -15,6 +15,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.pghaz.revery.alarm.ListAlarmsFragment
 import com.pghaz.revery.alarm.RingActivity
 import com.pghaz.revery.application.ReveryApplication
+import com.pghaz.revery.battery.PowerManagerHandler
 import com.pghaz.revery.extension.logError
 import com.pghaz.revery.model.app.alarm.Alarm
 import com.pghaz.revery.service.AlarmService
@@ -49,6 +50,8 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
         bindToAlarmServiceIfAlarmFired()
 
         RescheduleAlarmsService.rescheduleEnabledAlarms(application, this)
+
+        PowerManagerHandler.startPowerSaverIntent(this)
     }
 
     override fun onNewIntent(intent: Intent?) {
