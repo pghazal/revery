@@ -49,6 +49,7 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
         super.onCreate(savedInstanceState)
         bindToAlarmServiceIfAlarmFired()
 
+        RescheduleAlarmsService.clearNotification(this)
         RescheduleAlarmsService.rescheduleEnabledAlarms(application, this)
 
         PowerManagerHandler.showPowerSaverDialogIfNeeded(

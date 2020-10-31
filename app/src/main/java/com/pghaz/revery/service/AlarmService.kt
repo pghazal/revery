@@ -42,6 +42,8 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
         const val ACTION_ALARM_SERVICE_SNOOZE =
             "com.pghaz.revery.ACTION_ALARM_SERVICE_SNOOZE"
 
+        private const val NOTIFICATION_ID = 1
+
         fun getServiceShouldStopIntent(context: Context): Intent {
             val intent =
                 Intent(context.applicationContext, AlarmServiceBroadcastReceiver::class.java)
@@ -83,6 +85,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
 
                 player.release()
 
+                stopForeground(true)
                 stopSelf() // will call onDestroy()
             }
         }
@@ -166,7 +169,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
                 onPlayerError(PlayerError.Initialization(exception))
             }
 
-            startForeground(1, notification)
+            startForeground(NOTIFICATION_ID, notification)
         }
 
         return START_STICKY

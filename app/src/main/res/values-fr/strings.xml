@@ -7,7 +7,7 @@
     <string name="sleep_fragment">Sleep</string>
 
     <!-- NOTIFICATION -->
-    <string name="rescheduling_in_progress">Reprogrammation des alarmes en cours</string>
+    <string name="rescheduling_alarms_after_reboot">Les alarmes ont été reprogrammées après le redémarrage du téléphone</string>
     <string name="go_to_settings">Ouvrir les paramètres</string>
     <string name="notification_disabled">Notifications désactivées</string>
     <string name="notification_disabled_message">Il semble que les notifications Revery soient désactivées. Pour que les alarmes se déclenchent correctement, les notifications doivent être activées.</string>

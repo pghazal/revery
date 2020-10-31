@@ -6,7 +6,7 @@
     <string name="sleep_fragment">Sleep</string>
 
     <!-- NOTIFICATION -->
-    <string name="rescheduling_in_progress">Rescheduling alarms in progress</string>
+    <string name="rescheduling_alarms_after_reboot">Alarms have been rescheduled after phone reboot</string>
     <string name="go_to_settings">Go to settings</string>
     <string name="notification_disabled">Notifications disabled</string>
     <string name="notification_disabled_message">It seems that Revery notifications are disabled. In order for alarms to go off properly, notifications have to be enabled.</string>
