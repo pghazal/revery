@@ -10,6 +10,7 @@ import androidx.appcompat.widget.AppCompatButton
 import com.pghaz.revery.BaseBottomSheetDialogFragment
 import com.pghaz.revery.BuildConfig
 import com.pghaz.revery.R
+import com.pghaz.revery.battery.PowerManagerHandler
 import com.pghaz.revery.util.Arguments
 import kotlinx.android.synthetic.main.fragment_settings.*
 
@@ -112,6 +113,19 @@ class SettingsFragment : BaseBottomSheetDialogFragment() {
             SettingsHandler.setShouldUseDeviceVolume(buttonView.context, isChecked)
         }
 
+        // Battery Optimization
+        batteryOptimizationButton.setOnClickListener {
+            activity?.let {
+                PowerManagerHandler.showPowerSaverDialogIfNeeded(
+                    it,
+                    PowerManagerHandler.REQUEST_CODE_POWER_MANAGER_PROTECTED_APPS,
+                    isFirstTime = true,
+                    openingFromSettings = true
+                )
+            }
+        }
+
+        // About
         aboutButton.setOnClickListener {
             showNotificationDisabledDialog()
         }

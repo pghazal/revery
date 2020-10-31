@@ -27,7 +27,6 @@
             android:padding="@dimen/half_base_margin">
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/snoozeLabel"
                 style="@style/ReveryLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -42,7 +41,6 @@
                 android:theme="@style/ReverySpinnerTheme" />
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/fadeInLabel"
                 style="@style/ReveryLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -77,6 +75,21 @@
                 android:textAllCaps="false"
                 android:textSize="10.5sp"
                 android:textStyle="normal" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                style="@style/ReveryLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/base_margin"
+                android:layout_marginBottom="@dimen/third_base_margin"
+                android:text="@string/battery_optimization" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/batteryOptimizationButton"
+                style="@style/ReveryButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/battery_optimization_configure" />
 
             <Button
                 android:id="@+id/aboutButton"

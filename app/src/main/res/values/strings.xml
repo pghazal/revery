@@ -21,12 +21,18 @@
     <string name="title_default_list_item">Default</string>
     <string name="title_silent_list_item">Silent</string>
     <string name="select">Select</string>
-    <string name="close">Cancel</string>
+    <string name="close">Dismiss</string>
 
     <!-- BATTERY OPTIMIZATION -->
+    <string name="battery_optimization">Battery optimization</string>
+    <string name="battery_optimization_configure">Configure</string>
+    <string name="battery_optimization_title">Optimization</string>
+    <string name="battery_optimization_message">Starting from Android 6.0, Android introduces Doze which reduces battery consumption when the device is unused for a long period of time.\nTo make sure %1$s functions properly, it requires to be configured:</string>
+    <string name="battery_optimization_requirement">Don\'t optimize battery for %1$s</string>
+    <string name="battery_auto_start_requirement">Enable Auto Start for %1$s</string>
+    <string name="battery_auto_start_requirement_error">(the status might be possibly wrong)</string>
+    <string name="battery_optimization_reshow_dialog">You will be able to reshow this dialog from %1$s settings if necessary.</string>
     <string name="do_not_show_again">Do not show again</string>
-    <string name="protected_apps">Protected Apps</string>
-    <string name="protected_apps_message">requires to be enabled in \'Protected Apps\' to function properly.\n\nCheck \'Do not show again\' if application is already enabled.</string>
 
     <!-- DAYS -->
     <string name="monday_long">monday</string>
