@@ -47,6 +47,11 @@ android {
             buildConfigField "String", "SPOTIFY_REDIRECT_URI", "\"com.pghaz.revery.debug://connect\""
         }
 
+        beta {
+            initWith debug
+            debuggable false
+        }
+
         release {
             // Make sure this is consistent with the redirect URI scheme in release/strings.xml
             manifestPlaceholders = [
