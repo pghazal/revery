@@ -59,6 +59,7 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
         if (Intent.ACTION_BOOT_COMPLETED == intent.action ||
             "android.intent.action.QUICKBOOT_POWERON" == intent.action ||
             "com.htc.intent.action.QUICKBOOT_POWERON" == intent.action ||
+            Intent.ACTION_PACKAGE_REPLACED == intent.action ||
             Intent.ACTION_TIME_CHANGED == intent.action ||
             Intent.ACTION_TIMEZONE_CHANGED == intent.action ||
             Intent.ACTION_DATE_CHANGED == intent.action
