@@ -2,11 +2,11 @@ package com.pghaz.revery.service
 
 import android.app.Application
 import android.app.Notification
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleService
@@ -15,6 +15,7 @@ import com.pghaz.revery.R
 import com.pghaz.revery.alarm.AlarmHandler
 import com.pghaz.revery.application.ReveryApplication
 import com.pghaz.revery.repository.AlarmRepository
+import com.pghaz.revery.util.Arguments
 
 class RescheduleAlarmsService : LifecycleService() {
 
@@ -25,8 +26,7 @@ class RescheduleAlarmsService : LifecycleService() {
         const val NOTIFICATION_ID = 2
 
         fun clearNotification(context: Context) {
-            val notificationManager =
-                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val notificationManager = NotificationManagerCompat.from(context)
             notificationManager.cancel(NOTIFICATION_ID)
         }
 
@@ -43,6 +43,17 @@ class RescheduleAlarmsService : LifecycleService() {
                 }
                 liveData.removeObservers(lifecycleOwner)
             })
+        }
+
+        fun isRebootAction(action: String?): Boolean {
+            if (Intent.ACTION_BOOT_COMPLETED == action ||
+                "android.intent.action.QUICKBOOT_POWERON" == action ||
+                "com.htc.intent.action.QUICKBOOT_POWERON" == action
+            ) {
+                return true
+            }
+
+            return false
         }
     }
 
@@ -65,8 +76,13 @@ class RescheduleAlarmsService : LifecycleService() {
                 }
             }
 
-            if (hasEnabledAlarms) {
-                stopForeground(false)
+            val scheduledBy = intent?.getStringExtra(Arguments.ARGS_RESCHEDULED_BY_ACTION)
+            if (isRebootAction(scheduledBy) && hasEnabledAlarms) {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                    stopForeground(STOP_FOREGROUND_DETACH)
+                } else {
+                    stopForeground(true)
+                }
             } else {
                 stopForeground(true)
             }
@@ -76,6 +92,7 @@ class RescheduleAlarmsService : LifecycleService() {
 
         return START_STICKY
     }
+
 
     private fun buildRescheduleNotification(): Notification {
         val notificationIntent = Intent(this, MainActivity::class.java)

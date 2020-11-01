@@ -11,6 +11,7 @@ import com.pghaz.revery.model.app.alarm.Alarm
 import com.pghaz.revery.service.AlarmService
 import com.pghaz.revery.service.RescheduleAlarmsService
 import com.pghaz.revery.settings.SettingsHandler
+import com.pghaz.revery.util.Arguments
 import com.pghaz.revery.util.IntentUtils
 import java.util.*
 
@@ -56,15 +57,13 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
             return
         }
 
-        if (Intent.ACTION_BOOT_COMPLETED == intent.action ||
-            "android.intent.action.QUICKBOOT_POWERON" == intent.action ||
-            "com.htc.intent.action.QUICKBOOT_POWERON" == intent.action ||
+        if (RescheduleAlarmsService.isRebootAction(intent.action) ||
             Intent.ACTION_PACKAGE_REPLACED == intent.action ||
             Intent.ACTION_TIME_CHANGED == intent.action ||
             Intent.ACTION_TIMEZONE_CHANGED == intent.action ||
             Intent.ACTION_DATE_CHANGED == intent.action
         ) {
-            startRescheduleAlarmsService(context)
+            startRescheduleAlarmsService(context, intent.action)
         } else if (ACTION_ALARM_FIRES == intent.action) {
             val alarm = IntentUtils.safeGetAlarmFromIntent(intent)
 
@@ -152,8 +151,9 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
         }
     }
 
-    private fun startRescheduleAlarmsService(context: Context) {
+    private fun startRescheduleAlarmsService(context: Context, action: String?) {
         val service = Intent(context, RescheduleAlarmsService::class.java)
+        service.putExtra(Arguments.ARGS_RESCHEDULED_BY_ACTION, action)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             context.startForegroundService(service)
         } else {

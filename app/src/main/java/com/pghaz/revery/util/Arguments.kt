@@ -9,6 +9,7 @@ object Arguments {
     // Alarms
     const val ARGS_ALARM = "ARGS_ALARM"
     const val ARGS_BUNDLE_ALARM = "ARGS_BUNDLE_ALARM"
+    const val ARGS_RESCHEDULED_BY_ACTION = "ARGS_RESCHEDULED_BY_ACTION"
 
     // Spotify
     const val ARGS_ACCESS_TOKEN = "ARGS_ACCESS_TOKEN"
