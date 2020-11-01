@@ -85,12 +85,14 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
                 }
             }
         } else if (requestCode == PowerManagerHandler.REQUEST_CODE_POWER_MANAGER_PROTECTED_APPS) {
-            PowerManagerHandler.showPowerSaverDialogIfNeeded(
-                this,
-                PowerManagerHandler.REQUEST_CODE_POWER_MANAGER_BATTERY_OPTIMIZATION,
-                isFirstTime = false,
-                openingFromSettings = PowerManagerHandler.getOpenedFromSettings(this)
-            )
+            if (!PowerManagerHandler.isIgnoringBatteryOptimizations(this)) {
+                PowerManagerHandler.showPowerSaverDialogIfNeeded(
+                    this,
+                    PowerManagerHandler.REQUEST_CODE_POWER_MANAGER_BATTERY_OPTIMIZATION,
+                    isFirstTime = false,
+                    openingFromSettings = PowerManagerHandler.getOpenedFromSettings(this)
+                )
+            }
         } else if (requestCode == PowerManagerHandler.REQUEST_CODE_POWER_MANAGER_BATTERY_OPTIMIZATION) {
             // Reshow dialog if user haven't disabled Battery optimization
             if (!PowerManagerHandler.isIgnoringBatteryOptimizations(this)) {
