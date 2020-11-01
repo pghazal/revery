@@ -79,9 +79,12 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
         } else if (ACTION_ALARM_SNOOZE == intent.action) {
             val alarm = IntentUtils.safeGetAlarmFromIntent(intent)
 
+            val defaultSnoozeMinutes = SettingsHandler.getSnoozeDuration(context)
+            val snoozeDuration =
+                intent.getIntExtra(Arguments.ARGS_SNOOZE_DURATION, defaultSnoozeMinutes)
+
             // TODO show a notification when snoozed ?
-            val snoozeMinutes = SettingsHandler.getSnoozeDuration(context)
-            AlarmHandler.snooze(context, alarm, snoozeMinutes)
+            AlarmHandler.snooze(context, alarm, snoozeDuration)
 
             broadcastFinishRingActivity(context)
             broadcastServiceSnooze(context)

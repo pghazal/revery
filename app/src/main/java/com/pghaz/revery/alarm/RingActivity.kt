@@ -15,6 +15,8 @@ import com.pghaz.revery.model.app.alarm.Alarm
 import com.pghaz.revery.player.AbstractPlayer
 import com.pghaz.revery.service.AlarmService
 import com.pghaz.revery.settings.SettingsHandler
+import com.pghaz.revery.settings.SnoozeDuration
+import com.pghaz.revery.util.Arguments
 import com.pghaz.revery.util.IntentUtils
 import kotlinx.android.synthetic.main.activity_ring.*
 import java.util.*
@@ -123,16 +125,48 @@ class RingActivity : BaseActivity() {
         }
 
         val snoozeDurationArray = resources.getStringArray(R.array.snooze_duration_array)
+        var snoozeDurationIndex = SettingsHandler.getSnoozeDurationPosition(this)
+
+        minusSnoozeButton.setOnClickListener {
+            snoozeDurationIndex -= 1
+            if (snoozeDurationIndex <= 0) {
+                snoozeDurationIndex = 0
+            }
+
+            snoozeButton.text =
+                String.format(
+                    Locale.getDefault(),
+                    "%s\n%s",
+                    getString(R.string.alarm_snooze),
+                    snoozeDurationArray[snoozeDurationIndex]
+                )
+        }
+
+        plusSnoozeButton.setOnClickListener {
+            snoozeDurationIndex += 1
+            if (snoozeDurationIndex >= snoozeDurationArray.size) {
+                snoozeDurationIndex = snoozeDurationArray.size - 1
+            }
+
+            snoozeButton.text =
+                String.format(
+                    Locale.getDefault(),
+                    "%s\n%s",
+                    getString(R.string.alarm_snooze),
+                    snoozeDurationArray[snoozeDurationIndex]
+                )
+        }
+
         snoozeButton.text =
             String.format(
                 Locale.getDefault(),
                 "%s\n%s",
                 getString(R.string.alarm_snooze),
-                snoozeDurationArray[SettingsHandler.getSnoozeDurationPosition(this)]
+                snoozeDurationArray[snoozeDurationIndex]
             )
 
         snoozeButton.setOnClickListener {
-            broadcastSnooze()
+            broadcastSnooze(SnoozeDuration.values()[snoozeDurationIndex])
         }
     }
 
@@ -141,8 +175,9 @@ class RingActivity : BaseActivity() {
         sendBroadcast(stopIntent)
     }
 
-    private fun broadcastSnooze() {
+    private fun broadcastSnooze(snoozeDuration: SnoozeDuration) {
         val snoozeIntent = AlarmBroadcastReceiver.getSnoozeActionIntent(applicationContext, alarm)
+        snoozeIntent.putExtra(Arguments.ARGS_SNOOZE_DURATION, snoozeDuration.minutes)
         sendBroadcast(snoozeIntent)
     }
 
