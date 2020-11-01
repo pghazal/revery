@@ -13,12 +13,12 @@ object SettingsHandler {
     private const val SETTINGS_SNOOZE_DURATION = "$SETTINGS_SHARED_PREF.snooze_duration"
     private const val SETTINGS_SNOOZE_DURATION_POSITION =
         "$SETTINGS_SHARED_PREF.snooze_duration.position"
-    private val DEFAULT_SNOOZE_DURATION = SnoozeDuration.TEN_MINUTES
+    val DEFAULT_SNOOZE_DURATION = SnoozeDuration.TEN_MINUTES
 
     // Fade in
     private const val SETTINGS_FADE_IN = "$SETTINGS_SHARED_PREF.fade_in"
     private const val SETTINGS_FADE_IN_POSITION = "$SETTINGS_SHARED_PREF.fade_in.position"
-    private val DEFAULT_FADE_IN_DURATION = FadeInDuration.THIRTY_SECONDS
+    val DEFAULT_FADE_IN_DURATION = FadeInDuration.THIRTY_SECONDS
 
     // Volume
     // Should use user device volume or the max possible
