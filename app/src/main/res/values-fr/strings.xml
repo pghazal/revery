@@ -28,10 +28,10 @@
     <string name="battery_optimization">Optimisation de la batterie</string>
     <string name="battery_optimization_configure">Configurer</string>
     <string name="battery_optimization_title">Optimisation</string>
-    <string name="battery_optimization_message">A partir d\'Android 6.0, Android introduit Doze qui réduit la consommation de la batterie lorsque l\'appareil n\'est pas utilisé pendant une longue période de temps.\nAfin que %1$s fonctionne correctement, l\'application nécessite d\'être configurée:</string>
-    <string name="battery_optimization_requirement">Ne pas optimiser la batterie pour %1$s</string>
+    <string name="battery_optimization_message">A partir d\'Android 6.0, Android introduit Doze qui réduit la consommation de la batterie en différant l\'activité des applications en arrière-plan lorsque l\'appareil n\'est pas utilisé pendant une longue période de temps.\nAfin que %1$s fonctionne correctement, l\'application nécessite d\'être configurée:</string>
+    <string name="battery_optimization_requirement">Ne pas optimiser la batterie pour %1$s (Paramètres > Batterie > Optimisation de la batterie)</string>
     <string name="battery_auto_start_requirement">Activer le Démarrage automatique pour %1$s</string>
-    <string name="battery_auto_start_requirement_error">(l\'état peut être érroné)</string>
+    <string name="battery_auto_start_requirement_error">(le statut peut être érroné)</string>
     <string name="battery_optimization_reshow_dialog">Vous pouvez réafficher cette pop-up depuis les paramètres de %1$s si nécessaire.</string>
     <string name="do_not_show_again">Ne plus afficher</string>
 

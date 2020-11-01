@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
+import android.net.Uri
 import android.os.Build
 import android.os.PowerManager
 import android.provider.Settings
@@ -77,8 +78,14 @@ object PowerManagerHandler {
 
         if (openingFromSettings || !shouldSkipDialogCheck) {
             val isIgnoringBatteryOptimizations = isIgnoringBatteryOptimizations(activity)
-            val batteryOptimizationIntent =
+            val batteryOptimizationIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                    addCategory(Intent.CATEGORY_DEFAULT)
+                    data = Uri.parse("package:${activity.packageName}")
+                }
+            } else {
                 Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+            }
 
             val autoStartIntent = getAutoStartFeatureIntent(activity)
             val hasAutoStartFeature = autoStartIntent != null
@@ -234,19 +241,24 @@ object PowerManagerHandler {
             .setView(customView)
             .create()
 
-        val stepText = if (isFirstTime && hasAutoStartFeature && !isIgnoringBatteryOptimizations) {
-            "0/2"
-        } else if (isFirstTime && !hasAutoStartFeature && !isIgnoringBatteryOptimizations) {
-            "0/1"
-        } else if (!isFirstTime && hasAutoStartFeature && !isIgnoringBatteryOptimizations) {
-            "1/2"
-        } else if (!isFirstTime && !hasAutoStartFeature && isIgnoringBatteryOptimizations) {
-            "1/1"
-        } else if (isFirstTime && isIgnoringBatteryOptimizations) {
-            "1/2"
-        } else {
-            "2/2"
-        }
+        val stepText =
+            if (!isFirstTime && !hasAutoStartFeature && !isIgnoringBatteryOptimizations) {
+                "0/1"
+            } else if (isFirstTime && hasAutoStartFeature && !isIgnoringBatteryOptimizations) {
+                "0/2"
+            } else if (isFirstTime && !hasAutoStartFeature && !isIgnoringBatteryOptimizations) {
+                "0/1"
+            } else if (!isFirstTime && hasAutoStartFeature && !isIgnoringBatteryOptimizations) {
+                "1/2"
+            } else if (!isFirstTime && !hasAutoStartFeature && isIgnoringBatteryOptimizations) {
+                "1/1"
+            } else if (isFirstTime && !hasAutoStartFeature && isIgnoringBatteryOptimizations) {
+                "1/1"
+            } else if (!isFirstTime && hasAutoStartFeature && isIgnoringBatteryOptimizations) {
+                "2/2"
+            } else {
+                "2/2"
+            }
 
         // Action Button
         val goToSettingsButton = customView.findViewById<AppCompatButton>(R.id.goToSettingsButton)
