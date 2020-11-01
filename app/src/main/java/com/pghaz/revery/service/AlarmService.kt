@@ -249,13 +249,23 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
         val shouldUseDeviceVolume = SettingsHandler.getShouldUseDeviceVolume(this)
         val fadeInDuration = SettingsHandler.getFadeInDuration(this)
 
-        playEmergencyAlarm(shouldUseDeviceVolume, fadeInDuration)
+        playEmergencyAlarm(error, shouldUseDeviceVolume, fadeInDuration)
     }
 
-    private fun playEmergencyAlarm(shouldUseDeviceVolume: Boolean, fadeInDuration: Long) {
+    private fun playEmergencyAlarm(
+        error: PlayerError,
+        shouldUseDeviceVolume: Boolean,
+        fadeInDuration: Long
+    ) {
         if (this::player.isInitialized) {
             vibrator.cancel()
-            player.release()
+
+            if (error !is PlayerError.SpotifyPlayerUserNotAuthorized &&
+                error !is PlayerError.SpotifyPlayerNotInstalled &&
+                error !is PlayerError.SpotifyPlayerUnknown
+            ) {
+                player.release()
+            }
         }
 
         player = getInitializedPlayer(
