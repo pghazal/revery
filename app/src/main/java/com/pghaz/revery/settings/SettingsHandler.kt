@@ -2,6 +2,8 @@ package com.pghaz.revery.settings
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.media.RingtoneManager
+import android.net.Uri
 
 object SettingsHandler {
 
@@ -23,6 +25,12 @@ object SettingsHandler {
     private const val SETTINGS_SHOULD_USE_DEVICE_VOLUME =
         "$SETTINGS_SHARED_PREF.alarm.volume.device"
     private const val DEFAULT_SHOULD_USE_DEVICE_VOLUME = true
+
+    // Default alarm
+    private const val SETTINGS_ALARM_DEFAULT_AUDIO_URI =
+        "$SETTINGS_SHARED_PREF.alarm.default.audio.uri"
+    private val DEFAULT_ALARM_DEFAULT_AUDIO_URI =
+        RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM).toString()
 
     private fun getSharedPreferences(context: Context): SharedPreferences {
         return context.applicationContext.getSharedPreferences(
@@ -85,6 +93,23 @@ object SettingsHandler {
         return sharedPreferences.getBoolean(
             SETTINGS_SHOULD_USE_DEVICE_VOLUME,
             DEFAULT_SHOULD_USE_DEVICE_VOLUME
+        )
+    }
+
+    fun setDefaultAudioUri(context: Context, defaultAudioUri: Uri) {
+        val sharedPreferences = getSharedPreferences(context)
+        val editor = sharedPreferences.edit()
+        editor.putString(SETTINGS_ALARM_DEFAULT_AUDIO_URI, defaultAudioUri.toString())
+        editor.apply()
+    }
+
+    fun getDefaultAudioUri(context: Context): Uri {
+        val sharedPreferences = getSharedPreferences(context)
+        return Uri.parse(
+            sharedPreferences.getString(
+                SETTINGS_ALARM_DEFAULT_AUDIO_URI,
+                DEFAULT_ALARM_DEFAULT_AUDIO_URI
+            ) ?: DEFAULT_ALARM_DEFAULT_AUDIO_URI
         )
     }
 }

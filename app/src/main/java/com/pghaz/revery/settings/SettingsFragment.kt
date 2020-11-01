@@ -1,20 +1,39 @@
 package com.pghaz.revery.settings
 
+import android.animation.AnimatorSet
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatButton
 import com.pghaz.revery.BaseBottomSheetDialogFragment
 import com.pghaz.revery.BuildConfig
 import com.pghaz.revery.R
+import com.pghaz.revery.adapter.alarm.DefaultMediaViewHolder
+import com.pghaz.revery.alarm.CreateEditAlarmFragment
+import com.pghaz.revery.animation.AnimatorUtils
 import com.pghaz.revery.battery.PowerManagerHandler
+import com.pghaz.revery.model.app.alarm.AlarmMetadata
+import com.pghaz.revery.model.app.alarm.MediaType
+import com.pghaz.revery.permission.PermissionDialogFactory
+import com.pghaz.revery.permission.PermissionManager
+import com.pghaz.revery.permission.ReveryPermission
+import com.pghaz.revery.ringtone.AudioPickerHelper
 import com.pghaz.revery.util.Arguments
+import kotlinx.android.synthetic.main.floating_action_buttons_music_menu.*
 import kotlinx.android.synthetic.main.fragment_settings.*
 
 class SettingsFragment : BaseBottomSheetDialogFragment() {
+
+    private lateinit var openMenuMusicAnimation: AnimatorSet
+    private lateinit var closeMenuMusicAnimation: AnimatorSet
+
     override fun getLayoutResId(): Int {
         return R.layout.fragment_settings
     }
@@ -127,11 +146,250 @@ class SettingsFragment : BaseBottomSheetDialogFragment() {
 
         // About
         aboutButton.setOnClickListener {
-            showNotificationDisabledDialog()
+            showAboutDialog()
+        }
+
+        // Default Audio
+        chooseRingtoneButton.setOnClickListener {
+            if (chooseRingtoneButton.isExpanded) {
+                closeMusicMenu()
+            } else {
+                openMusicMenu()
+            }
+        }
+
+        musicPickerButton.setOnClickListener {
+            if (chooseRingtoneButton.isExpanded) {
+                closeMusicMenu()
+            }
+            openMusicPicker()
+        }
+
+        ringtonePickerButton.setOnClickListener {
+            if (chooseRingtoneButton.isExpanded) {
+                closeMusicMenu()
+            }
+            openRingtonePicker()
+        }
+
+        initDefaultAudioViews()
+    }
+
+    private fun initDefaultAudioViews() {
+        context?.let {
+            val defaultUri = SettingsHandler.getDefaultAudioUri(it)
+
+            val audioMetadata: AudioPickerHelper.AudioMetadata =
+                AudioPickerHelper.getAudioMetadata(context, defaultUri)
+
+            val metadata = AlarmMetadata().apply {
+                this.uri = defaultUri.toString()
+                this.href = null
+                this.type = MediaType.DEFAULT
+                this.name = audioMetadata.name
+                this.description = audioMetadata.description
+                this.imageUrl = audioMetadata.imageUrl
+            }
+
+            updateDefaultAlarmViews(metadata)
         }
     }
 
-    private fun showNotificationDisabledDialog() {
+    private fun openMusicMenu() {
+        val musicPickerAnimator = AnimatorUtils.getTranslationAnimatorSet(
+            musicPickerButton,
+            true,
+            AnimatorUtils.TranslationAxis.VERTICAL,
+            AnimatorUtils.TranslationDirection.FROM_BOTTOM_TO_TOP,
+            true,
+            0,
+            400
+        )
+
+        val ringtonePickerAnimator = AnimatorUtils.getTranslationAnimatorSet(
+            ringtonePickerButton,
+            true,
+            AnimatorUtils.TranslationAxis.VERTICAL,
+            AnimatorUtils.TranslationDirection.FROM_BOTTOM_TO_TOP,
+            true,
+            0,
+            500
+        )
+
+        openMenuMusicAnimation = AnimatorSet()
+        openMenuMusicAnimation.playTogether(
+            musicPickerAnimator,
+            ringtonePickerAnimator
+        )
+
+        if (this::closeMenuMusicAnimation.isInitialized && closeMenuMusicAnimation.isRunning) {
+            closeMenuMusicAnimation.cancel()
+        }
+
+        openMenuMusicAnimation.start()
+
+        chooseRingtoneButton.isExpanded = true
+        chooseRingtoneButton.setImageResource(R.drawable.ic_close)
+    }
+
+    private fun closeMusicMenu() {
+        val musicPickerAnimator = AnimatorUtils.getTranslationAnimatorSet(
+            musicPickerButton,
+            false,
+            AnimatorUtils.TranslationAxis.VERTICAL,
+            AnimatorUtils.TranslationDirection.FROM_TOP_TO_BOTTOM,
+            true,
+            0,
+            400
+        )
+
+        val ringtonePickerAnimator = AnimatorUtils.getTranslationAnimatorSet(
+            ringtonePickerButton,
+            false,
+            AnimatorUtils.TranslationAxis.VERTICAL,
+            AnimatorUtils.TranslationDirection.FROM_TOP_TO_BOTTOM,
+            true,
+            0,
+            400
+        )
+
+        closeMenuMusicAnimation = AnimatorSet()
+        closeMenuMusicAnimation.playTogether(
+            musicPickerAnimator,
+            ringtonePickerAnimator
+        )
+
+        if (this::openMenuMusicAnimation.isInitialized && openMenuMusicAnimation.isRunning) {
+            openMenuMusicAnimation.cancel()
+        }
+
+        closeMenuMusicAnimation.start()
+
+        chooseRingtoneButton.isExpanded = false
+        chooseRingtoneButton.setImageResource(R.drawable.ic_music_note)
+    }
+
+    private fun openMusicPicker() {
+        activity?.let {
+            val permission = ReveryPermission.WRITE_EXTERNAL_STORAGE
+
+            if (PermissionManager.isBlocked(it, permission) &&
+                !PermissionManager.hasPermissionBeenGranted(it, permission)
+            ) {
+                PermissionDialogFactory.showPermissionDialog(it)
+            } else if (!PermissionManager.hasPermissionBeenGranted(it, permission)) {
+                PermissionManager.askForPermission(this, permission)
+            } else {
+                AudioPickerHelper.startMusicPickerForResult(
+                    this,
+                    CreateEditAlarmFragment.REQUEST_CODE_PICK_MUSIC
+                )
+            }
+        }
+    }
+
+    private fun openRingtonePicker() {
+        AudioPickerHelper.showRingtonePicker(
+            context,
+            childFragmentManager
+        ) { ringtoneName, ringtoneUri ->
+            handleRingtonePickerSelection(ringtoneName, ringtoneUri)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == CreateEditAlarmFragment.REQUEST_CODE_PICK_MUSIC && resultCode == Activity.RESULT_OK) {
+            handleMusicPickerSelection(data)
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        val storagePermission = ReveryPermission.WRITE_EXTERNAL_STORAGE
+
+        when (requestCode) {
+            storagePermission.requestCode -> {
+                context?.let {
+                    if (PermissionManager.hasPermissionBeenGranted(it, storagePermission)) {
+                        AudioPickerHelper.startMusicPickerForResult(
+                            this,
+                            CreateEditAlarmFragment.REQUEST_CODE_PICK_MUSIC
+                        )
+                    }
+
+                    PermissionManager.setStoragePermissionHasBeenAsked(it, true)
+                }
+            }
+        }
+    }
+
+    private fun handleMusicPickerSelection(data: Intent?) {
+        val ringtoneUri: Uri? = data?.data
+
+        if (ringtoneUri != null) {
+            context?.let {
+                AudioPickerHelper.grantPermissionForUri(it, data)
+
+                val audioMetadata: AudioPickerHelper.AudioMetadata =
+                    AudioPickerHelper.getAudioMetadata(it, ringtoneUri)
+
+                val metadata = AlarmMetadata().apply {
+                    this.uri = ringtoneUri.toString()
+                    this.href = null
+                    this.type = MediaType.DEFAULT
+                    this.name = audioMetadata.name
+                    this.description = audioMetadata.description
+                    this.imageUrl = audioMetadata.imageUrl
+                }
+
+                updateDefaultAlarmViews(metadata)
+
+                SettingsHandler.setDefaultAudioUri(it, ringtoneUri)
+            }
+        }
+    }
+
+    private fun handleRingtonePickerSelection(ringtoneName: String, ringtoneUri: Uri?) {
+        if (ringtoneUri != null) {
+            context?.let {
+                val metadata = AlarmMetadata().apply {
+                    this.uri = ringtoneUri.toString()
+                    this.href = null
+                    this.type = MediaType.DEFAULT
+                    this.name = ringtoneName
+                    this.description = null
+                    this.imageUrl = ringtoneUri.toString()
+                }
+
+                updateDefaultAlarmViews(metadata)
+
+                SettingsHandler.setDefaultAudioUri(it, ringtoneUri)
+            }
+        }
+    }
+
+    private fun updateDefaultAlarmViews(metadata: AlarmMetadata) {
+        ringtoneInfoContainer.removeAllViews()
+
+        val view = LayoutInflater.from(context)
+            .inflate(R.layout.item_view_alarm_media_square, ringtoneInfoContainer, false)
+        val holder = DefaultMediaViewHolder(view)
+
+        holder.bind(metadata)
+
+        val params = view.layoutParams as RelativeLayout.LayoutParams
+        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
+        params.addRule(RelativeLayout.ALIGN_PARENT_START)
+        ringtoneInfoContainer.addView(view, params)
+    }
+
+    private fun showAboutDialog() {
         context?.let {
             val view = LayoutInflater.from(it).inflate(R.layout.dialog_settings_about, null)
             val versionTextView = view.findViewById<TextView>(R.id.versionTextView)

@@ -19,8 +19,8 @@ import java.io.FileOutputStream
 object AudioPickerHelper {
 
     class AudioMetadata {
-        var title: String? = null
-        var artistName: String? = null
+        var name: String? = null
+        var description: String? = null
         var imageUrl: String? = null
     }
 
@@ -115,13 +115,17 @@ object AudioPickerHelper {
         )
 
         val mediaMetadataRetriever = MediaMetadataRetriever()
-        mediaMetadataRetriever.setDataSource(context, uri)
+        try {
+            mediaMetadataRetriever.setDataSource(context, uri)
+        } catch (ex: IllegalArgumentException) {
+            // do nothing: we're probably reading a default ringtone Uri
+        }
 
         val audioMetadata = AudioMetadata()
 
         cursor?.use {
             if (it.moveToFirst()) {
-                audioMetadata.title =
+                audioMetadata.name =
                     when {
                         it.columnNames.contains(MediaStore.Audio.Media.TITLE) &&
                                 it.getString(it.getColumnIndex(MediaStore.Audio.Media.TITLE)) != null -> {
@@ -140,10 +144,12 @@ object AudioPickerHelper {
                         }
                     }
 
-                audioMetadata.artistName =
+                audioMetadata.description =
                     when {
-                        it.columnNames.contains(MediaStore.Audio.Media.ARTIST) &&
-                                it.getString(it.getColumnIndex(MediaStore.Audio.Media.ARTIST)) != null -> {
+                        (it.columnNames.contains(MediaStore.Audio.Media.IS_MUSIC) &&
+                                it.getString(it.getColumnIndex(MediaStore.Audio.Media.IS_MUSIC)) == "1" &&
+                                it.columnNames.contains(MediaStore.Audio.Media.ARTIST) &&
+                                it.getString(it.getColumnIndex(MediaStore.Audio.Media.ARTIST)) != null) -> {
                             it.getString(it.getColumnIndex(MediaStore.Audio.Media.ARTIST))
                         }
                         mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST) != null -> {

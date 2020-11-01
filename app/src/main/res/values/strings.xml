@@ -65,6 +65,7 @@
     <string name="alarm_fade_in_duration_static">fade in duration</string>
     <string name="alarm_should_use_device_volume">Use device\'s volume</string>
     <string name="alarm_should_use_device_volume_explanation"><b>WARNING:</b> if <b>enabled</b> and if you choose a default ringtone or one of your own sounds for your alarm, the application will use the <b>alarm stream</b> volume. Otherwise, the application will use the <b>music stream</b> volume (e.g: when alarm plays a Spotify playlist). If <b>disabled</b>, the app will use the <b>maximum</b> volume of the according stream volume.</string>
+    <string name="alarm_by_default">Default alarm</string>
 
     <!-- PERMISSIONS -->
     <string name="permissions">Storage access</string>

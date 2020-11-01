@@ -4,7 +4,6 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Intent
-import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
@@ -37,12 +36,13 @@ import com.pghaz.revery.permission.PermissionManager
 import com.pghaz.revery.permission.ReveryPermission
 import com.pghaz.revery.ringtone.AudioPickerHelper
 import com.pghaz.revery.settings.SettingsFragment
+import com.pghaz.revery.settings.SettingsHandler
 import com.pghaz.revery.spotify.SpotifyActivity
 import com.pghaz.revery.util.Arguments
 import com.pghaz.revery.util.DateTimeUtils
 import com.pghaz.revery.viewmodel.alarm.CreateEditAlarmViewModel
 import com.shawnlin.numberpicker.NumberPicker
-import kotlinx.android.synthetic.main.floating_action_button_menu.*
+import kotlinx.android.synthetic.main.floating_action_buttons_music_menu.*
 import kotlinx.android.synthetic.main.fragment_alarm_create_edit.*
 import java.util.*
 
@@ -430,16 +430,18 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
     private fun setDefaultRingtone() {
         alarm?.let {
             it.metadata = AlarmMetadata().apply {
-                val uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+                context?.let { nonNullContext ->
+                    val uri = SettingsHandler.getDefaultAudioUri(nonNullContext)
 
-                val audioMetadata: AudioPickerHelper.AudioMetadata =
-                    AudioPickerHelper.getAudioMetadata(context, uri)
+                    val audioMetadata: AudioPickerHelper.AudioMetadata =
+                        AudioPickerHelper.getAudioMetadata(nonNullContext, uri)
 
-                this.type = MediaType.DEFAULT
-                this.uri = uri.toString()
-                this.name = audioMetadata.title
-                this.description = audioMetadata.artistName
-                this.imageUrl = audioMetadata.imageUrl
+                    this.type = MediaType.DEFAULT
+                    this.uri = uri.toString()
+                    this.name = audioMetadata.name
+                    this.description = audioMetadata.description
+                    this.imageUrl = audioMetadata.imageUrl
+                }
             }
 
             createEditAlarmViewModel.alarmMetadataLiveData.value = it
@@ -596,16 +598,18 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
             // Safe init of uri
             if (it.metadata.uri.isNullOrEmpty()) {
                 it.metadata = AlarmMetadata().apply {
-                    val uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+                    context?.let { nonNullContext ->
+                        val uri = SettingsHandler.getDefaultAudioUri(nonNullContext)
 
-                    val audioMetadata: AudioPickerHelper.AudioMetadata =
-                        AudioPickerHelper.getAudioMetadata(context, uri)
+                        val audioMetadata: AudioPickerHelper.AudioMetadata =
+                            AudioPickerHelper.getAudioMetadata(nonNullContext, uri)
 
-                    this.type = MediaType.DEFAULT
-                    this.uri = uri.toString()
-                    this.name = audioMetadata.title
-                    this.description = audioMetadata.artistName
-                    this.imageUrl = audioMetadata.imageUrl
+                        this.type = MediaType.DEFAULT
+                        this.uri = uri.toString()
+                        this.name = audioMetadata.name
+                        this.description = audioMetadata.description
+                        this.imageUrl = audioMetadata.imageUrl
+                    }
                 }
             }
 
@@ -740,8 +744,8 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
                     this.uri = ringtoneUri.toString()
                     this.href = null
                     this.type = MediaType.DEFAULT
-                    this.name = audioMetadata.title
-                    this.description = audioMetadata.artistName
+                    this.name = audioMetadata.name
+                    this.description = audioMetadata.description
                     this.imageUrl = audioMetadata.imageUrl
                 }
 
@@ -768,7 +772,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
     companion object {
         const val TAG = "CreateEditAlarmFragment"
 
-        private const val REQUEST_CODE_PICK_MUSIC = 21
+        const val REQUEST_CODE_PICK_MUSIC = 21
 
         fun newInstance(dialogTitle: String): CreateEditAlarmFragment {
             val newAlarm = Alarm(
