@@ -5,6 +5,7 @@ import android.app.KeyguardManager
 import android.content.*
 import android.os.Bundle
 import android.os.IBinder
+import android.view.View
 import android.view.WindowManager
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.pghaz.revery.BaseActivity
@@ -167,6 +168,14 @@ class RingActivity : BaseActivity() {
 
         snoozeButton.setOnClickListener {
             broadcastSnooze(SnoozeDuration.values()[snoozeDurationIndex])
+        }
+
+        if(SettingsHandler.getCanChangeSnoozeDuration(this)) {
+            minusSnoozeButton.visibility = View.VISIBLE
+            plusSnoozeButton.visibility = View.VISIBLE
+        } else {
+            minusSnoozeButton.visibility = View.INVISIBLE
+            plusSnoozeButton.visibility = View.INVISIBLE
         }
     }
 

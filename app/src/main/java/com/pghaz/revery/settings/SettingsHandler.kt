@@ -15,6 +15,10 @@ object SettingsHandler {
         "$SETTINGS_SHARED_PREF.snooze_duration.position"
     val DEFAULT_SNOOZE_DURATION = SnoozeDuration.TEN_MINUTES
 
+    private const val SETTINGS_SNOOZE_CAN_CHANGE_DURATION =
+        "$SETTINGS_SHARED_PREF.snooze.can.change.duration"
+    private const val DEFAULT_SNOOZE_CAN_CHANGE_DURATION = false
+
     // Fade in
     private const val SETTINGS_FADE_IN = "$SETTINGS_SHARED_PREF.fade_in"
     private const val SETTINGS_FADE_IN_POSITION = "$SETTINGS_SHARED_PREF.fade_in.position"
@@ -125,5 +129,20 @@ object SettingsHandler {
         val editor = sharedPreferences.edit()
         editor.putInt(SETTINGS_ALARM_VOLUME, volume)
         editor.apply()
+    }
+
+    fun setCanChangeSnoozeDuration(context: Context, value: Boolean) {
+        val sharedPreferences = getSharedPreferences(context)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean(SETTINGS_SNOOZE_CAN_CHANGE_DURATION, value)
+        editor.apply()
+    }
+
+    fun getCanChangeSnoozeDuration(context: Context): Boolean {
+        val sharedPreferences = getSharedPreferences(context)
+        return sharedPreferences.getBoolean(
+            SETTINGS_SNOOZE_CAN_CHANGE_DURATION,
+            DEFAULT_SNOOZE_CAN_CHANGE_DURATION
+        )
     }
 }

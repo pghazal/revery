@@ -66,6 +66,7 @@
     <string name="alarm_should_use_device_volume">Use device\'s volume</string>
     <string name="alarm_should_use_device_volume_explanation"><b>WARNING:</b> if <b>enabled</b> and if you choose a default ringtone or one of your own sounds for your alarm, the application will use the <b>alarm stream</b> volume. Otherwise, the application will use the <b>music stream</b> volume (e.g: when alarm plays a content Spotify). If <b>disabled</b>, the app will use the volume level below.</string>
     <string name="alarm_by_default">Default alarm</string>
+    <string name="alarm_update_snooze">Ability to change duration when alarm goes off</string>
 
     <!-- PERMISSIONS -->
     <string name="permissions">Storage access</string>

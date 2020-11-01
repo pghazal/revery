@@ -90,6 +90,15 @@ class SettingsFragment : BaseBottomSheetDialogFragment() {
             }
         }
 
+        // Can change snooze duration
+        context?.let {
+            val canChangeSnoozeDuration = SettingsHandler.getCanChangeSnoozeDuration(it)
+            canChangeSnoozeDurationSwitch.isChecked = canChangeSnoozeDuration
+        }
+        canChangeSnoozeDurationSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+            SettingsHandler.setCanChangeSnoozeDuration(buttonView.context, isChecked)
+        }
+
         // Fade In
         context?.let {
             var fadeInDurationPosition = SettingsHandler.getFadeInDurationPosition(it)
