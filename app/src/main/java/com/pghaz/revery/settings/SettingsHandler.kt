@@ -26,6 +26,8 @@ object SettingsHandler {
         "$SETTINGS_SHARED_PREF.alarm.volume.device"
     private const val DEFAULT_SHOULD_USE_DEVICE_VOLUME = true
 
+    private const val SETTINGS_ALARM_VOLUME = "$SETTINGS_SHARED_PREF.alarm.volume"
+
     // Default alarm
     private const val SETTINGS_ALARM_DEFAULT_AUDIO_URI =
         "$SETTINGS_SHARED_PREF.alarm.default.audio.uri"
@@ -111,5 +113,17 @@ object SettingsHandler {
                 DEFAULT_ALARM_DEFAULT_AUDIO_URI
             ) ?: DEFAULT_ALARM_DEFAULT_AUDIO_URI
         )
+    }
+
+    fun getAlarmVolume(context: Context, defaultVolume: Int): Int {
+        val sharedPreferences = getSharedPreferences(context)
+        return sharedPreferences.getInt(SETTINGS_ALARM_VOLUME, defaultVolume)
+    }
+
+    fun setAlarmVolume(context: Context, volume: Int) {
+        val sharedPreferences = getSharedPreferences(context)
+        val editor = sharedPreferences.edit()
+        editor.putInt(SETTINGS_ALARM_VOLUME, volume)
+        editor.apply()
     }
 }

@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     tools:background="@color/colorPrimary">
+
+    <include
+        android:id="@+id/header"
+        layout="@layout/header_bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottom_sheet_dialog_header_height" />
 
     <ScrollView
         android:id="@+id/scrollView"
@@ -21,19 +27,12 @@
             android:layout_height="wrap_content"
             android:padding="@dimen/half_base_margin">
 
-            <include
-                android:id="@+id/header"
-                layout="@layout/header_bottom_sheet"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/bottom_sheet_dialog_header_height"
-                android:layout_alignParentTop="true" />
-
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/label1"
                 style="@style/ReveryLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/header"
+                android:layout_alignParentTop="true"
                 android:layout_marginBottom="@dimen/third_base_margin"
                 android:text="@string/alarm_snooze_duration_static" />
 
@@ -86,12 +85,26 @@
                 android:textSize="10.5sp"
                 android:textStyle="normal" />
 
+            <com.google.android.material.slider.Slider
+                android:id="@+id/volumeAlarmSlider"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/shouldUseDeviceVolumeExplanationLabel"
+                android:stepSize="1.0"
+                app:labelBehavior="gone"
+                app:thumbColor="@color/selector_alarm_volume_color"
+                app:thumbElevation="2dp"
+                app:tickColorActive="@android:color/transparent"
+                app:tickColorInactive="@android:color/transparent"
+                app:trackColorActive="@color/selector_alarm_volume_color"
+                app:trackColorInactive="@color/color_main_background_view" />
+
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/label3"
                 style="@style/ReveryLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/shouldUseDeviceVolumeExplanationLabel"
+                android:layout_below="@id/volumeAlarmSlider"
                 android:layout_marginTop="@dimen/base_margin"
                 android:layout_marginBottom="@dimen/third_base_margin"
                 android:text="@string/alarm_by_default" />
@@ -155,4 +168,4 @@
                 android:textAllCaps="false" />
         </RelativeLayout>
     </ScrollView>
-</RelativeLayout>
+</LinearLayout>

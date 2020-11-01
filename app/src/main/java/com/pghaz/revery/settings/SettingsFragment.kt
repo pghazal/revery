@@ -2,7 +2,9 @@ package com.pghaz.revery.settings
 
 import android.animation.AnimatorSet
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.media.AudioManager
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -126,10 +128,24 @@ class SettingsFragment : BaseBottomSheetDialogFragment() {
         context?.let {
             val shouldUseDeviceVolume = SettingsHandler.getShouldUseDeviceVolume(it)
             shouldUseDeviceVolumeSwitch.isChecked = shouldUseDeviceVolume
+            volumeAlarmSlider.isEnabled = !shouldUseDeviceVolume
         }
 
         shouldUseDeviceVolumeSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
             SettingsHandler.setShouldUseDeviceVolume(buttonView.context, isChecked)
+
+            volumeAlarmSlider.isEnabled = !isChecked
+        }
+
+        // Volume Alarm
+        val audioManager = context?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        val maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM)
+        volumeAlarmSlider.valueFrom = 0f
+        volumeAlarmSlider.valueTo = maxVolume.toFloat()
+        volumeAlarmSlider.value =
+            SettingsHandler.getAlarmVolume(volumeAlarmSlider.context, maxVolume).toFloat()
+        volumeAlarmSlider.addOnChangeListener { slider, value, _ ->
+            SettingsHandler.setAlarmVolume(slider.context, value.toInt())
         }
 
         // Battery Optimization

@@ -5,6 +5,7 @@ import android.content.Context
 import android.media.AudioManager
 import android.view.animation.LinearInterpolator
 import androidx.annotation.CallSuper
+import com.pghaz.revery.settings.SettingsHandler
 
 abstract class AbstractPlayer(
     protected val context: Context,
@@ -24,6 +25,11 @@ abstract class AbstractPlayer(
     private val initialDeviceVolume = audioManager.getStreamVolume(streamType)
     private val minVolume = audioManager.getStreamMinVolume(streamType)
     private val maxVolume = audioManager.getStreamMaxVolume(streamType)
+    private val maxDecidedVolume = if (shouldUseDeviceVolume) {
+        initialDeviceVolume
+    } else {
+        SettingsHandler.getAlarmVolume(context, maxVolume)
+    }
     private var volumeAnimator: ValueAnimator? = null
 
     var fadeIn: Boolean = false
@@ -49,11 +55,7 @@ abstract class AbstractPlayer(
     }
 
     protected fun initVolume() {
-        if (shouldUseDeviceVolume) {
-            audioManager.setStreamVolume(streamType, initialDeviceVolume, 0)
-        } else {
-            audioManager.setStreamVolume(streamType, maxVolume, 0)
-        }
+        audioManager.setStreamVolume(streamType, maxDecidedVolume, 0)
     }
 
     protected fun resetInitialDeviceVolume() {
@@ -64,11 +66,7 @@ abstract class AbstractPlayer(
     }
 
     protected fun fadeIn() {
-        volumeAnimator =
-            ValueAnimator.ofInt(
-                minVolume,
-                if (shouldUseDeviceVolume) initialDeviceVolume else maxVolume
-            )
+        volumeAnimator = ValueAnimator.ofInt(minVolume, maxDecidedVolume)
         volumeAnimator?.interpolator = LinearInterpolator()
         volumeAnimator?.duration = fadeInDuration * 1000
 
@@ -95,7 +93,7 @@ abstract class AbstractPlayer(
                 " shouldUseDeviceVolume=$shouldUseDeviceVolume," +
                 " currentUri=$currentUri, playerListener=$playerListener," +
                 " initialDeviceVolume=$initialDeviceVolume," +
-                " minVolume=$minVolume, maxVolume=$maxVolume," +
+                " minVolume=$minVolume, maxDecidedVolume=$maxDecidedVolume," +
                 " fadeIn=$fadeIn, fadeInDuration=$fadeInDuration)"
     }
 }
