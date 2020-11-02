@@ -4,8 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.database.Cursor
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.media.RingtoneManager
 import android.net.Uri
@@ -13,8 +11,7 @@ import android.provider.MediaStore
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.pghaz.revery.R
-import java.io.File
-import java.io.FileOutputStream
+import com.pghaz.revery.image.ImageUtils
 
 object AudioPickerHelper {
 
@@ -162,67 +159,8 @@ object AudioPickerHelper {
             it.close()
         }
 
-        audioMetadata.imageUrl = getCoverArtFilePath(context, uri)
+        audioMetadata.imageUrl = ImageUtils.getCoverArtFilePath(context, uri)
 
         return audioMetadata
-    }
-
-    fun getCoverArtFilePath(context: Context?, uri: Uri?): String {
-        if (uri?.scheme == "content" || uri?.scheme == "file") {
-            val filePath: String =
-                context?.externalCacheDir?.path + "/covers/" + "${uri.lastPathSegment}.png"
-            val file = File(filePath)
-            return if (file.exists()) {
-                "file://" + file.path
-            } else {
-                val bitmap = getCoverArtBitmap(context, uri)
-                "file://" + createBitmapFileAndGetPath(context, uri, bitmap)
-            }
-        }
-
-        return uri.toString()
-    }
-
-    fun isInternalFile(uri: Uri?): Boolean {
-        return uri?.scheme == "content" || uri?.scheme == "file"
-    }
-
-    fun isCoverArtExists(uri: Uri?): Boolean {
-        if (isInternalFile(uri)) {
-            val filePath: String = uri?.path.toString()
-            val file = File(filePath)
-            return file.exists()
-        }
-
-        return false
-    }
-
-    private fun getCoverArtBitmap(context: Context?, uri: Uri): Bitmap? {
-        val mediaMetadataRetriever = MediaMetadataRetriever()
-        return try {
-            mediaMetadataRetriever.setDataSource(context, uri)
-            val data: ByteArray? = mediaMetadataRetriever.embeddedPicture
-            if (data != null) BitmapFactory.decodeByteArray(data, 0, data.size) else null
-        } catch (ex: Exception) {
-            null
-        }
-    }
-
-    private fun createBitmapFileAndGetPath(context: Context?, uri: Uri, bitmap: Bitmap?): String {
-        val directoryPath: String = context?.externalCacheDir?.path + "/covers"
-        val directory = File(directoryPath)
-        if (!directory.exists()) directory.mkdirs()
-
-        val file = File(directory, "${uri.lastPathSegment}.png")
-        if (!file.exists()) {
-            file.createNewFile()
-
-            val outputStream = FileOutputStream(file)
-            bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-            outputStream.flush()
-            outputStream.close()
-        }
-
-        return file.path
     }
 }

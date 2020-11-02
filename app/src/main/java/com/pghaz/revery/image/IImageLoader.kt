@@ -1,6 +1,5 @@
 package com.pghaz.revery.image
 
-import android.content.Context
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
 

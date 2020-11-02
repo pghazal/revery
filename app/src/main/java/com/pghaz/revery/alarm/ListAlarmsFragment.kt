@@ -126,7 +126,7 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
                     context, 1,
                     recurring = false,
                     spotify = true,
-                    fadeIn = true,
+                    fadeIn = false,
                     // Useless for now
                     // fadeInDuration = SettingsHandler.getFadeInDuration(context!!)
                 )

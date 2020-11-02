@@ -125,17 +125,31 @@ class DefaultPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
         }
     }
 
-    override fun play() {
+    override fun start() {
         if (fadeIn) {
             initFadeIn()
         } else {
             initVolume()
         }
 
-        mediaPlayer?.start()
+        play()
 
         if (fadeIn) {
             fadeIn()
+        }
+    }
+
+    override fun stop() {
+        pause()
+
+        resetInitialDeviceVolume()
+    }
+
+    override fun play() {
+        mediaPlayer?.let {
+            if (!it.isPlaying) {
+                it.start()
+            }
         }
     }
 
@@ -145,8 +159,14 @@ class DefaultPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
                 it.pause()
             }
         }
+    }
 
-        resetInitialDeviceVolume()
+    override fun skipNext() {
+        // do nothing
+    }
+
+    override fun skipPrevious() {
+        // do nothing
     }
 
     private fun abandonAudioFocus() {

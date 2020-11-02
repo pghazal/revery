@@ -1,20 +1,23 @@
 package com.pghaz.revery.player
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.media.AudioManager
+import androidx.lifecycle.MutableLiveData
 import com.pghaz.revery.BuildConfig
 import com.pghaz.revery.extension.logError
-import com.spotify.android.appremote.api.ConnectionParams
-import com.spotify.android.appremote.api.Connector
-import com.spotify.android.appremote.api.SpotifyAppRemote
+import com.spotify.android.appremote.api.*
 import com.spotify.android.appremote.api.error.CouldNotFindSpotifyApp
 import com.spotify.android.appremote.api.error.NotLoggedInException
 import com.spotify.android.appremote.api.error.SpotifyConnectionTerminatedException
 import com.spotify.android.appremote.api.error.UserNotAuthorizedException
+import com.spotify.protocol.client.CallResult
+import com.spotify.protocol.client.Subscription
+import com.spotify.protocol.types.ImageUri
 import com.spotify.protocol.types.PlayerState
-import com.spotify.protocol.types.Track
 import kotlinx.coroutines.*
 
+@ExperimentalCoroutinesApi
 class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
     AbstractPlayer(context, AudioManager.STREAM_MUSIC, shouldUseDeviceVolume),
     Connector.ConnectionListener {
@@ -29,11 +32,16 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
     private val job = Job()
     private val coroutinesScope: CoroutineScope = CoroutineScope(job + Dispatchers.Main)
     private val connectionStateCallbacks = mutableListOf<ConnectionStateCallback>()
+    val playerConnectedLiveData = MutableLiveData<Boolean>()
 
     var shuffle: Boolean = false
 
+    private var playerApi: PlayerApi? = null
+    private var imagesApi: ImagesApi? = null
+
     override fun init(playerListener: PlayerListener?) {
         super.init(playerListener)
+        playerConnectedLiveData.value = false
 
         SpotifyAppRemote.setDebugMode(BuildConfig.DEBUG)
 
@@ -45,33 +53,41 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
 
     // "spotify:playlist:3H8dsoJvkH7lUkaQlUNjPJ"
     override fun prepareAsync(uri: String?) {
-        playerAction = PlayerAction.ACTION_PLAY
+        playerAction = PlayerAction.ACTION_START
         currentUri = uri!!
         SpotifyAppRemote.connect(context, connectionParams, this)
     }
 
     override fun prepare(uri: String?) {
-        playerAction = PlayerAction.ACTION_PLAY
+        playerAction = PlayerAction.ACTION_START
         currentUri = uri!!
         // sync prepared is not used for this player
     }
 
-    @ExperimentalCoroutinesApi
     override fun onConnected(spotifyAppRemote: SpotifyAppRemote) {
         this.spotifyAppRemote = spotifyAppRemote
         this.isInitialized = true
         this.connectionState = ConnectionState.CONNECTED
         this.spotifyAppRemote!!.playerApi.setShuffle(shuffle)
 
+        this.playerApi = this.spotifyAppRemote!!.playerApi
+        this.imagesApi = this.spotifyAppRemote!!.imagesApi
+
         // When AppRemote disconnected and auto-reconnect, ´playerAction´ will exec unhandled action
         when (playerAction) {
-            PlayerAction.ACTION_PLAY -> playerListener?.onPlayerInitialized(this)
+            PlayerAction.ACTION_START -> playerListener?.onPlayerInitialized(this)
+            PlayerAction.ACTION_STOP -> stop()
+            PlayerAction.ACTION_PLAY -> play()
             PlayerAction.ACTION_PAUSE -> pause()
             PlayerAction.ACTION_RELEASE -> release()
+            PlayerAction.ACTION_SKIP_NEXT -> skipNext()
+            PlayerAction.ACTION_SKIP_PREVIOUS -> skipPrevious()
             else -> {
                 // do nothing
             }
         }
+
+        playerConnectedLiveData.value = true
 
         callSuspendFunctionStateCallbacks(ConnectionState.CONNECTED)
     }
@@ -80,6 +96,8 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
         context.logError(error?.stackTraceToString(), error)
 
         connectionState = ConnectionState.DISCONNECTED
+
+        playerConnectedLiveData.value = false
 
         if (error is NotLoggedInException || error is UserNotAuthorizedException) {
             // Show login button and trigger the login flow from auth library when clicked
@@ -94,11 +112,10 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
         }
     }
 
-    @ExperimentalCoroutinesApi
-    override fun play() {
-        playerAction = PlayerAction.ACTION_PLAY
+    override fun start() {
+        playerAction = PlayerAction.ACTION_START
 
-        context.logError("play()")
+        context.logError("start()")
         coroutinesScope.launch {
             // If fade in enabled, first set minimum volume
             if (fadeIn) {
@@ -112,24 +129,46 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
             if (fadeIn) {
                 fadeIn()
             }
-
-            // Subscribe to PlayerState
-            getAppRemote()?.playerApi
-                ?.subscribeToPlayerState()
-                ?.setEventCallback { playerState: PlayerState ->
-                    val track: Track? = playerState.track
-                    if (track != null) {
-                        context.logError(track.name.toString() + " by " + track.artist.name)
-                    }
-                }
         }
     }
 
-    @ExperimentalCoroutinesApi
-    override fun pause() {
-        playerAction = PlayerAction.ACTION_PAUSE
+    fun getPlayerStateSubscription(): Subscription<PlayerState>? {
+        context.logError("getPlayerStateSubscription()")
+        return playerApi?.subscribeToPlayerState()
+    }
 
-        context.logError("pause()")
+    fun getPlayerStateCallResult(): CallResult<PlayerState>? {
+        context.logError("getPlayerStateCallResult()")
+        return playerApi?.playerState
+    }
+
+    fun getImageUri(imageUri: ImageUri): CallResult<Bitmap>? {
+        context.logError("getImageUri()")
+        return imagesApi?.getImage(imageUri)
+    }
+
+    override fun skipNext() {
+        playerAction = PlayerAction.ACTION_SKIP_NEXT
+
+        context.logError("skipNext()")
+        coroutinesScope.launch {
+            getAppRemote()?.playerApi?.skipNext()
+        }
+    }
+
+    override fun skipPrevious() {
+        playerAction = PlayerAction.ACTION_SKIP_PREVIOUS
+
+        context.logError("skipPrevious()")
+        coroutinesScope.launch {
+            getAppRemote()?.playerApi?.skipPrevious()
+        }
+    }
+
+    override fun stop() {
+        playerAction = PlayerAction.ACTION_STOP
+
+        context.logError("stop()")
         coroutinesScope.launch {
             getAppRemote()?.playerApi?.pause()
 
@@ -137,7 +176,24 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
         }
     }
 
-    @ExperimentalCoroutinesApi
+    override fun play() {
+        playerAction = PlayerAction.ACTION_PLAY
+
+        context.logError("play()")
+        coroutinesScope.launch {
+            getAppRemote()?.playerApi?.resume()
+        }
+    }
+
+    override fun pause() {
+        playerAction = PlayerAction.ACTION_PAUSE
+
+        context.logError("pause()")
+        coroutinesScope.launch {
+            getAppRemote()?.playerApi?.pause()
+        }
+    }
+
     override fun release() {
         playerAction = PlayerAction.ACTION_RELEASE
 
@@ -159,7 +215,6 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
         }
     }
 
-    @ExperimentalCoroutinesApi
     private suspend fun getAppRemote(): SpotifyAppRemote? {
         if (!isInitialized) {
             SpotifyAppRemote.connect(context, connectionParams, this)

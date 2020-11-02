@@ -78,9 +78,9 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
             intent?.let {
                 if (ACTION_ALARM_SERVICE_SHOULD_STOP == it.action) {
                     logError(ACTION_ALARM_SERVICE_SHOULD_STOP)
-                    pausePlayerAndVibrator(false, alarm.metadata)
+                    stopPlayerAndVibrator(false, alarm.metadata)
                 } else if (ACTION_ALARM_SERVICE_SNOOZE == it.action) {
-                    pausePlayerAndVibrator(true, alarm.metadata)
+                    stopPlayerAndVibrator(true, alarm.metadata)
                 }
 
                 player.release()
@@ -155,7 +155,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
                         alarm.fadeIn, fadeInDuration
                     )
                 } else {
-                    pausePlayerAndVibrator(true, alarm.metadata)
+                    stopPlayerAndVibrator(true, alarm.metadata)
                     getInitializedPlayer(
                         alarm.metadata.type, shouldUseDeviceVolume, this,
                         alarm.fadeIn, fadeInDuration
@@ -217,18 +217,18 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
     /**
      * We don't call ´player.release()´ because we may need the player later
      */
-    private fun pausePlayerAndVibrator(forceShouldPausePlayback: Boolean, metadata: AlarmMetadata) {
+    private fun stopPlayerAndVibrator(forceShouldPausePlayback: Boolean, metadata: AlarmMetadata) {
         vibrator.cancel()
 
         if (forceShouldPausePlayback) {
-            player.pause()
+            player.stop()
             return
         }
 
         if (metadata.type == MediaType.DEFAULT) {
-            player.pause()
+            player.stop()
         } else if (!metadata.shouldKeepPlaying) {
-            player.pause()
+            player.stop()
         }
     }
 
@@ -237,7 +237,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
             vibrate()
         }
 
-        player.play()
+        player.start()
     }
 
     override fun onPlayerError(error: PlayerError) {

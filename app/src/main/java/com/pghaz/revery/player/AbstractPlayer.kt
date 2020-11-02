@@ -44,9 +44,17 @@ abstract class AbstractPlayer(
 
     abstract fun prepare(uri: String?)
 
+    abstract fun start()
+
+    abstract fun stop()
+
     abstract fun play()
 
     abstract fun pause()
+
+    abstract fun skipNext()
+
+    abstract fun skipPrevious()
 
     abstract fun release()
 

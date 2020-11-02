@@ -13,17 +13,23 @@ import com.pghaz.revery.R
 import com.pghaz.revery.broadcastreceiver.AlarmBroadcastReceiver
 import com.pghaz.revery.extension.logError
 import com.pghaz.revery.image.ImageLoader
+import com.pghaz.revery.image.ImageUtils
 import com.pghaz.revery.model.app.alarm.Alarm
 import com.pghaz.revery.player.AbstractPlayer
+import com.pghaz.revery.player.SpotifyPlayer
 import com.pghaz.revery.service.AlarmService
 import com.pghaz.revery.settings.SettingsHandler
 import com.pghaz.revery.settings.SnoozeDuration
 import com.pghaz.revery.util.Arguments
 import com.pghaz.revery.util.IntentUtils
 import com.pghaz.revery.util.ViewUtils
+import com.spotify.protocol.types.PlayerState
+import com.spotify.protocol.types.Track
 import kotlinx.android.synthetic.main.activity_ring.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.util.*
 
+@ExperimentalCoroutinesApi
 class RingActivity : BaseActivity() {
 
     companion object {
@@ -49,6 +55,8 @@ class RingActivity : BaseActivity() {
             logError("onServiceConnected")
             mAlarmServiceBound = true
             player = (service as AlarmService.AlarmServiceBinder).getPlayer()
+
+            configurePlayerControllers(player)
         }
 
         override fun onServiceDisconnected(name: ComponentName) {
@@ -123,11 +131,7 @@ class RingActivity : BaseActivity() {
     }
 
     override fun configureViews(savedInstanceState: Bundle?) {
-        ImageLoader.get()
-            .load(alarm.metadata.imageUrl)
-            .blur()
-            .ratioAndWidth(1f, ViewUtils.getRealScreenWidthSize(backgroundImageView.context), true)
-            .into(backgroundImageView)
+        updateBackgroundImage(alarm.metadata.imageUrl)
 
         turnOffButton.setOnClickListener {
             broadcastStopAlarm()
@@ -185,6 +189,81 @@ class RingActivity : BaseActivity() {
             minusSnoozeButton.visibility = View.INVISIBLE
             plusSnoozeButton.visibility = View.INVISIBLE
         }
+
+        // Player Controllers
+        playPauseButton.setOnClickListener {
+            if (player is SpotifyPlayer) {
+                (player as SpotifyPlayer?)?.getPlayerStateCallResult()
+                    ?.setResultCallback { playerState ->
+                        if (playerState.isPaused) {
+                            player?.play()
+                        } else {
+                            player?.pause()
+                        }
+                    }
+            }
+        }
+
+        skipNextButton.setOnClickListener {
+            if (player is SpotifyPlayer) {
+                (player as SpotifyPlayer?)?.skipNext()
+            }
+        }
+
+        skipPreviousButton.setOnClickListener {
+            if (player is SpotifyPlayer) {
+                (player as SpotifyPlayer?)?.skipPrevious()
+            }
+        }
+    }
+
+    private fun configurePlayerControllers(player: AbstractPlayer?) {
+        if (player != null && player is SpotifyPlayer) {
+            controllersContainer.visibility = View.VISIBLE
+
+            player.playerConnectedLiveData.observe(this, { isPlayerConnected ->
+                if (isPlayerConnected) {
+                    player.getPlayerStateSubscription()?.setEventCallback { playerState ->
+                        val track: Track? = playerState.track
+
+                        if (track != null) {
+                            logError(track.name.toString() + " by " + track.artist.name)
+
+                            if (playerState.isPaused) {
+                                playPauseButton.setImageResource(R.drawable.ic_play)
+                            } else {
+                                playPauseButton.setImageResource(R.drawable.ic_pause)
+
+                                titleTextView.text = track.name
+                                artistNameTextView.text = track.artist.name
+                                updateImageWithSpotify(player, playerState)
+                            }
+                        }
+                    }
+                }
+            })
+        } else {
+            controllersContainer.visibility = View.GONE
+        }
+    }
+
+    private fun updateImageWithSpotify(player: SpotifyPlayer, playerState: PlayerState) {
+        player.getImageUri(playerState.track.imageUri)?.setResultCallback {
+            val imageUrl = ImageUtils.getSpotifyImageFilePath(
+                this@RingActivity,
+                playerState.track.imageUri.raw,
+                it
+            )
+            updateBackgroundImage(imageUrl)
+        }
+    }
+
+    private fun updateBackgroundImage(url: String?) {
+        ImageLoader.get()
+            .load(url)
+            .blur()
+            .ratioAndWidth(1f, ViewUtils.getRealScreenWidthSize(backgroundImageView.context), true)
+            .into(backgroundImageView)
     }
 
     private fun broadcastStopAlarm() {
@@ -206,6 +285,7 @@ class RingActivity : BaseActivity() {
         super.onBackPressed()
     }
 
+    @Suppress("DEPRECATION")
     private fun allowDisplayOnLockScreen() {
         window.addFlags(
             WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON

@@ -11,6 +11,7 @@ import com.pghaz.revery.R
 import com.pghaz.revery.adapter.base.BaseViewHolder
 import com.pghaz.revery.ringtone.AudioPickerHelper
 import com.pghaz.revery.image.ImageLoader
+import com.pghaz.revery.image.ImageUtils
 import com.pghaz.revery.model.app.BaseModel
 import com.pghaz.revery.model.app.alarm.Alarm
 import com.pghaz.revery.util.DateTimeUtils
@@ -140,11 +141,11 @@ open class AlarmViewHolder(view: View) : BaseViewHolder(view) {
         labelTextView.isEnabled = alarm.enabled
 
         val imageUri = Uri.parse(alarm.metadata.imageUrl)
-        val imageUrl = if (AudioPickerHelper.isInternalFile(imageUri)) {
-            if (AudioPickerHelper.isCoverArtExists(imageUri)) {
+        val imageUrl = if (ImageUtils.isInternalFile(imageUri)) {
+            if (ImageUtils.isCoverArtExists(imageUri)) {
                 alarm.metadata.imageUrl
             } else {
-                AudioPickerHelper.getCoverArtFilePath(imageView.context, Uri.parse(alarm.metadata.uri))
+                ImageUtils.getCoverArtFilePath(imageView.context, Uri.parse(alarm.metadata.uri))
             }
         } else {
             alarm.metadata.imageUrl

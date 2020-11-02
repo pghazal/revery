@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
@@ -84,6 +85,83 @@
             android:layout_marginStart="@dimen/half_base_margin"
             app:srcCompat="@drawable/ic_add"
             app:tint="@android:color/white" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/controllersContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/base_margin"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingStart="@dimen/base_margin"
+        android:paddingEnd="@dimen/base_margin"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <TextView
+            android:id="@+id/titleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/third_base_margin"
+            android:ellipsize="end"
+            android:fontFamily="@font/montserrat_semi_bold"
+            android:maxLines="2"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            app:fontFamily="@font/montserrat_semi_bold"
+            tools:text="sfsdfdfdsfsdfsfsfd" />
+
+        <TextView
+            android:id="@+id/artistNameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/half_base_margin"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@android:color/white"
+            android:textSize="12sp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/skipPreviousButton"
+                android:layout_width="@dimen/button_height"
+                android:layout_height="@dimen/button_height"
+                android:layout_marginEnd="@dimen/half_base_margin"
+                android:adjustViewBounds="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/ic_skip_previous"
+                app:tint="@android:color/white" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/playPauseButton"
+                android:layout_width="@dimen/play_button_size"
+                android:layout_height="@dimen/play_button_size"
+                android:adjustViewBounds="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/ic_play"
+                app:tint="@android:color/white" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/skipNextButton"
+                android:layout_width="@dimen/button_height"
+                android:layout_height="@dimen/button_height"
+                android:layout_marginStart="@dimen/half_base_margin"
+                android:adjustViewBounds="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/ic_skip_next"
+                app:tint="@android:color/white" />
+        </LinearLayout>
     </LinearLayout>
 
 </RelativeLayout>
