@@ -1,8 +1,8 @@
 package com.pghaz.revery.image
 
+import android.content.Context
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
-import com.squareup.picasso.Transformation
 
 interface IImageLoader {
 
@@ -10,7 +10,11 @@ interface IImageLoader {
 
     fun placeholder(@DrawableRes placeholderResId: Int): IImageLoader
 
-    fun transform(transformation: Transformation): IImageLoader
-
     fun into(imageView: ImageView?)
+
+    fun ratioAndWidth(ratio: Float, width: Int, centerCrop: Boolean): IImageLoader
+
+    fun roundCorners(radiusDp: Int, marginsDp: Int): IImageLoader
+
+    fun blur(): IImageLoader
 }

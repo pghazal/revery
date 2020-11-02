@@ -23,6 +23,7 @@ import com.pghaz.revery.adapter.spotify.SpotifyArtistViewHolder
 import com.pghaz.revery.adapter.spotify.SpotifyPlaylistViewHolder
 import com.pghaz.revery.adapter.spotify.SpotifyTrackViewHolder
 import com.pghaz.revery.animation.AnimatorUtils
+import com.pghaz.revery.image.ImageLoader
 import com.pghaz.revery.model.app.BaseModel
 import com.pghaz.revery.model.app.alarm.Alarm
 import com.pghaz.revery.model.app.alarm.AlarmMetadata
@@ -40,6 +41,7 @@ import com.pghaz.revery.settings.SettingsHandler
 import com.pghaz.revery.spotify.SpotifyActivity
 import com.pghaz.revery.util.Arguments
 import com.pghaz.revery.util.DateTimeUtils
+import com.pghaz.revery.util.ViewUtils
 import com.pghaz.revery.viewmodel.alarm.CreateEditAlarmViewModel
 import com.shawnlin.numberpicker.NumberPicker
 import kotlinx.android.synthetic.main.floating_action_buttons_music_menu.*
@@ -138,6 +140,13 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
         params.addRule(RelativeLayout.ALIGN_PARENT_START)
         ringtoneInfoContainer.addView(view, params)
+
+        ImageLoader.get()
+            .load(alarm.metadata.imageUrl)
+            .blur()
+            .roundCorners(16, 0)
+            .ratioAndWidth(1f, ViewUtils.getRealScreenWidthSize(backgroundImageView.context), true)
+            .into(backgroundImageView)
     }
 
     private fun initTimePicker(is24HourFormat: Boolean) {

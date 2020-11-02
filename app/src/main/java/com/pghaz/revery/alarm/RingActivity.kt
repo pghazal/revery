@@ -12,6 +12,7 @@ import com.pghaz.revery.BaseActivity
 import com.pghaz.revery.R
 import com.pghaz.revery.broadcastreceiver.AlarmBroadcastReceiver
 import com.pghaz.revery.extension.logError
+import com.pghaz.revery.image.ImageLoader
 import com.pghaz.revery.model.app.alarm.Alarm
 import com.pghaz.revery.player.AbstractPlayer
 import com.pghaz.revery.service.AlarmService
@@ -19,6 +20,7 @@ import com.pghaz.revery.settings.SettingsHandler
 import com.pghaz.revery.settings.SnoozeDuration
 import com.pghaz.revery.util.Arguments
 import com.pghaz.revery.util.IntentUtils
+import com.pghaz.revery.util.ViewUtils
 import kotlinx.android.synthetic.main.activity_ring.*
 import java.util.*
 
@@ -121,6 +123,12 @@ class RingActivity : BaseActivity() {
     }
 
     override fun configureViews(savedInstanceState: Bundle?) {
+        ImageLoader.get()
+            .load(alarm.metadata.imageUrl)
+            .blur()
+            .ratioAndWidth(1f, ViewUtils.getRealScreenWidthSize(backgroundImageView.context), true)
+            .into(backgroundImageView)
+
         turnOffButton.setOnClickListener {
             broadcastStopAlarm()
         }
@@ -170,7 +178,7 @@ class RingActivity : BaseActivity() {
             broadcastSnooze(SnoozeDuration.values()[snoozeDurationIndex])
         }
 
-        if(SettingsHandler.getCanChangeSnoozeDuration(this)) {
+        if (SettingsHandler.getCanChangeSnoozeDuration(this)) {
             minusSnoozeButton.visibility = View.VISIBLE
             plusSnoozeButton.visibility = View.VISIBLE
         } else {
