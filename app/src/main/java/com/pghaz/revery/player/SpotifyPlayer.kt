@@ -15,9 +15,9 @@ import com.spotify.protocol.client.CallResult
 import com.spotify.protocol.client.Subscription
 import com.spotify.protocol.types.ImageUri
 import com.spotify.protocol.types.PlayerState
+import com.spotify.protocol.types.Repeat
 import kotlinx.coroutines.*
 
-@ExperimentalCoroutinesApi
 class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
     AbstractPlayer(context, AudioManager.STREAM_MUSIC, shouldUseDeviceVolume),
     Connector.ConnectionListener {
@@ -35,6 +35,7 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
     val playerConnectedLiveData = MutableLiveData<Boolean>()
 
     var shuffle: Boolean = false
+    var repeat: Int = Repeat.OFF
 
     private var playerApi: PlayerApi? = null
     private var imagesApi: ImagesApi? = null
@@ -69,6 +70,7 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
         this.isInitialized = true
         this.connectionState = ConnectionState.CONNECTED
         this.spotifyAppRemote!!.playerApi.setShuffle(shuffle)
+        this.spotifyAppRemote!!.playerApi.setRepeat(repeat)
 
         this.playerApi = this.spotifyAppRemote!!.playerApi
         this.imagesApi = this.spotifyAppRemote!!.imagesApi
@@ -215,6 +217,7 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
         }
     }
 
+    @ExperimentalCoroutinesApi
     private suspend fun getAppRemote(): SpotifyAppRemote? {
         if (!isInitialized) {
             SpotifyAppRemote.connect(context, connectionParams, this)

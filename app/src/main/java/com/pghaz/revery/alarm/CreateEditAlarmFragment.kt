@@ -718,28 +718,16 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
     private fun spotifyItemToMetadata(alarm: Alarm, item: BaseModel): AlarmMetadata {
         return when (item) {
             is TrackWrapper -> {
-                item.toAlarmMetadata().apply {
-                    this.shuffle = alarm.metadata.shuffle
-                    this.shouldKeepPlaying = alarm.metadata.shouldKeepPlaying
-                }
+                item.toAlarmMetadata(alarm)
             }
             is AlbumWrapper -> {
-                item.toAlarmMetadata().apply {
-                    this.shuffle = alarm.metadata.shuffle
-                    this.shouldKeepPlaying = alarm.metadata.shouldKeepPlaying
-                }
+                item.toAlarmMetadata(alarm)
             }
             is ArtistWrapper -> {
-                item.toAlarmMetadata().apply {
-                    this.shuffle = alarm.metadata.shuffle
-                    this.shouldKeepPlaying = alarm.metadata.shouldKeepPlaying
-                }
+                item.toAlarmMetadata(alarm)
             }
             is PlaylistWrapper -> {
-                item.toAlarmMetadata().apply {
-                    this.shuffle = alarm.metadata.shuffle
-                    this.shouldKeepPlaying = alarm.metadata.shouldKeepPlaying
-                }
+                item.toAlarmMetadata(alarm)
             }
             else -> {
                 AlarmMetadata(alarm.metadata)

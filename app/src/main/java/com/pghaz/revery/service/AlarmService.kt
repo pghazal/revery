@@ -182,6 +182,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
             MediaType.SPOTIFY_PLAYLIST,
             MediaType.SPOTIFY_TRACK -> {
                 (player as SpotifyPlayer).shuffle = metadata.shuffle
+                (player as SpotifyPlayer).repeat = metadata.repeat
             }
 
             MediaType.DEFAULT -> {
@@ -359,6 +360,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
             .build()
     }
 
+    @Suppress("DEPRECATION")
     private fun vibrate() {
         // Vibrate for 1000 milliseconds
         // Sleep for 1000 milliseconds

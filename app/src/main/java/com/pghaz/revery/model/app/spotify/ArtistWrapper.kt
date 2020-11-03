@@ -1,6 +1,7 @@
 package com.pghaz.revery.model.app.spotify
 
 import android.os.Parcelable
+import com.pghaz.revery.model.app.alarm.Alarm
 import com.pghaz.revery.model.app.alarm.AlarmMetadata
 import com.pghaz.revery.model.app.alarm.MediaType
 import io.github.kaaes.spotify.webapi.core.models.Artist
@@ -8,13 +9,9 @@ import io.github.kaaes.spotify.webapi.core.models.ArtistSimple
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class ArtistWrapper(
-    val artist: Artist,
-    override var shuffle: Boolean = false,
-    override var shouldKeepPlaying: Boolean = false
-) : BaseSpotifyMediaModel(shuffle, shouldKeepPlaying), Parcelable {
+data class ArtistWrapper(val artist: Artist) : BaseSpotifyMediaModel(), Parcelable {
 
-    fun toAlarmMetadata(): AlarmMetadata {
+    fun toAlarmMetadata(alarm: Alarm): AlarmMetadata {
         return AlarmMetadata(
             uri = this.artist.uri,
             href = this.artist.href,
@@ -22,8 +19,9 @@ data class ArtistWrapper(
             name = this.artist.name,
             description = null,
             imageUrl = this.artist.images[0].url,
-            shuffle = this.shuffle,
-            shouldKeepPlaying = this.shouldKeepPlaying
+            shuffle = alarm.metadata.shuffle,
+            shouldKeepPlaying = alarm.metadata.shouldKeepPlaying,
+            repeat = alarm.metadata.repeat,
         )
     }
 

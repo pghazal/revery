@@ -35,13 +35,41 @@
                 android:text="@string/alarm_keep_playing"
                 app:switchPadding="@dimen/half_base_margin" />
 
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/shuffleSwitch"
-                style="@style/ReveryLabel"
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/alarm_shuffle"
-                app:switchPadding="@dimen/half_base_margin" />
+                android:layout_marginTop="@dimen/half_base_margin"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatToggleButton
+                    android:id="@+id/shuffleToggle"
+                    style="@style/ReveryToggle"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/toggle_size"
+                    android:layout_marginEnd="@dimen/third_base_margin"
+                    android:layout_weight="1"
+                    android:checked="false"
+                    android:drawableStart="@drawable/ic_shuffle"
+                    android:text=""
+                    android:textOff="@string/alarm_shuffle"
+                    android:textOn="@string/alarm_shuffle"
+                    tools:checked="true" />
+
+                <androidx.appcompat.widget.AppCompatToggleButton
+                    android:id="@+id/repeatToggle"
+                    style="@style/ReveryToggle"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/toggle_size"
+                    android:layout_marginStart="@dimen/third_base_margin"
+                    android:layout_weight="1"
+                    android:checked="false"
+                    android:drawableStart="@drawable/ic_repeat_off"
+                    android:text=""
+                    android:textOff="@string/alarm_repeat"
+                    android:textOn="@string/alarm_repeat"
+                    tools:checked="true" />
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>

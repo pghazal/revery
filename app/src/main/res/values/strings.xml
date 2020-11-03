@@ -105,6 +105,7 @@
 
     <string name="more_options">more options</string>
     <string name="alarm_shuffle">shuffle play</string>
+    <string name="alarm_repeat">repeat</string>
     <string name="alarm_keep_playing">keep playing after alarm turns off</string>
 
     <string name="track">Track</string>
