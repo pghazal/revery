@@ -21,6 +21,7 @@ import com.pghaz.revery.model.app.alarm.Alarm
 import com.pghaz.revery.service.AlarmService
 import com.pghaz.revery.service.RescheduleAlarmsService
 import com.pghaz.revery.sleep.SleepFragment
+import com.pghaz.revery.spotify.BaseSpotifyActivity
 import com.pghaz.revery.util.Arguments
 import com.pghaz.revery.util.IntentUtils
 import kotlinx.android.synthetic.main.activity_main.*
@@ -28,7 +29,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 /**
  * MainActivity has launchMode = "singleTask" in Manifest
  */
-class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
+class MainActivity : BaseSpotifyActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
 
     private var mAlarmServiceBound: Boolean = false
     private lateinit var alarm: Alarm
@@ -45,6 +46,10 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
         return false
     }
 
+    override fun shouldShowAuth(): Boolean {
+        return false
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         bindToAlarmServiceIfAlarmFired()
@@ -58,6 +63,10 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
             isFirstTime = true,
             openingFromSettings = false
         )
+    }
+
+    override fun onSpotifyAuthorizedAndAvailable() {
+        // do nothing for now
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -189,7 +198,7 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
             supportFragmentManager.findFragmentByTag(ListAlarmsFragment.TAG) as ListAlarmsFragment?
         // If it doesn't, create it
         if (alarmsFragment == null) {
-            alarmsFragment = ListAlarmsFragment.newInstance()
+            alarmsFragment = ListAlarmsFragment.newInstance(spotifyAuthClient.getCurrentUser())
         }
         selectNavigationItem(alarmsFragment, ListAlarmsFragment.TAG)
     }

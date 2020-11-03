@@ -21,7 +21,7 @@ abstract class BaseSpotifyViewHolder(view: View) : BaseViewHolder(view) {
     @CallSuper
     override fun bind(model: BaseModel) {
         itemView.setOnClickListener {
-            onSpotifyItemClickListener?.onClick(model)
+            onSpotifyItemClickListener?.onSpotifyItemClicked(model)
         }
     }
 

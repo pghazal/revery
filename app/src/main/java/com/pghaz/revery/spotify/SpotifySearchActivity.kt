@@ -31,6 +31,10 @@ class SpotifySearchActivity : BaseSpotifyActivity(), SpotifyAuthorizationCallbac
         return true
     }
 
+    override fun shouldShowAuth(): Boolean {
+        return true
+    }
+
     override fun onSpotifyAuthorizedAndAvailable() {
         progressBar.visibility = View.GONE
         showDefaultSpotifyFragment()

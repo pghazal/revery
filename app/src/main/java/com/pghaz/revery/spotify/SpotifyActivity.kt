@@ -30,6 +30,10 @@ class SpotifyActivity : BaseSpotifyActivity(), ExtendedFloatingActionListener {
         return true
     }
 
+    override fun shouldShowAuth(): Boolean {
+        return true
+    }
+
     override fun onSpotifyAuthorizedAndAvailable() {
         progressBar.visibility = View.GONE
         showDefaultSpotifyFragment()

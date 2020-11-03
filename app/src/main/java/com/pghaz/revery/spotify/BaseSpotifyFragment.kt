@@ -1,7 +1,6 @@
 package com.pghaz.revery.spotify
 
-import android.app.Activity
-import android.content.Intent
+import android.content.Context
 import android.os.Bundle
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
@@ -23,6 +22,8 @@ import kotlinx.android.synthetic.main.fragment_spotify.*
 abstract class BaseSpotifyFragment : BaseFragment(), ResultListScrollListener.OnLoadMoreListener,
     OnSpotifyItemClickListener, SpotifyErrorListener {
 
+    private var onSpotifyItemClickedListener: OnSpotifyItemClickListener? = null
+
     private lateinit var accessToken: String
     private lateinit var filter: SpotifyFilter
 
@@ -30,6 +31,11 @@ abstract class BaseSpotifyFragment : BaseFragment(), ResultListScrollListener.On
 
     protected lateinit var scrollListener: ResultListScrollListener
     private lateinit var itemsAdapter: SpotifyItemsAdapter
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        onSpotifyItemClickedListener = context as? OnSpotifyItemClickListener
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,11 +73,8 @@ abstract class BaseSpotifyFragment : BaseFragment(), ResultListScrollListener.On
         recyclerView.addOnScrollListener(scrollListener)
     }
 
-    override fun onClick(model: BaseModel) {
-        val data = Intent()
-        data.putExtra(Arguments.ARGS_SPOTIFY_ITEM_SELECTED, model)
-        activity?.setResult(Activity.RESULT_OK, data)
-        activity?.finish()
+    override fun onSpotifyItemClicked(model: BaseModel) {
+        onSpotifyItemClickedListener?.onSpotifyItemClicked(model)
     }
 
     override fun onSpotifyError(error: SpotifyError) {
