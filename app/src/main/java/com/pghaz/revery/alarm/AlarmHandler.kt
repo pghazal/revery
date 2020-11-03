@@ -39,6 +39,7 @@ object AlarmHandler {
         if (spotify) {
             metadata.type = MediaType.SPOTIFY_PLAYLIST
             metadata.uri = "spotify:playlist:3H8dsoJvkH7lUkaQlUNjPJ"
+            metadata.shuffle = true
         } else {
             metadata.type = MediaType.DEFAULT
             metadata.uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM).toString()

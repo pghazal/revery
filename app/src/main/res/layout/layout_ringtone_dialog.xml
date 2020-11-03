@@ -40,7 +40,6 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/positiveButton"
-            style="@style/ReveryButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -56,7 +55,6 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/negativeButton"
-            style="@style/ReveryButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"

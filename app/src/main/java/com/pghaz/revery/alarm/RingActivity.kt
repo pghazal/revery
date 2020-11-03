@@ -208,31 +208,23 @@ class RingActivity : BaseActivity() {
         }
 
         skipNextButton.setOnClickListener {
-            if (player is SpotifyPlayer) {
-                (player as SpotifyPlayer?)?.skipNext()
-            }
+            skipNext()
         }
 
         skipPreviousButton.setOnClickListener {
-            if (player is SpotifyPlayer) {
-                (player as SpotifyPlayer?)?.skipPrevious()
-            }
+            skipPrevious()
         }
 
         gesturesInterceptorView.setOnTouchListener(object :
             OnCustomTouchListener(this@RingActivity) {
             override fun onSwipeLeft() {
                 super.onSwipeLeft()
-                if (player is SpotifyPlayer) {
-                    (player as SpotifyPlayer?)?.skipPrevious()
-                }
+                skipPrevious()
             }
 
             override fun onSwipeRight() {
                 super.onSwipeRight()
-                if (player is SpotifyPlayer) {
-                    (player as SpotifyPlayer?)?.skipNext()
-                }
+                skipNext()
             }
 
             override fun onDoubleTap() {
@@ -243,6 +235,28 @@ class RingActivity : BaseActivity() {
                 }
             }
         })
+    }
+
+    private fun skipNext() {
+        if (player is SpotifyPlayer) {
+            (player as SpotifyPlayer?)?.getPlayerStateCallResult()
+                ?.setResultCallback { playerState ->
+                    if (playerState.playbackRestrictions.canSkipNext) {
+                        (player as SpotifyPlayer?)?.skipNext()
+                    }
+                }
+        }
+    }
+
+    private fun skipPrevious() {
+        if (player is SpotifyPlayer) {
+            (player as SpotifyPlayer?)?.getPlayerStateCallResult()
+                ?.setResultCallback { playerState ->
+                    if (playerState.playbackRestrictions.canSkipPrev) {
+                        (player as SpotifyPlayer?)?.skipPrevious()
+                    }
+                }
+        }
     }
 
     private fun configurePlayerControllers(player: AbstractPlayer?) {
@@ -258,7 +272,7 @@ class RingActivity : BaseActivity() {
                             logError(track.name.toString() + " by " + track.artist.name)
 
                             if (playerState.isPaused) {
-                                playPauseButton.setImageResource(R.drawable.ic_play)
+                                playPauseButton.setImageResource(R.drawable.selector_play)
                                 // If Spotify starting playing and we're pausing from app or Spotify
                                 // Let's just stop the
                                 if (hasStartedPlayingAtLeast) {
@@ -266,12 +280,16 @@ class RingActivity : BaseActivity() {
                                 }
                             } else {
                                 hasStartedPlayingAtLeast = true
-                                playPauseButton.setImageResource(R.drawable.ic_pause)
+                                playPauseButton.setImageResource(R.drawable.selector_pause)
 
                                 titleTextView.text = track.name
                                 artistNameTextView.text = track.artist.name
                                 updateImageWithSpotify(player, playerState)
                             }
+
+                            skipNextButton.isEnabled = playerState.playbackRestrictions.canSkipNext
+                            skipPreviousButton.isEnabled =
+                                playerState.playbackRestrictions.canSkipPrev
                         }
                     }
                 }

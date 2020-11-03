@@ -329,7 +329,6 @@
 
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/moreOptionsButton"
-                    style="@style/ReveryButton"
                     android:layout_width="@dimen/toggle_size"
                     android:layout_height="@dimen/toggle_size"
                     android:layout_marginStart="@dimen/half_base_margin"
@@ -374,7 +373,6 @@
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/negativeAlarmButton"
-            style="@style/ReveryButton"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/button_height"
             android:layout_marginStart="@dimen/half_base_margin"

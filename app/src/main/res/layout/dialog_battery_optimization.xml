@@ -83,7 +83,6 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/closeButton"
-            style="@style/ReveryButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
@@ -91,12 +90,10 @@
             android:paddingStart="@dimen/half_base_margin"
             android:paddingEnd="@dimen/half_base_margin"
             android:text="@string/close"
-            android:textAllCaps="false"
-            android:textColor="@android:color/white" />
+            android:textAllCaps="false" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/goToSettingsButton"
-            style="@style/ReveryButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
@@ -104,7 +101,6 @@
             android:paddingStart="@dimen/half_base_margin"
             android:paddingEnd="@dimen/half_base_margin"
             android:text="@string/go_to_settings"
-            android:textAllCaps="false"
-            android:textColor="@android:color/white" />
+            android:textAllCaps="false" />
     </LinearLayout>
 </LinearLayout>

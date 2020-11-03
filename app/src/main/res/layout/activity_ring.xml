@@ -87,7 +87,7 @@
                 android:adjustViewBounds="true"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:scaleType="fitXY"
-                app:srcCompat="@drawable/ic_skip_previous"
+                app:srcCompat="@drawable/selector_skip_previous"
                 app:tint="@android:color/white" />
 
             <androidx.appcompat.widget.AppCompatImageButton
@@ -97,7 +97,7 @@
                 android:adjustViewBounds="true"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:scaleType="fitXY"
-                app:srcCompat="@drawable/ic_play"
+                app:srcCompat="@drawable/selector_play"
                 app:tint="@android:color/white" />
 
             <androidx.appcompat.widget.AppCompatImageButton
@@ -108,7 +108,7 @@
                 android:adjustViewBounds="true"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:scaleType="fitXY"
-                app:srcCompat="@drawable/ic_skip_next"
+                app:srcCompat="@drawable/selector_skip_next"
                 app:tint="@android:color/white" />
         </LinearLayout>
     </LinearLayout>
@@ -143,7 +143,6 @@
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/minusSnoozeButton"
-            style="@style/ReveryButton"
             android:layout_width="@dimen/button_height"
             android:layout_height="@dimen/button_height"
             android:layout_marginEnd="@dimen/half_base_margin"
@@ -160,7 +159,6 @@
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/plusSnoozeButton"
-            style="@style/ReveryButton"
             android:layout_width="@dimen/button_height"
             android:layout_height="@dimen/button_height"
             android:layout_marginStart="@dimen/half_base_margin"

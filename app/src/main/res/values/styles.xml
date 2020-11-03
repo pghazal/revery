@@ -11,6 +11,9 @@
         <item name="fontFamily">@font/montserrat</item>
 
         <item name="android:buttonStyle">@style/ReveryButton</item>
+        <item name="buttonStyle">@style/ReveryButton</item>
+        <item name="imageButtonStyle">@style/ReveryImageButton</item>
+        <item name="android:imageButtonStyle">@style/ReveryImageButton</item>
 
         <item name="chipStyle">@style/ReveryChip</item>
     </style>
@@ -25,10 +28,17 @@
         <item name="android:windowActionBar">false</item>
     </style>
 
+    <style name="ReveryImageButton" parent="Widget.AppCompat.ImageButton">
+        <item name="android:background">@drawable/shape_button_circled_corner</item>
+        <item name="android:gravity">center</item>
+    </style>
+
     <style name="ReveryButton" parent="Widget.AppCompat.Button.Colored">
         <item name="android:background">@drawable/shape_button_circled_corner</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:gravity">center</item>
     </style>
 
     <style name="ReveryRadioButton" parent="ReveryToggle">
