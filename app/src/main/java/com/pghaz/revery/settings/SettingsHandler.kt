@@ -19,6 +19,10 @@ object SettingsHandler {
         "$SETTINGS_SHARED_PREF.snooze.can.change.duration"
     private const val DEFAULT_SNOOZE_CAN_CHANGE_DURATION = false
 
+    private const val SETTINGS_SNOOZE_DOUBLE_TAP =
+        "$SETTINGS_SHARED_PREF.snooze.double_tap"
+    private const val DEFAULT_SNOOZE_DOUBLE_TAP = false
+
     // Fade in
     private const val SETTINGS_FADE_IN = "$SETTINGS_SHARED_PREF.fade_in"
     private const val SETTINGS_FADE_IN_POSITION = "$SETTINGS_SHARED_PREF.fade_in.position"
@@ -143,6 +147,21 @@ object SettingsHandler {
         return sharedPreferences.getBoolean(
             SETTINGS_SNOOZE_CAN_CHANGE_DURATION,
             DEFAULT_SNOOZE_CAN_CHANGE_DURATION
+        )
+    }
+
+    fun setDoubleTapSnooze(context: Context, value: Boolean) {
+        val sharedPreferences = getSharedPreferences(context)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean(SETTINGS_SNOOZE_DOUBLE_TAP, value)
+        editor.apply()
+    }
+
+    fun isDoubleTapSnoozeEnabled(context: Context): Boolean {
+        val sharedPreferences = getSharedPreferences(context)
+        return sharedPreferences.getBoolean(
+            SETTINGS_SNOOZE_DOUBLE_TAP,
+            DEFAULT_SNOOZE_DOUBLE_TAP
         )
     }
 }

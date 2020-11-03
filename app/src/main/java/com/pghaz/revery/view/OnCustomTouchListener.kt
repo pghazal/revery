@@ -12,7 +12,7 @@ import kotlin.math.abs
 /**
  * Detects left and right swipes across a view.
  */
-open class OnSwipeTouchListener(context: Context?) : OnTouchListener {
+open class OnCustomTouchListener(context: Context?) : OnTouchListener {
 
     companion object {
         private const val SWIPE_DISTANCE_THRESHOLD = 100
@@ -25,6 +25,8 @@ open class OnSwipeTouchListener(context: Context?) : OnTouchListener {
 
     open fun onSwipeRight() {}
 
+    open fun onDoubleTap() {}
+
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouch(v: View, event: MotionEvent): Boolean {
         return gestureDetector.onTouchEvent(event)
@@ -32,6 +34,11 @@ open class OnSwipeTouchListener(context: Context?) : OnTouchListener {
 
     private inner class GestureListener : SimpleOnGestureListener() {
         override fun onDown(e: MotionEvent): Boolean {
+            return true
+        }
+
+        override fun onDoubleTap(e: MotionEvent?): Boolean {
+            onDoubleTap()
             return true
         }
 

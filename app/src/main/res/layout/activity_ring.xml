@@ -36,61 +36,6 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/double_base_margin" />
 
-    <View
-        android:id="@+id/gesturesInterceptorView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/turnOffButton"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:layout_below="@+id/clockView"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="@dimen/double_base_margin"
-        android:layout_marginTop="@dimen/double_base_margin"
-        android:layout_marginEnd="@dimen/double_base_margin"
-        android:layout_marginBottom="@dimen/base_margin"
-        android:text="@string/alarm_turn_off" />
-
-    <LinearLayout
-        android:id="@+id/snoozeContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/turnOffButton"
-        android:layout_centerHorizontal="true"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingStart="@dimen/base_margin"
-        android:paddingEnd="@dimen/base_margin">
-
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/minusSnoozeButton"
-            style="@style/ReveryButton"
-            android:layout_width="@dimen/button_height"
-            android:layout_height="@dimen/button_height"
-            android:layout_marginEnd="@dimen/half_base_margin"
-            app:srcCompat="@drawable/ic_remove"
-            app:tint="@android:color/white" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/snoozeButton"
-            android:layout_width="0dp"
-            android:layout_height="64dp"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:text="@string/alarm_snooze" />
-
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/plusSnoozeButton"
-            style="@style/ReveryButton"
-            android:layout_width="@dimen/button_height"
-            android:layout_height="@dimen/button_height"
-            android:layout_marginStart="@dimen/half_base_margin"
-            app:srcCompat="@drawable/ic_add"
-            app:tint="@android:color/white" />
-    </LinearLayout>
-
     <LinearLayout
         android:id="@+id/controllersContainer"
         android:layout_width="match_parent"
@@ -168,4 +113,58 @@
         </LinearLayout>
     </LinearLayout>
 
+    <View
+        android:id="@+id/gesturesInterceptorView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/turnOffButton"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_below="@+id/clockView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="@dimen/double_base_margin"
+        android:layout_marginTop="@dimen/double_base_margin"
+        android:layout_marginEnd="@dimen/double_base_margin"
+        android:layout_marginBottom="@dimen/base_margin"
+        android:text="@string/alarm_turn_off" />
+
+    <LinearLayout
+        android:id="@+id/snoozeContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/turnOffButton"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/base_margin"
+        android:paddingEnd="@dimen/base_margin">
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/minusSnoozeButton"
+            style="@style/ReveryButton"
+            android:layout_width="@dimen/button_height"
+            android:layout_height="@dimen/button_height"
+            android:layout_marginEnd="@dimen/half_base_margin"
+            app:srcCompat="@drawable/ic_remove"
+            app:tint="@android:color/white" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/snoozeButton"
+            android:layout_width="0dp"
+            android:layout_height="64dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:text="@string/alarm_snooze" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/plusSnoozeButton"
+            style="@style/ReveryButton"
+            android:layout_width="@dimen/button_height"
+            android:layout_height="@dimen/button_height"
+            android:layout_marginStart="@dimen/half_base_margin"
+            app:srcCompat="@drawable/ic_add"
+            app:tint="@android:color/white" />
+    </LinearLayout>
 </RelativeLayout>

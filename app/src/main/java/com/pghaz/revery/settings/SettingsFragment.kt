@@ -99,6 +99,15 @@ class SettingsFragment : BaseBottomSheetDialogFragment() {
             SettingsHandler.setCanChangeSnoozeDuration(buttonView.context, isChecked)
         }
 
+        // Double tap to snooze
+        context?.let {
+            val doubleTapSnoozeEnabled = SettingsHandler.isDoubleTapSnoozeEnabled(it)
+            doubleTapSnoozeSwitch.isChecked = doubleTapSnoozeEnabled
+        }
+        doubleTapSnoozeSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+            SettingsHandler.setDoubleTapSnooze(buttonView.context, isChecked)
+        }
+
         // Fade In
         context?.let {
             var fadeInDurationPosition = SettingsHandler.getFadeInDurationPosition(it)

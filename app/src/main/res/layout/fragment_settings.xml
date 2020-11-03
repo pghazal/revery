@@ -59,14 +59,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/containerSnooze"
+                android:text="@string/alarm_snooze_update" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/doubleTapSnoozeSwitch"
+                style="@style/ReveryLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/canChangeSnoozeDurationSwitch"
                 android:layout_marginBottom="@dimen/double_base_margin"
-                android:text="@string/alarm_update_snooze" />
+                android:text="@string/alarm_snooze_double_tap" />
 
             <LinearLayout
                 android:id="@+id/containerFadeIn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/canChangeSnoozeDurationSwitch"
+                android:layout_below="@id/doubleTapSnoozeSwitch"
                 android:layout_marginBottom="@dimen/double_base_margin"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">

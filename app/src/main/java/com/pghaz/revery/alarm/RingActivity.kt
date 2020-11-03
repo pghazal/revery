@@ -23,7 +23,7 @@ import com.pghaz.revery.settings.SnoozeDuration
 import com.pghaz.revery.util.Arguments
 import com.pghaz.revery.util.IntentUtils
 import com.pghaz.revery.util.ViewUtils
-import com.pghaz.revery.view.OnSwipeTouchListener
+import com.pghaz.revery.view.OnCustomTouchListener
 import com.spotify.protocol.types.PlayerState
 import com.spotify.protocol.types.Track
 import kotlinx.android.synthetic.main.activity_ring.*
@@ -220,7 +220,7 @@ class RingActivity : BaseActivity() {
         }
 
         gesturesInterceptorView.setOnTouchListener(object :
-            OnSwipeTouchListener(this@RingActivity) {
+            OnCustomTouchListener(this@RingActivity) {
             override fun onSwipeLeft() {
                 super.onSwipeLeft()
                 if (player is SpotifyPlayer) {
@@ -232,6 +232,14 @@ class RingActivity : BaseActivity() {
                 super.onSwipeRight()
                 if (player is SpotifyPlayer) {
                     (player as SpotifyPlayer?)?.skipNext()
+                }
+            }
+
+            override fun onDoubleTap() {
+                super.onDoubleTap()
+
+                if (SettingsHandler.isDoubleTapSnoozeEnabled(this@RingActivity)) {
+                    broadcastSnooze(SnoozeDuration.values()[snoozeDurationIndex])
                 }
             }
         })
