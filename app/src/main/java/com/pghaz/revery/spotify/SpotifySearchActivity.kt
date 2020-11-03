@@ -35,6 +35,11 @@ class SpotifySearchActivity : BaseSpotifyActivity(), SpotifyAuthorizationCallbac
         return true
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    }
+
     override fun onSpotifyAuthorizedAndAvailable() {
         progressBar.visibility = View.GONE
         showDefaultSpotifyFragment()

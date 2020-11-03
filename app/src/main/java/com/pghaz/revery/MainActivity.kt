@@ -198,7 +198,7 @@ class MainActivity : BaseSpotifyActivity(), BottomNavigationView.OnNavigationIte
             supportFragmentManager.findFragmentByTag(ListAlarmsFragment.TAG) as ListAlarmsFragment?
         // If it doesn't, create it
         if (alarmsFragment == null) {
-            alarmsFragment = ListAlarmsFragment.newInstance(spotifyAuthClient.getCurrentUser())
+            alarmsFragment = ListAlarmsFragment.newInstance()
         }
         selectNavigationItem(alarmsFragment, ListAlarmsFragment.TAG)
     }

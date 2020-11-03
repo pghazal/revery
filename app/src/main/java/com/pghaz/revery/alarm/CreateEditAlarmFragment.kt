@@ -44,7 +44,6 @@ import com.pghaz.revery.util.DateTimeUtils
 import com.pghaz.revery.util.ViewUtils
 import com.pghaz.revery.viewmodel.alarm.CreateEditAlarmViewModel
 import com.shawnlin.numberpicker.NumberPicker
-import io.github.kaaes.spotify.webapi.core.models.UserPrivate
 import kotlinx.android.synthetic.main.floating_action_buttons_music_menu.*
 import kotlinx.android.synthetic.main.fragment_alarm_create_edit.*
 import java.util.*
@@ -53,7 +52,6 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
 
     private lateinit var createEditAlarmViewModel: CreateEditAlarmViewModel
     private var alarm: Alarm? = null
-    private var spotifyUser: UserPrivate? = null
 
     private lateinit var chooseRingtoneButtonAnimatorSet: AnimatorSet
     private lateinit var openMenuMusicAnimation: AnimatorSet
@@ -67,13 +65,11 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         super.parseArguments(arguments)
         arguments?.let {
             alarm = it.getParcelable(Arguments.ARGS_ALARM)
-            spotifyUser = it.getParcelable(Arguments.ARGS_SPOTIFY_USER)
         }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putParcelable(Arguments.ARGS_ALARM, alarm)
-        outState.putParcelable(Arguments.ARGS_SPOTIFY_USER, spotifyUser)
         super.onSaveInstanceState(outState)
     }
 
@@ -436,8 +432,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         if (fragment == null) {
             fragment = MoreOptionsAlarmFragment.newInstance(
                 getString(R.string.more_options),
-                alarm,
-                spotifyUser
+                alarm
             )
             fragment.show(childFragmentManager, MoreOptionsAlarmFragment.TAG)
         }
@@ -705,7 +700,6 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
     private fun handleSpotifySelection(alarm: Alarm?, data: Intent?) {
         val selectedSpotifyItem =
             data?.getParcelableExtra(Arguments.ARGS_SPOTIFY_ITEM_SELECTED) as BaseModel?
-        spotifyUser = data?.getParcelableExtra(Arguments.ARGS_SPOTIFY_USER) as UserPrivate?
 
         if (selectedSpotifyItem != null) {
             alarm?.let {
@@ -779,7 +773,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
 
         const val REQUEST_CODE_PICK_MUSIC = 21
 
-        fun newInstance(dialogTitle: String, spotifyUser: UserPrivate?): CreateEditAlarmFragment {
+        fun newInstance(dialogTitle: String): CreateEditAlarmFragment {
             val newAlarm = Alarm(
                 id = BaseModel.NO_ID, // Let this ´NO_ID´ value. It defines if it's creation or edition of alarm
                 hour = 0,
@@ -800,19 +794,17 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
                 metadata = AlarmMetadata()
             )
 
-            return newInstance(dialogTitle, newAlarm, spotifyUser)
+            return newInstance(dialogTitle, newAlarm)
         }
 
         fun newInstance(
             dialogTitle: String,
-            alarm: Alarm,
-            spotifyUser: UserPrivate?
+            alarm: Alarm
         ): CreateEditAlarmFragment {
             val args = Bundle()
 
             args.putString(Arguments.ARGS_DIALOG_TITLE, dialogTitle)
             args.putParcelable(Arguments.ARGS_ALARM, alarm)
-            args.putParcelable(Arguments.ARGS_SPOTIFY_USER, spotifyUser)
 
             val fragment = CreateEditAlarmFragment()
             fragment.arguments = args

@@ -19,30 +19,15 @@ import com.pghaz.revery.adapter.base.BaseAdapter
 import com.pghaz.revery.model.app.BaseModel
 import com.pghaz.revery.model.app.alarm.Alarm
 import com.pghaz.revery.settings.SettingsFragment
-import com.pghaz.revery.util.Arguments
+import com.pghaz.revery.spotify.BaseSpotifyActivity
 import com.pghaz.revery.viewmodel.alarm.ListAlarmsViewModel
 import com.pghaz.spotify.webapi.auth.SpotifyAuthorizationClient
-import io.github.kaaes.spotify.webapi.core.models.UserPrivate
 import kotlinx.android.synthetic.main.fragment_list_alarms.*
 
 class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
 
     private lateinit var listAlarmsViewModel: ListAlarmsViewModel
     private lateinit var alarmsAdapter: AlarmsAdapter
-
-    private var spotifyUser: UserPrivate? = null
-
-    override fun parseArguments(arguments: Bundle?) {
-        super.parseArguments(arguments)
-        arguments?.let {
-            spotifyUser = it.getParcelable(Arguments.ARGS_SPOTIFY_USER)
-        }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelable(Arguments.ARGS_SPOTIFY_USER, spotifyUser)
-        super.onSaveInstanceState(outState)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -102,10 +87,7 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
                 childFragmentManager.findFragmentByTag(CreateEditAlarmFragment.TAG) as CreateEditAlarmFragment?
             if (createAlarmFragment == null) {
                 createAlarmFragment =
-                    CreateEditAlarmFragment.newInstance(
-                        getString(R.string.create_alarm),
-                        spotifyUser
-                    )
+                    CreateEditAlarmFragment.newInstance(getString(R.string.create_alarm))
                 createAlarmFragment.show(childFragmentManager, CreateEditAlarmFragment.TAG)
             }
         }
@@ -225,10 +207,13 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
         var createAlarmFragment =
             childFragmentManager.findFragmentByTag(CreateEditAlarmFragment.TAG) as CreateEditAlarmFragment?
         if (createAlarmFragment == null) {
-            createAlarmFragment = CreateEditAlarmFragment.newInstance(
-                getString(R.string.edit_alarm), alarm, spotifyUser
-            )
-            createAlarmFragment.show(childFragmentManager, CreateEditAlarmFragment.TAG)
+            if (activity is BaseSpotifyActivity) {
+                createAlarmFragment = CreateEditAlarmFragment.newInstance(
+                    getString(R.string.edit_alarm),
+                    alarm
+                )
+                createAlarmFragment.show(childFragmentManager, CreateEditAlarmFragment.TAG)
+            }
         }
     }
 
@@ -246,12 +231,10 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
     companion object {
         const val TAG = "ListAlarmsFragment"
 
-        fun newInstance(spotifyUser: UserPrivate?): ListAlarmsFragment {
+        fun newInstance(): ListAlarmsFragment {
             val fragment = ListAlarmsFragment()
 
             val args = Bundle()
-            args.putParcelable(Arguments.ARGS_SPOTIFY_USER, spotifyUser)
-
             fragment.arguments = args
 
             return fragment

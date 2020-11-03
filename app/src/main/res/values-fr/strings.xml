@@ -66,6 +66,8 @@
     <string name="alarm_by_default">Alarme par défaut</string>
     <string name="alarm_snooze_update">Pouvoir changer la durée au réveil</string>
     <string name="alarm_snooze_double_tap">Double cliquer pour activer le rappel</string>
+    <string name="spotify_login">Connexion</string>
+    <string name="spotify_logout">Déconnexion</string>
 
     <!-- PERMISSIONS -->
     <string name="permissions">Accès au stockage</string>

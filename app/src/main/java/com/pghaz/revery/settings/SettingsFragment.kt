@@ -21,13 +21,16 @@ import com.pghaz.revery.adapter.alarm.DefaultMediaViewHolder
 import com.pghaz.revery.alarm.CreateEditAlarmFragment
 import com.pghaz.revery.animation.AnimatorUtils
 import com.pghaz.revery.battery.PowerManagerHandler
+import com.pghaz.revery.image.ImageLoader
 import com.pghaz.revery.model.app.alarm.AlarmMetadata
 import com.pghaz.revery.model.app.alarm.MediaType
 import com.pghaz.revery.permission.PermissionDialogFactory
 import com.pghaz.revery.permission.PermissionManager
 import com.pghaz.revery.permission.ReveryPermission
 import com.pghaz.revery.ringtone.AudioPickerHelper
+import com.pghaz.revery.spotify.BaseSpotifyActivity
 import com.pghaz.revery.util.Arguments
+import io.github.kaaes.spotify.webapi.core.models.UserPrivate
 import kotlinx.android.synthetic.main.floating_action_buttons_music_menu.*
 import kotlinx.android.synthetic.main.fragment_settings.*
 
@@ -222,6 +225,10 @@ class SettingsFragment : BaseBottomSheetDialogFragment() {
         }
 
         initDefaultAudioViews()
+
+        if (activity is BaseSpotifyActivity) {
+            updateSpotifyViews((activity as BaseSpotifyActivity?)?.spotifyAuthClient?.getCurrentUser())
+        }
     }
 
     private fun initDefaultAudioViews() {
@@ -458,6 +465,47 @@ class SettingsFragment : BaseBottomSheetDialogFragment() {
             val aboutOKButton = view.findViewById<AppCompatButton>(R.id.aboutOKButton)
             aboutOKButton.setOnClickListener {
                 dialog.dismiss()
+            }
+        }
+    }
+
+    private fun updateSpotifyViews(spotifyUser: UserPrivate?) {
+        if (spotifyUser?.id == null) {
+            loginSpotifyButton.visibility = View.VISIBLE
+            loggedContainer.visibility = View.GONE
+        } else {
+            loginSpotifyButton.visibility = View.GONE
+            loggedContainer.visibility = View.VISIBLE
+
+            pseudoTextView.text = spotifyUser.display_name
+
+            val imageUrl = if (spotifyUser.images != null && spotifyUser.images.size > 0) {
+                spotifyUser.images[0].url
+            } else {
+                null
+            }
+
+            profileImageView.clipToOutline = true
+            ImageLoader.get()
+                .placeholder(R.drawable.placeholder_circle)
+                .load(imageUrl)
+                .into(profileImageView)
+        }
+
+        loginSpotifyButton.setOnClickListener {
+            if (activity is BaseSpotifyActivity) {
+                (activity as BaseSpotifyActivity?)?.spotifyAuthClient?.authorize(
+                    activity as BaseSpotifyActivity,
+                    BaseSpotifyActivity.REQUEST_CODE_SPOTIFY_LOGIN
+                )
+                dismiss()
+            }
+        }
+
+        logoutSpotifyButton.setOnClickListener {
+            if (activity is BaseSpotifyActivity) {
+                (activity as BaseSpotifyActivity).spotifyAuthClient.logOut()
+                updateSpotifyViews((activity as BaseSpotifyActivity?)?.spotifyAuthClient?.getCurrentUser())
             }
         }
     }

@@ -34,6 +34,11 @@ class SpotifyActivity : BaseSpotifyActivity(), ExtendedFloatingActionListener {
         return true
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    }
+
     override fun onSpotifyAuthorizedAndAvailable() {
         progressBar.visibility = View.GONE
         showDefaultSpotifyFragment()

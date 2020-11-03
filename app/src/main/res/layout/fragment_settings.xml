@@ -167,9 +167,9 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/label3"
                 android:layout_alignParentEnd="true"
-                android:layout_marginTop="@dimen/third_base_margin"
                 android:layout_marginBottom="@dimen/double_base_margin"
                 android:src="@drawable/ic_music_note"
+                app:fabCustomSize="@dimen/button_height"
                 app:srcCompat="@drawable/ic_music_note" />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -186,14 +186,79 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/label4"
+                android:layout_marginBottom="@dimen/double_base_margin"
                 android:text="@string/battery_optimization_configure" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/label5"
+                style="@style/ReveryLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/batteryOptimizationButton"
+                android:layout_marginBottom="@dimen/third_base_margin"
+                android:text="@string/spotify" />
+
+            <RelativeLayout
+                android:id="@+id/spotifyContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/label5"
+                android:layout_marginBottom="@dimen/double_base_margin">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/loginSpotifyButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/spotify_login"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
+
+                <LinearLayout
+                    android:id="@+id/loggedContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/profileImageView"
+                        android:layout_width="@dimen/item_view_alarm_image_size"
+                        android:layout_height="@dimen/item_view_alarm_image_size"
+                        android:background="@drawable/placeholder_circle"
+                        android:scaleType="centerCrop" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/pseudoTextView"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/half_base_margin"
+                        android:layout_weight="1"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/montserrat_semi_bold"
+                        android:maxLines="1"
+                        android:textColor="@android:color/white"
+                        android:textSize="16sp"
+                        app:fontFamily="@font/montserrat_semi_bold" />
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/logoutSpotifyButton"
+                        android:layout_width="@dimen/button_height"
+                        android:layout_height="@dimen/button_height"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/half_base_margin"
+                        android:contentDescription="@string/spotify_logout"
+                        app:srcCompat="@drawable/ic_logout" />
+                </LinearLayout>
+            </RelativeLayout>
 
             <Button
                 android:id="@+id/aboutButton"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/batteryOptimizationButton"
+                android:layout_below="@id/spotifyContainer"
                 android:layout_alignParentEnd="true"
                 android:layout_gravity="end"
                 android:layout_marginTop="@dimen/double_base_margin"

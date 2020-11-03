@@ -27,10 +27,8 @@ import com.pghaz.revery.view.OnCustomTouchListener
 import com.spotify.protocol.types.PlayerState
 import com.spotify.protocol.types.Track
 import kotlinx.android.synthetic.main.activity_ring.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.util.*
 
-@ExperimentalCoroutinesApi
 class RingActivity : BaseActivity() {
 
     companion object {

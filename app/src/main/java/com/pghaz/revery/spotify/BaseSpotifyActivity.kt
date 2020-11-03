@@ -25,10 +25,10 @@ abstract class BaseSpotifyActivity : BaseActivity(), SpotifyAuthorizationCallbac
     SpotifyAuthorizationCallback.RefreshToken, OnSpotifyItemClickListener {
 
     companion object {
-        private const val REQUEST_CODE_SPOTIFY_LOGIN = 1337
+        const val REQUEST_CODE_SPOTIFY_LOGIN = 1337
     }
 
-    protected lateinit var spotifyAuthClient: SpotifyAuthorizationClient
+    lateinit var spotifyAuthClient: SpotifyAuthorizationClient
 
     private fun initSpotifyAuthClient() {
         spotifyAuthClient = SpotifyAuthorizationClient.Builder(
@@ -59,7 +59,6 @@ abstract class BaseSpotifyActivity : BaseActivity(), SpotifyAuthorizationCallbac
         initSpotifyAuthClient()
 
         super.onCreate(savedInstanceState)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         if (spotifyAuthClient.isAuthorized()) {
             if (spotifyAuthClient.getNeedsTokenRefresh()) {
@@ -137,7 +136,6 @@ abstract class BaseSpotifyActivity : BaseActivity(), SpotifyAuthorizationCallbac
     override fun onSpotifyItemClicked(model: BaseModel) {
         val data = Intent()
         data.putExtra(Arguments.ARGS_SPOTIFY_ITEM_SELECTED, model)
-        data.putExtra(Arguments.ARGS_SPOTIFY_USER, spotifyAuthClient.getCurrentUser())
         setResult(Activity.RESULT_OK, data)
         finish()
     }
