@@ -23,6 +23,7 @@ import com.pghaz.revery.settings.SnoozeDuration
 import com.pghaz.revery.util.Arguments
 import com.pghaz.revery.util.IntentUtils
 import com.pghaz.revery.util.ViewUtils
+import com.pghaz.revery.view.OnSwipeTouchListener
 import com.spotify.protocol.types.PlayerState
 import com.spotify.protocol.types.Track
 import kotlinx.android.synthetic.main.activity_ring.*
@@ -47,6 +48,7 @@ class RingActivity : BaseActivity() {
 
     private var player: AbstractPlayer? = null
     private var hasStartedPlayingAtLeast = false
+    private var snoozeDurationIndex = 0
 
     private var mAlarmServiceBound: Boolean = false
     private lateinit var alarm: Alarm
@@ -139,7 +141,7 @@ class RingActivity : BaseActivity() {
         }
 
         val snoozeDurationArray = resources.getStringArray(R.array.snooze_duration_array)
-        var snoozeDurationIndex = SettingsHandler.getSnoozeDurationPosition(this)
+        snoozeDurationIndex = SettingsHandler.getSnoozeDurationPosition(this)
 
         minusSnoozeButton.setOnClickListener {
             snoozeDurationIndex -= 1
@@ -216,6 +218,23 @@ class RingActivity : BaseActivity() {
                 (player as SpotifyPlayer?)?.skipPrevious()
             }
         }
+
+        gesturesInterceptorView.setOnTouchListener(object :
+            OnSwipeTouchListener(this@RingActivity) {
+            override fun onSwipeLeft() {
+                super.onSwipeLeft()
+                if (player is SpotifyPlayer) {
+                    (player as SpotifyPlayer?)?.skipPrevious()
+                }
+            }
+
+            override fun onSwipeRight() {
+                super.onSwipeRight()
+                if (player is SpotifyPlayer) {
+                    (player as SpotifyPlayer?)?.skipNext()
+                }
+            }
+        })
     }
 
     private fun configurePlayerControllers(player: AbstractPlayer?) {

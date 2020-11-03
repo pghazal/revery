@@ -18,7 +18,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="90dp"
-        android:layout_alignParentTop="true"
+        android:layout_alignTop="@+id/backgroundImageView"
         android:background="@drawable/gradient_top_cover_art"
         android:rotation="180" />
 
@@ -35,6 +35,11 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/double_base_margin" />
+
+    <View
+        android:id="@+id/gesturesInterceptorView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/turnOffButton"
@@ -54,7 +59,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/turnOffButton"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/base_margin"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingStart="@dimen/base_margin"
@@ -89,12 +93,12 @@
 
     <LinearLayout
         android:id="@+id/controllersContainer"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/base_margin"
-        android:gravity="center_horizontal"
+        android:gravity="center_horizontal|bottom"
         android:orientation="vertical"
         android:paddingStart="@dimen/base_margin"
         android:paddingEnd="@dimen/base_margin"
@@ -111,8 +115,7 @@
             android:maxLines="2"
             android:textColor="@android:color/white"
             android:textSize="16sp"
-            app:fontFamily="@font/montserrat_semi_bold"
-            tools:text="sfsdfdfdsfsdfsfsfd" />
+            app:fontFamily="@font/montserrat_semi_bold" />
 
         <TextView
             android:id="@+id/artistNameTextView"
@@ -128,7 +131,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/skipPreviousButton"
