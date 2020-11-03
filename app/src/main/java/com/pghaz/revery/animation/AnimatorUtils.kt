@@ -157,6 +157,12 @@ object AnimatorUtils {
                 updateTargetView(animator, View.VISIBLE)
             }
 
+            override fun onAnimationEnd(animation: Animator?) {
+                if (!isEnterAnimation) {
+                    updateTargetView(animator, View.INVISIBLE)
+                }
+            }
+
             override fun onAnimationEnd(animation: Animator?, isReverse: Boolean) {
                 if (!isEnterAnimation) {
                     updateTargetView(animator, View.INVISIBLE)
