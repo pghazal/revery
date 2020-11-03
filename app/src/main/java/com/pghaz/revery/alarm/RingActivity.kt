@@ -46,6 +46,7 @@ class RingActivity : BaseActivity() {
     }
 
     private var player: AbstractPlayer? = null
+    private var hasStartedPlayingAtLeast = false
 
     private var mAlarmServiceBound: Boolean = false
     private lateinit var alarm: Alarm
@@ -231,7 +232,13 @@ class RingActivity : BaseActivity() {
 
                             if (playerState.isPaused) {
                                 playPauseButton.setImageResource(R.drawable.ic_play)
+                                // If Spotify starting playing and we're pausing from app or Spotify
+                                // Let's just stop the
+                                if (hasStartedPlayingAtLeast) {
+                                    broadcastStopAlarm()
+                                }
                             } else {
+                                hasStartedPlayingAtLeast = true
                                 playPauseButton.setImageResource(R.drawable.ic_pause)
 
                                 titleTextView.text = track.name
