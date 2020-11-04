@@ -16,6 +16,8 @@
         <item name="android:imageButtonStyle">@style/ReveryImageButton</item>
 
         <item name="chipStyle">@style/ReveryChip</item>
+
+        <item name="tabStyle">@style/ReveryTabLayout</item>
     </style>
 
     <style name="Theme.Activity.FullScreen" parent="@style/AppTheme">
@@ -161,4 +163,7 @@
         <item name="android:letterSpacing">0.05</item>
     </style>
 
+    <style name="ReveryTabLayout" parent="Widget.MaterialComponents.TabLayout.Colored">
+        <item name="tabTextAppearance">@style/ReveryChipText</item>
+    </style>
 </resources>
