@@ -37,24 +37,30 @@ import java.util.*
 class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
 
     companion object {
-        const val ACTION_ALARM_SERVICE_SHOULD_STOP =
+        private const val ACTION_ALARM_SERVICE_SHOULD_STOP =
             "com.pghaz.revery.ACTION_ALARM_SERVICE_SHOULD_STOP"
-        const val ACTION_ALARM_SERVICE_SNOOZE =
+        private const val ACTION_ALARM_SERVICE_SNOOZE =
             "com.pghaz.revery.ACTION_ALARM_SERVICE_SNOOZE"
 
         private const val NOTIFICATION_ID = 1
 
-        fun getServiceShouldStopIntent(context: Context): Intent {
+        fun getServiceShouldStopIntent(context: Context, alarm: Alarm): Intent {
             val intent =
                 Intent(context.applicationContext, AlarmServiceBroadcastReceiver::class.java)
             intent.action = ACTION_ALARM_SERVICE_SHOULD_STOP
+
+            IntentUtils.safePutAlarmIntoIntent(intent, alarm)
+
             return intent
         }
 
-        fun getServiceSnoozeIntent(context: Context): Intent {
+        fun getServiceSnoozeIntent(context: Context, alarm: Alarm): Intent {
             val intent =
                 Intent(context.applicationContext, AlarmServiceBroadcastReceiver::class.java)
             intent.action = ACTION_ALARM_SERVICE_SNOOZE
+
+            IntentUtils.safePutAlarmIntoIntent(intent, alarm)
+
             return intent
         }
 
@@ -116,10 +122,13 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
     inner class AlarmServiceBroadcastReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             intent?.let {
+                val alarm = IntentUtils.safeGetAlarmFromIntent(intent)
+
                 if (ACTION_ALARM_SERVICE_SHOULD_STOP == it.action) {
                     logError(ACTION_ALARM_SERVICE_SHOULD_STOP)
                     stopPlayerAndVibrator(false, alarm.metadata)
                 } else if (ACTION_ALARM_SERVICE_SNOOZE == it.action) {
+                    logError(ACTION_ALARM_SERVICE_SNOOZE)
                     stopPlayerAndVibrator(true, alarm.metadata)
                 }
 

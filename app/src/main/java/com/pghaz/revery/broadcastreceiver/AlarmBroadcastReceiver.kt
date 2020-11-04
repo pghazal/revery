@@ -19,10 +19,10 @@ import java.util.*
 class AlarmBroadcastReceiver : BroadcastReceiver() {
 
     companion object {
-        const val ACTION_ALARM_FIRES = "com.pghaz.revery.ACTION_ALARM_FIRES"
-        const val ACTION_ALARM_STOP = "com.pghaz.revery.ACTION_ALARM_STOP"
-        const val ACTION_ALARM_SNOOZE = "com.pghaz.revery.ACTION_ALARM_SNOOZE"
-        const val ACTION_ALARM_SNOOZE_CANCEL = "com.pghaz.revery.ACTION_ALARM_SNOOZE_CANCEL"
+        private const val ACTION_ALARM_FIRES = "com.pghaz.revery.ACTION_ALARM_FIRES"
+        private const val ACTION_ALARM_STOP = "com.pghaz.revery.ACTION_ALARM_STOP"
+        private const val ACTION_ALARM_SNOOZE = "com.pghaz.revery.ACTION_ALARM_SNOOZE"
+        private const val ACTION_ALARM_SNOOZE_CANCEL = "com.pghaz.revery.ACTION_ALARM_SNOOZE_CANCEL"
 
         fun getScheduleAlarmActionIntent(context: Context?, alarm: Alarm): Intent {
             val intent = Intent(context?.applicationContext, AlarmBroadcastReceiver::class.java)
@@ -105,10 +105,12 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
             )
 
             broadcastFinishRingActivity(context)
-            broadcastServiceSnooze(context)
+            broadcastServiceSnooze(context, alarm)
         } else if (ACTION_ALARM_STOP == intent.action) {
+            val alarm = IntentUtils.safeGetAlarmFromIntent(intent)
+
             broadcastFinishRingActivity(context)
-            broadcastServiceShouldStop(context)
+            broadcastServiceShouldStop(context, alarm)
         } else if (ACTION_ALARM_SNOOZE_CANCEL == intent.action) {
             val alarm = IntentUtils.safeGetAlarmFromIntent(intent)
 
@@ -128,13 +130,13 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
         LocalBroadcastManager.getInstance(context).sendBroadcast(stopRingActivityIntent)
     }
 
-    private fun broadcastServiceShouldStop(context: Context) {
-        val serviceShouldStopIntent = AlarmService.getServiceShouldStopIntent(context)
+    private fun broadcastServiceShouldStop(context: Context, alarm: Alarm) {
+        val serviceShouldStopIntent = AlarmService.getServiceShouldStopIntent(context, alarm)
         LocalBroadcastManager.getInstance(context).sendBroadcast(serviceShouldStopIntent)
     }
 
-    private fun broadcastServiceSnooze(context: Context) {
-        val serviceShouldStopIntent = AlarmService.getServiceSnoozeIntent(context)
+    private fun broadcastServiceSnooze(context: Context, alarm: Alarm) {
+        val serviceShouldStopIntent = AlarmService.getServiceSnoozeIntent(context, alarm)
         LocalBroadcastManager.getInstance(context).sendBroadcast(serviceShouldStopIntent)
     }
 
