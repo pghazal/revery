@@ -27,53 +27,64 @@
             android:layout_height="wrap_content"
             android:padding="@dimen/half_base_margin">
 
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/alarm"
+                style="@style/ReveryLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:text="@string/alarm_settings" />
+
             <LinearLayout
                 android:id="@+id/containerSnooze"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
+                android:layout_height="48dp"
+                android:layout_below="@+id/alarm"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/label1"
-                    style="@style/ReveryLabel"
+                    style="@style/ReverySettingsLabel"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:layout_weight="1"
+                    android:gravity="center_vertical"
                     android:text="@string/alarm_snooze_duration_static" />
 
                 <androidx.appcompat.widget.AppCompatSpinner
                     android:id="@+id/snoozeDurationSpinner"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="end"
+                    android:layout_gravity="end|center_vertical"
+                    android:background="@android:color/transparent"
                     android:entries="@array/snooze_duration_array"
-                    android:gravity="end"
+                    android:gravity="end|center_vertical"
                     android:theme="@style/ReverySpinnerTheme" />
             </LinearLayout>
 
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/canChangeSnoozeDurationSwitch"
-                style="@style/ReveryLabel"
+                style="@style/ReverySettingsLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/containerSnooze"
+                android:gravity="center_vertical"
                 android:text="@string/alarm_snooze_update" />
 
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/doubleTapSnoozeSwitch"
-                style="@style/ReveryLabel"
+                style="@style/ReverySettingsLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/canChangeSnoozeDurationSwitch"
-                android:layout_marginBottom="@dimen/double_base_margin"
                 android:text="@string/alarm_snooze_double_tap" />
 
             <LinearLayout
                 android:id="@+id/containerFadeIn"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_below="@id/doubleTapSnoozeSwitch"
                 android:layout_marginBottom="@dimen/double_base_margin"
                 android:gravity="center_vertical"
@@ -81,28 +92,39 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/label2"
-                    style="@style/ReveryLabel"
+                    style="@style/ReverySettingsLabel"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:layout_weight="2"
+                    android:gravity="center_vertical"
                     android:text="@string/alarm_fade_in_duration_static" />
 
                 <androidx.appcompat.widget.AppCompatSpinner
                     android:id="@+id/fadeInDurationSpinner"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="end"
+                    android:layout_gravity="end|center_vertical"
+                    android:background="@android:color/transparent"
                     android:entries="@array/fade_in_duration_array"
-                    android:gravity="end"
+                    android:gravity="end|center_vertical"
                     android:theme="@style/ReverySpinnerTheme" />
             </LinearLayout>
 
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/shouldUseDeviceVolumeSwitch"
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/audio"
                 style="@style/ReveryLabel"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/containerFadeIn"
+                android:text="@string/audio" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/shouldUseDeviceVolumeSwitch"
+                style="@style/ReverySettingsLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/audio"
                 android:text="@string/alarm_should_use_device_volume" />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -141,7 +163,7 @@
                 android:layout_below="@id/volumeAlarmSlider"
                 android:layout_marginTop="@dimen/third_base_margin"
                 android:layout_marginBottom="@dimen/third_base_margin"
-                android:text="@string/alarm_by_default" />
+                android:text="@string/audio_by_default" />
 
             <RelativeLayout
                 android:id="@+id/ringtoneInfoContainer"
@@ -150,6 +172,7 @@
                 android:layout_below="@+id/label3"
                 android:layout_alignParentStart="true"
                 android:layout_marginEnd="@dimen/base_margin"
+                android:layout_marginBottom="@dimen/double_base_margin"
                 android:layout_toStartOf="@+id/chooseRingtoneButton" />
 
             <include
@@ -167,7 +190,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/label3"
                 android:layout_alignParentEnd="true"
-                android:layout_marginBottom="@dimen/double_base_margin"
+                android:layout_marginTop="@dimen/third_base_margin"
                 android:src="@drawable/ic_music_note"
                 app:fabCustomSize="@dimen/button_height"
                 app:srcCompat="@drawable/ic_music_note" />
@@ -177,7 +200,7 @@
                 style="@style/ReveryLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/chooseRingtoneButton"
+                android:layout_below="@id/ringtoneInfoContainer"
                 android:layout_marginBottom="@dimen/third_base_margin"
                 android:text="@string/battery_optimization" />
 

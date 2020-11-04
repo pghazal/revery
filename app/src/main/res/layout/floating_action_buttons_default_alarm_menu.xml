@@ -25,7 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/half_base_margin"
-        android:layout_marginBottom="@dimen/half_base_margin"
+        android:layout_marginBottom="@dimen/third_base_margin"
         android:text="@string/select_music_from_device"
         android:visibility="invisible"
         app:icon="@drawable/ic_music_note"

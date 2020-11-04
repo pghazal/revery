@@ -61,11 +61,13 @@
     <string name="about_copyright">© 2020 Revery, all rights reserved</string>
     <string name="about_email">Support: pghaz.apps@gmail.com</string>
     <string name="about_version">Version</string>
-    <string name="alarm_snooze_duration_static">snooze duration</string>
-    <string name="alarm_fade_in_duration_static">fade in duration</string>
+    <string name="alarm_settings">Alarms</string>
+    <string name="audio">Audio</string>
+    <string name="alarm_snooze_duration_static">Snooze duration</string>
+    <string name="alarm_fade_in_duration_static">Fade in duration</string>
     <string name="alarm_should_use_device_volume">Use device\'s volume</string>
     <string name="alarm_should_use_device_volume_explanation"><b>WARNING:</b> if <b>enabled</b> and if you choose a default ringtone or one of your own sounds for your alarm, the application will use the <b>alarm stream</b> volume. Otherwise, the application will use the <b>music stream</b> volume (e.g: when alarm plays a content Spotify). If <b>disabled</b>, the app will use the volume level below.</string>
-    <string name="alarm_by_default">Default alarm</string>
+    <string name="audio_by_default">Default audio</string>
     <string name="alarm_snooze_update">Ability to change duration when alarm goes off</string>
     <string name="alarm_snooze_double_tap">Double tap to snooze</string>
     <string name="spotify_login">Login</string>
