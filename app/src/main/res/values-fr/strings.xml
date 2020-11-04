@@ -122,6 +122,8 @@
     <string name="search_in_spotify">Rechercher dans Spotify</string>
 
     <string name="my_playlists">Mes playlists</string>
+    <string name="my_saved_albums">Albums likés</string>
+    <string name="my_saved_tracks">Titres likés</string>
     <string name="my_top_artists">Mes artistes favoris</string>
     <string name="my_top_tracks">Mes titres favoris</string>
     <string name="recently_played">Joué récemment</string>

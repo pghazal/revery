@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_gravity="bottom"
+        android:visibility="gone"
         app:tabMode="scrollable" />
 
     <androidx.viewpager2.widget.ViewPager2

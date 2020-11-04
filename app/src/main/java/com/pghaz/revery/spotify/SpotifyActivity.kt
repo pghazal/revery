@@ -42,6 +42,7 @@ class SpotifyActivity : BaseSpotifyActivity(), ExtendedFloatingActionListener {
         progressBar.visibility = View.GONE
         showSearchButton()
         showTabs()
+        fillTabLayout()
     }
 
     private fun showSearchButton() {
@@ -57,17 +58,19 @@ class SpotifyActivity : BaseSpotifyActivity(), ExtendedFloatingActionListener {
     }
 
     override fun configureViews(savedInstanceState: Bundle?) {
+        searchButton.setOnClickListener {
+            val intent = Intent(this, SpotifySearchActivity::class.java)
+            startActivityForResult(intent, REQUEST_CODE_SPOTIFY_SEARCH)
+        }
+    }
+
+    private fun fillTabLayout() {
         val accessToken = spotifyAuthClient.getLastTokenResponse()?.accessToken!!
         viewPager.adapter = SpotifyTabsAdapter(this, accessToken)
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = getString(SpotifyTabs.values()[position].textResId)
         }.attach()
-
-        searchButton.setOnClickListener {
-            val intent = Intent(this, SpotifySearchActivity::class.java)
-            startActivityForResult(intent, REQUEST_CODE_SPOTIFY_SEARCH)
-        }
     }
 
     override fun extendFloatingActionButton() {

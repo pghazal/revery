@@ -66,6 +66,12 @@ class SpotifyItemsViewModel(accessToken: String, private val filter: SpotifyFilt
             SpotifyFilter.MY_TOP_TRACKS -> {
                 getMyTopTracks(offset, mPageSize)
             }
+            SpotifyFilter.MY_SAVED_ALBUMS -> {
+                getMySavedAlbums(offset, mPageSize)
+            }
+            SpotifyFilter.MY_SAVED_TRACKS -> {
+                getMySavedTracks(offset, mPageSize)
+            }
         }
     }
 
@@ -162,6 +168,80 @@ class SpotifyItemsViewModel(accessToken: String, private val filter: SpotifyFilt
 
             override fun onFailure(call: Call<AlbumsPager>?, error: SpotifyError?) {
                 Log.e(TAG, "searchAlbums() failed: ${error?.message}")
+
+                error?.let {
+                    spotifyErrorListener?.onSpotifyError(error)
+                }
+            }
+        })
+    }
+
+    private fun getMySavedAlbums(offset: Int, limit: Int) {
+        val options: MutableMap<String, Any> = HashMap()
+        options[Options.OFFSET] = offset
+        options[Options.LIMIT] = limit
+
+        val call = spotifyService.getMySavedAlbums(options)
+
+        call.enqueue(object : SpotifyCallback<Pager<SavedAlbum>>() {
+            override fun onResponse(
+                call: Call<Pager<SavedAlbum>>?,
+                response: Response<Pager<SavedAlbum>>?,
+                payload: Pager<SavedAlbum>?
+            ) {
+                val newItems = ArrayList<BaseModel>()
+
+                spotifyItemsLiveData.value?.let { newItems.addAll(it) }
+
+                payload?.items?.forEach {
+                    newItems.add(AlbumWrapper(it.album))
+                }
+
+                spotifyItemsLiveData.value = newItems
+            }
+
+            override fun onFailure(
+                call: Call<Pager<SavedAlbum>>?,
+                error: SpotifyError?
+            ) {
+                Log.e(TAG, "getMySavedAlbums() failed: ${error?.message}")
+
+                error?.let {
+                    spotifyErrorListener?.onSpotifyError(error)
+                }
+            }
+        })
+    }
+
+    private fun getMySavedTracks(offset: Int, limit: Int) {
+        val options: MutableMap<String, Any> = HashMap()
+        options[Options.OFFSET] = offset
+        options[Options.LIMIT] = limit
+
+        val call = spotifyService.getMySavedTracks(options)
+
+        call.enqueue(object : SpotifyCallback<Pager<SavedTrack>>() {
+            override fun onResponse(
+                call: Call<Pager<SavedTrack>>?,
+                response: Response<Pager<SavedTrack>>?,
+                payload: Pager<SavedTrack>?
+            ) {
+                val newItems = ArrayList<BaseModel>()
+
+                spotifyItemsLiveData.value?.let { newItems.addAll(it) }
+
+                payload?.items?.forEach {
+                    newItems.add(TrackWrapper(it.track))
+                }
+
+                spotifyItemsLiveData.value = newItems
+            }
+
+            override fun onFailure(
+                call: Call<Pager<SavedTrack>>?,
+                error: SpotifyError?
+            ) {
+                Log.e(TAG, "getMySavedTracks() failed: ${error?.message}")
 
                 error?.let {
                     spotifyErrorListener?.onSpotifyError(error)
