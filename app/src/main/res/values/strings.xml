@@ -27,8 +27,8 @@
     <string name="battery_optimization">Battery optimization</string>
     <string name="battery_optimization_configure">Configure</string>
     <string name="battery_optimization_title">Optimization</string>
-    <string name="battery_optimization_message">Starting from Android 6.0, Android introduces Doze which reduces battery consumption by deferring background application activity when the device is unused for a long period of time.\nTo make sure %1$s functions properly, it requires to be configured:</string>
-    <string name="battery_optimization_requirement">Don\'t optimize battery for %1$s (Settings > Battery > Battery Optimization)</string>
+    <string name="battery_optimization_message">Starting from Android 6.0, Android introduces Doze. Doze reduces battery consumption by deferring background application activity when the device is unused for a long period of time.\nTo make sure %1$s functions properly, it requires to be configured:</string>
+    <string name="battery_optimization_requirement">Settings > Battery > Battery Optimization > Don\'t optimize for %1$s</string>
     <string name="battery_auto_start_requirement">Enable Auto Start for %1$s</string>
     <string name="battery_auto_start_requirement_error">(the status might be possibly wrong)</string>
     <string name="battery_optimization_reshow_dialog">You will be able to reshow this dialog from %1$s settings if necessary.</string>
