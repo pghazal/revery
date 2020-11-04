@@ -7,15 +7,21 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.lifecycleScope
 import com.pghaz.revery.R
 import com.pghaz.revery.model.app.spotify.SpotifyFilter
 import com.pghaz.spotify.webapi.auth.SpotifyAuthorizationCallback
 import kotlinx.android.synthetic.main.activity_spotify.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class SpotifySearchActivity : BaseSpotifyActivity(), SpotifyAuthorizationCallback.Authorize,
     SpotifyAuthorizationCallback.RefreshToken {
 
     private lateinit var searchView: SearchView
+    private var queryTextChangedJob: Job? = null
 
     private var spotifySearchFragment: SpotifySearchFragment? = null
 
@@ -95,10 +101,14 @@ class SpotifySearchActivity : BaseSpotifyActivity(), SpotifyAuthorizationCallbac
             }
 
             override fun onQueryTextChange(newText: String): Boolean {
-                if (newText.isEmpty()) {
-                    spotifySearchFragment?.clear()
-                } else {
-                    spotifySearchFragment?.search(newText)
+                queryTextChangedJob?.cancel()
+                queryTextChangedJob = lifecycleScope.launch(Dispatchers.Main) {
+                    delay(400)
+                    if (newText.isEmpty()) {
+                        spotifySearchFragment?.clear()
+                    } else {
+                        spotifySearchFragment?.search(newText)
+                    }
                 }
                 return false
             }
