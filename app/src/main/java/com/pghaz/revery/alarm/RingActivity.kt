@@ -8,6 +8,7 @@ import android.os.IBinder
 import android.view.View
 import android.view.WindowManager
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.ncorti.slidetoact.SlideToActView
 import com.pghaz.revery.BaseActivity
 import com.pghaz.revery.R
 import com.pghaz.revery.broadcastreceiver.AlarmBroadcastReceiver
@@ -133,6 +134,21 @@ class RingActivity : BaseActivity() {
 
     override fun configureViews(savedInstanceState: Bundle?) {
         updateBackgroundImage(alarm.metadata.imageUrl)
+
+        if (SettingsHandler.getSlideToTurnOff(this)) {
+            slideTurnOffButton.visibility = View.VISIBLE
+            turnOffButton.visibility = View.GONE
+        } else {
+            slideTurnOffButton.visibility = View.GONE
+            turnOffButton.visibility = View.VISIBLE
+        }
+
+        slideTurnOffButton.onSlideCompleteListener =
+            object : SlideToActView.OnSlideCompleteListener {
+                override fun onSlideComplete(view: SlideToActView) {
+                    broadcastStopAlarm()
+                }
+            }
 
         turnOffButton.setOnClickListener {
             broadcastStopAlarm()

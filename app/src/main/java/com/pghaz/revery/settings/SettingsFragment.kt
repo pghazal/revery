@@ -47,6 +47,15 @@ class SettingsFragment : BaseBottomSheetDialogFragment() {
     }
 
     override fun configureViews(savedInstanceState: Bundle?) {
+        // Slide to turn off
+        context?.let {
+            val slideToTurnOffEnabled = SettingsHandler.getSlideToTurnOff(it)
+            slideToTurnOffSwitch.isChecked = slideToTurnOffEnabled
+        }
+        slideToTurnOffSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+            SettingsHandler.setSlideToTurnOff(buttonView.context, isChecked)
+        }
+
         // Snooze
         context?.let {
             var snoozeDurationPosition = SettingsHandler.getSnoozeDurationPosition(it)

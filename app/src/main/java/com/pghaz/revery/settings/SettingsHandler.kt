@@ -9,6 +9,10 @@ object SettingsHandler {
 
     private const val SETTINGS_SHARED_PREF = "com.pghaz.revery.settings"
 
+    // Turn off
+    private const val SETTINGS_SLIDE_TO_TURN_OFF = "$SETTINGS_SHARED_PREF.alarm.slide.to.turn.off"
+    private const val DEFAULT_SLIDE_TO_TURN_OFF = false
+
     // Snooze
     private const val SETTINGS_SNOOZE_DURATION = "$SETTINGS_SHARED_PREF.snooze_duration"
     private const val SETTINGS_SNOOZE_DURATION_POSITION =
@@ -159,9 +163,18 @@ object SettingsHandler {
 
     fun isDoubleTapSnoozeEnabled(context: Context): Boolean {
         val sharedPreferences = getSharedPreferences(context)
-        return sharedPreferences.getBoolean(
-            SETTINGS_SNOOZE_DOUBLE_TAP,
-            DEFAULT_SNOOZE_DOUBLE_TAP
-        )
+        return sharedPreferences.getBoolean(SETTINGS_SNOOZE_DOUBLE_TAP, DEFAULT_SNOOZE_DOUBLE_TAP)
+    }
+
+    fun setSlideToTurnOff(context: Context, value: Boolean) {
+        val sharedPreferences = getSharedPreferences(context)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean(SETTINGS_SLIDE_TO_TURN_OFF, value)
+        editor.apply()
+    }
+
+    fun getSlideToTurnOff(context: Context): Boolean {
+        val sharedPreferences = getSharedPreferences(context)
+        return sharedPreferences.getBoolean(SETTINGS_SLIDE_TO_TURN_OFF, DEFAULT_SLIDE_TO_TURN_OFF)
     }
 }

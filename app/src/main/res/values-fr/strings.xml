@@ -68,6 +68,7 @@
     <string name="audio_by_default">Audio par défaut</string>
     <string name="alarm_snooze_update">Changer la durée du rappel au réveil</string>
     <string name="alarm_snooze_double_tap">Double-cliquer pour activer le rappel</string>
+    <string name="alarm_slide_to_turn_off">Glisser pour arrêter l\'alarme</string>
     <string name="spotify_login">Connexion</string>
     <string name="spotify_logout">Déconnexion</string>
 

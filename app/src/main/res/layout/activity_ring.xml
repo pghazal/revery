@@ -118,23 +118,44 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/turnOffButton"
+    <FrameLayout
+        android:id="@+id/turnOffContainer"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/clockView"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="@dimen/double_base_margin"
         android:layout_marginTop="@dimen/double_base_margin"
         android:layout_marginEnd="@dimen/double_base_margin"
-        android:layout_marginBottom="@dimen/base_margin"
-        android:text="@string/alarm_turn_off" />
+        android:layout_marginBottom="@dimen/base_margin">
+
+        <com.ncorti.slidetoact.SlideToActView
+            android:id="@+id/slideTurnOffButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:animate_completion="false"
+            app:area_margin="@dimen/minimum_base_margin"
+            app:slider_height="80dp"
+            app:text="@string/alarm_turn_off"
+            app:text_appearance="@style/SlideToActTextAppearance"
+            app:text_color="@android:color/white"
+            tools:visibility="visible" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/turnOffButton"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:text="@string/alarm_turn_off"
+            android:visibility="gone"
+            tools:visibility="visible" />
+    </FrameLayout>
 
     <LinearLayout
         android:id="@+id/snoozeContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/turnOffButton"
+        android:layout_below="@+id/turnOffContainer"
         android:layout_centerHorizontal="true"
         android:gravity="center_vertical"
         android:orientation="horizontal"

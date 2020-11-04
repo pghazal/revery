@@ -166,4 +166,11 @@
     <style name="ReveryTabLayout" parent="Widget.MaterialComponents.TabLayout.Colored">
         <item name="tabTextAppearance">@style/ReveryChipText</item>
     </style>
+
+    <style name="SlideToActTextAppearance" parent="TextAppearance.MaterialComponents.Body2">
+        <item name="android:fontFamily">@font/montserrat_bold</item>
+        <item name="fontFamily">@font/montserrat_bold</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
 </resources>

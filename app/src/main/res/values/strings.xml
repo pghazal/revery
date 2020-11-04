@@ -70,6 +70,7 @@
     <string name="audio_by_default">Default audio</string>
     <string name="alarm_snooze_update">Ability to change duration when alarm goes off</string>
     <string name="alarm_snooze_double_tap">Double tap to snooze</string>
+    <string name="alarm_slide_to_turn_off">Slide to turn off alarm</string>
     <string name="spotify_login">Login</string>
     <string name="spotify_logout">Logout</string>
 

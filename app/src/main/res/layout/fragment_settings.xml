@@ -35,11 +35,19 @@
                 android:layout_alignParentTop="true"
                 android:text="@string/alarm_settings" />
 
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/slideToTurnOffSwitch"
+                style="@style/ReverySettingsLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/alarm"
+                android:text="@string/alarm_slide_to_turn_off" />
+
             <LinearLayout
                 android:id="@+id/containerSnooze"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:layout_below="@+id/alarm"
+                android:layout_below="@+id/slideToTurnOffSwitch"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
