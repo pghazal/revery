@@ -3,21 +3,60 @@ package com.pghaz.revery.alarm
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
-import android.media.RingtoneManager
 import com.pghaz.revery.BuildConfig
+import com.pghaz.revery.R
 import com.pghaz.revery.broadcastreceiver.AlarmBroadcastReceiver
 import com.pghaz.revery.extension.toastDebug
 import com.pghaz.revery.model.app.alarm.Alarm
 import com.pghaz.revery.model.app.alarm.AlarmMetadata
 import com.pghaz.revery.model.app.alarm.MediaType
+import com.pghaz.revery.settings.SettingsHandler
 import com.pghaz.revery.util.DateTimeUtils
 import java.util.*
 
 object AlarmHandler {
 
+    fun fireAlarmNow(
+        context: Context,
+        delayInSeconds: Int,
+        metadata: AlarmMetadata,
+        fadeInDuration: Long
+    ) {
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = System.currentTimeMillis()
+        // add delay in seconds
+        calendar.add(Calendar.SECOND, delayInSeconds)
+
+        val hour = DateTimeUtils.getCurrentHourOfDay(calendar)
+        val minute = calendar.get(Calendar.MINUTE)
+        val second = calendar.get(Calendar.SECOND)
+
+        val alarm = Alarm(
+            id = System.currentTimeMillis(),
+            hour = hour,
+            minute = minute,
+            label = context.getString(R.string.alarm_test),
+            enabled = true,
+            recurring = false,
+            monday = false,
+            tuesday = false,
+            wednesday = false,
+            thursday = false,
+            friday = false,
+            saturday = false,
+            sunday = false,
+            vibrate = false,
+            fadeIn = true,
+            fadeInDuration = fadeInDuration,
+            metadata = metadata
+        )
+
+        scheduleAlarm(context, alarm, alarm.minute, second)
+    }
+
     // This is for test purpose only
     fun fireAlarmNow(
-        context: Context?,
+        context: Context,
         delayInSeconds: Int,
         recurring: Boolean,
         spotify: Boolean,
@@ -42,14 +81,14 @@ object AlarmHandler {
             metadata.shuffle = true
         } else {
             metadata.type = MediaType.DEFAULT
-            metadata.uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM).toString()
+            metadata.uri = SettingsHandler.getDefaultAudioUri(context).toString()
         }
 
         val alarm = Alarm(
             id = System.currentTimeMillis(),
             hour = hour,
             minute = minute,
-            label = "",
+            label = context.getString(R.string.alarm_test),
             enabled = true,
             recurring = recurring,
             monday = true,

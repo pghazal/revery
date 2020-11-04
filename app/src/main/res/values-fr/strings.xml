@@ -54,6 +54,7 @@
 
     <!-- SETTINGS -->
     <string name="about">À propos</string>
+    <string name="alarm_test">Aperçu de l\'alarme</string>
     <string name="about_ok">Cool mon pote</string>
     <string name="about_developed_by">Développé par Pierre Ghazal</string>
     <string name="about_copyright">© 2020 Revery, tous droits réservés</string>

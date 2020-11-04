@@ -21,6 +21,7 @@ import com.pghaz.revery.BaseBottomSheetDialogFragment
 import com.pghaz.revery.BuildConfig
 import com.pghaz.revery.R
 import com.pghaz.revery.adapter.alarm.DefaultMediaViewHolder
+import com.pghaz.revery.alarm.AlarmHandler
 import com.pghaz.revery.alarm.CreateEditAlarmFragment
 import com.pghaz.revery.animation.AnimatorUtils
 import com.pghaz.revery.battery.PowerManagerHandler
@@ -47,6 +48,29 @@ class SettingsFragment : BaseBottomSheetDialogFragment() {
     }
 
     override fun configureViews(savedInstanceState: Bundle?) {
+        // Alarm preview
+        testAlarmButton.setOnClickListener {
+            val defaultUri = SettingsHandler.getDefaultAudioUri(testAlarmButton.context)
+            val audioMetadata: AudioPickerHelper.AudioMetadata =
+                AudioPickerHelper.getAudioMetadata(testAlarmButton.context, defaultUri)
+
+            val metadata = AlarmMetadata().apply {
+                this.uri = defaultUri.toString()
+                this.href = null
+                this.type = MediaType.DEFAULT
+                this.name = audioMetadata.name
+                this.description = audioMetadata.description
+                this.imageUrl = audioMetadata.imageUrl
+            }
+
+            AlarmHandler.fireAlarmNow(
+                testAlarmButton.context,
+                delayInSeconds = 1,
+                metadata,
+                SettingsHandler.getFadeInDuration(testAlarmButton.context)
+            )
+        }
+
         // Slide to turn off
         context?.let {
             val slideToTurnOffEnabled = SettingsHandler.getSlideToTurnOff(it)

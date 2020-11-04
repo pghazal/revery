@@ -124,7 +124,7 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
             }
             R.id.menu_alarms_fire_alarm_spotify -> {
                 AlarmHandler.fireAlarmNow(
-                    context, 1,
+                    context!!, 1,
                     recurring = false,
                     spotify = true,
                     fadeIn = false,
@@ -135,7 +135,7 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
             }
             R.id.menu_alarms_fire_alarm_default -> {
                 AlarmHandler.fireAlarmNow(
-                    context, 1,
+                    context!!, 1,
                     recurring = false,
                     spotify = false,
                     fadeIn = true,
@@ -146,7 +146,7 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
             }
             R.id.menu_alarms_fire_alarm_default_recurring -> {
                 AlarmHandler.fireAlarmNow(
-                    context, 1,
+                    context!!, 1,
                     recurring = true,
                     spotify = false,
                     fadeIn = true,
@@ -156,13 +156,11 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
                 true
             }
             R.id.menu_spotify_clear_token -> {
-                context?.let {
-                    val spotifyAuthClient = SpotifyAuthorizationClient.Builder(
-                        BuildConfig.SPOTIFY_CLIENT_ID,
-                        BuildConfig.SPOTIFY_REDIRECT_URI
-                    ).build(it)
-                    spotifyAuthClient.setNeedsTokenRefresh(true)
-                }
+                val spotifyAuthClient = SpotifyAuthorizationClient.Builder(
+                    BuildConfig.SPOTIFY_CLIENT_ID,
+                    BuildConfig.SPOTIFY_REDIRECT_URI
+                ).build(context!!)
+                spotifyAuthClient.setNeedsTokenRefresh(true)
                 true
             }
             else -> super.onOptionsItemSelected(item)
