@@ -1,6 +1,9 @@
 package com.pghaz.revery.settings
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -227,7 +230,10 @@ class SettingsFragment : BaseBottomSheetDialogFragment() {
         initDefaultAudioViews()
 
         if (activity is BaseSpotifyActivity) {
-            updateSpotifyViews((activity as BaseSpotifyActivity?)?.spotifyAuthClient?.getCurrentUser())
+            updateSpotifyViews(
+                (activity as BaseSpotifyActivity?)?.spotifyAuthClient?.getCurrentUser(),
+                false
+            )
         }
     }
 
@@ -445,6 +451,7 @@ class SettingsFragment : BaseBottomSheetDialogFragment() {
         ringtoneInfoContainer.addView(view, params)
     }
 
+    @SuppressLint("InflateParams")
     private fun showAboutDialog() {
         context?.let {
             val view = LayoutInflater.from(it).inflate(R.layout.dialog_settings_about, null)
@@ -469,10 +476,43 @@ class SettingsFragment : BaseBottomSheetDialogFragment() {
         }
     }
 
-    private fun updateSpotifyViews(spotifyUser: UserPrivate?) {
+    private fun updateSpotifyViews(spotifyUser: UserPrivate?, animate: Boolean) {
         if (spotifyUser?.id == null) {
-            loginSpotifyButton.visibility = View.VISIBLE
-            loggedContainer.visibility = View.GONE
+            if (animate) {
+                loginSpotifyButton.apply {
+                    alpha = 0f
+                    visibility = View.VISIBLE
+
+                    animate()
+                        .alpha(1f)
+                        .setDuration(300)
+                        .setListener(null)
+                }
+
+                loggedContainer.apply {
+                    alpha = 1f
+                    visibility = View.VISIBLE
+
+                    animate()
+                        .alpha(0f)
+                        .setDuration(300)
+                        .setListener(object : AnimatorListenerAdapter() {
+                            override fun onAnimationEnd(animation: Animator) {
+                                loggedContainer.visibility = View.INVISIBLE
+                            }
+                        })
+                }
+            } else {
+                loginSpotifyButton.apply {
+                    alpha = 1f
+                    visibility = View.VISIBLE
+                }
+
+                loggedContainer.apply {
+                    alpha = 1f
+                    visibility = View.GONE
+                }
+            }
         } else {
             loginSpotifyButton.visibility = View.GONE
             loggedContainer.visibility = View.VISIBLE
@@ -505,7 +545,10 @@ class SettingsFragment : BaseBottomSheetDialogFragment() {
         logoutSpotifyButton.setOnClickListener {
             if (activity is BaseSpotifyActivity) {
                 (activity as BaseSpotifyActivity).spotifyAuthClient.logOut()
-                updateSpotifyViews((activity as BaseSpotifyActivity?)?.spotifyAuthClient?.getCurrentUser())
+                updateSpotifyViews(
+                    (activity as BaseSpotifyActivity?)?.spotifyAuthClient?.getCurrentUser(),
+                    true
+                )
             }
         }
     }

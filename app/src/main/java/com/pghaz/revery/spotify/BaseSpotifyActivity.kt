@@ -85,7 +85,7 @@ abstract class BaseSpotifyActivity : BaseActivity(), SpotifyAuthorizationCallbac
     override fun onResume() {
         super.onResume()
 
-        if (!SpotifyAuthorizationClient.isSpotifyInstalled(this)) {
+        if (shouldShowAuth() && !SpotifyAuthorizationClient.isSpotifyInstalled(this)) {
             showSpotifyNotInstalledDialog()
         }
     }
