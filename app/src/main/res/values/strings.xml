@@ -104,6 +104,8 @@
     <string name="week">week</string>
     <string name="alarm_of">Alarm:</string>
     <string name="alarm_less_than_one_minute">less than a minute</string>
+    <string name="alarm_snooze_of">Snooze:</string>
+    <string name="alarm_disable_snooze">Turn off</string>
 
     <string name="more_options">more options</string>
     <string name="alarm_shuffle">shuffle play</string>

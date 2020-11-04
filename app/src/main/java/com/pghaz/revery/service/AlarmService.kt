@@ -58,6 +58,46 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
             return intent
         }
 
+        fun buildSnoozeNotification(context: Context, alarm: Alarm): Notification {
+            val notificationRequestCode = alarm.id.toInt()
+
+            val snoozeCancelIntent =
+                AlarmBroadcastReceiver.getSnoozeCancelActionIntent(context, alarm)
+            val snoozeCancelPendingIntent: PendingIntent =
+                PendingIntent.getBroadcast(
+                    context,
+                    notificationRequestCode,
+                    snoozeCancelIntent,
+                    PendingIntent.FLAG_CANCEL_CURRENT
+                )
+            val snoozeCancelActionNotification =
+                NotificationCompat.Action(
+                    null,
+                    context.getString(R.string.alarm_disable_snooze)
+                        .toUpperCase(Locale.getDefault()),
+                    snoozeCancelPendingIntent
+                )
+
+            return NotificationCompat.Builder(context, ReveryApplication.CHANNEL_ID)
+                .setCategory(NotificationCompat.CATEGORY_ALARM)
+                .setContentTitle(
+                    String.format(
+                        "%s %02d:%02d",
+                        context.getString(R.string.alarm_snooze_of),
+                        alarm.hour,
+                        alarm.minute
+                    )
+                )
+                .setContentText(alarm.label)
+                .setSmallIcon(R.drawable.ic_revery_transparent)
+                .setDeleteIntent(snoozeCancelPendingIntent)
+                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .addAction(snoozeCancelActionNotification)
+                .setColor(ContextCompat.getColor(context, R.color.colorAccent))
+                .setAutoCancel(false)
+                .build()
+        }
+
         var isRunning: Boolean = false // this is ugly: find a way to check if service is alive
     }
 

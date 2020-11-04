@@ -145,10 +145,21 @@ object AlarmHandler {
             it.cancel(alarmPendingIntent)
 
             alarm.enabled = false
+
+            if (BuildConfig.DEBUG) {
+                val toastText = String.format(
+                    Locale.getDefault(),
+                    "Alarm cancel at %02d:%02d with id %d.",
+                    alarm.hour,
+                    alarm.minute,
+                    alarm.id
+                )
+                context?.toastDebug(toastText)
+            }
         }
     }
 
-    fun snooze(context: Context?, alarm: Alarm, delayInMinutes: Int) {
+    fun snooze(context: Context?, alarm: Alarm, delayInMinutes: Int): Alarm {
         val now = System.currentTimeMillis()
 
         val calendar = Calendar.getInstance()
@@ -168,5 +179,7 @@ object AlarmHandler {
         snoozeAlarm.minute = minute
 
         scheduleAlarm(context, snoozeAlarm)
+
+        return snoozeAlarm
     }
 }

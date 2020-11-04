@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import androidx.core.app.NotificationManagerCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.pghaz.revery.alarm.AlarmHandler
 import com.pghaz.revery.alarm.RingActivity
@@ -21,6 +22,7 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
         const val ACTION_ALARM_FIRES = "com.pghaz.revery.ACTION_ALARM_FIRES"
         const val ACTION_ALARM_STOP = "com.pghaz.revery.ACTION_ALARM_STOP"
         const val ACTION_ALARM_SNOOZE = "com.pghaz.revery.ACTION_ALARM_SNOOZE"
+        const val ACTION_ALARM_SNOOZE_CANCEL = "com.pghaz.revery.ACTION_ALARM_SNOOZE_CANCEL"
 
         fun getScheduleAlarmActionIntent(context: Context?, alarm: Alarm): Intent {
             val intent = Intent(context?.applicationContext, AlarmBroadcastReceiver::class.java)
@@ -50,6 +52,15 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
 
             return intent
         }
+
+        fun getSnoozeCancelActionIntent(context: Context?, alarm: Alarm): Intent {
+            val intent = Intent(context?.applicationContext, AlarmBroadcastReceiver::class.java)
+            intent.action = ACTION_ALARM_SNOOZE_CANCEL
+
+            IntentUtils.safePutAlarmIntoIntent(intent, alarm)
+
+            return intent
+        }
     }
 
     override fun onReceive(context: Context?, intent: Intent?) {
@@ -67,6 +78,8 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
         } else if (ACTION_ALARM_FIRES == intent.action) {
             val alarm = IntentUtils.safeGetAlarmFromIntent(intent)
 
+            cancelNotification(context, alarm)
+
             if (!alarm.recurring) {
                 startAlarmService(context, alarm)
             } else if (alarm.recurring && alarmIsToday(alarm)) {
@@ -83,15 +96,31 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
             val snoozeDuration =
                 intent.getIntExtra(Arguments.ARGS_SNOOZE_DURATION, defaultSnoozeMinutes)
 
-            // TODO show a notification when snoozed ?
-            AlarmHandler.snooze(context, alarm, snoozeDuration)
+            val snoozeAlarm = AlarmHandler.snooze(context, alarm, snoozeDuration)
+
+            val notificationManager = NotificationManagerCompat.from(context)
+            notificationManager.notify(
+                snoozeAlarm.id.toInt(),
+                AlarmService.buildSnoozeNotification(context, snoozeAlarm)
+            )
 
             broadcastFinishRingActivity(context)
             broadcastServiceSnooze(context)
         } else if (ACTION_ALARM_STOP == intent.action) {
             broadcastFinishRingActivity(context)
             broadcastServiceShouldStop(context)
+        } else if (ACTION_ALARM_SNOOZE_CANCEL == intent.action) {
+            val alarm = IntentUtils.safeGetAlarmFromIntent(intent)
+
+            cancelNotification(context, alarm)
+
+            AlarmHandler.cancelAlarm(context, alarm)
         }
+    }
+
+    private fun cancelNotification(context: Context, alarm: Alarm) {
+        val notificationManager = NotificationManagerCompat.from(context)
+        notificationManager.cancel(alarm.id.toInt())
     }
 
     private fun broadcastFinishRingActivity(context: Context) {
