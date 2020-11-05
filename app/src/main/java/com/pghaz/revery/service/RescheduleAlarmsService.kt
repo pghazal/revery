@@ -100,12 +100,12 @@ class RescheduleAlarmsService : LifecycleService() {
             PendingIntent.FLAG_UPDATE_CURRENT
         )
 
-        return NotificationCompat.Builder(this, NotificationHandler.CHANNEL_ID)
-            .setCategory(NotificationCompat.CATEGORY_STATUS)
+        return NotificationCompat.Builder(this, NotificationHandler.CHANNEL_ID_ALARM_RESCHEDULE)
+            .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setContentText(getString(R.string.rescheduling_alarms_after_reboot))
             .setContentIntent(notificationPendingIntent)
             .setSmallIcon(R.drawable.ic_revery_transparent)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setPriority(NotificationCompat.PRIORITY_MAX)
             .setColor(ContextCompat.getColor(this, R.color.colorAccent))
             .setAutoCancel(true)
             .setStyle(

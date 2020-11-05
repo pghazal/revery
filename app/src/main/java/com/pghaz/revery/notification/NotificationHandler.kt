@@ -10,24 +10,47 @@ import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import androidx.core.app.NotificationManagerCompat
+import com.pghaz.revery.R
 
 
 object NotificationHandler {
 
-    const val CHANNEL_ID = "REVERY_ALARM_SERVICE_CHANNEL"
+    @Deprecated("This is an old channel")
+    const val CHANNEL_ID_ALARM_DEPRECATED = "REVERY_ALARM_SERVICE_CHANNEL"
+
+    const val CHANNEL_ID_ALARM = "REVERY_CHANNEL_ALARM"
+    const val CHANNEL_ID_ALARM_RESCHEDULE = "REVERY_CHANNEL_ALARM_RESCHEDULE"
+    const val CHANNEL_ID_ALARM_SNOOZE = "REVERY_CHANNEL_ALARM_SNOOZE"
 
     const val NOTIFICATION_ID_ALARM = 1
     const val NOTIFICATION_ID_RESCHEDULE = 2
 
-    fun createNotificationChannel(context: Context) {
+    fun createNotificationChannels(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val serviceChannel = NotificationChannel(
-                CHANNEL_ID,
-                "Revery Notification",
+            val manager = context.getSystemService(NotificationManager::class.java)
+            manager?.deleteNotificationChannel(CHANNEL_ID_ALARM_DEPRECATED)
+
+            val alarmChannel = NotificationChannel(
+                CHANNEL_ID_ALARM,
+                context.getString(R.string.notification_channel_alarm),
                 NotificationManager.IMPORTANCE_HIGH
             )
-            val manager = context.getSystemService(NotificationManager::class.java)
-            manager?.createNotificationChannel(serviceChannel)
+
+            val alarmSnoozeChannel = NotificationChannel(
+                CHANNEL_ID_ALARM_SNOOZE,
+                context.getString(R.string.notification_channel_alarm_snooze),
+                NotificationManager.IMPORTANCE_HIGH
+            )
+
+            val alarmRescheduleChannel = NotificationChannel(
+                CHANNEL_ID_ALARM_RESCHEDULE,
+                context.getString(R.string.notification_channel_alarm_reschedule),
+                NotificationManager.IMPORTANCE_HIGH
+            )
+
+            manager?.createNotificationChannel(alarmChannel)
+            manager?.createNotificationChannel(alarmSnoozeChannel)
+            manager?.createNotificationChannel(alarmRescheduleChannel)
         }
     }
 
@@ -41,12 +64,12 @@ object NotificationHandler {
         notificationManager.cancel(id)
     }
 
-    fun isNotificationEnabled(context: Context): Boolean {
+    fun isAlarmNotificationEnabled(context: Context): Boolean {
         val notificationManager = NotificationManagerCompat.from(context.applicationContext)
 
         var notificationChannelEnabled = true
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if (notificationManager.getNotificationChannel(CHANNEL_ID)?.importance == NotificationManagerCompat.IMPORTANCE_NONE) {
+            if (notificationManager.getNotificationChannel(CHANNEL_ID_ALARM)?.importance == NotificationManagerCompat.IMPORTANCE_NONE) {
                 notificationChannelEnabled = false
             }
         }

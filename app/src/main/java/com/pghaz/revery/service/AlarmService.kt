@@ -88,7 +88,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
                     snoozeCancelPendingIntent
                 )
 
-            return NotificationCompat.Builder(context, NotificationHandler.CHANNEL_ID)
+            return NotificationCompat.Builder(context, NotificationHandler.CHANNEL_ID_ALARM_SNOOZE)
                 .setCategory(NotificationCompat.CATEGORY_ALARM)
                 .setContentTitle(
                     String.format(
@@ -426,7 +426,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
         val timeFormatter = SimpleDateFormat.getTimeInstance(DateFormat.SHORT)
         val time = timeFormatter.format(Calendar.getInstance().time)
 
-        return NotificationCompat.Builder(this, NotificationHandler.CHANNEL_ID)
+        return NotificationCompat.Builder(this, NotificationHandler.CHANNEL_ID_ALARM)
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setContentTitle(String.format("%s %s", getString(R.string.alarm_of), time))
             .setContentText(alarm.label)

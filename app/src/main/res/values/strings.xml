@@ -6,6 +6,9 @@
     <string name="sleep_fragment">Sleep</string>
 
     <!-- NOTIFICATION -->
+    <string name="notification_channel_alarm">Alarms</string>
+    <string name="notification_channel_alarm_snooze">Snooze</string>
+    <string name="notification_channel_alarm_reschedule">Rescheduled alarms</string>
     <string name="rescheduling_alarms_after_reboot">Alarms have been rescheduled after phone reboot</string>
     <string name="go_to_settings">Go to settings</string>
     <string name="notification_disabled">Notifications disabled</string>

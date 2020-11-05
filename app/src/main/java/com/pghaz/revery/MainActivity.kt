@@ -152,7 +152,7 @@ class MainActivity : BaseSpotifyActivity(), BottomNavigationView.OnNavigationIte
 
     override fun onResume() {
         super.onResume()
-        if (!NotificationHandler.isNotificationEnabled(this)) {
+        if (!NotificationHandler.isAlarmNotificationEnabled(this)) {
             showNotificationDisabledDialog()
         }
     }
