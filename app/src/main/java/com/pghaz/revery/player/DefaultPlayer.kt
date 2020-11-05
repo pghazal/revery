@@ -113,6 +113,7 @@ class DefaultPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
         }
     }
 
+    @Suppress("DEPRECATION")
     private fun requestAudioFocus(): Int? {
         return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             audioFocusRequest?.let { audioManager.requestAudioFocus(it) }
@@ -125,18 +126,8 @@ class DefaultPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
         }
     }
 
-    override fun start() {
-        if (fadeIn) {
-            initFadeIn()
-        } else {
-            initVolume()
-        }
-
+    override fun internalStart() {
         play()
-
-        if (fadeIn) {
-            fadeIn()
-        }
     }
 
     override fun stop() {
@@ -169,6 +160,7 @@ class DefaultPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
         // do nothing
     }
 
+    @Suppress("DEPRECATION")
     private fun abandonAudioFocus() {
         val result = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             audioFocusRequest?.let { audioManager.abandonAudioFocusRequest(it) }

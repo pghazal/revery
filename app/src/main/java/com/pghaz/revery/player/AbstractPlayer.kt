@@ -5,6 +5,7 @@ import android.content.Context
 import android.media.AudioManager
 import android.view.animation.LinearInterpolator
 import androidx.annotation.CallSuper
+import com.pghaz.revery.extension.logError
 import com.pghaz.revery.settings.SettingsHandler
 
 abstract class AbstractPlayer(
@@ -44,7 +45,24 @@ abstract class AbstractPlayer(
 
     abstract fun prepare(uri: String?)
 
-    abstract fun start()
+    fun start() {
+        context.logError("start()")
+
+        // If fade in enabled, first set minimum volume
+        if (fadeIn) {
+            initFadeIn()
+        } else {
+            initVolume()
+        }
+
+        internalStart()
+
+        if (fadeIn) {
+            fadeIn()
+        }
+    }
+
+    protected abstract fun internalStart()
 
     abstract fun stop()
 
@@ -58,11 +76,11 @@ abstract class AbstractPlayer(
 
     abstract fun release()
 
-    protected fun initFadeIn() {
+    private fun initFadeIn() {
         audioManager.setStreamVolume(streamType, minVolume, 0)
     }
 
-    protected fun initVolume() {
+    private fun initVolume() {
         audioManager.setStreamVolume(streamType, maxDecidedVolume, 0)
     }
 

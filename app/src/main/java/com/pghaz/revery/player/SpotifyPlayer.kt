@@ -65,6 +65,7 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
         // sync prepared is not used for this player
     }
 
+    @ExperimentalCoroutinesApi
     override fun onConnected(spotifyAppRemote: SpotifyAppRemote) {
         this.spotifyAppRemote = spotifyAppRemote
         this.isInitialized = true
@@ -114,23 +115,13 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
         }
     }
 
-    override fun start() {
+    @ExperimentalCoroutinesApi
+    override fun internalStart() {
         playerAction = PlayerAction.ACTION_START
 
-        context.logError("start()")
+        context.logError("internalStart()")
         coroutinesScope.launch {
-            // If fade in enabled, first set minimum volume
-            if (fadeIn) {
-                initFadeIn()
-            } else {
-                initVolume()
-            }
-
             getAppRemote()?.playerApi?.play(currentUri)
-
-            if (fadeIn) {
-                fadeIn()
-            }
         }
     }
 
@@ -149,6 +140,7 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
         return imagesApi?.getImage(imageUri)
     }
 
+    @ExperimentalCoroutinesApi
     override fun skipNext() {
         playerAction = PlayerAction.ACTION_SKIP_NEXT
 
@@ -158,6 +150,7 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
         }
     }
 
+    @ExperimentalCoroutinesApi
     override fun skipPrevious() {
         playerAction = PlayerAction.ACTION_SKIP_PREVIOUS
 
@@ -167,6 +160,7 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
         }
     }
 
+    @ExperimentalCoroutinesApi
     override fun stop() {
         playerAction = PlayerAction.ACTION_STOP
 
@@ -178,6 +172,7 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
         }
     }
 
+    @ExperimentalCoroutinesApi
     override fun play() {
         playerAction = PlayerAction.ACTION_PLAY
 
@@ -187,6 +182,7 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
         }
     }
 
+    @ExperimentalCoroutinesApi
     override fun pause() {
         playerAction = PlayerAction.ACTION_PAUSE
 
@@ -196,6 +192,7 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
         }
     }
 
+    @ExperimentalCoroutinesApi
     override fun release() {
         playerAction = PlayerAction.ACTION_RELEASE
 
