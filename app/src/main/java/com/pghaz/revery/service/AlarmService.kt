@@ -1,6 +1,7 @@
 package com.pghaz.revery.service
 
 import android.app.Notification
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -12,17 +13,18 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pghaz.revery.MainActivity
 import com.pghaz.revery.R
 import com.pghaz.revery.alarm.AlarmHandler
-import com.pghaz.revery.application.ReveryApplication
 import com.pghaz.revery.broadcastreceiver.AlarmBroadcastReceiver
 import com.pghaz.revery.extension.logError
 import com.pghaz.revery.model.app.alarm.Alarm
 import com.pghaz.revery.model.app.alarm.AlarmMetadata
 import com.pghaz.revery.model.app.alarm.MediaType
+import com.pghaz.revery.notification.NotificationHandler
 import com.pghaz.revery.player.AbstractPlayer
 import com.pghaz.revery.player.DefaultPlayer
 import com.pghaz.revery.player.PlayerError
@@ -30,6 +32,9 @@ import com.pghaz.revery.player.SpotifyPlayer
 import com.pghaz.revery.repository.AlarmRepository
 import com.pghaz.revery.settings.SettingsHandler
 import com.pghaz.revery.util.IntentUtils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -42,7 +47,6 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
         private const val ACTION_ALARM_SERVICE_SNOOZE =
             "com.pghaz.revery.ACTION_ALARM_SERVICE_SNOOZE"
 
-        private const val NOTIFICATION_ID = 1
 
         fun getServiceShouldStopIntent(context: Context, alarm: Alarm): Intent {
             val intent =
@@ -84,7 +88,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
                     snoozeCancelPendingIntent
                 )
 
-            return NotificationCompat.Builder(context, ReveryApplication.CHANNEL_ID)
+            return NotificationCompat.Builder(context, NotificationHandler.CHANNEL_ID)
                 .setCategory(NotificationCompat.CATEGORY_ALARM)
                 .setContentTitle(
                     String.format(
@@ -134,8 +138,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
 
                 player.release()
 
-                stopForeground(true)
-                stopSelf() // will call onDestroy()
+                killService() // will call onDestroy()
             }
         }
     }
@@ -188,40 +191,69 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
         super.onStartCommand(alarmIntent, flags, startId)
 
         alarmIntent?.let {
-            alarm = IntentUtils.safeGetAlarmFromIntent(it)
-            val fadeInDuration = SettingsHandler.getFadeInDuration(this)
+            lifecycleScope.launch(Dispatchers.Main) {
+                alarm = IntentUtils.safeGetAlarmFromIntent(it)
+                val fadeInDuration = SettingsHandler.getFadeInDuration(this@AlarmService)
 
-            notification = buildAlarmNotification(alarm)
+                notification = buildAlarmNotification(alarm)
 
-            disableOneShotAlarm(this, alarm)
+                disableOneShotAlarm(this@AlarmService, alarm)
 
-            val shouldUseDeviceVolume = SettingsHandler.getShouldUseDeviceVolume(this)
+                // Disable DND if app has access and DND is enabled
+                disableDoNotDisturbIfNeeded()
 
-            try {
-                player = if (!this::player.isInitialized) {
-                    getInitializedPlayer(
-                        alarm.metadata.type, shouldUseDeviceVolume, this,
-                        alarm.fadeIn, fadeInDuration
-                    )
-                } else {
-                    stopPlayerAndVibrator(true, alarm.metadata)
-                    getInitializedPlayer(
-                        alarm.metadata.type, shouldUseDeviceVolume, this,
-                        alarm.fadeIn, fadeInDuration
-                    )
+                val shouldUseDeviceVolume =
+                    SettingsHandler.getShouldUseDeviceVolume(this@AlarmService)
+
+                try {
+                    player = if (!this@AlarmService::player.isInitialized) {
+                        getInitializedPlayer(
+                            alarm.metadata.type, shouldUseDeviceVolume, this@AlarmService,
+                            alarm.fadeIn, fadeInDuration
+                        )
+                    } else {
+                        stopPlayerAndVibrator(true, alarm.metadata)
+                        getInitializedPlayer(
+                            alarm.metadata.type, shouldUseDeviceVolume, this@AlarmService,
+                            alarm.fadeIn, fadeInDuration
+                        )
+                    }
+
+                    // Additional settings such as shuffle
+                    configurePlayer(alarm.metadata)
+                    player.prepareAsync(alarm.metadata.uri)
+                } catch (exception: Exception) {
+                    onPlayerError(PlayerError.Initialization(exception))
                 }
 
-                // Additional settings such as shuffle
-                configurePlayer(alarm.metadata)
-                player.prepareAsync(alarm.metadata.uri)
-            } catch (exception: Exception) {
-                onPlayerError(PlayerError.Initialization(exception))
+                startForeground(NotificationHandler.NOTIFICATION_ID_ALARM, notification)
             }
-
-            startForeground(NOTIFICATION_ID, notification)
+        } ?: kotlin.run {
+            killService()
         }
 
         return START_STICKY
+    }
+
+    private suspend fun disableDoNotDisturbIfNeeded() {
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        if (NotificationHandler.isNotificationPolicyAccessGranted(notificationManager)) {
+            if (NotificationHandler.isDoNotDisturbEnabled(notificationManager)) {
+                NotificationHandler.setInterruptionFilter(
+                    notificationManager,
+                    NotificationManager.INTERRUPTION_FILTER_ALL
+                )
+                // Delay for a sec because the change is not instant on some devices
+                delay(1000)
+            }
+        }
+    }
+
+    private fun killService() {
+        stopForeground(true)
+        stopSelf()
     }
 
     private fun configurePlayer(metadata: AlarmMetadata) {
@@ -394,7 +426,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
         val timeFormatter = SimpleDateFormat.getTimeInstance(DateFormat.SHORT)
         val time = timeFormatter.format(Calendar.getInstance().time)
 
-        return NotificationCompat.Builder(this, ReveryApplication.CHANNEL_ID)
+        return NotificationCompat.Builder(this, NotificationHandler.CHANNEL_ID)
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setContentTitle(String.format("%s %s", getString(R.string.alarm_of), time))
             .setContentText(alarm.label)

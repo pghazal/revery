@@ -3,17 +3,15 @@ package com.pghaz.revery.service
 import android.app.Application
 import android.app.Notification
 import android.app.PendingIntent
-import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleService
 import com.pghaz.revery.MainActivity
 import com.pghaz.revery.R
 import com.pghaz.revery.alarm.AlarmHandler
-import com.pghaz.revery.application.ReveryApplication
+import com.pghaz.revery.notification.NotificationHandler
 import com.pghaz.revery.repository.AlarmRepository
 import com.pghaz.revery.util.Arguments
 
@@ -23,13 +21,6 @@ class RescheduleAlarmsService : LifecycleService() {
     private var hasEnabledAlarms = false
 
     companion object {
-        const val NOTIFICATION_ID = 2
-
-        fun clearNotification(context: Context) {
-            val notificationManager = NotificationManagerCompat.from(context)
-            notificationManager.cancel(NOTIFICATION_ID)
-        }
-
         fun rescheduleEnabledAlarms(application: Application, lifecycleOwner: LifecycleOwner) {
             val alarmRepository = AlarmRepository(application)
 
@@ -65,7 +56,10 @@ class RescheduleAlarmsService : LifecycleService() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
 
-        startForeground(NOTIFICATION_ID, buildRescheduleNotification())
+        startForeground(
+            NotificationHandler.NOTIFICATION_ID_RESCHEDULE,
+            buildRescheduleNotification()
+        )
 
         alarmRepository.getAlarmsLiveData().observe(this, { alarms ->
             alarms.forEach {
@@ -98,7 +92,7 @@ class RescheduleAlarmsService : LifecycleService() {
         val notificationIntent = Intent(this, MainActivity::class.java)
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
 
-        val notificationRequestCode = NOTIFICATION_ID
+        val notificationRequestCode = NotificationHandler.NOTIFICATION_ID_RESCHEDULE
         val notificationPendingIntent = PendingIntent.getActivity(
             this,
             notificationRequestCode,
@@ -106,7 +100,7 @@ class RescheduleAlarmsService : LifecycleService() {
             PendingIntent.FLAG_UPDATE_CURRENT
         )
 
-        return NotificationCompat.Builder(this, ReveryApplication.CHANNEL_ID)
+        return NotificationCompat.Builder(this, NotificationHandler.CHANNEL_ID)
             .setCategory(NotificationCompat.CATEGORY_STATUS)
             .setContentText(getString(R.string.rescheduling_alarms_after_reboot))
             .setContentIntent(notificationPendingIntent)

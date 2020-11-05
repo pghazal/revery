@@ -1,5 +1,6 @@
 package com.pghaz.revery
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ComponentName
 import android.content.Intent
@@ -14,10 +15,10 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.pghaz.revery.alarm.ListAlarmsFragment
 import com.pghaz.revery.alarm.RingActivity
-import com.pghaz.revery.application.ReveryApplication
 import com.pghaz.revery.battery.PowerManagerHandler
 import com.pghaz.revery.extension.logError
 import com.pghaz.revery.model.app.alarm.Alarm
+import com.pghaz.revery.notification.NotificationHandler
 import com.pghaz.revery.service.AlarmService
 import com.pghaz.revery.service.RescheduleAlarmsService
 import com.pghaz.revery.sleep.SleepFragment
@@ -54,7 +55,7 @@ class MainActivity : BaseSpotifyActivity(), BottomNavigationView.OnNavigationIte
         super.onCreate(savedInstanceState)
         bindToAlarmServiceIfAlarmFired()
 
-        RescheduleAlarmsService.clearNotification(this)
+        NotificationHandler.cancel(this, NotificationHandler.NOTIFICATION_ID_RESCHEDULE)
         RescheduleAlarmsService.rescheduleEnabledAlarms(application, this)
 
         PowerManagerHandler.showPowerSaverDialogIfNeeded(
@@ -151,11 +152,12 @@ class MainActivity : BaseSpotifyActivity(), BottomNavigationView.OnNavigationIte
 
     override fun onResume() {
         super.onResume()
-        if (!ReveryApplication.isNotificationEnabled(this)) {
+        if (!NotificationHandler.isNotificationEnabled(this)) {
             showNotificationDisabledDialog()
         }
     }
 
+    @SuppressLint("InflateParams")
     private fun showNotificationDisabledDialog() {
         val view = LayoutInflater.from(this).inflate(R.layout.dialog_notification_disabled, null)
         val goToSettingsButton = view.findViewById<AppCompatButton>(R.id.goToSettingsButton)
@@ -168,7 +170,7 @@ class MainActivity : BaseSpotifyActivity(), BottomNavigationView.OnNavigationIte
 
         goToSettingsButton.setOnClickListener {
             dialog.dismiss()
-            ReveryApplication.openAppNotificationSettings(this@MainActivity)
+            NotificationHandler.openAppNotificationSettings(this@MainActivity)
         }
     }
 

@@ -4,11 +4,11 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import androidx.core.app.NotificationManagerCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.pghaz.revery.alarm.AlarmHandler
 import com.pghaz.revery.alarm.RingActivity
 import com.pghaz.revery.model.app.alarm.Alarm
+import com.pghaz.revery.notification.NotificationHandler
 import com.pghaz.revery.service.AlarmService
 import com.pghaz.revery.service.RescheduleAlarmsService
 import com.pghaz.revery.settings.SettingsHandler
@@ -78,7 +78,7 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
         } else if (ACTION_ALARM_FIRES == intent.action) {
             val alarm = IntentUtils.safeGetAlarmFromIntent(intent)
 
-            cancelNotification(context, alarm)
+            NotificationHandler.cancel(context, alarm.id.toInt())
 
             if (!alarm.recurring) {
                 startAlarmService(context, alarm)
@@ -98,8 +98,8 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
 
             val snoozeAlarm = AlarmHandler.snooze(context, alarm, snoozeDuration)
 
-            val notificationManager = NotificationManagerCompat.from(context)
-            notificationManager.notify(
+            NotificationHandler.notify(
+                context,
                 snoozeAlarm.id.toInt(),
                 AlarmService.buildSnoozeNotification(context, snoozeAlarm)
             )
@@ -114,15 +114,10 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
         } else if (ACTION_ALARM_SNOOZE_CANCEL == intent.action) {
             val alarm = IntentUtils.safeGetAlarmFromIntent(intent)
 
-            cancelNotification(context, alarm)
+            NotificationHandler.cancel(context, alarm.id.toInt())
 
             AlarmHandler.cancelAlarm(context, alarm)
         }
-    }
-
-    private fun cancelNotification(context: Context, alarm: Alarm) {
-        val notificationManager = NotificationManagerCompat.from(context)
-        notificationManager.cancel(alarm.id.toInt())
     }
 
     private fun broadcastFinishRingActivity(context: Context) {
