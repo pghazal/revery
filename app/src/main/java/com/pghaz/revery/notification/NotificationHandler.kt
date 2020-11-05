@@ -64,17 +64,19 @@ object NotificationHandler {
         notificationManager.cancel(id)
     }
 
-    fun isAlarmNotificationEnabled(context: Context): Boolean {
+    fun areNeededNotificationsEnabled(context: Context): Boolean {
         val notificationManager = NotificationManagerCompat.from(context.applicationContext)
 
-        var notificationChannelEnabled = true
+        var notificationChannelsEnabled = true
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if (notificationManager.getNotificationChannel(CHANNEL_ID_ALARM)?.importance == NotificationManagerCompat.IMPORTANCE_NONE) {
-                notificationChannelEnabled = false
+            if (notificationManager.getNotificationChannel(CHANNEL_ID_ALARM)?.importance == NotificationManagerCompat.IMPORTANCE_NONE ||
+                notificationManager.getNotificationChannel(CHANNEL_ID_ALARM_SNOOZE)?.importance == NotificationManagerCompat.IMPORTANCE_NONE
+            ) {
+                notificationChannelsEnabled = false
             }
         }
 
-        return notificationManager.areNotificationsEnabled() && notificationChannelEnabled
+        return notificationManager.areNotificationsEnabled() && notificationChannelsEnabled
     }
 
     fun openAppNotificationSettings(context: Context) {
