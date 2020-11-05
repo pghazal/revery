@@ -32,6 +32,8 @@ import kotlinx.android.synthetic.main.activity_main.*
  */
 class MainActivity : BaseSpotifyActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
 
+    private var notificationsDisabledDialog: AlertDialog? = null
+
     private var mAlarmServiceBound: Boolean = false
     private lateinit var alarm: Alarm
 
@@ -133,6 +135,9 @@ class MainActivity : BaseSpotifyActivity(), BottomNavigationView.OnNavigationIte
     }
 
     override fun configureViews(savedInstanceState: Bundle?) {
+        super.configureViews(savedInstanceState)
+        buildNotificationsDisabledDialog()
+
         configureBottomNavigationView(savedInstanceState)
     }
 
@@ -153,23 +158,28 @@ class MainActivity : BaseSpotifyActivity(), BottomNavigationView.OnNavigationIte
     override fun onResume() {
         super.onResume()
         if (!NotificationHandler.isAlarmNotificationEnabled(this)) {
-            showNotificationDisabledDialog()
+            showNotificationsDisabledDialog()
+        }
+    }
+
+    private fun showNotificationsDisabledDialog() {
+        if (!notificationsDisabledDialog?.isShowing!!) {
+            notificationsDisabledDialog?.show()
         }
     }
 
     @SuppressLint("InflateParams")
-    private fun showNotificationDisabledDialog() {
+    private fun buildNotificationsDisabledDialog() {
         val view = LayoutInflater.from(this).inflate(R.layout.dialog_notification_disabled, null)
         val goToSettingsButton = view.findViewById<AppCompatButton>(R.id.goToSettingsButton)
 
-        val dialog = AlertDialog.Builder(this).apply {
+        notificationsDisabledDialog = AlertDialog.Builder(this).apply {
             setCancelable(true)
             setView(view)
         }.create()
-        dialog.show()
 
         goToSettingsButton.setOnClickListener {
-            dialog.dismiss()
+            notificationsDisabledDialog?.dismiss()
             NotificationHandler.openAppNotificationSettings(this@MainActivity)
         }
     }

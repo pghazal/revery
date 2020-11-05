@@ -68,10 +68,6 @@ class SpotifySearchActivity : BaseSpotifyActivity(), SpotifyAuthorizationCallbac
         // do nothing
     }
 
-    override fun configureViews(savedInstanceState: Bundle?) {
-
-    }
-
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_spotify_search, menu)
 

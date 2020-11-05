@@ -58,6 +58,7 @@ class SpotifyActivity : BaseSpotifyActivity(), ExtendedFloatingActionListener {
     }
 
     override fun configureViews(savedInstanceState: Bundle?) {
+        super.configureViews(savedInstanceState)
         searchButton.setOnClickListener {
             val intent = Intent(this, SpotifySearchActivity::class.java)
             startActivityForResult(intent, REQUEST_CODE_SPOTIFY_SEARCH)

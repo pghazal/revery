@@ -28,6 +28,7 @@ abstract class BaseSpotifyActivity : BaseActivity(), SpotifyAuthorizationCallbac
         const val REQUEST_CODE_SPOTIFY_LOGIN = 1337
     }
 
+    private var spotifyNotInstalledDialog: AlertDialog? = null
     lateinit var spotifyAuthClient: SpotifyAuthorizationClient
 
     private fun initSpotifyAuthClient() {
@@ -74,6 +75,10 @@ abstract class BaseSpotifyActivity : BaseActivity(), SpotifyAuthorizationCallbac
         }
     }
 
+    override fun configureViews(savedInstanceState: Bundle?) {
+        buildSpotifyNotInstalledDialog()
+    }
+
     abstract fun shouldShowAuth(): Boolean
 
     abstract fun onSpotifyAuthorizedAndAvailable()
@@ -91,19 +96,24 @@ abstract class BaseSpotifyActivity : BaseActivity(), SpotifyAuthorizationCallbac
         }
     }
 
-    @SuppressLint("InflateParams")
     private fun showSpotifyNotInstalledDialog() {
+        if (!spotifyNotInstalledDialog?.isShowing!!) {
+            spotifyNotInstalledDialog?.show()
+        }
+    }
+
+    @SuppressLint("InflateParams")
+    private fun buildSpotifyNotInstalledDialog() {
         val view = LayoutInflater.from(this).inflate(R.layout.dialog_spotify_not_installed, null)
         val spotifyInstallButton = view.findViewById<AppCompatButton>(R.id.spotifyInstallButton)
 
-        val dialog = AlertDialog.Builder(this).apply {
+        spotifyNotInstalledDialog = AlertDialog.Builder(this).apply {
             setCancelable(true)
             setView(view)
         }.create()
-        dialog.show()
 
         spotifyInstallButton.setOnClickListener {
-            dialog.dismiss()
+            spotifyNotInstalledDialog?.dismiss()
             SpotifyAuthorizationClient.openDownloadSpotifyActivity(this, "com.pghaz.revery")
         }
     }
