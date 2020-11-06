@@ -23,6 +23,8 @@ data class Alarm(
     var vibrate: Boolean = false,
     var fadeIn: Boolean = false,
     var fadeInDuration: Long = 0,
+    var isSnooze: Boolean = false,
+    var isPreview: Boolean = false,
     var metadata: AlarmMetadata = AlarmMetadata()
 ) : BaseModel(), Parcelable {
 
@@ -43,6 +45,8 @@ data class Alarm(
         vibrate = alarm.vibrate,
         fadeIn = alarm.fadeIn,
         fadeInDuration = alarm.fadeInDuration,
+        isSnooze = alarm.isSnooze,
+        isPreview = alarm.isPreview,
         metadata = AlarmMetadata(alarm.metadata)
     )
 
@@ -65,6 +69,8 @@ data class Alarm(
                 vibrate = alarm.vibrate,
                 fadeIn = alarm.fadeIn,
                 fadeInDuration = alarm.fadeInDuration,
+                isSnooze = false,
+                isPreview = false,
                 metadata = AlarmMetadata.fromDatabaseModel(alarm.metadata)
             )
         }

@@ -48,6 +48,8 @@ object AlarmHandler {
             vibrate = false,
             fadeIn = true,
             fadeInDuration = fadeInDuration,
+            isSnooze = false,
+            isPreview = true,
             metadata = metadata
         )
 
@@ -101,6 +103,8 @@ object AlarmHandler {
             vibrate = vibrate,
             fadeIn = fadeIn,
             fadeInDuration = fadeInDuration,
+            isSnooze = false,
+            isPreview = true,
             metadata = metadata
         )
 
@@ -216,6 +220,7 @@ object AlarmHandler {
         snoozeAlarm.enabled = true
         snoozeAlarm.hour = hour
         snoozeAlarm.minute = minute
+        snoozeAlarm.isSnooze = true
 
         scheduleAlarm(context, snoozeAlarm)
 

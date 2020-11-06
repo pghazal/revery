@@ -371,7 +371,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
     }
 
     private fun disableOneShotAlarm(context: Context?, alarm: Alarm) {
-        if (!alarm.recurring) {
+        if (!alarm.recurring && !alarm.isSnooze && !alarm.isPreview) {
             alarmLiveData = alarmRepository.get(alarm)
             alarmLiveData?.observe(this, {
                 it?.let {
