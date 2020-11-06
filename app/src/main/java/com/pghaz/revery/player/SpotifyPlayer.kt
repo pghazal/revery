@@ -168,6 +168,9 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
         coroutinesScope.launch {
             getAppRemote()?.playerApi?.pause()
 
+            // Give some time to the player to pause
+            Thread.sleep(300)
+
             resetInitialDeviceVolume()
         }
     }
