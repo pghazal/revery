@@ -9,7 +9,7 @@
 
     <!-- Alarm Features -->
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY"/>
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
 
     <!-- Battery -->
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
@@ -56,6 +56,16 @@
             android:configChanges="orientation|screenSize"
             android:label=""
             android:windowSoftInputMode="adjustNothing" />
+
+        <activity
+            android:name=".onboarding.OnBoardingActivity"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/Theme.Activity.FullScreen" />
+
+        <activity
+            android:name=".battery.PowerSettingsActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/android_settings" />
 
         <receiver
             android:name="com.pghaz.revery.broadcastreceiver.AlarmBroadcastReceiver"

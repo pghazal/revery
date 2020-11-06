@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:opacity="opaque">
+    <item android:drawable="@color/colorPrimary" />
+
+    <item
+        android:width="119dp"
+        android:height="100dp"
+        android:drawable="@drawable/ic_revery_transparent"
+        android:gravity="center" />
+</layer-list>

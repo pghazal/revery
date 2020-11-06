@@ -118,6 +118,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
 
     private lateinit var vibrator: Vibrator
     private lateinit var notification: Notification
+    private var initialDoNotDisturbMode: Int = -1
 
     private lateinit var player: AbstractPlayer
 
@@ -127,6 +128,15 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
         override fun onReceive(context: Context?, intent: Intent?) {
             intent?.let {
                 val alarm = IntentUtils.safeGetAlarmFromIntent(intent)
+
+                if (initialDoNotDisturbMode != -1) {
+                    val notificationManager =
+                        getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                    NotificationHandler.setInterruptionFilter(
+                        notificationManager,
+                        initialDoNotDisturbMode
+                    )
+                }
 
                 if (ACTION_ALARM_SERVICE_SHOULD_STOP == it.action) {
                     logError(ACTION_ALARM_SERVICE_SHOULD_STOP)
@@ -241,6 +251,8 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
 
         if (NotificationHandler.isNotificationPolicyAccessGranted(notificationManager)) {
             if (NotificationHandler.isDoNotDisturbEnabled(notificationManager)) {
+                initialDoNotDisturbMode = notificationManager.currentInterruptionFilter
+
                 NotificationHandler.setInterruptionFilter(
                     notificationManager,
                     NotificationManager.INTERRUPTION_FILTER_ALL

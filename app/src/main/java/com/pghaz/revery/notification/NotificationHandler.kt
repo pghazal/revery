@@ -1,6 +1,5 @@
 package com.pghaz.revery.notification
 
-import android.app.Activity
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -9,7 +8,9 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
+import com.pghaz.revery.LauncherForResultComponent
 import com.pghaz.revery.R
 
 
@@ -28,6 +29,7 @@ object NotificationHandler {
     fun createNotificationChannels(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val manager = context.getSystemService(NotificationManager::class.java)
+            @Suppress("DEPRECATION")
             manager?.deleteNotificationChannel(CHANNEL_ID_ALARM_DEPRECATED)
 
             val alarmChannel = NotificationChannel(
@@ -105,9 +107,17 @@ object NotificationHandler {
         return notificationManager.isNotificationPolicyAccessGranted
     }
 
-    fun startDoNotDisturbActivity(activity: Activity, requestCode: Int) {
+    fun startDoNotDisturbActivity(
+        context: Context,
+        launcherForResultComponent: LauncherForResultComponent,
+        requestCode: Int
+    ) {
         val intent = Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
-        activity.startActivityForResult(intent, requestCode)
+        if (intent.resolveActivity(context.packageManager) != null) {
+            launcherForResultComponent.launchActivityForResult(intent, requestCode)
+        } else {
+            Toast.makeText(context, context.getString(R.string.do_not_disturb_cannot_handle), Toast.LENGTH_SHORT).show()
+        }
     }
 
     fun isDoNotDisturbEnabled(notificationManager: NotificationManager): Boolean {

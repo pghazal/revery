@@ -21,14 +21,6 @@ class SpotifyActivity : BaseSpotifyActivity(), ExtendedFloatingActionListener {
         return R.layout.activity_spotify
     }
 
-    override fun shouldAnimateOnCreate(): Boolean {
-        return true
-    }
-
-    override fun shouldAnimateOnFinish(): Boolean {
-        return true
-    }
-
     override fun shouldShowAuth(): Boolean {
         return true
     }

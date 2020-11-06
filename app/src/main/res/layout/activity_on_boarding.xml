@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    tools:context=".onboarding.OnBoardingActivity">
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/nextButton" />
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/dotsIndicatorsView"
+        style="@style/Widget.Design.TabLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="@dimen/base_margin"
+        android:layout_marginBottom="@dimen/base_margin"
+        android:background="@android:color/transparent"
+        app:tabBackground="@drawable/on_boarding_dots_selector"
+        app:tabGravity="center"
+        app:tabIndicatorHeight="0dp"
+        app:tabPaddingEnd="8dp"
+        app:tabPaddingStart="8dp" />
+
+    <Button
+        android:id="@+id/nextButton"
+        style="@style/ReveryButtonBorderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="@dimen/base_margin"
+        android:layout_marginBottom="@dimen/base_margin"
+        android:gravity="center"
+        android:padding="@dimen/third_base_margin"
+        android:text="@string/next"
+        android:textSize="12sp" />
+</RelativeLayout>

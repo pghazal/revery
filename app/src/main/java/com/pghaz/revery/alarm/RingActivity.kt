@@ -85,12 +85,9 @@ class RingActivity : BaseActivity() {
         return R.layout.activity_ring
     }
 
-    override fun shouldAnimateOnCreate(): Boolean {
-        return false
-    }
-
-    override fun shouldAnimateOnFinish(): Boolean {
-        return true
+    override fun onCreateAnimation() {
+        super.onCreateAnimation()
+        overridePendingTransition(0, 0)
     }
 
     private fun registerToLocalAlarmBroadcastReceiver() {

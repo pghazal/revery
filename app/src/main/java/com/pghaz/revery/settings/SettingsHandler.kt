@@ -9,6 +9,10 @@ object SettingsHandler {
 
     private const val SETTINGS_SHARED_PREF = "com.pghaz.revery.settings"
 
+    // On Boarding
+    private const val SETTINGS_ON_BOARDING_SHOWN = "$SETTINGS_SHARED_PREF.on.boarding.shown"
+    private const val DEFAULT_ON_BOARDING_SHOWN = false
+
     // Turn off
     private const val SETTINGS_SLIDE_TO_TURN_OFF = "$SETTINGS_SHARED_PREF.alarm.slide.to.turn.off"
     private const val DEFAULT_SLIDE_TO_TURN_OFF = false
@@ -50,6 +54,21 @@ object SettingsHandler {
         return context.applicationContext.getSharedPreferences(
             SETTINGS_SHARED_PREF,
             Context.MODE_PRIVATE
+        )
+    }
+
+    fun setOnBoardingShown(context: Context, value: Boolean) {
+        val sharedPreferences = getSharedPreferences(context)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean(SETTINGS_ON_BOARDING_SHOWN, value)
+        editor.apply()
+    }
+
+    fun getOnBoardingShown(context: Context): Boolean {
+        val sharedPreferences = getSharedPreferences(context)
+        return sharedPreferences.getBoolean(
+            SETTINGS_ON_BOARDING_SHOWN,
+            DEFAULT_ON_BOARDING_SHOWN
         )
     }
 

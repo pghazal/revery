@@ -5,10 +5,14 @@ import com.pghaz.revery.R
 import com.pghaz.revery.model.app.spotify.SpotifyFilter
 import com.pghaz.revery.util.Arguments
 
-class SpotifySearchFragment : BaseSpotifyFragment(), SpotifySearchListener {
+class SpotifySearchFragment : BaseSpotifyItemsFragment(), SpotifySearchListener {
 
     override fun getLayoutResId(): Int {
         return R.layout.fragment_spotify_search
+    }
+
+    override fun onSpotifyAuthorizedAndAvailable() {
+        // do nothing
     }
 
     override fun search(query: String?) {

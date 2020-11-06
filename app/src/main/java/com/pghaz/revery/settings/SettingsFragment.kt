@@ -17,14 +17,13 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatButton
-import com.pghaz.revery.BaseBottomSheetDialogFragment
 import com.pghaz.revery.BuildConfig
 import com.pghaz.revery.R
 import com.pghaz.revery.adapter.alarm.DefaultMediaViewHolder
 import com.pghaz.revery.alarm.AlarmHandler
 import com.pghaz.revery.alarm.CreateEditAlarmFragment
 import com.pghaz.revery.animation.AnimatorUtils
-import com.pghaz.revery.battery.PowerManagerHandler
+import com.pghaz.revery.battery.PowerSettingsActivity
 import com.pghaz.revery.image.ImageLoader
 import com.pghaz.revery.model.app.alarm.AlarmMetadata
 import com.pghaz.revery.model.app.alarm.MediaType
@@ -33,18 +32,28 @@ import com.pghaz.revery.permission.PermissionManager
 import com.pghaz.revery.permission.ReveryPermission
 import com.pghaz.revery.ringtone.AudioPickerHelper
 import com.pghaz.revery.spotify.BaseSpotifyActivity
+import com.pghaz.revery.spotify.BaseSpotifyBottomSheetDialogFragment
 import com.pghaz.revery.util.Arguments
 import io.github.kaaes.spotify.webapi.core.models.UserPrivate
 import kotlinx.android.synthetic.main.floating_action_buttons_music_menu.*
 import kotlinx.android.synthetic.main.fragment_settings.*
 
-class SettingsFragment : BaseBottomSheetDialogFragment() {
+class SettingsFragment : BaseSpotifyBottomSheetDialogFragment() {
 
     private lateinit var openMenuMusicAnimation: AnimatorSet
     private lateinit var closeMenuMusicAnimation: AnimatorSet
 
     override fun getLayoutResId(): Int {
         return R.layout.fragment_settings
+    }
+
+    override fun onSpotifyAuthorizedAndAvailable() {
+        if (activity is BaseSpotifyActivity) {
+            updateSpotifyViews(
+                (activity as BaseSpotifyActivity?)?.spotifyAuthClient?.getCurrentUser(),
+                true
+            )
+        }
     }
 
     override fun configureViews(savedInstanceState: Bundle?) {
@@ -222,13 +231,9 @@ class SettingsFragment : BaseBottomSheetDialogFragment() {
 
         // Battery Optimization
         batteryOptimizationButton.setOnClickListener {
-            activity?.let {
-                PowerManagerHandler.showPowerSaverDialogIfNeeded(
-                    it,
-                    PowerManagerHandler.REQUEST_CODE_POWER_MANAGER_PROTECTED_APPS,
-                    isFirstTime = true,
-                    openingFromSettings = true
-                )
+            context?.let {
+                val intent = Intent(it, PowerSettingsActivity::class.java)
+                startActivity(intent)
             }
         }
 
@@ -547,8 +552,41 @@ class SettingsFragment : BaseBottomSheetDialogFragment() {
                 }
             }
         } else {
-            loginSpotifyButton.visibility = View.GONE
-            loggedContainer.visibility = View.VISIBLE
+            if (animate) {
+                loginSpotifyButton.apply {
+                    alpha = 1f
+                    visibility = View.VISIBLE
+
+                    animate()
+                        .alpha(0f)
+                        .setDuration(300)
+                        .setListener(object : AnimatorListenerAdapter() {
+                            override fun onAnimationEnd(animation: Animator) {
+                                loginSpotifyButton.visibility = View.INVISIBLE
+                            }
+                        })
+                }
+
+                loggedContainer.apply {
+                    alpha = 0f
+                    visibility = View.VISIBLE
+
+                    animate()
+                        .alpha(1f)
+                        .setDuration(300)
+                        .setListener(null)
+                }
+            } else {
+                loginSpotifyButton.apply {
+                    alpha = 1f
+                    visibility = View.GONE
+                }
+
+                loggedContainer.apply {
+                    alpha = 1f
+                    visibility = View.VISIBLE
+                }
+            }
 
             pseudoTextView.text = spotifyUser.display_name
 
@@ -571,7 +609,6 @@ class SettingsFragment : BaseBottomSheetDialogFragment() {
                     activity as BaseSpotifyActivity,
                     BaseSpotifyActivity.REQUEST_CODE_SPOTIFY_LOGIN
                 )
-                dismiss()
             }
         }
 

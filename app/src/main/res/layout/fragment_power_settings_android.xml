@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    android:fadeScrollbars="false"
+    android:fillViewport="true"
+    android:scrollbarStyle="insideInset"
+    android:scrollbarThumbVertical="@drawable/shape_scrollbar_vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="top|center_horizontal"
+        android:orientation="vertical"
+        android:padding="@dimen/half_base_margin">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/headingTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/half_base_margin"
+            android:fontFamily="@font/montserrat_semi_bold"
+            android:gravity="center"
+            android:text="@string/on_boarding_android_title"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            app:fontFamily="@font/montserrat_semi_bold" />
+
+        <LinearLayout
+            android:id="@+id/doNotDisturbContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/base_margin"
+                android:layout_marginEnd="@dimen/base_margin"
+                android:layout_marginBottom="@dimen/half_base_margin"
+                android:gravity="center"
+                android:text="@string/on_boarding_android_do_not_disturb"
+                android:textColor="@android:color/white" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/doNotDisturbButton"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="@dimen/half_base_margin"
+                android:text="@string/on_boarding_android_access_do_not_disturb" />
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/oneLastThingView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/half_base_margin"
+            android:layout_marginTop="@dimen/half_base_margin"
+            android:layout_marginEnd="@dimen/half_base_margin"
+            android:layout_marginBottom="@dimen/half_base_margin"
+            android:fontFamily="@font/montserrat_semi_bold"
+            android:gravity="center"
+            android:text="@string/on_boarding_android_one_last_thing"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            app:fontFamily="@font/montserrat_semi_bold" />
+
+        <LinearLayout
+            android:id="@+id/batteryOptimizationContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/messageTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/half_base_margin"
+                android:text="@string/android_settings_battery_optimization_message"
+                android:textColor="@android:color/white" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/autoStartTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginStart="@dimen/base_margin"
+                android:drawableStart="@drawable/ic_feature_disabled"
+                android:drawablePadding="@dimen/third_base_margin"
+                android:gravity="center_vertical"
+                android:text="@string/android_settings_auto_start_requirement"
+                android:textColor="@android:color/white" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/autoStartErrorTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginStart="56dp"
+                android:layout_marginBottom="@dimen/third_base_margin"
+                android:gravity="top"
+                android:text="@string/android_settings_auto_start_requirement_error"
+                android:textColor="@android:color/white"
+                android:textSize="12sp" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/batteryOptimizationTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginStart="@dimen/base_margin"
+                android:layout_marginBottom="@dimen/half_base_margin"
+                android:drawableStart="@drawable/ic_feature_disabled"
+                android:drawablePadding="@dimen/third_base_margin"
+                android:gravity="center_vertical"
+                android:text="@string/android_settings_battery_optimization_requirement"
+                android:textColor="@android:color/white"
+                tools:drawableStart="@drawable/ic_feature_enabled" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/goToSettingsButton"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="@string/go_to_settings" />
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/base_margin"
+            android:layout_marginTop="@dimen/double_base_margin"
+            android:layout_marginEnd="@dimen/base_margin"
+            android:layout_marginBottom="@dimen/third_base_margin"
+            android:drawableStart="@drawable/ic_settings"
+            android:drawablePadding="@dimen/half_base_margin"
+            android:gravity="start"
+            android:text="@string/on_boarding_android_description"
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+</ScrollView>

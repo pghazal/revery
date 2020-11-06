@@ -26,15 +26,14 @@
     <string name="select">Select</string>
     <string name="close">Dismiss</string>
 
-    <!-- BATTERY OPTIMIZATION -->
-    <string name="battery_optimization">Battery optimization</string>
-    <string name="battery_optimization_configure">Configure</string>
-    <string name="battery_optimization_title">Optimization</string>
-    <string name="battery_optimization_message">Starting from Android 6.0, Android introduces Doze. Doze reduces battery consumption by deferring background application activity when the device is unused for a long period of time.\nTo make sure %1$s functions properly, it requires to be configured:</string>
-    <string name="battery_optimization_requirement">Settings > Battery > Battery Optimization > Don\'t optimize for %1$s</string>
-    <string name="battery_auto_start_requirement">Enable Auto Start for %1$s</string>
-    <string name="battery_auto_start_requirement_error">(the status might be possibly wrong)</string>
-    <string name="battery_optimization_reshow_dialog">You will be able to reshow this dialog from %1$s settings if necessary.</string>
+    <!-- ANDROID SETTINGS -->
+    <string name="android_settings">Android settings</string>
+    <string name="android_settings_configure">Configure</string>
+    <string name="android_settings_battery_optimization_message">Starting from Android 6.0, Android introduces Doze. Doze reduces battery consumption by deferring background application activity when the device is unused for a long period of time.\nTo make sure %1$s functions properly, it requires to be configured :</string>
+    <string name="android_settings_battery_optimization_requirement">Settings > Battery > Battery Optimization > Don\'t optimize for %1$s</string>
+    <string name="android_settings_auto_start_requirement">Enable Auto Start for %1$s</string>
+    <string name="android_settings_auto_start_requirement_error">(the status might be possibly wrong)</string>
+    <string name="android_settings_reshow_dialog">You will be able to reshow this dialog from %1$s settings if necessary.</string>
     <string name="do_not_show_again">Do not show again</string>
 
     <!-- DAYS -->
@@ -136,6 +135,30 @@
     <string name="recently_played">Recently played</string>
     <string name="error_network">Network error occurred: check your connectivity and try again</string>
     <string name="error_unexpected">Unexpected error occurred</string>
+
+    <!-- ON BOARDING -->
+    <string name="next">Next</string>
+    <string name="lets_go">Let\'s go</string>
+    <string name="on_boarding_intro_title">Welcome in Revery</string>
+    <string name="on_boarding_intro_description">The app that wakes you up to the sounds of your favorite artists and playlists</string>
+    <string name="on_boarding_settings_turn_off">Configure how you turn off your alarms</string>
+    <string name="on_boarding_settings_snooze">You\'d like to sleep more ?</string>
+    <string name="on_boarding_settings_description">Find all the features in the settings.</string>
+    <string name="on_boarding_spotify_title">Wake up to your favorite songs with Spotify</string>
+    <string name="on_boarding_spotify_logged_as">You are logged in as :</string>
+    <string name="on_boarding_spotify_change_user">change user</string>
+    <string name="on_boarding_spotify_not_installed">Spotify does not seem to be installed</string>
+    <string name="on_boarding_spotify_description_logged">You can log out and change user at any time from the settings.</string>
+    <string name="on_boarding_android_title">Before continuing, you still have a few adjustments to make !</string>
+    <string name="on_boarding_android_do_not_disturb">Are you used to enable <b>Do Not Disturb</b> ?\nAllow Revery to access the feature</string>
+    <string name="on_boarding_android_access_do_not_disturb">«Do Not Disturb» Access</string>
+    <string name="on_boarding_android_one_last_thing">One last thing !</string>
+    <string name="on_boarding_android_description">You can make these adjustments from the settings.</string>
+    <string name="on_boarding_spotify_description_not_logged">You can log in at any time from the settings.</string>
+    <string name="on_boarding_android_authorize_do_not_disturb_success">Authorized successfully</string>
+    <string name="on_boarding_android_authorize_do_not_disturb_failed">Authorization failed</string>
+    <string name="do_not_disturb_cannot_handle">Oops, your device doesn\'t allow this action</string>
+    <string name="on_boarding_spotify_tips">Tips : When alarm goes off you can swipe left and right to change songs.</string>
 
     <!-- TIME REMAINING TEXTS -->
     <plurals name="time_remaining_days">

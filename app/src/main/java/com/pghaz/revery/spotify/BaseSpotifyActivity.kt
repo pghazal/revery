@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MenuItem
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
@@ -52,8 +51,8 @@ abstract class BaseSpotifyActivity : BaseActivity(), SpotifyAuthorizationCallbac
             .build(this)
 
         spotifyAuthClient.setDebugMode(BuildConfig.DEBUG)
-        spotifyAuthClient.setAuthorizationCallback(this)
-        spotifyAuthClient.setRefreshTokenCallback(this)
+        spotifyAuthClient.addAuthorizationCallback(this)
+        spotifyAuthClient.addRefreshTokenCallback(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -125,6 +124,8 @@ abstract class BaseSpotifyActivity : BaseActivity(), SpotifyAuthorizationCallbac
 
     override fun onDestroy() {
         super.onDestroy()
+        spotifyAuthClient.removeAuthorizationCallback(this)
+        spotifyAuthClient.removeRefreshTokenCallback(this)
         spotifyAuthClient.onDestroy()
     }
 
@@ -133,15 +134,6 @@ abstract class BaseSpotifyActivity : BaseActivity(), SpotifyAuthorizationCallbac
 
         // At this point it is not yet authorized. See onAuthorizationSucceed()
         spotifyAuthClient.onActivityResult(requestCode, resultCode, data)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val id: Int = item.itemId
-        if (id == android.R.id.home) {
-            finish()
-            return true
-        }
-        return false
     }
 
     override fun onSpotifyItemClicked(model: BaseModel) {

@@ -15,12 +15,13 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.pghaz.revery.alarm.ListAlarmsFragment
 import com.pghaz.revery.alarm.RingActivity
-import com.pghaz.revery.battery.PowerManagerHandler
 import com.pghaz.revery.extension.logError
 import com.pghaz.revery.model.app.alarm.Alarm
 import com.pghaz.revery.notification.NotificationHandler
+import com.pghaz.revery.onboarding.OnBoardingActivity
 import com.pghaz.revery.service.AlarmService
 import com.pghaz.revery.service.RescheduleAlarmsService
+import com.pghaz.revery.settings.SettingsHandler
 import com.pghaz.revery.sleep.SleepFragment
 import com.pghaz.revery.spotify.BaseSpotifyActivity
 import com.pghaz.revery.util.Arguments
@@ -41,12 +42,14 @@ class MainActivity : BaseSpotifyActivity(), BottomNavigationView.OnNavigationIte
         return R.layout.activity_main
     }
 
-    override fun shouldAnimateOnCreate(): Boolean {
-        return true
+    override fun onCreateAnimation() {
+        super.onCreateAnimation()
+        overridePendingTransition(0, 0)
     }
 
-    override fun shouldAnimateOnFinish(): Boolean {
-        return false
+    override fun onFinishAnimation() {
+        super.onFinishAnimation()
+        overridePendingTransition(0, 0)
     }
 
     override fun shouldShowAuth(): Boolean {
@@ -60,12 +63,10 @@ class MainActivity : BaseSpotifyActivity(), BottomNavigationView.OnNavigationIte
         NotificationHandler.cancel(this, NotificationHandler.NOTIFICATION_ID_RESCHEDULE)
         RescheduleAlarmsService.rescheduleEnabledAlarms(application, this)
 
-        PowerManagerHandler.showPowerSaverDialogIfNeeded(
-            this,
-            PowerManagerHandler.REQUEST_CODE_POWER_MANAGER_PROTECTED_APPS,
-            isFirstTime = true,
-            openingFromSettings = false
-        )
+        if (!SettingsHandler.getOnBoardingShown(this)) {
+            // Show on boarding
+            startActivity(Intent(this, OnBoardingActivity::class.java))
+        }
     }
 
     override fun onSpotifyAuthorizedAndAvailable() {
@@ -95,25 +96,6 @@ class MainActivity : BaseSpotifyActivity(), BottomNavigationView.OnNavigationIte
                     // arriving on MainActivity
                     finish()
                 }
-            }
-        } else if (requestCode == PowerManagerHandler.REQUEST_CODE_POWER_MANAGER_PROTECTED_APPS) {
-            if (!PowerManagerHandler.isIgnoringBatteryOptimizations(this)) {
-                PowerManagerHandler.showPowerSaverDialogIfNeeded(
-                    this,
-                    PowerManagerHandler.REQUEST_CODE_POWER_MANAGER_BATTERY_OPTIMIZATION,
-                    isFirstTime = false,
-                    openingFromSettings = PowerManagerHandler.getOpenedFromSettings(this)
-                )
-            }
-        } else if (requestCode == PowerManagerHandler.REQUEST_CODE_POWER_MANAGER_BATTERY_OPTIMIZATION) {
-            // Reshow dialog if user haven't disabled Battery optimization
-            if (!PowerManagerHandler.isIgnoringBatteryOptimizations(this)) {
-                PowerManagerHandler.showPowerSaverDialogIfNeeded(
-                    this,
-                    PowerManagerHandler.REQUEST_CODE_POWER_MANAGER_BATTERY_OPTIMIZATION,
-                    isFirstTime = false,
-                    openingFromSettings = PowerManagerHandler.getOpenedFromSettings(this)
-                )
             }
         }
     }

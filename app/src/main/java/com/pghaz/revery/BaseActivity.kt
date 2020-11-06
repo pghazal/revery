@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -16,14 +17,19 @@ abstract class BaseActivity : AppCompatActivity() {
     abstract fun getLayoutResId(): Int
     abstract fun configureViews(savedInstanceState: Bundle?)
     abstract fun parseArguments(args: Bundle?)
-    abstract fun shouldAnimateOnCreate(): Boolean
-    abstract fun shouldAnimateOnFinish(): Boolean
+
+    open fun onCreateAnimation() {
+
+    }
+
+    open fun onFinishAnimation() {
+
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (!shouldAnimateOnCreate()) {
-            overridePendingTransition(0, 0)
-        }
+        window.setBackgroundDrawable(null)
+        onCreateAnimation()
 
         if (!ViewUtils.isTablet(this)) {
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
@@ -60,9 +66,16 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun finish() {
         super.finish()
-        if (!shouldAnimateOnFinish()) {
-            overridePendingTransition(0, 0)
+        onFinishAnimation()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id: Int = item.itemId
+        if (id == android.R.id.home) {
+            finish()
+            return true
         }
+        return false
     }
 
     fun replaceFragment(fragment: Fragment, tag: String) {

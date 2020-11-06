@@ -7,7 +7,7 @@ import com.pghaz.revery.model.app.spotify.SpotifyFilter
 import com.pghaz.revery.util.Arguments
 import com.pghaz.revery.view.ExtendedFloatingActionListener
 
-class SpotifyFragment : BaseSpotifyFragment() {
+class SpotifyFragment : BaseSpotifyItemsFragment() {
 
     private var floatingActionListener: ExtendedFloatingActionListener? = null
 
@@ -29,6 +29,10 @@ class SpotifyFragment : BaseSpotifyFragment() {
     override fun configureViews(savedInstanceState: Bundle?) {
         super.configureViews(savedInstanceState)
         scrollListener.floatingActionListener = floatingActionListener
+    }
+
+    override fun onSpotifyAuthorizedAndAvailable() {
+        spotifyItemsViewModel.fetchFirstPage()
     }
 
     override fun onLoadMore() {

@@ -2,7 +2,7 @@ package com.pghaz.revery.spotify
 
 import android.content.Context
 import android.widget.Toast
-import com.pghaz.revery.BaseFragment
+import com.pghaz.revery.BaseBottomSheetDialogFragment
 import com.pghaz.revery.R
 import com.pghaz.revery.viewmodel.spotify.SpotifyErrorListener
 import com.pghaz.spotify.webapi.auth.SpotifyAuthorizationCallback
@@ -10,8 +10,10 @@ import io.github.kaaes.spotify.webapi.core.models.UserPrivate
 import io.github.kaaes.spotify.webapi.retrofit.v2.SpotifyError
 import net.openid.appauth.TokenResponse
 
-abstract class BaseSpotifyFragment : BaseFragment(), SpotifyAuthorizationCallback.Authorize,
-    SpotifyAuthorizationCallback.RefreshToken, SpotifyErrorListener {
+abstract class BaseSpotifyBottomSheetDialogFragment : BaseBottomSheetDialogFragment(),
+    SpotifyAuthorizationCallback.Authorize,
+    SpotifyAuthorizationCallback.RefreshToken,
+    SpotifyErrorListener {
 
     abstract fun onSpotifyAuthorizedAndAvailable()
 

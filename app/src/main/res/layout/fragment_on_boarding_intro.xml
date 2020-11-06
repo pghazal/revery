@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fadeScrollbars="false"
+    android:fillViewport="true"
+    android:scrollbarStyle="insideInset"
+    android:scrollbarThumbVertical="@drawable/shape_scrollbar_vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:background="@color/colorPrimary">
+
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/double_base_margin"
+            app:srcCompat="@drawable/ic_revery_transparent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/image"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="@dimen/double_base_margin"
+            android:layout_marginTop="@dimen/base_margin"
+            android:layout_marginEnd="@dimen/double_base_margin"
+            android:fontFamily="@font/montserrat_semi_bold"
+            android:gravity="center"
+            android:text="@string/on_boarding_intro_title"
+            android:textColor="@android:color/white"
+            android:textSize="28sp"
+            app:fontFamily="@font/montserrat_semi_bold" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/title"
+            android:layout_centerHorizontal="true"
+            android:fontFamily="@font/montserrat"
+            android:gravity="center"
+            android:padding="@dimen/base_margin"
+            android:text="@string/on_boarding_intro_description"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            app:fontFamily="@font/montserrat" />
+    </RelativeLayout>
+</ScrollView>

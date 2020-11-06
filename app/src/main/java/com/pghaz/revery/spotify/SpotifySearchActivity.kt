@@ -29,14 +29,6 @@ class SpotifySearchActivity : BaseSpotifyActivity(), SpotifyAuthorizationCallbac
         return R.layout.activity_spotify_search
     }
 
-    override fun shouldAnimateOnCreate(): Boolean {
-        return true
-    }
-
-    override fun shouldAnimateOnFinish(): Boolean {
-        return true
-    }
-
     override fun shouldShowAuth(): Boolean {
         return true
     }

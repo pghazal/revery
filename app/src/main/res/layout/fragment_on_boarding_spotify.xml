@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fadeScrollbars="false"
+    android:fillViewport="true"
+    android:scrollbarStyle="insideInset"
+    android:scrollbarThumbVertical="@drawable/shape_scrollbar_vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/half_base_margin"
+        tools:background="@color/colorPrimary">
+
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            app:srcCompat="@drawable/ic_spotify_icon_white_big" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/base_margin"
+            android:layout_marginTop="@dimen/base_margin"
+            android:layout_marginEnd="@dimen/base_margin"
+            android:layout_marginBottom="@dimen/half_base_margin"
+            android:fontFamily="@font/montserrat_semi_bold"
+            android:gravity="center"
+            android:text="@string/on_boarding_spotify_title"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            app:fontFamily="@font/montserrat_semi_bold" />
+
+        <RelativeLayout
+            android:id="@+id/spotifyContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/base_margin">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/loginSpotifyButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:text="@string/spotify_login"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <LinearLayout
+                android:id="@+id/loggedContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/third_base_margin"
+                    android:gravity="start"
+                    android:text="@string/on_boarding_spotify_logged_as"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/profileImageView"
+                        android:layout_width="@dimen/item_view_alarm_image_size"
+                        android:layout_height="@dimen/item_view_alarm_image_size"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/placeholder_circle"
+                        android:scaleType="centerCrop" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/pseudoTextView"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/half_base_margin"
+                        android:layout_weight="1"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/montserrat_semi_bold"
+                        android:maxLines="1"
+                        android:textColor="@android:color/white"
+                        android:textSize="16sp"
+                        app:fontFamily="@font/montserrat_semi_bold" />
+                </LinearLayout>
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/logoutSpotifyButton"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="@string/on_boarding_spotify_change_user" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/spotifyNotInstalledContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/base_margin"
+            android:layout_marginEnd="@dimen/base_margin"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/third_base_margin"
+                android:gravity="center"
+                android:text="@string/on_boarding_spotify_not_installed"
+                android:textColor="@android:color/white"
+                android:textSize="14sp" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/spotifyInstallButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/spotify_install" />
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/descriptionTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/base_margin"
+            android:layout_marginTop="@dimen/double_base_margin"
+            android:layout_marginEnd="@dimen/base_margin"
+            android:layout_marginBottom="@dimen/third_base_margin"
+            android:drawableStart="@drawable/ic_settings"
+            android:drawablePadding="@dimen/half_base_margin"
+            android:gravity="start"
+            android:text="@string/on_boarding_spotify_description_logged"
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/base_margin"
+            android:layout_marginTop="@dimen/half_base_margin"
+            android:layout_marginEnd="@dimen/base_margin"
+            android:layout_marginBottom="@dimen/third_base_margin"
+            android:gravity="start"
+            android:text="@string/on_boarding_spotify_tips"
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+</ScrollView>
