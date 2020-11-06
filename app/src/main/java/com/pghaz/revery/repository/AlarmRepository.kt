@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 class AlarmRepository(application: Application) {
 
     private val alarmDao: AlarmDao = ReveryDatabase.getDatabase(application).alarmDao()
-    private val alarmsLiveData: LiveData<List<RAlarm>> = alarmDao.getEntities()
+    private val alarmsLiveData: LiveData<List<RAlarm>> = alarmDao.getAlarms()
 
     @MainThread
     fun insert(alarm: Alarm) {
@@ -31,7 +31,7 @@ class AlarmRepository(application: Application) {
 
     @MainThread
     fun get(alarm: Alarm): LiveData<Alarm> {
-        return Transformations.map(alarmDao.getEntity(alarm.id)) {
+        return Transformations.map(alarmDao.get(alarm.id)) {
             // When we fire alarm that are not into DB, we just need an non null alarm
             if (BuildConfig.DEBUG) {
                 if (it == null) {
