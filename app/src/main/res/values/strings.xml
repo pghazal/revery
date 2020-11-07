@@ -9,10 +9,22 @@
     <string name="notification_channel_alarm">Alarms</string>
     <string name="notification_channel_alarm_snooze">Snooze</string>
     <string name="notification_channel_alarm_reschedule">Rescheduled alarms</string>
+    <string name="notification_channel_alarm_error">Emergency alarm</string>
     <string name="rescheduling_alarms_after_reboot">Alarms have been rescheduled after phone reboot</string>
     <string name="go_to_settings">Go to settings</string>
     <string name="notification_disabled">Notifications disabled</string>
     <string name="notification_disabled_message">It seems that Revery notifications are disabled. In order for alarms to go off properly, notifications have to be enabled.</string>
+    <string name="emergency_alarm">Emergency alarm</string>
+    <string name="notification_spotify_error_authentication_failed">Emergency alarm went off because Spotify authentication failed.</string>
+    <string name="notification_spotify_error_offline">Emergency alarm went off because your device seems offline.</string>
+    <string name="notification_spotify_error_not_installed">Emergency alarm went off because Spotify is not installed on your device.</string>
+    <string name="notification_spotify_error_player_user_not_authorized">Emergency alarm went off because it seems you haven\'t authorize Revery to play Spotify content.</string>
+    <string name="notification_spotify_error_not_logged_in">Emergency alarm went off because you are not logged in Spotify app.</string>
+    <string name="notification_spotify_error_unsupported_feature_version">Emergency alarm went off because of an unsupported feature.</string>
+    <string name="notification_spotify_error_remote_service">Emergency alarm went off because Revery failed communicating with Spotify app.</string>
+    <string name="notification_spotify_error_disconnected">Emergency alarm went off because Revery got disconnected from Spotify.</string>
+    <string name="notification_spotify_error_unknown">Emergency alarm went off because of an unknown reason.</string>
+    <string name="notification_player_error_general">Emergency alarm went off because of an unknown reason.</string>
 
     <!-- SPOTIFY NOT INSTALLED -->
     <string name="spotify_not_installed">Spotify not found</string>

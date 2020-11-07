@@ -25,10 +25,7 @@ import com.pghaz.revery.model.app.alarm.Alarm
 import com.pghaz.revery.model.app.alarm.AlarmMetadata
 import com.pghaz.revery.model.app.alarm.MediaType
 import com.pghaz.revery.notification.NotificationHandler
-import com.pghaz.revery.player.AbstractPlayer
-import com.pghaz.revery.player.DefaultPlayer
-import com.pghaz.revery.player.PlayerError
-import com.pghaz.revery.player.SpotifyPlayer
+import com.pghaz.revery.player.*
 import com.pghaz.revery.repository.AlarmRepository
 import com.pghaz.revery.settings.SettingsHandler
 import com.pghaz.revery.util.IntentUtils
@@ -343,6 +340,8 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
         val shouldUseDeviceVolume = SettingsHandler.getShouldUseDeviceVolume(this)
         val fadeInDuration = SettingsHandler.getFadeInDuration(this)
 
+        notifyErrorOccurred(this, error)
+
         playEmergencyAlarm(error, shouldUseDeviceVolume, fadeInDuration)
     }
 
@@ -354,10 +353,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
         if (this::player.isInitialized) {
             vibrator.cancel()
 
-            if (error !is PlayerError.SpotifyPlayerUserNotAuthorized &&
-                error !is PlayerError.SpotifyPlayerNotInstalled &&
-                error !is PlayerError.SpotifyPlayerUnknown
-            ) {
+            if (error !is SpotifyPlayerError) {
                 player.release()
             }
         }
@@ -368,6 +364,66 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
         player.prepare(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM).toString())
 
         onPlayerInitialized(player)
+    }
+
+    private fun notifyErrorOccurred(context: Context, error: PlayerError) {
+        val notificationBuilder =
+            NotificationCompat.Builder(context, NotificationHandler.CHANNEL_ID_ALARM_ERROR)
+                .setCategory(NotificationCompat.CATEGORY_ERROR)
+                .setContentTitle(context.getString(R.string.emergency_alarm))
+                .setSmallIcon(R.drawable.ic_revery_transparent)
+                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setColor(ContextCompat.getColor(context, R.color.colorAccent))
+                .setAutoCancel(true)
+                .setStyle(
+                    NotificationCompat.BigTextStyle()
+                        .bigText(getString(R.string.rescheduling_alarms_after_reboot))
+                )
+
+        val text = if (error is SpotifyPlayerError) {
+            when (error) {
+                is SpotifyPlayerError.SpotifyAuthenticationFailed -> {
+                    context.getString(R.string.notification_spotify_error_authentication_failed)
+                }
+                is SpotifyPlayerError.SpotifyOfflineMode -> {
+                    context.getString(R.string.notification_spotify_error_offline)
+                }
+                is SpotifyPlayerError.SpotifyPlayerNotInstalled -> {
+                    context.getString(R.string.notification_spotify_error_not_installed)
+                }
+                is SpotifyPlayerError.SpotifyPlayerUserNotAuthorized -> {
+                    context.getString(R.string.notification_spotify_error_player_user_not_authorized)
+                }
+                is SpotifyPlayerError.SpotifyNotLoggedIn -> {
+                    context.getString(R.string.notification_spotify_error_not_logged_in)
+                }
+                is SpotifyPlayerError.SpotifyUnsupportedFeatureVersion -> {
+                    context.getString(R.string.notification_spotify_error_unsupported_feature_version)
+                }
+                is SpotifyPlayerError.SpotifyRemoteService -> {
+                    context.getString(R.string.notification_spotify_error_remote_service)
+                }
+                is SpotifyPlayerError.SpotifyDisconnected -> {
+                    context.getString(R.string.notification_spotify_error_disconnected)
+                }
+                else -> {
+                    context.getString(R.string.notification_spotify_error_unknown)
+                }
+            }
+        } else {
+            context.getString(R.string.notification_player_error_general)
+        }
+
+        val notification = notificationBuilder
+            .setContentText(text)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(text))
+            .build()
+
+        NotificationHandler.notify(
+            context,
+            NotificationHandler.NOTIFICATION_ID_ERROR_OCCURRED,
+            notification
+        )
     }
 
     private fun disableOneShotAlarm(context: Context?, alarm: Alarm) {
@@ -450,6 +506,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
             .addAction(snoozeActionNotification)
             .setColor(ContextCompat.getColor(this, R.color.colorAccent))
             .setAutoCancel(false)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(alarm.label))
             .build()
     }
 

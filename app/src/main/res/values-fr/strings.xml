@@ -10,10 +10,22 @@
     <string name="notification_channel_alarm">Alarmes</string>
     <string name="notification_channel_alarm_snooze">Rappels d\'alarme</string>
     <string name="notification_channel_alarm_reschedule">Alarmes reprogrammées</string>
+    <string name="notification_channel_alarm_error">Alarmes d\'urgence</string>
     <string name="rescheduling_alarms_after_reboot">Les alarmes ont été reprogrammées après le redémarrage du téléphone</string>
     <string name="go_to_settings">Ouvrir les paramètres</string>
     <string name="notification_disabled">Notifications désactivées</string>
     <string name="notification_disabled_message">Il semble que les notifications Revery soient désactivées. Pour que les alarmes se déclenchent correctement, les notifications doivent être activées.</string>
+    <string name="emergency_alarm">Alarme de secours</string>
+    <string name="notification_spotify_error_authentication_failed">L\'alarme d\'urgence s\'est déclenchée car l\'authentification à Spotify a échoué.</string>
+    <string name="notification_spotify_error_offline">L\'alarme d\'urgence s\'est déclenchée car votre appareil semble hors ligne.</string>
+    <string name="notification_spotify_error_not_installed">L\'alarme d\'urgence s\'est déclenchée car Spotify n\'est pas installé sur votre appareil.</string>
+    <string name="notification_spotify_error_player_user_not_authorized">L\'alarme d\'urgence s\'est déclenchée car il semble que vous n\'ayez pas autorisé Revery à communiquer avec Spotify.</string>
+    <string name="notification_spotify_error_not_logged_in">L\'alarme d\'urgence s\'est déclenchée car vous n\'êtes pas connecté dans l\'application Spotify.</string>
+    <string name="notification_spotify_error_unsupported_feature_version">L\'alarme d\'urgence s\'est déclenchée car une fonctionnalité Spotify n\'est pas supportée par votre appareil.</string>
+    <string name="notification_spotify_error_remote_service">L\'alarme d\'urgence s\'est déclenchée car Revery n\'a pas réussi à communiquer avec l\'application Spotify.</string>
+    <string name="notification_spotify_error_disconnected">L\'alarme d\'urgence s\'est déclenchée car Revery a été déconnecté de Spotify.</string>
+    <string name="notification_spotify_error_unknown">L\'alarme d\'urgence s\'est déclenchée à cause d\'une raison inconnue.</string>
+    <string name="notification_player_error_general">L\'alarme d\'urgence s\'est déclenchée à cause d\'une raison inconnue.</string>
 
     <!-- SPOTIFY NOT INSTALLED -->
     <string name="spotify_not_installed">Spotify non installé</string>

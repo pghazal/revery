@@ -7,10 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.pghaz.revery.BuildConfig
 import com.pghaz.revery.extension.logError
 import com.spotify.android.appremote.api.*
-import com.spotify.android.appremote.api.error.CouldNotFindSpotifyApp
-import com.spotify.android.appremote.api.error.NotLoggedInException
-import com.spotify.android.appremote.api.error.SpotifyConnectionTerminatedException
-import com.spotify.android.appremote.api.error.UserNotAuthorizedException
+import com.spotify.android.appremote.api.error.*
 import com.spotify.protocol.client.CallResult
 import com.spotify.protocol.client.Subscription
 import com.spotify.protocol.types.ImageUri
@@ -102,16 +99,54 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
 
         playerConnectedLiveData.value = false
 
-        if (error is NotLoggedInException || error is UserNotAuthorizedException) {
-            // Show login button and trigger the login flow from auth library when clicked
-            playerListener?.onPlayerError(PlayerError.SpotifyPlayerUserNotAuthorized(error))
-        } else if (error is CouldNotFindSpotifyApp) {
-            // Show button to download Spotify
-            playerListener?.onPlayerError(PlayerError.SpotifyPlayerNotInstalled(error))
-        } else if (error is SpotifyConnectionTerminatedException) {
+        if (error is SpotifyConnectionTerminatedException) {
             SpotifyAppRemote.connect(context, connectionParams, this)
         } else {
+            val playerError = getPlayerError(error)
+            playerListener?.onPlayerError(playerError)
             callSuspendFunctionStateCallbacks(ConnectionState.DISCONNECTED)
+        }
+    }
+
+    private fun getPlayerError(error: Throwable?): SpotifyPlayerError {
+        val message = this@SpotifyPlayer.toString()
+
+        return when (error) {
+            is NotLoggedInException -> {
+                SpotifyPlayerError.SpotifyNotLoggedIn(message, error)
+            }
+
+            is UserNotAuthorizedException -> {
+                SpotifyPlayerError.SpotifyPlayerUserNotAuthorized(message, error)
+            }
+
+            is CouldNotFindSpotifyApp -> {
+                SpotifyPlayerError.SpotifyPlayerNotInstalled(message, error)
+            }
+
+            is AuthenticationFailedException -> {
+                SpotifyPlayerError.SpotifyAuthenticationFailed(message, error)
+            }
+
+            is UnsupportedFeatureVersionException -> {
+                SpotifyPlayerError.SpotifyUnsupportedFeatureVersion(message, error)
+            }
+
+            is OfflineModeException -> {
+                SpotifyPlayerError.SpotifyOfflineMode(message, error)
+            }
+
+            is SpotifyRemoteServiceException -> {
+                SpotifyPlayerError.SpotifyRemoteService(message, error)
+            }
+
+            is SpotifyDisconnectedException -> {
+                SpotifyPlayerError.SpotifyDisconnected(message, error)
+            }
+
+            else -> {
+                SpotifyPlayerError.SpotifyPlayerUnknown(message, error)
+            }
         }
     }
 
@@ -242,8 +277,6 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
                         }
                         ConnectionState.DISCONNECTED -> {
                             context.logError("callback DISCONNECTED -> cancel()")
-                            val throwable = Throwable(this@SpotifyPlayer.toString())
-                            playerListener?.onPlayerError(PlayerError.SpotifyPlayerUnknown(throwable))
                             continuation.cancel()
                         }
                     }

@@ -22,9 +22,11 @@ object NotificationHandler {
     const val CHANNEL_ID_ALARM = "REVERY_CHANNEL_ALARM"
     const val CHANNEL_ID_ALARM_RESCHEDULE = "REVERY_CHANNEL_ALARM_RESCHEDULE"
     const val CHANNEL_ID_ALARM_SNOOZE = "REVERY_CHANNEL_ALARM_SNOOZE"
+    const val CHANNEL_ID_ALARM_ERROR = "REVERY_CHANNEL_ALARM_ERROR"
 
     const val NOTIFICATION_ID_ALARM = 1
     const val NOTIFICATION_ID_RESCHEDULE = 2
+    const val NOTIFICATION_ID_ERROR_OCCURRED = 3
 
     fun createNotificationChannels(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -50,9 +52,16 @@ object NotificationHandler {
                 NotificationManager.IMPORTANCE_HIGH
             )
 
+            val emergencyAlarmChannel = NotificationChannel(
+                CHANNEL_ID_ALARM_ERROR,
+                context.getString(R.string.notification_channel_alarm_error),
+                NotificationManager.IMPORTANCE_HIGH
+            )
+
             manager?.createNotificationChannel(alarmChannel)
             manager?.createNotificationChannel(alarmSnoozeChannel)
             manager?.createNotificationChannel(alarmRescheduleChannel)
+            manager?.createNotificationChannel(emergencyAlarmChannel)
         }
     }
 

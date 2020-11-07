@@ -61,6 +61,7 @@ class MainActivity : BaseSpotifyActivity(), BottomNavigationView.OnNavigationIte
         bindToAlarmServiceIfAlarmFired()
 
         NotificationHandler.cancel(this, NotificationHandler.NOTIFICATION_ID_RESCHEDULE)
+        NotificationHandler.cancel(this, NotificationHandler.NOTIFICATION_ID_ERROR_OCCURRED)
         RescheduleAlarmsService.rescheduleEnabledAlarms(application, this)
 
         if (!SettingsHandler.getOnBoardingShown(this)) {
