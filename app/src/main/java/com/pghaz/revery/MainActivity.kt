@@ -259,7 +259,7 @@ class MainActivity : BaseSpotifyActivity(), BottomNavigationView.OnNavigationIte
         unbindFromAlarmService()
     }
 
-    override fun onAuthorizationCanceled() {
+    override fun onAuthorizationCancelled() {
         // do nothing
     }
 

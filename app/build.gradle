@@ -107,13 +107,9 @@ dependencies {
     implementation "com.google.code.gson:gson:2.8.5"
 
     // Spotify Web API library
-    implementation project(':spotify-api-core')
-    implementation project(':spotify-api-retrofit2')
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.2.0'
-    // Spotify Authentification
-    implementation project(':spotify-api-auth')
-    implementation 'net.openid:appauth:0.7.1'
+    implementation 'com.github.pghazal.spotify-web-api-android:api-retrofit2:1.0.1'
+    // Spotify Authentication
+    implementation 'com.github.pghazal.spotify-web-api-android:api-auth:1.0.1'
 
     // Firebase
     implementation platform('com.google.firebase:firebase-bom:25.12.0')

@@ -109,7 +109,7 @@ class OnBoardingActivity : BaseSpotifyActivity() {
         }
     }
 
-    override fun onAuthorizationCanceled() {
+    override fun onAuthorizationCancelled() {
 
     }
 

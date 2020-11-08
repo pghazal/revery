@@ -41,7 +41,7 @@ abstract class BaseSpotifyFragment : BaseFragment(), SpotifyAuthorizationCallbac
         Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
     }
 
-    override fun onAuthorizationCanceled() {
+    override fun onAuthorizationCancelled() {
 
     }
 

@@ -143,7 +143,7 @@ abstract class BaseSpotifyActivity : BaseActivity(), SpotifyAuthorizationCallbac
         finish()
     }
 
-    override fun onAuthorizationCanceled() {
+    override fun onAuthorizationCancelled() {
         finish()
     }
 

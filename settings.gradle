@@ -1,6 +1,3 @@
-include ':spotify-api-auth'
-include ':spotify-api-retrofit2'
-include ':spotify-api-core'
 include ':spotify-app-remote'
 include ':app'
 rootProject.name = "revery"
