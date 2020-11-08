@@ -32,3 +32,7 @@
 # Spotify Auth
 -keep class com.pghaz.spotify.webapi.auth.** { *; }
 -keep interface com.pghaz.spotify.webapi.auth.** { *; }
+
+# Firebase Crashlytics
+-keepattributes SourceFile,LineNumberTable        # Keep file names and line numbers.
+-keep public class * extends java.lang.Exception  # Optional: Keep custom exceptions.
