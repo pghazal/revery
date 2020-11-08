@@ -132,8 +132,6 @@ class DefaultPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
 
     override fun stop() {
         pause()
-
-        resetInitialDeviceVolume()
     }
 
     override fun play() {
@@ -179,6 +177,8 @@ class DefaultPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
         }
 
         mediaPlayer = null
+
+        resetInitialDeviceVolume()
 
         abandonAudioFocus()
     }

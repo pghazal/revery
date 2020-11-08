@@ -202,11 +202,6 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
         context.logError("stop()")
         coroutinesScope.launch {
             getAppRemote()?.playerApi?.pause()
-
-            // Give some time to the player to pause
-            Thread.sleep(300)
-
-            resetInitialDeviceVolume()
         }
     }
 
@@ -237,6 +232,11 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
         context.logError("release()")
         coroutinesScope.launch {
             SpotifyAppRemote.disconnect(getAppRemote())
+
+            // Give some time to the player to disconnect
+            delay(500)
+
+            resetInitialDeviceVolume()
 
             job.cancel()
         }
