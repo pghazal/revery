@@ -24,8 +24,14 @@ abstract class AbstractPlayer(
 
     protected val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
     private val initialDeviceVolume = audioManager.getStreamVolume(streamType)
-    private val minVolume = audioManager.getStreamMinVolume(streamType)
     private val maxVolume = audioManager.getStreamMaxVolume(streamType)
+    private val minVolume =
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+            audioManager.getStreamMinVolume(streamType)
+        } else {
+            0
+        }
+
     private val maxDecidedVolume = if (shouldUseDeviceVolume) {
         initialDeviceVolume
     } else {
