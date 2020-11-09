@@ -149,7 +149,7 @@
     <!-- ON BOARDING -->
     <string name="next">Suivant</string>
     <string name="lets_go">C\'est parti</string>
-    <string name="on_boarding_intro_title">Bienvenue dans Revery</string>
+    <string name="on_boarding_intro_title">Bienvenue dans %1$s</string>
     <string name="on_boarding_intro_description">L\'application qui vous réveille aux sons de vos artistes et playlists préférés</string>
     <string name="on_boarding_settings_turn_off">Configurez la manière dont vous arrêtez vos alarmes</string>
     <string name="on_boarding_settings_snooze">Vous dormiriez bien un peu plus ?</string>

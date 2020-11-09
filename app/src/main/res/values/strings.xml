@@ -151,7 +151,7 @@
     <!-- ON BOARDING -->
     <string name="next">Next</string>
     <string name="lets_go">Let\'s go</string>
-    <string name="on_boarding_intro_title">Welcome in Revery</string>
+    <string name="on_boarding_intro_title">Welcome in %1$s</string>
     <string name="on_boarding_intro_description">The app that wakes you up to the sounds of your favorite artists and playlists</string>
     <string name="on_boarding_settings_turn_off">Configure how you turn off your alarms</string>
     <string name="on_boarding_settings_snooze">You\'d like to sleep more ?</string>
