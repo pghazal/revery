@@ -436,6 +436,9 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
                 is SpotifyPlayerError.SpotifyDisconnected -> {
                     context.getString(R.string.notification_spotify_error_disconnected)
                 }
+                is SpotifyPlayerError.SpotifyRemoteClient -> {
+                    context.getString(R.string.notification_spotify_error_remote_client)
+                }
                 else -> {
                     context.getString(R.string.notification_spotify_error_unknown)
                 }

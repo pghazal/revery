@@ -11,6 +11,7 @@ import com.spotify.android.appremote.api.*
 import com.spotify.android.appremote.api.error.*
 import com.spotify.protocol.client.CallResult
 import com.spotify.protocol.client.Subscription
+import com.spotify.protocol.client.error.RemoteClientException
 import com.spotify.protocol.types.ImageUri
 import com.spotify.protocol.types.PlayerState
 import com.spotify.protocol.types.Repeat
@@ -50,7 +51,6 @@ class SpotifyPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
             .build()
     }
 
-    // "spotify:playlist:3H8dsoJvkH7lUkaQlUNjPJ"
     override fun prepareAsync(uri: String?) {
         playerAction = PlayerAction.ACTION_START
         currentUri = uri!!
@@ -155,19 +155,13 @@ class SpotifyPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
                 SpotifyPlayerError.SpotifyDisconnected(message, error)
             }
 
+            is RemoteClientException -> {
+                SpotifyPlayerError.SpotifyRemoteClient(message, error)
+            }
+
             else -> {
                 SpotifyPlayerError.SpotifyPlayerUnknown(message, error)
             }
-        }
-    }
-
-    @ExperimentalCoroutinesApi
-    override fun internalStart() {
-        playerAction = PlayerAction.ACTION_START
-
-        context.logError("internalStart()")
-        coroutinesScope.launch {
-            getAppRemote()?.playerApi?.play(currentUri)
         }
     }
 
@@ -192,7 +186,9 @@ class SpotifyPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
 
         context.logError("skipNext()")
         coroutinesScope.launch {
-            getAppRemote()?.playerApi?.skipNext()
+            getAppRemote()?.playerApi?.skipNext()?.setErrorCallback {
+                handlePlayerActionError(playerAction, it)
+            }
         }
     }
 
@@ -202,7 +198,21 @@ class SpotifyPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
 
         context.logError("skipPrevious()")
         coroutinesScope.launch {
-            getAppRemote()?.playerApi?.skipPrevious()
+            getAppRemote()?.playerApi?.skipPrevious()?.setErrorCallback {
+                handlePlayerActionError(playerAction, it)
+            }
+        }
+    }
+
+    @ExperimentalCoroutinesApi
+    override fun internalStart() {
+        playerAction = PlayerAction.ACTION_START
+
+        context.logError("internalStart()")
+        coroutinesScope.launch {
+            getAppRemote()?.playerApi?.play(currentUri)?.setErrorCallback {
+                handlePlayerActionError(playerAction, it)
+            }
         }
     }
 
@@ -213,7 +223,9 @@ class SpotifyPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
         context.logError("stop()")
         coroutinesScope.launch {
             FirebaseCrashlytics.getInstance().log("SpotifyPlayer.stop()")
-            getAppRemote()?.playerApi?.pause()
+            getAppRemote()?.playerApi?.pause()?.setErrorCallback {
+                handlePlayerActionError(playerAction, it)
+            }
         }
     }
 
@@ -224,7 +236,9 @@ class SpotifyPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
         context.logError("play()")
         coroutinesScope.launch {
             FirebaseCrashlytics.getInstance().log("SpotifyPlayer.play()")
-            getAppRemote()?.playerApi?.resume()
+            getAppRemote()?.playerApi?.resume()?.setErrorCallback {
+                handlePlayerActionError(playerAction, it)
+            }
         }
     }
 
@@ -235,8 +249,15 @@ class SpotifyPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
         context.logError("pause()")
         coroutinesScope.launch {
             FirebaseCrashlytics.getInstance().log("SpotifyPlayer.pause()")
-            getAppRemote()?.playerApi?.pause()
+            getAppRemote()?.playerApi?.pause()?.setErrorCallback {
+                handlePlayerActionError(playerAction, it)
+            }
         }
+    }
+
+    private fun handlePlayerActionError(playerAction: PlayerAction, throwable: Throwable) {
+        context.logError(playerAction.name, throwable)
+        FirebaseCrashlytics.getInstance().recordException(throwable)
     }
 
     @ExperimentalCoroutinesApi

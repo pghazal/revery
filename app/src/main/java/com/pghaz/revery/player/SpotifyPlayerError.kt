@@ -38,4 +38,7 @@ sealed class SpotifyPlayerError(message: String?, throwable: Throwable?) :
 
     data class SpotifyDisconnected(override val message: String?, val throwable: Throwable?) :
         SpotifyPlayerError(message, throwable)
+
+    data class SpotifyRemoteClient(override val message: String?, val throwable: Throwable?) :
+        SpotifyPlayerError(message, throwable)
 }

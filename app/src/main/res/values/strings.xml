@@ -23,6 +23,7 @@
     <string name="notification_spotify_error_unsupported_feature_version">Emergency alarm went off because of an unsupported feature.</string>
     <string name="notification_spotify_error_remote_service">Emergency alarm went off because Revery failed communicating with Spotify app.</string>
     <string name="notification_spotify_error_disconnected">Emergency alarm went off because Revery got disconnected from Spotify.</string>
+    <string name="notification_spotify_error_remote_client">Emergency alarm went off because Revery failed communicating with Spotify player.</string>
     <string name="notification_spotify_error_unknown">Emergency alarm went off because of an unknown reason.</string>
     <string name="notification_player_error_general">Emergency alarm went off because of an unknown reason.</string>
 
