@@ -32,7 +32,6 @@ import com.pghaz.revery.util.IntentUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.lang.NullPointerException
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -352,8 +351,6 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
         }
 
         player.start()
-
-        throw NullPointerException("test")
     }
 
     override fun onPlayerError(error: PlayerError) {
