@@ -307,6 +307,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_gravity="end"
                 android:layout_marginTop="@dimen/double_base_margin"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:text="@string/about"
                 android:textAllCaps="false" />
         </RelativeLayout>
