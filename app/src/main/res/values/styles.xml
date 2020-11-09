@@ -73,12 +73,15 @@
         <item name="android:textStyle">bold</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:textSize">10sp</item>
+        <item name="android:gravity">center</item>
         <item name="android:stateListAnimator">@null</item>
         <item name="android:background">@drawable/selector_toggle</item>
-        <item name="android:drawablePadding">@dimen/minimum_base_margin</item>
         <item name="android:drawableTint">@color/selector_toggle_text_color</item>
         <item name="drawableTint">@color/selector_toggle_text_color</item>
-        <item name="android:padding">@dimen/third_base_margin</item>
+        <item name="android:paddingEnd">@dimen/third_base_margin</item>
+        <item name="android:paddingStart">@dimen/third_base_margin</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
     </style>
 
     <style name="ReveryRecurringDaysText">

@@ -297,6 +297,7 @@
                 android:layout_alignStart="@id/recurringDaysContainer"
                 android:layout_alignEnd="@id/recurringDaysContainer"
                 android:layout_marginTop="@dimen/half_base_margin"
+                android:gravity="center"
                 android:orientation="horizontal">
 
                 <androidx.appcompat.widget.AppCompatImageButton
