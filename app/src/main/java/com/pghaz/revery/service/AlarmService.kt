@@ -185,6 +185,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
 
     override fun onCreate() {
         super.onCreate()
+        FirebaseCrashlytics.getInstance().log("AlarmService.onCreate()")
         isRunning = true
 
         alarmRepository = AlarmRepository(application)
@@ -198,6 +199,8 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
         super.onStartCommand(alarmIntent, flags, startId)
 
         alarmIntent?.let {
+            FirebaseCrashlytics.getInstance().log("AlarmService.onStartCommand() succeed")
+
             lifecycleScope.launch(Dispatchers.Main) {
                 alarm = IntentUtils.safeGetAlarmFromIntent(it)
                 val fadeInDuration = SettingsHandler.getFadeInDuration(this@AlarmService)
@@ -236,6 +239,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
                 startForeground(NotificationHandler.NOTIFICATION_ID_ALARM, notification)
             }
         } ?: kotlin.run {
+            FirebaseCrashlytics.getInstance().log("AlarmService.onStartCommand() failed")
             killService()
         }
 
@@ -248,6 +252,9 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
 
         if (NotificationHandler.isNotificationPolicyAccessGranted(notificationManager)) {
             if (NotificationHandler.isDoNotDisturbEnabled(notificationManager)) {
+
+                FirebaseCrashlytics.getInstance().log("AlarmService.disableDoNotDisturbIfNeeded()")
+
                 initialDoNotDisturbMode = notificationManager.currentInterruptionFilter
 
                 NotificationHandler.setInterruptionFilter(
@@ -261,6 +268,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
     }
 
     private fun killService() {
+        FirebaseCrashlytics.getInstance().log("AlarmService.killService()")
         stopForeground(true)
         stopSelf()
     }
@@ -309,6 +317,9 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
      * We don't call ´player.release()´ because we may need the player later
      */
     private fun stopPlayerAndVibrator(forceShouldPausePlayback: Boolean, metadata: AlarmMetadata) {
+        FirebaseCrashlytics.getInstance()
+            .log("AlarmService.stopPlayerAndVibrator($forceShouldPausePlayback, $metadata)")
+
         vibrator.cancel()
 
         if (forceShouldPausePlayback) {
@@ -324,6 +335,8 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
     }
 
     override fun onPlayerInitialized(player: AbstractPlayer) {
+        FirebaseCrashlytics.getInstance().log("AlarmService.onPlayerInitialized()")
+
         if (alarm.vibrate) {
             vibrate()
         }
@@ -334,6 +347,8 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
     override fun onPlayerError(error: PlayerError) {
         logError("onPlayerError(): Play emergency alarm")
         logError("onPlayerError(): $error")
+
+        FirebaseCrashlytics.getInstance().log("AlarmService.onPlayerError()")
 
         FirebaseCrashlytics.getInstance().recordException(error)
 
@@ -350,10 +365,14 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
         shouldUseDeviceVolume: Boolean,
         fadeInDuration: Long
     ) {
+        FirebaseCrashlytics.getInstance().log("AlarmService.playEmergencyAlarm()")
+
         if (this::player.isInitialized) {
+            FirebaseCrashlytics.getInstance().log("AlarmService.playEmergencyAlarm() player was initialized")
             vibrator.cancel()
 
             if (error !is SpotifyPlayerError) {
+                FirebaseCrashlytics.getInstance().log("AlarmService.playEmergencyAlarm() Spotify error")
                 player.release()
             }
         }
@@ -428,6 +447,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
 
     private fun disableOneShotAlarm(context: Context?, alarm: Alarm) {
         if (!alarm.recurring && !alarm.isSnooze && !alarm.isPreview) {
+            FirebaseCrashlytics.getInstance().log("AlarmService.disableOneShotAlarm()")
             alarmLiveData = alarmRepository.get(alarm)
             alarmLiveData?.observe(this, {
                 it?.let {
@@ -527,5 +547,6 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
         isRunning = false
         super.onDestroy()
         logError("onDestroy()")
+        FirebaseCrashlytics.getInstance().log("AlarmService.onDestroy()")
     }
 }

@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.media.AudioManager
 import androidx.lifecycle.MutableLiveData
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pghaz.revery.BuildConfig
 import com.pghaz.revery.extension.logError
 import com.spotify.android.appremote.api.*
@@ -54,6 +55,8 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
         playerAction = PlayerAction.ACTION_START
         currentUri = uri!!
         SpotifyAppRemote.connect(context, connectionParams, this)
+
+        FirebaseCrashlytics.getInstance().log("SpotifyPlayer.prepareAsync()")
     }
 
     override fun prepare(uri: String?) {
@@ -72,6 +75,8 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
 
         this.playerApi = this.spotifyAppRemote!!.playerApi
         this.imagesApi = this.spotifyAppRemote!!.imagesApi
+
+        FirebaseCrashlytics.getInstance().log("SpotifyPlayer.onConnected($playerAction)")
 
         // When AppRemote disconnected and auto-reconnect, ´playerAction´ will exec unhandled action
         when (playerAction) {
@@ -95,11 +100,14 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
     override fun onFailure(error: Throwable?) {
         context.logError(error?.stackTraceToString(), error)
 
+        FirebaseCrashlytics.getInstance().log("SpotifyPlayer.onFailure()")
+
         connectionState = ConnectionState.DISCONNECTED
 
         playerConnectedLiveData.value = false
 
         if (error is SpotifyConnectionTerminatedException) {
+            FirebaseCrashlytics.getInstance().log("SpotifyPlayer.onFailure() : SpotifyConnectionTerminatedException")
             SpotifyAppRemote.connect(context, connectionParams, this)
         } else {
             val playerError = getPlayerError(error)
@@ -110,6 +118,8 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
 
     private fun getPlayerError(error: Throwable?): SpotifyPlayerError {
         val message = this@SpotifyPlayer.toString()
+
+        FirebaseCrashlytics.getInstance().log("SpotifyPlayer.getPlayerError()")
 
         return when (error) {
             is NotLoggedInException -> {
@@ -201,6 +211,7 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
 
         context.logError("stop()")
         coroutinesScope.launch {
+            FirebaseCrashlytics.getInstance().log("SpotifyPlayer.stop()")
             getAppRemote()?.playerApi?.pause()
         }
     }
@@ -211,6 +222,7 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
 
         context.logError("play()")
         coroutinesScope.launch {
+            FirebaseCrashlytics.getInstance().log("SpotifyPlayer.play()")
             getAppRemote()?.playerApi?.resume()
         }
     }
@@ -221,6 +233,7 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
 
         context.logError("pause()")
         coroutinesScope.launch {
+            FirebaseCrashlytics.getInstance().log("SpotifyPlayer.pause()")
             getAppRemote()?.playerApi?.pause()
         }
     }
@@ -231,6 +244,7 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
 
         context.logError("release()")
         coroutinesScope.launch {
+            FirebaseCrashlytics.getInstance().log("SpotifyPlayer.release()")
             SpotifyAppRemote.disconnect(getAppRemote())
 
             // Give some time to the player to disconnect
@@ -254,29 +268,36 @@ class SpotifyPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
 
     @ExperimentalCoroutinesApi
     private suspend fun getAppRemote(): SpotifyAppRemote? {
+        FirebaseCrashlytics.getInstance().log("SpotifyPlayer.getAppRemote()")
         if (!isInitialized) {
+            FirebaseCrashlytics.getInstance().log("SpotifyPlayer.getAppRemote(): not initialized")
             SpotifyAppRemote.connect(context, connectionParams, this)
         }
 
         if (connectionState == ConnectionState.CONNECTED) {
             context.logError("getAppRemote() -> CONNECTED: Cached App Remote")
+            FirebaseCrashlytics.getInstance().log("SpotifyPlayer.getAppRemote() connected")
             return spotifyAppRemote
         }
 
         return suspendCancellableCoroutine { continuation ->
             context.logError("getAppRemote() -> Reconnect and suspend")
+            FirebaseCrashlytics.getInstance().log("SpotifyPlayer.getAppRemote() Reconnect and suspend")
 
             val callback = object : ConnectionStateCallback {
                 override fun onResult(connectionState: ConnectionState) {
                     when (connectionState) {
                         ConnectionState.CONNECTED -> {
+                            FirebaseCrashlytics.getInstance().log("SpotifyPlayer.getAppRemote() reconnected")
                             continuation.resume(spotifyAppRemote) { cause: Throwable ->
                                 context.logError("callback CONNECTED -> resume cancelled")
+                                FirebaseCrashlytics.getInstance().log("SpotifyPlayer.getAppRemote() resume cancelled")
                                 cause.printStackTrace()
                             }
                         }
                         ConnectionState.DISCONNECTED -> {
                             context.logError("callback DISCONNECTED -> cancel()")
+                            FirebaseCrashlytics.getInstance().log("SpotifyPlayer.getAppRemote() disconnected")
                             continuation.cancel()
                         }
                     }
