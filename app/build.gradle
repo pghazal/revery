@@ -49,7 +49,16 @@ android {
 
         beta {
             initWith debug
+            applicationIdSuffix ".beta"
             debuggable false
+
+            // Make sure this is consistent with the redirect URI scheme used in debug/strings.xml
+            manifestPlaceholders = [
+                    'appAuthRedirectScheme': 'com.pghaz.revery.beta'
+            ]
+
+            buildConfigField "String", "SPOTIFY_CLIENT_ID", "\"7cb7f4b08ff748cc9f19c84cc627f9d9\""
+            buildConfigField "String", "SPOTIFY_REDIRECT_URI", "\"com.pghaz.revery.beta://connect\""
         }
 
         release {
