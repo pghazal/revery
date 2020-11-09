@@ -32,6 +32,7 @@ import com.pghaz.revery.util.IntentUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.lang.NullPointerException
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -218,14 +219,22 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
                 try {
                     player = if (!this@AlarmService::player.isInitialized) {
                         getInitializedPlayer(
-                            alarm.metadata.type, shouldUseDeviceVolume, this@AlarmService,
-                            alarm.fadeIn, fadeInDuration
+                            alarm.metadata.type,
+                            false,
+                            shouldUseDeviceVolume,
+                            this@AlarmService,
+                            alarm.fadeIn,
+                            fadeInDuration
                         )
                     } else {
                         stopPlayerAndVibrator(true, alarm.metadata)
                         getInitializedPlayer(
-                            alarm.metadata.type, shouldUseDeviceVolume, this@AlarmService,
-                            alarm.fadeIn, fadeInDuration
+                            alarm.metadata.type,
+                            false,
+                            shouldUseDeviceVolume,
+                            this@AlarmService,
+                            alarm.fadeIn,
+                            fadeInDuration
                         )
                     }
 
@@ -291,6 +300,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
 
     private fun getInitializedPlayer(
         type: MediaType,
+        isEmergencyAlarm: Boolean,
         shouldUseDeviceVolume: Boolean,
         playerListener: AbstractPlayer.PlayerListener?,
         fadeIn: Boolean,
@@ -301,10 +311,10 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
             MediaType.SPOTIFY_ARTIST,
             MediaType.SPOTIFY_PLAYLIST,
             MediaType.SPOTIFY_TRACK -> {
-                SpotifyPlayer(this, shouldUseDeviceVolume)
+                SpotifyPlayer(this, isEmergencyAlarm, shouldUseDeviceVolume)
             }
             else -> {
-                DefaultPlayer(this, shouldUseDeviceVolume)
+                DefaultPlayer(this, isEmergencyAlarm, shouldUseDeviceVolume)
             }
         }.apply {
             this.init(playerListener)
@@ -342,6 +352,8 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
         }
 
         player.start()
+
+        throw NullPointerException("test")
     }
 
     override fun onPlayerError(error: PlayerError) {
@@ -353,32 +365,34 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
         FirebaseCrashlytics.getInstance().recordException(error)
 
         val shouldUseDeviceVolume = SettingsHandler.getShouldUseDeviceVolume(this)
-        val fadeInDuration = SettingsHandler.getFadeInDuration(this)
 
         notifyErrorOccurred(this, error)
 
-        playEmergencyAlarm(error, shouldUseDeviceVolume, fadeInDuration)
+        playEmergencyAlarm(error, shouldUseDeviceVolume)
     }
 
-    private fun playEmergencyAlarm(
-        error: PlayerError,
-        shouldUseDeviceVolume: Boolean,
-        fadeInDuration: Long
-    ) {
+    private fun playEmergencyAlarm(error: PlayerError, shouldUseDeviceVolume: Boolean) {
         FirebaseCrashlytics.getInstance().log("AlarmService.playEmergencyAlarm()")
 
         if (this::player.isInitialized) {
-            FirebaseCrashlytics.getInstance().log("AlarmService.playEmergencyAlarm() player was initialized")
+            FirebaseCrashlytics.getInstance()
+                .log("AlarmService.playEmergencyAlarm() player was initialized")
             vibrator.cancel()
 
             if (error !is SpotifyPlayerError) {
-                FirebaseCrashlytics.getInstance().log("AlarmService.playEmergencyAlarm() Spotify error")
+                FirebaseCrashlytics.getInstance()
+                    .log("AlarmService.playEmergencyAlarm() Spotify error")
                 player.release()
             }
         }
 
         player = getInitializedPlayer(
-            MediaType.DEFAULT, shouldUseDeviceVolume, null, alarm.fadeIn, fadeInDuration
+            MediaType.DEFAULT,
+            isEmergencyAlarm = true,
+            shouldUseDeviceVolume = shouldUseDeviceVolume,
+            playerListener = null,
+            fadeIn = false,
+            fadeInDuration = 0
         )
         player.prepare(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM).toString())
 

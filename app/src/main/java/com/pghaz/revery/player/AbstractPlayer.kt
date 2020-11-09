@@ -11,6 +11,7 @@ import com.pghaz.revery.settings.SettingsHandler
 abstract class AbstractPlayer(
     protected val context: Context,
     protected val streamType: Int,
+    private val isEmergencyAlarm: Boolean,
     private val shouldUseDeviceVolume: Boolean
 ) {
     interface PlayerListener {
@@ -32,11 +33,18 @@ abstract class AbstractPlayer(
             0
         }
 
-    private val maxDecidedVolume = if (shouldUseDeviceVolume) {
-        initialDeviceVolume
-    } else {
-        SettingsHandler.getAlarmVolume(context, maxVolume)
+    private val maxDecidedVolume = when {
+        isEmergencyAlarm -> {
+            maxVolume
+        }
+        shouldUseDeviceVolume -> {
+            initialDeviceVolume
+        }
+        else -> {
+            SettingsHandler.getAlarmVolume(context, maxVolume)
+        }
     }
+
     private var volumeAnimator: ValueAnimator? = null
 
     var fadeIn: Boolean = false
@@ -122,10 +130,14 @@ abstract class AbstractPlayer(
 
     override fun toString(): String {
         return "AbstractPlayer(streamType=$streamType," +
+                " isEmergencyAlarm=$isEmergencyAlarm," +
                 " shouldUseDeviceVolume=$shouldUseDeviceVolume," +
-                " currentUri=$currentUri, playerListener=$playerListener," +
+                " currentUri=$currentUri," +
+                " playerListener=$playerListener," +
                 " initialDeviceVolume=$initialDeviceVolume," +
-                " minVolume=$minVolume, maxDecidedVolume=$maxDecidedVolume," +
-                " fadeIn=$fadeIn, fadeInDuration=$fadeInDuration)"
+                " minVolume=$minVolume," +
+                " maxDecidedVolume=$maxDecidedVolume," +
+                " fadeIn=$fadeIn," +
+                " fadeInDuration=$fadeInDuration)"
     }
 }

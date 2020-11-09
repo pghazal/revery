@@ -12,8 +12,8 @@ import java.io.FileInputStream
 import java.io.FileNotFoundException
 
 
-class DefaultPlayer(context: Context, shouldUseDeviceVolume: Boolean) :
-    AbstractPlayer(context, AudioManager.STREAM_ALARM, shouldUseDeviceVolume) {
+class DefaultPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDeviceVolume: Boolean) :
+    AbstractPlayer(context, AudioManager.STREAM_ALARM, isEmergencyAlarm, shouldUseDeviceVolume) {
 
     private var mediaPlayer: MediaPlayer? = null
 
