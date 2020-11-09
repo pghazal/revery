@@ -3,8 +3,6 @@ package com.pghaz.revery.battery
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.View
@@ -49,14 +47,7 @@ open class PowerSettingsFragment : BaseFragment(), LauncherForResultComponent {
         context?.let {
             isIgnoringBatteryOptimizations = PowerManagerHandler.isIgnoringBatteryOptimizations(it)
 
-            batteryOptimizationIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                    addCategory(Intent.CATEGORY_DEFAULT)
-                    data = Uri.parse("package:${it.packageName}")
-                }
-            } else {
-                Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
-            }
+            batteryOptimizationIntent = Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
 
             autoStartIntent = PowerManagerHandler.getAutoStartFeatureIntent(it)
             hasAutoStartFeature = autoStartIntent != null
@@ -163,10 +154,8 @@ open class PowerSettingsFragment : BaseFragment(), LauncherForResultComponent {
                 isIgnoringBatteryOptimizations =
                     PowerManagerHandler.isIgnoringBatteryOptimizations(it)
                 isFirstTime = false
-                if (!isIgnoringBatteryOptimizations) {
-                    this.requestCode =
-                        PowerManagerHandler.REQUEST_CODE_POWER_MANAGER_BATTERY_OPTIMIZATION
-                }
+                this.requestCode =
+                    PowerManagerHandler.REQUEST_CODE_POWER_MANAGER_BATTERY_OPTIMIZATION
                 updateViews(it)
             } else if (requestCode == REQUEST_CODE_DO_NOT_DISTURB) {
                 isNotificationPolicyAccessGranted =
