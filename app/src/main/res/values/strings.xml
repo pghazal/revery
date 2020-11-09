@@ -1,9 +1,7 @@
 <resources>
     <!-- GENERAL -->
-    <string name="sleep_text">sleep</string>
-    <string name="alarm_text">alarms</string>
-
-    <string name="sleep_fragment">Sleep</string>
+    <string name="alarm_text">alarm</string>
+    <string name="timer_text">timer</string>
 
     <!-- NOTIFICATION -->
     <string name="notification_channel_alarm">Alarms</string>

@@ -1,13 +1,13 @@
-package com.pghaz.revery.sleep
+package com.pghaz.revery.timer
 
 import android.os.Bundle
 import com.pghaz.revery.BaseFragment
 import com.pghaz.revery.R
 
-class SleepFragment : BaseFragment() {
+class TimersFragment : BaseFragment() {
 
     override fun getLayoutResId(): Int {
-        return R.layout.fragment_sleep
+        return R.layout.fragment_timers
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,10 +19,10 @@ class SleepFragment : BaseFragment() {
     }
 
     companion object {
-        const val TAG = "SleepFragment"
+        const val TAG = "TimersFragment"
 
-        fun newInstance(): SleepFragment {
-            val fragment = SleepFragment()
+        fun newInstance(): TimersFragment {
+            val fragment = TimersFragment()
 
             val args = Bundle()
             fragment.arguments = args

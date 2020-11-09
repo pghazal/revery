@@ -23,9 +23,9 @@ import com.pghaz.revery.settings.SettingsHandler
 import com.pghaz.revery.spotify.BaseSpotifyActivity
 import com.pghaz.revery.viewmodel.alarm.ListAlarmsViewModel
 import com.pghaz.spotify.webapi.auth.SpotifyAuthorizationClient
-import kotlinx.android.synthetic.main.fragment_list_alarms.*
+import kotlinx.android.synthetic.main.fragment_alarms.*
 
-class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
+class AlarmsFragment : BaseFragment(), OnAlarmClickListener {
 
     private lateinit var listAlarmsViewModel: ListAlarmsViewModel
     private lateinit var alarmsAdapter: AlarmsAdapter
@@ -46,9 +46,9 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
                 }
 
                 if (currentList.size == 0) {
-                    placeholderListAlarms.visibility = View.VISIBLE
+                    placeholder.visibility = View.VISIBLE
                 } else {
-                    placeholderListAlarms.visibility = View.GONE
+                    placeholder.visibility = View.GONE
                 }
             }
         }
@@ -62,7 +62,7 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
     }
 
     override fun getLayoutResId(): Int {
-        return R.layout.fragment_list_alarms
+        return R.layout.fragment_alarms
     }
 
     override fun configureViews(savedInstanceState: Bundle?) {
@@ -227,8 +227,8 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
     companion object {
         const val TAG = "ListAlarmsFragment"
 
-        fun newInstance(): ListAlarmsFragment {
-            val fragment = ListAlarmsFragment()
+        fun newInstance(): AlarmsFragment {
+            val fragment = AlarmsFragment()
 
             val args = Bundle()
             fragment.arguments = args

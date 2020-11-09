@@ -13,7 +13,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.pghaz.revery.alarm.ListAlarmsFragment
+import com.pghaz.revery.alarm.AlarmsFragment
 import com.pghaz.revery.alarm.RingActivity
 import com.pghaz.revery.extension.logError
 import com.pghaz.revery.notification.NotificationHandler
@@ -21,8 +21,8 @@ import com.pghaz.revery.onboarding.OnBoardingActivity
 import com.pghaz.revery.service.AlarmService
 import com.pghaz.revery.service.RescheduleAlarmsService
 import com.pghaz.revery.settings.SettingsHandler
-import com.pghaz.revery.sleep.SleepFragment
 import com.pghaz.revery.spotify.BaseSpotifyActivity
+import com.pghaz.revery.timer.TimersFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
 /**
@@ -161,8 +161,8 @@ class MainActivity : BaseSpotifyActivity(), BottomNavigationView.OnNavigationIte
                 true
             }
 
-            R.id.sleep_tab -> {
-                openSleepTab()
+            R.id.timer_tab -> {
+                openTimersTab()
                 true
             }
 
@@ -173,23 +173,23 @@ class MainActivity : BaseSpotifyActivity(), BottomNavigationView.OnNavigationIte
     private fun openAlarmsTab() {
         // Check first if the fragment already exists
         var alarmsFragment =
-            supportFragmentManager.findFragmentByTag(ListAlarmsFragment.TAG) as ListAlarmsFragment?
+            supportFragmentManager.findFragmentByTag(AlarmsFragment.TAG) as AlarmsFragment?
         // If it doesn't, create it
         if (alarmsFragment == null) {
-            alarmsFragment = ListAlarmsFragment.newInstance()
+            alarmsFragment = AlarmsFragment.newInstance()
         }
-        selectNavigationItem(alarmsFragment, ListAlarmsFragment.TAG)
+        selectNavigationItem(alarmsFragment, AlarmsFragment.TAG)
     }
 
-    private fun openSleepTab() {
+    private fun openTimersTab() {
         // Check first if the fragment already exists
-        var sleepFragment =
-            supportFragmentManager.findFragmentByTag(SleepFragment.TAG) as SleepFragment?
+        var timersFragment =
+            supportFragmentManager.findFragmentByTag(TimersFragment.TAG) as TimersFragment?
         // If it doesn't, create it
-        if (sleepFragment == null) {
-            sleepFragment = SleepFragment.newInstance()
+        if (timersFragment == null) {
+            timersFragment = TimersFragment.newInstance()
         }
-        selectNavigationItem(sleepFragment, SleepFragment.TAG)
+        selectNavigationItem(timersFragment, TimersFragment.TAG)
     }
 
     private val mServiceConnection: ServiceConnection = object : ServiceConnection {
