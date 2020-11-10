@@ -59,7 +59,6 @@ object PowerManagerHandler {
     fun updateAutoStartViews(
         context: Context,
         hasAutoStartFeature: Boolean,
-        isFirstTime: Boolean,
         autoStartTextView: AppCompatTextView,
         autoStartErrorTextView: AppCompatTextView
     ) {
@@ -71,22 +70,6 @@ object PowerManagerHandler {
 
             autoStartTextView.visibility = View.VISIBLE
             autoStartErrorTextView.visibility = View.VISIBLE
-
-            if (isFirstTime) {
-                autoStartTextView.setCompoundDrawablesWithIntrinsicBounds(
-                    R.drawable.ic_feature_disabled,
-                    0,
-                    0,
-                    0
-                )
-            } else {
-                autoStartTextView.setCompoundDrawablesWithIntrinsicBounds(
-                    R.drawable.ic_feature_enabled,
-                    0,
-                    0,
-                    0
-                )
-            }
         } else {
             autoStartTextView.visibility = View.GONE
             autoStartErrorTextView.visibility = View.GONE

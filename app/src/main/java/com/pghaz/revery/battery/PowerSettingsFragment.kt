@@ -126,7 +126,6 @@ open class PowerSettingsFragment : BaseFragment(), LauncherForResultComponent {
         PowerManagerHandler.updateAutoStartViews(
             context,
             hasAutoStartFeature,
-            isFirstTime,
             autoStartTextView,
             autoStartErrorTextView
         )

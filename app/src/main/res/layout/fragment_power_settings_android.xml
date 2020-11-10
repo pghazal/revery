@@ -90,7 +90,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:layout_marginStart="@dimen/base_margin"
-                android:drawableStart="@drawable/ic_feature_disabled"
+                android:drawableStart="@drawable/ic_feature_unknown"
                 android:drawablePadding="@dimen/third_base_margin"
                 android:gravity="center_vertical"
                 android:text="@string/android_settings_auto_start_requirement"
