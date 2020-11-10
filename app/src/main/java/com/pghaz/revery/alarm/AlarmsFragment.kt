@@ -17,7 +17,7 @@ import com.pghaz.revery.adapter.alarm.AlarmsAdapter
 import com.pghaz.revery.adapter.alarm.OnAlarmClickListener
 import com.pghaz.revery.adapter.base.BaseAdapter
 import com.pghaz.revery.model.app.BaseModel
-import com.pghaz.revery.model.app.alarm.Alarm
+import com.pghaz.revery.model.app.Alarm
 import com.pghaz.revery.settings.SettingsFragment
 import com.pghaz.revery.settings.SettingsHandler
 import com.pghaz.revery.spotify.BaseSpotifyActivity

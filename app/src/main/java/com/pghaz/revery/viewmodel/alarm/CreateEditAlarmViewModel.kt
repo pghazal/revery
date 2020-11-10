@@ -5,7 +5,7 @@ import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.pghaz.revery.alarm.AlarmHandler
-import com.pghaz.revery.model.app.alarm.Alarm
+import com.pghaz.revery.model.app.Alarm
 import com.pghaz.revery.repository.AlarmRepository
 
 class CreateEditAlarmViewModel(application: Application) : AndroidViewModel(application) {

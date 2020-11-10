@@ -4,7 +4,7 @@ import android.view.ViewGroup
 import com.pghaz.revery.adapter.base.BaseAdapter
 import com.pghaz.revery.adapter.base.BaseViewHolder
 import com.pghaz.revery.adapter.base.ListItemType
-import com.pghaz.revery.model.app.alarm.Alarm
+import com.pghaz.revery.model.app.Alarm
 
 class AlarmsAdapter(
     private val alarmClickListener: OnAlarmClickListener,

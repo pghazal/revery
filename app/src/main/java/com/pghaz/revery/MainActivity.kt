@@ -16,6 +16,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.pghaz.revery.alarm.AlarmsFragment
 import com.pghaz.revery.alarm.RingActivity
 import com.pghaz.revery.extension.logError
+import com.pghaz.revery.model.app.Alarm
 import com.pghaz.revery.notification.NotificationHandler
 import com.pghaz.revery.onboarding.OnBoardingActivity
 import com.pghaz.revery.service.AlarmService

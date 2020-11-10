@@ -5,7 +5,7 @@ import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import com.pghaz.revery.BuildConfig
-import com.pghaz.revery.model.app.alarm.Alarm
+import com.pghaz.revery.model.app.Alarm
 import com.pghaz.revery.model.room.RAlarm
 import com.pghaz.revery.model.room.RBaseModel
 import kotlinx.coroutines.launch

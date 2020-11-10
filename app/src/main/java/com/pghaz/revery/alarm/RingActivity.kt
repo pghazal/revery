@@ -16,7 +16,7 @@ import com.pghaz.revery.broadcastreceiver.AlarmBroadcastReceiver
 import com.pghaz.revery.extension.logError
 import com.pghaz.revery.image.ImageLoader
 import com.pghaz.revery.image.ImageUtils
-import com.pghaz.revery.model.app.alarm.Alarm
+import com.pghaz.revery.model.app.Alarm
 import com.pghaz.revery.player.AbstractPlayer
 import com.pghaz.revery.player.SpotifyPlayer
 import com.pghaz.revery.service.AlarmService

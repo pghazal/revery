@@ -6,7 +6,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.pghaz.revery.alarm.AlarmHandler
-import com.pghaz.revery.model.app.alarm.Alarm
+import com.pghaz.revery.model.app.Alarm
 import com.pghaz.revery.notification.NotificationHandler
 import com.pghaz.revery.service.AlarmService
 import com.pghaz.revery.service.RescheduleAlarmsService

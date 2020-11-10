@@ -6,7 +6,7 @@ import android.widget.TextView
 import androidx.annotation.CallSuper
 import com.pghaz.revery.R
 import com.pghaz.revery.adapter.base.BaseViewHolder
-import com.pghaz.revery.model.app.alarm.AlarmMetadata
+import com.pghaz.revery.model.app.MediaMetadata
 import com.pghaz.revery.model.app.BaseModel
 import com.pghaz.revery.image.ImageLoader
 
@@ -19,7 +19,7 @@ class DefaultMediaViewHolder(view: View) : BaseViewHolder(view) {
 
     @CallSuper
     override fun bind(model: BaseModel) {
-        val metadata = model as AlarmMetadata
+        val metadata = model as MediaMetadata
 
         bind(metadata.name, metadata.description, metadata.imageUrl)
     }

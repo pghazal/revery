@@ -9,11 +9,10 @@ import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
 import com.pghaz.revery.R
 import com.pghaz.revery.adapter.base.BaseViewHolder
-import com.pghaz.revery.ringtone.AudioPickerHelper
 import com.pghaz.revery.image.ImageLoader
 import com.pghaz.revery.image.ImageUtils
 import com.pghaz.revery.model.app.BaseModel
-import com.pghaz.revery.model.app.alarm.Alarm
+import com.pghaz.revery.model.app.Alarm
 import com.pghaz.revery.util.DateTimeUtils
 import java.util.*
 

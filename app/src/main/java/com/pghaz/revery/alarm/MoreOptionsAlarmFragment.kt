@@ -3,7 +3,7 @@ package com.pghaz.revery.alarm
 import android.os.Bundle
 import com.pghaz.revery.BaseBottomSheetDialogFragment
 import com.pghaz.revery.R
-import com.pghaz.revery.model.app.alarm.Alarm
+import com.pghaz.revery.model.app.Alarm
 import com.pghaz.revery.spotify.BaseSpotifyActivity
 import com.pghaz.revery.util.Arguments
 import com.spotify.protocol.types.Repeat

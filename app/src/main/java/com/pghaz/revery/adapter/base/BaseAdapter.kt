@@ -8,7 +8,7 @@ import androidx.annotation.CallSuper
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.pghaz.revery.model.app.BaseModel
-import com.pghaz.revery.model.app.alarm.Alarm
+import com.pghaz.revery.model.app.Alarm
 import java.util.*
 
 abstract class BaseAdapter : ListAdapter<BaseModel, BaseViewHolder>(DiffUtilCallback) {

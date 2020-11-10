@@ -3,7 +3,7 @@ package com.pghaz.revery.viewmodel.spotify
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.pghaz.revery.model.app.BaseModel
+import com.pghaz.revery.model.app.*
 import com.pghaz.revery.model.app.spotify.*
 import io.github.kaaes.spotify.webapi.core.Options
 import io.github.kaaes.spotify.webapi.core.models.*

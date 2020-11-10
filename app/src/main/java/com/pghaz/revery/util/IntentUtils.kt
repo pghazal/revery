@@ -2,7 +2,7 @@ package com.pghaz.revery.util
 
 import android.content.Intent
 import android.os.Bundle
-import com.pghaz.revery.model.app.alarm.Alarm
+import com.pghaz.revery.model.app.Alarm
 
 object IntentUtils {
 

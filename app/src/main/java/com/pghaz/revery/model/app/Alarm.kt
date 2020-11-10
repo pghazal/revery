@@ -1,7 +1,6 @@
-package com.pghaz.revery.model.app.alarm
+package com.pghaz.revery.model.app
 
 import android.os.Parcelable
-import com.pghaz.revery.model.app.BaseModel
 import com.pghaz.revery.model.room.RAlarm
 import kotlinx.android.parcel.Parcelize
 
@@ -25,7 +24,7 @@ data class Alarm(
     var fadeInDuration: Long = 0,
     var isSnooze: Boolean = false,
     var isPreview: Boolean = false,
-    var metadata: AlarmMetadata = AlarmMetadata()
+    var metadata: MediaMetadata = MediaMetadata()
 ) : BaseModel(), Parcelable {
 
     constructor(alarm: Alarm) : this(
@@ -47,7 +46,7 @@ data class Alarm(
         fadeInDuration = alarm.fadeInDuration,
         isSnooze = alarm.isSnooze,
         isPreview = alarm.isPreview,
-        metadata = AlarmMetadata(alarm.metadata)
+        metadata = MediaMetadata(alarm.metadata)
     )
 
     companion object {
@@ -71,7 +70,7 @@ data class Alarm(
                 fadeInDuration = alarm.fadeInDuration,
                 isSnooze = false,
                 isPreview = false,
-                metadata = AlarmMetadata.fromDatabaseModel(alarm.metadata)
+                metadata = MediaMetadata.fromDatabaseModel(alarm.metadata)
             )
         }
 
@@ -93,7 +92,7 @@ data class Alarm(
                 vibrate = alarm.vibrate,
                 fadeIn = alarm.fadeIn,
                 fadeInDuration = alarm.fadeInDuration,
-                metadata = AlarmMetadata.toDatabaseModel(alarm.metadata)
+                metadata = MediaMetadata.toDatabaseModel(alarm.metadata)
             )
         }
     }

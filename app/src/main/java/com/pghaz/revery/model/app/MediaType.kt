@@ -1,4 +1,4 @@
-package com.pghaz.revery.model.app.alarm
+package com.pghaz.revery.model.app
 
 enum class MediaType {
     DEFAULT,

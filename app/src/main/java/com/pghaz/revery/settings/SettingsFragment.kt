@@ -25,8 +25,8 @@ import com.pghaz.revery.alarm.CreateEditAlarmFragment
 import com.pghaz.revery.animation.AnimatorUtils
 import com.pghaz.revery.battery.PowerSettingsActivity
 import com.pghaz.revery.image.ImageLoader
-import com.pghaz.revery.model.app.alarm.AlarmMetadata
-import com.pghaz.revery.model.app.alarm.MediaType
+import com.pghaz.revery.model.app.MediaMetadata
+import com.pghaz.revery.model.app.MediaType
 import com.pghaz.revery.permission.PermissionDialogFactory
 import com.pghaz.revery.permission.PermissionManager
 import com.pghaz.revery.permission.ReveryPermission
@@ -63,7 +63,7 @@ class SettingsFragment : BaseSpotifyBottomSheetDialogFragment() {
             val audioMetadata: AudioPickerHelper.AudioMetadata =
                 AudioPickerHelper.getAudioMetadata(testAlarmButton.context, defaultUri)
 
-            val metadata = AlarmMetadata().apply {
+            val metadata = MediaMetadata().apply {
                 this.uri = defaultUri.toString()
                 this.href = null
                 this.type = MediaType.DEFAULT
@@ -282,7 +282,7 @@ class SettingsFragment : BaseSpotifyBottomSheetDialogFragment() {
             val audioMetadata: AudioPickerHelper.AudioMetadata =
                 AudioPickerHelper.getAudioMetadata(context, defaultUri)
 
-            val metadata = AlarmMetadata().apply {
+            val metadata = MediaMetadata().apply {
                 this.uri = defaultUri.toString()
                 this.href = null
                 this.type = MediaType.DEFAULT
@@ -439,7 +439,7 @@ class SettingsFragment : BaseSpotifyBottomSheetDialogFragment() {
                 val audioMetadata: AudioPickerHelper.AudioMetadata =
                     AudioPickerHelper.getAudioMetadata(it, ringtoneUri)
 
-                val metadata = AlarmMetadata().apply {
+                val metadata = MediaMetadata().apply {
                     this.uri = ringtoneUri.toString()
                     this.href = null
                     this.type = MediaType.DEFAULT
@@ -458,7 +458,7 @@ class SettingsFragment : BaseSpotifyBottomSheetDialogFragment() {
     private fun handleRingtonePickerSelection(ringtoneName: String, ringtoneUri: Uri?) {
         if (ringtoneUri != null) {
             context?.let {
-                val metadata = AlarmMetadata().apply {
+                val metadata = MediaMetadata().apply {
                     this.uri = ringtoneUri.toString()
                     this.href = null
                     this.type = MediaType.DEFAULT
@@ -474,7 +474,7 @@ class SettingsFragment : BaseSpotifyBottomSheetDialogFragment() {
         }
     }
 
-    private fun updateDefaultAlarmViews(metadata: AlarmMetadata) {
+    private fun updateDefaultAlarmViews(metadata: MediaMetadata) {
         ringtoneInfoContainer.removeAllViews()
 
         val view = LayoutInflater.from(context)
