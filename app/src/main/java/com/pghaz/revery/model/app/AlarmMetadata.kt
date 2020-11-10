@@ -1,12 +1,12 @@
 package com.pghaz.revery.model.app
 
 import android.os.Parcelable
-import com.pghaz.revery.model.room.RMediaMetadata
+import com.pghaz.revery.model.room.RAlarmMetadata
 import com.pghaz.revery.model.room.RMediaType
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class MediaMetadata(
+data class AlarmMetadata(
     var uri: String? = null,
     var href: String? = null,
     var type: MediaType = MediaType.DEFAULT,
@@ -18,7 +18,7 @@ data class MediaMetadata(
     var repeat: Int = 0
 ) : BaseModel(), Parcelable {
 
-    constructor(metadata: MediaMetadata) : this(
+    constructor(metadata: AlarmMetadata) : this(
         metadata.uri,
         metadata.href,
         metadata.type,
@@ -31,8 +31,8 @@ data class MediaMetadata(
     )
 
     companion object {
-        fun fromDatabaseModel(metadata: RMediaMetadata): MediaMetadata {
-            return MediaMetadata(
+        fun fromDatabaseModel(metadata: RAlarmMetadata): AlarmMetadata {
+            return AlarmMetadata(
                 uri = metadata.uri,
                 href = metadata.href,
                 type = MediaType.values()[metadata.type.ordinal],
@@ -45,8 +45,8 @@ data class MediaMetadata(
             )
         }
 
-        fun toDatabaseModel(metadata: MediaMetadata): RMediaMetadata {
-            return RMediaMetadata(
+        fun toDatabaseModel(metadata: AlarmMetadata): RAlarmMetadata {
+            return RAlarmMetadata(
                 uri = metadata.uri,
                 href = metadata.href,
                 type = RMediaType.values()[metadata.type.ordinal],

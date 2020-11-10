@@ -24,7 +24,7 @@ data class Alarm(
     var fadeInDuration: Long = 0,
     var isSnooze: Boolean = false,
     var isPreview: Boolean = false,
-    var metadata: MediaMetadata = MediaMetadata()
+    var metadata: AlarmMetadata = AlarmMetadata()
 ) : BaseModel(), Parcelable {
 
     constructor(alarm: Alarm) : this(
@@ -46,7 +46,7 @@ data class Alarm(
         fadeInDuration = alarm.fadeInDuration,
         isSnooze = alarm.isSnooze,
         isPreview = alarm.isPreview,
-        metadata = MediaMetadata(alarm.metadata)
+        metadata = AlarmMetadata(alarm.metadata)
     )
 
     companion object {
@@ -70,7 +70,7 @@ data class Alarm(
                 fadeInDuration = alarm.fadeInDuration,
                 isSnooze = false,
                 isPreview = false,
-                metadata = MediaMetadata.fromDatabaseModel(alarm.metadata)
+                metadata = AlarmMetadata.fromDatabaseModel(alarm.metadata)
             )
         }
 
@@ -92,7 +92,7 @@ data class Alarm(
                 vibrate = alarm.vibrate,
                 fadeIn = alarm.fadeIn,
                 fadeInDuration = alarm.fadeInDuration,
-                metadata = MediaMetadata.toDatabaseModel(alarm.metadata)
+                metadata = AlarmMetadata.toDatabaseModel(alarm.metadata)
             )
         }
     }

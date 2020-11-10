@@ -4,7 +4,7 @@ import androidx.room.TypeConverters
 import com.pghaz.revery.repository.converter.MediaTypeConverters
 
 @TypeConverters(MediaTypeConverters::class)
-data class RMediaMetadata(
+data class RTimerMetadata(
     var uri: String? = null,
     var href: String? = null,
     var type: RMediaType = RMediaType.DEFAULT,

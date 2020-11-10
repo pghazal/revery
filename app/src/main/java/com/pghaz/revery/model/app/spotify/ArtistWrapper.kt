@@ -2,7 +2,7 @@ package com.pghaz.revery.model.app.spotify
 
 import android.os.Parcelable
 import com.pghaz.revery.model.app.Alarm
-import com.pghaz.revery.model.app.MediaMetadata
+import com.pghaz.revery.model.app.AlarmMetadata
 import com.pghaz.revery.model.app.MediaType
 import io.github.kaaes.spotify.webapi.core.models.Artist
 import io.github.kaaes.spotify.webapi.core.models.ArtistSimple
@@ -11,8 +11,8 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class ArtistWrapper(val artist: Artist) : BaseSpotifyMediaModel(), Parcelable {
 
-    fun toAlarmMetadata(alarm: Alarm): MediaMetadata {
-        return MediaMetadata(
+    fun toAlarmMetadata(alarm: Alarm): AlarmMetadata {
+        return AlarmMetadata(
             uri = this.artist.uri,
             href = this.artist.href,
             type = MediaType.SPOTIFY_ARTIST,

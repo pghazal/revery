@@ -1,8 +1,6 @@
 package com.pghaz.revery.repository
 
 import android.annotation.SuppressLint
-import androidx.annotation.MainThread
-import androidx.annotation.WorkerThread
 import androidx.lifecycle.ComputableLiveData
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
@@ -15,51 +13,39 @@ abstract class AbstractDao<T : RBaseModel>(
     private val tableName: String,
     private val roomDatabase: RoomDatabase
 ) {
-
-    @WorkerThread
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract fun insert(entity: T): Long
 
-    @WorkerThread
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract fun insert(entities: List<T>): LongArray
 
-    @WorkerThread
     @Update
     abstract fun update(entity: T)
 
-    @WorkerThread
     @Update
     abstract fun update(entities: List<T>)
 
-    @WorkerThread
     @Delete
     abstract fun delete(entity: T)
 
-    @WorkerThread
     @Delete
     abstract fun delete(entities: List<T>)
 
-    @WorkerThread
     @RawQuery
     protected abstract fun executeSQLQuery(query: SupportSQLiteQuery): Int
 
-    @WorkerThread
     fun deleteAll() {
         val query = SimpleSQLiteQuery("DELETE FROM $tableName")
         executeSQLQuery(query)
     }
 
-    @MainThread
     @RawQuery
     protected abstract fun getEntitySync(query: SupportSQLiteQuery): List<T>?
 
-    @MainThread
     fun getEntitySync(id: Long): T? {
         return getEntitySync(listOf(id)).firstOrNull()
     }
 
-    @MainThread
     fun getEntitySync(ids: List<Long>): List<T> {
         val result = StringBuilder()
 
@@ -75,7 +61,6 @@ abstract class AbstractDao<T : RBaseModel>(
         return getEntitySync(query) ?: ArrayList()
     }
 
-    @MainThread
     fun getEntity(id: Long): LiveData<T> {
         val resultLiveData = MediatorLiveData<T>()
 
@@ -86,7 +71,6 @@ abstract class AbstractDao<T : RBaseModel>(
         return resultLiveData
     }
 
-    @MainThread
     @SuppressLint("RestrictedApi")
     fun getEntity(ids: List<Long>): LiveData<List<T>> {
         return object : ComputableLiveData<List<T>>() {
@@ -104,13 +88,11 @@ abstract class AbstractDao<T : RBaseModel>(
         }.liveData
     }
 
-    @MainThread
     fun getEntitiesSync(): List<T> {
         val query = SimpleSQLiteQuery("SELECT * FROM $tableName ORDER BY id ASC;")
         return getEntitySync(query) ?: ArrayList()
     }
 
-    @MainThread
     @SuppressLint("RestrictedApi")
     fun getEntities(): LiveData<List<T>> {
         return object : ComputableLiveData<List<T>>() {

@@ -6,7 +6,7 @@ import android.widget.TextView
 import androidx.annotation.CallSuper
 import com.pghaz.revery.R
 import com.pghaz.revery.adapter.base.BaseViewHolder
-import com.pghaz.revery.model.app.MediaMetadata
+import com.pghaz.revery.model.app.AlarmMetadata
 import com.pghaz.revery.model.app.BaseModel
 
 abstract class BaseSpotifyViewHolder(view: View) : BaseViewHolder(view) {
@@ -25,7 +25,7 @@ abstract class BaseSpotifyViewHolder(view: View) : BaseViewHolder(view) {
         }
     }
 
-    protected fun bindAlarmMetadata(metadata: MediaMetadata) {
+    protected fun bindAlarmMetadata(metadata: AlarmMetadata) {
         bind(metadata.name, metadata.description, metadata.imageUrl)
     }
 

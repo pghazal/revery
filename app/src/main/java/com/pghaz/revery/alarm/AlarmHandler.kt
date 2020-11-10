@@ -8,7 +8,7 @@ import com.pghaz.revery.R
 import com.pghaz.revery.broadcastreceiver.AlarmBroadcastReceiver
 import com.pghaz.revery.extension.toastDebug
 import com.pghaz.revery.model.app.Alarm
-import com.pghaz.revery.model.app.MediaMetadata
+import com.pghaz.revery.model.app.AlarmMetadata
 import com.pghaz.revery.model.app.MediaType
 import com.pghaz.revery.ringtone.AudioPickerHelper
 import com.pghaz.revery.settings.SettingsHandler
@@ -20,7 +20,7 @@ object AlarmHandler {
     fun fireAlarmNow(
         context: Context,
         delayInSeconds: Int,
-        metadata: MediaMetadata,
+        metadata: AlarmMetadata,
         fadeInDuration: Long
     ) {
         val calendar = Calendar.getInstance()
@@ -76,7 +76,7 @@ object AlarmHandler {
         val minute = calendar.get(Calendar.MINUTE)
         val second = calendar.get(Calendar.SECOND)
 
-        val metadata = MediaMetadata()
+        val metadata = AlarmMetadata()
 
         if (spotify) {
             metadata.type = MediaType.SPOTIFY_PLAYLIST

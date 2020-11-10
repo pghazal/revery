@@ -26,7 +26,7 @@ import com.pghaz.revery.animation.AnimatorUtils
 import com.pghaz.revery.image.ImageLoader
 import com.pghaz.revery.model.app.BaseModel
 import com.pghaz.revery.model.app.Alarm
-import com.pghaz.revery.model.app.MediaMetadata
+import com.pghaz.revery.model.app.AlarmMetadata
 import com.pghaz.revery.model.app.MediaType
 import com.pghaz.revery.model.app.spotify.AlbumWrapper
 import com.pghaz.revery.model.app.spotify.ArtistWrapper
@@ -440,7 +440,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
 
     private fun setDefaultRingtone() {
         alarm?.let {
-            it.metadata = MediaMetadata().apply {
+            it.metadata = AlarmMetadata().apply {
                 context?.let { nonNullContext ->
                     val uri = SettingsHandler.getDefaultAudioUri(nonNullContext)
 
@@ -608,7 +608,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
 
             // Safe init of uri
             if (it.metadata.uri.isNullOrEmpty()) {
-                it.metadata = MediaMetadata().apply {
+                it.metadata = AlarmMetadata().apply {
                     context?.let { nonNullContext ->
                         val uri = SettingsHandler.getDefaultAudioUri(nonNullContext)
 
@@ -709,7 +709,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         }
     }
 
-    private fun spotifyItemToMetadata(alarm: Alarm, item: BaseModel): MediaMetadata {
+    private fun spotifyItemToMetadata(alarm: Alarm, item: BaseModel): AlarmMetadata {
         return when (item) {
             is TrackWrapper -> {
                 item.toAlarmMetadata(alarm)
@@ -724,7 +724,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
                 item.toAlarmMetadata(alarm)
             }
             else -> {
-                MediaMetadata(alarm.metadata)
+                AlarmMetadata(alarm.metadata)
             }
         }
     }
@@ -739,7 +739,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
                 AudioPickerHelper.getAudioMetadata(context, ringtoneUri)
 
             alarm?.let {
-                it.metadata = MediaMetadata().apply {
+                it.metadata = AlarmMetadata().apply {
                     this.uri = ringtoneUri.toString()
                     this.href = null
                     this.type = MediaType.DEFAULT
@@ -755,7 +755,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
 
     private fun handleRingtonePickerSelection(ringtoneName: String, ringtoneUri: Uri?) {
         alarm?.let {
-            it.metadata = MediaMetadata().apply {
+            it.metadata = AlarmMetadata().apply {
                 this.uri = ringtoneUri.toString()
                 this.href = null
                 this.type = MediaType.DEFAULT
@@ -791,7 +791,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
                 vibrate = false,
                 fadeIn = false,
                 fadeInDuration = 0,
-                metadata = MediaMetadata()
+                metadata = AlarmMetadata()
             )
 
             return newInstance(dialogTitle, newAlarm)
