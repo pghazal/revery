@@ -1,61 +1,31 @@
 package com.pghaz.revery.alarm
 
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
-import android.app.Activity
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.text.format.DateFormat
-import android.view.LayoutInflater
 import android.view.View
-import android.view.View.OnTouchListener
-import android.widget.RelativeLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
-import com.pghaz.revery.BaseBottomSheetDialogFragment
+import com.pghaz.revery.BaseCreateEditFragment
 import com.pghaz.revery.R
-import com.pghaz.revery.adapter.alarm.DefaultMediaViewHolder
-import com.pghaz.revery.adapter.base.BaseViewHolder
-import com.pghaz.revery.adapter.spotify.SpotifyAlbumViewHolder
-import com.pghaz.revery.adapter.spotify.SpotifyArtistViewHolder
-import com.pghaz.revery.adapter.spotify.SpotifyPlaylistViewHolder
-import com.pghaz.revery.adapter.spotify.SpotifyTrackViewHolder
-import com.pghaz.revery.animation.AnimatorUtils
-import com.pghaz.revery.image.ImageLoader
-import com.pghaz.revery.model.app.BaseModel
 import com.pghaz.revery.model.app.Alarm
-import com.pghaz.revery.model.app.AlarmMetadata
+import com.pghaz.revery.model.app.MediaMetadata
+import com.pghaz.revery.model.app.BaseModel
 import com.pghaz.revery.model.app.MediaType
-import com.pghaz.revery.model.app.spotify.AlbumWrapper
-import com.pghaz.revery.model.app.spotify.ArtistWrapper
-import com.pghaz.revery.model.app.spotify.PlaylistWrapper
-import com.pghaz.revery.model.app.spotify.TrackWrapper
-import com.pghaz.revery.permission.PermissionDialogFactory
-import com.pghaz.revery.permission.PermissionManager
-import com.pghaz.revery.permission.ReveryPermission
 import com.pghaz.revery.ringtone.AudioPickerHelper
 import com.pghaz.revery.settings.SettingsFragment
 import com.pghaz.revery.settings.SettingsHandler
-import com.pghaz.revery.spotify.SpotifyActivity
 import com.pghaz.revery.util.Arguments
 import com.pghaz.revery.util.DateTimeUtils
-import com.pghaz.revery.util.ViewUtils
 import com.pghaz.revery.viewmodel.alarm.CreateEditAlarmViewModel
 import com.shawnlin.numberpicker.NumberPicker
-import kotlinx.android.synthetic.main.floating_action_buttons_music_menu.*
 import kotlinx.android.synthetic.main.fragment_alarm_create_edit.*
 import java.util.*
 
-class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
+class CreateEditAlarmFragment : BaseCreateEditFragment() {
 
     private lateinit var createEditAlarmViewModel: CreateEditAlarmViewModel
     private var alarm: Alarm? = null
-
-    private lateinit var chooseRingtoneButtonAnimatorSet: AnimatorSet
-    private lateinit var openMenuMusicAnimation: AnimatorSet
-    private lateinit var closeMenuMusicAnimation: AnimatorSet
 
     override fun getLayoutResId(): Int {
         return R.layout.fragment_alarm_create_edit
@@ -83,69 +53,10 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
                 DateTimeUtils.getRemainingTimeText(timeRemainingTextView.context, timeRemainingInfo)
         })
 
-        createEditAlarmViewModel.alarmMetadataLiveData.observe(this, {
-            updateMetadataViews(it)
+        createEditAlarmViewModel.metadataLiveData.observe(this, { metadata ->
+            alarm?.metadata = metadata
+            updateMetadataViews(metadata)
         })
-    }
-
-    private fun updateMetadataViews(alarm: Alarm) {
-        if (alarm.metadata.type != MediaType.DEFAULT) {
-            moreOptionsButton.visibility = View.VISIBLE
-        } else {
-            moreOptionsButton.visibility = View.GONE
-        }
-
-        ringtoneInfoContainer.removeAllViews()
-        ringtoneInfoContainer.visibility = View.VISIBLE
-
-        val view: View
-        val holder: BaseViewHolder
-
-        when (alarm.metadata.type) {
-            MediaType.DEFAULT -> {
-                view = LayoutInflater.from(context)
-                    .inflate(R.layout.item_view_alarm_media_square, ringtoneInfoContainer, false)
-                holder = DefaultMediaViewHolder(view)
-            }
-
-            MediaType.SPOTIFY_TRACK -> {
-                view = LayoutInflater.from(context)
-                    .inflate(R.layout.item_view_alarm_media_square, ringtoneInfoContainer, false)
-                holder = SpotifyTrackViewHolder(view)
-            }
-
-            MediaType.SPOTIFY_ALBUM -> {
-                view = LayoutInflater.from(context)
-                    .inflate(R.layout.item_view_alarm_media_square, ringtoneInfoContainer, false)
-                holder = SpotifyAlbumViewHolder(view)
-            }
-
-            MediaType.SPOTIFY_ARTIST -> {
-                view = LayoutInflater.from(context)
-                    .inflate(R.layout.item_view_alarm_media_round, ringtoneInfoContainer, false)
-                holder = SpotifyArtistViewHolder(view)
-            }
-
-            MediaType.SPOTIFY_PLAYLIST -> {
-                view = LayoutInflater.from(context)
-                    .inflate(R.layout.item_view_alarm_media_square, ringtoneInfoContainer, false)
-                holder = SpotifyPlaylistViewHolder(view)
-            }
-        }
-
-        holder.bind(alarm.metadata)
-
-        val params = view.layoutParams as RelativeLayout.LayoutParams
-        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
-        params.addRule(RelativeLayout.ALIGN_PARENT_START)
-        ringtoneInfoContainer.addView(view, params)
-
-        ImageLoader.get()
-            .load(alarm.metadata.imageUrl)
-            .blur()
-            .roundCorners(16, 0)
-            .ratioAndWidth(1f, ViewUtils.getRealScreenWidthSize(backgroundImageView.context), true)
-            .into(backgroundImageView)
     }
 
     private fun initTimePicker(is24HourFormat: Boolean) {
@@ -217,7 +128,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         vibrateToggle.isChecked = alarm.vibrate
         fadeInToggle.isChecked = alarm.fadeIn
 
-        createEditAlarmViewModel.alarmMetadataLiveData.value = alarm
+        createEditAlarmViewModel.metadataLiveData.value = alarm.metadata
     }
 
     private fun setAlarmHour(is24HourFormat: Boolean, hour: Int) {
@@ -236,6 +147,8 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
     }
 
     override fun configureViews(savedInstanceState: Bundle?) {
+        super.configureViews(savedInstanceState)
+
         val is24HourFormat = DateFormat.is24HourFormat(context)
 
         initTimePicker(is24HourFormat)
@@ -246,18 +159,18 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
             // Set views data before any listeners are set
             configureViewsFromAlarm(alarm!!)
             // Also show negative button (delete button)
-            negativeAlarmButton.visibility = View.VISIBLE
+            negativeButton.visibility = View.VISIBLE
         } else {
             configureTimePickerNow(is24HourFormat)
             setAlarmHour(is24HourFormat, hourNumberPicker.value)
             setAlarmMinute(minuteNumberPicker.value)
-            negativeAlarmButton.visibility = View.GONE
+            negativeButton.visibility = View.GONE
         }
 
         // Notify the LiveData so that it updates the time remaining
         createEditAlarmViewModel.timeChangedAlarmLiveData.value = alarm
 
-        positiveAlarmButton.setOnClickListener {
+        positiveButton.setOnClickListener {
             // This is a creation
             if (BaseModel.NO_ID == alarm?.id) {
                 createAndScheduleAlarm()
@@ -268,7 +181,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
             dismiss()
         }
 
-        negativeAlarmButton.setOnClickListener {
+        negativeButton.setOnClickListener {
             // If we were creating an alarm and click the negative button, just dismiss the dialog
             if (BaseModel.NO_ID == alarm?.id) {
                 // do nothing
@@ -353,77 +266,9 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
             //alarm.fadeInDuration = SettingsHandler.getFadeInDuration(buttonView.context)
         }
 
-        chooseRingtoneButton.setOnClickListener {
-            if (chooseRingtoneButton.isExpanded) {
-                closeMusicMenu()
-            } else {
-                openMusicMenu()
-            }
-        }
-
-        floatingMenuTouchInterceptor.setOnTouchListener(OnTouchListener { view, _ ->
-            if (chooseRingtoneButton.isExpanded) {
-                closeMusicMenu()
-            }
-            return@OnTouchListener view.performClick()
-        })
-
-        spotifyButton.setOnClickListener {
-            if (chooseRingtoneButton.isExpanded) {
-                closeMusicMenu()
-            }
-            openSpotifyActivity()
-        }
-
-        musicPickerButton.setOnClickListener {
-            if (chooseRingtoneButton.isExpanded) {
-                closeMusicMenu()
-            }
-            openMusicPicker()
-        }
-
-        ringtonePickerButton.setOnClickListener {
-            if (chooseRingtoneButton.isExpanded) {
-                closeMusicMenu()
-            }
-            openRingtonePicker()
-        }
-
-        defaultRingtoneButton.setOnClickListener {
-            if (chooseRingtoneButton.isExpanded) {
-                closeMusicMenu()
-            }
-            setDefaultRingtone()
-        }
-
         moreOptionsButton.setOnClickListener {
             showMoreOptionsFragment()
         }
-
-        startChooseRingtoneButtonAnimation()
-    }
-
-    private fun startChooseRingtoneButtonAnimation() {
-        val scaleXPlayButtonAnimator = ObjectAnimator.ofFloat(
-            chooseRingtoneButton,
-            View.SCALE_X, 1f, 0.8f
-        )
-        scaleXPlayButtonAnimator.repeatCount = ObjectAnimator.INFINITE
-        scaleXPlayButtonAnimator.repeatMode = ObjectAnimator.REVERSE
-        scaleXPlayButtonAnimator.duration = 1000L
-
-        val scaleYPlayButtonAnimator = ObjectAnimator.ofFloat(
-            chooseRingtoneButton,
-            View.SCALE_Y, 1f, 0.8f
-        )
-        scaleYPlayButtonAnimator.repeatCount = ObjectAnimator.INFINITE
-        scaleYPlayButtonAnimator.repeatMode = ObjectAnimator.REVERSE
-        scaleYPlayButtonAnimator.duration = 1000L
-
-        chooseRingtoneButtonAnimatorSet = AnimatorSet()
-        chooseRingtoneButtonAnimatorSet.play(scaleXPlayButtonAnimator)
-            .with(scaleYPlayButtonAnimator)
-        chooseRingtoneButtonAnimatorSet.start()
     }
 
     private fun showMoreOptionsFragment() {
@@ -436,154 +281,6 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
             )
             fragment.show(childFragmentManager, MoreOptionsAlarmFragment.TAG)
         }
-    }
-
-    private fun setDefaultRingtone() {
-        alarm?.let {
-            it.metadata = AlarmMetadata().apply {
-                context?.let { nonNullContext ->
-                    val uri = SettingsHandler.getDefaultAudioUri(nonNullContext)
-
-                    val audioMetadata: AudioPickerHelper.AudioMetadata =
-                        AudioPickerHelper.getAudioMetadata(nonNullContext, uri)
-
-                    this.type = MediaType.DEFAULT
-                    this.uri = uri.toString()
-                    this.name = audioMetadata.name
-                    this.description = audioMetadata.description
-                    this.imageUrl = audioMetadata.imageUrl
-                }
-            }
-
-            createEditAlarmViewModel.alarmMetadataLiveData.value = it
-        }
-    }
-
-    private fun openSpotifyActivity() {
-        val intent = Intent(context, SpotifyActivity::class.java)
-        startActivityForResult(intent, SpotifyActivity.REQUEST_CODE_SPOTIFY_SEARCH)
-    }
-
-    private fun openMusicMenu() {
-        val defaultRingtoneAnimator = AnimatorUtils.getTranslationAnimatorSet(
-            defaultRingtoneButton,
-            true,
-            AnimatorUtils.TranslationAxis.VERTICAL,
-            AnimatorUtils.TranslationDirection.FROM_BOTTOM_TO_TOP,
-            true,
-            0,
-            400
-        )
-
-        val spotifyAnimator = AnimatorUtils.getTranslationAnimatorSet(
-            spotifyButton,
-            true,
-            AnimatorUtils.TranslationAxis.VERTICAL,
-            AnimatorUtils.TranslationDirection.FROM_BOTTOM_TO_TOP,
-            true,
-            0,
-            500
-        )
-
-        val musicPickerAnimator = AnimatorUtils.getTranslationAnimatorSet(
-            musicPickerButton,
-            true,
-            AnimatorUtils.TranslationAxis.VERTICAL,
-            AnimatorUtils.TranslationDirection.FROM_BOTTOM_TO_TOP,
-            true,
-            0,
-            600
-        )
-
-        val ringtonePickerAnimator = AnimatorUtils.getTranslationAnimatorSet(
-            ringtonePickerButton,
-            true,
-            AnimatorUtils.TranslationAxis.VERTICAL,
-            AnimatorUtils.TranslationDirection.FROM_BOTTOM_TO_TOP,
-            true,
-            0,
-            700
-        )
-
-        openMenuMusicAnimation = AnimatorSet()
-        openMenuMusicAnimation.playTogether(
-            defaultRingtoneAnimator,
-            spotifyAnimator,
-            musicPickerAnimator,
-            ringtonePickerAnimator
-        )
-
-        if (this::closeMenuMusicAnimation.isInitialized && closeMenuMusicAnimation.isRunning) {
-            closeMenuMusicAnimation.cancel()
-        }
-
-        AnimatorUtils.fadeIn(floatingMenuTouchInterceptor, 300, 0)
-        openMenuMusicAnimation.start()
-        chooseRingtoneButtonAnimatorSet.pause()
-
-        chooseRingtoneButton.isExpanded = true
-        chooseRingtoneButton.setImageResource(R.drawable.ic_close)
-    }
-
-    private fun closeMusicMenu() {
-        val defaultRingtoneAnimator = AnimatorUtils.getTranslationAnimatorSet(
-            defaultRingtoneButton,
-            false,
-            AnimatorUtils.TranslationAxis.VERTICAL,
-            AnimatorUtils.TranslationDirection.FROM_TOP_TO_BOTTOM,
-            true,
-            0,
-            400
-        )
-
-        val spotifyAnimator = AnimatorUtils.getTranslationAnimatorSet(
-            spotifyButton,
-            false,
-            AnimatorUtils.TranslationAxis.VERTICAL,
-            AnimatorUtils.TranslationDirection.FROM_TOP_TO_BOTTOM,
-            true,
-            0,
-            400
-        )
-
-        val musicPickerAnimator = AnimatorUtils.getTranslationAnimatorSet(
-            musicPickerButton,
-            false,
-            AnimatorUtils.TranslationAxis.VERTICAL,
-            AnimatorUtils.TranslationDirection.FROM_TOP_TO_BOTTOM,
-            true,
-            0,
-            400
-        )
-
-        val ringtonePickerAnimator = AnimatorUtils.getTranslationAnimatorSet(
-            ringtonePickerButton,
-            false,
-            AnimatorUtils.TranslationAxis.VERTICAL,
-            AnimatorUtils.TranslationDirection.FROM_TOP_TO_BOTTOM,
-            true,
-            0,
-            400
-        )
-
-        closeMenuMusicAnimation = AnimatorSet()
-        closeMenuMusicAnimation.playTogether(
-            defaultRingtoneAnimator,
-            spotifyAnimator,
-            musicPickerAnimator,
-            ringtonePickerAnimator
-        )
-
-        if (this::openMenuMusicAnimation.isInitialized && openMenuMusicAnimation.isRunning) {
-            openMenuMusicAnimation.cancel()
-        }
-
-        AnimatorUtils.fadeOut(floatingMenuTouchInterceptor, 300, 0)
-        closeMenuMusicAnimation.start()
-        chooseRingtoneButtonAnimatorSet.resume()
-
-        chooseRingtoneButton.isExpanded = false
-        chooseRingtoneButton.setImageResource(R.drawable.ic_music_note)
     }
 
     private fun isAlarmRecurring(): Boolean {
@@ -608,7 +305,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
 
             // Safe init of uri
             if (it.metadata.uri.isNullOrEmpty()) {
-                it.metadata = AlarmMetadata().apply {
+                it.metadata = MediaMetadata().apply {
                     context?.let { nonNullContext ->
                         val uri = SettingsHandler.getDefaultAudioUri(nonNullContext)
 
@@ -641,137 +338,32 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
         }
     }
 
-    private fun openMusicPicker() {
-        activity?.let {
-            val permission = ReveryPermission.WRITE_EXTERNAL_STORAGE
-
-            if (PermissionManager.isBlocked(it, permission) &&
-                !PermissionManager.hasPermissionBeenGranted(it, permission)
-            ) {
-                PermissionDialogFactory.showPermissionDialog(it)
-            } else if (!PermissionManager.hasPermissionBeenGranted(it, permission)) {
-                PermissionManager.askForPermission(this, permission)
-            } else {
-                AudioPickerHelper.startMusicPickerForResult(this, REQUEST_CODE_PICK_MUSIC)
-            }
-        }
+    override fun handleDefaultRingtoneClicked(metadata: MediaMetadata) {
+        createEditAlarmViewModel.metadataLiveData.value = metadata
     }
 
-    private fun openRingtonePicker() {
-        AudioPickerHelper.showRingtonePicker(
-            context,
-            childFragmentManager
-        ) { ringtoneName, ringtoneUri ->
-            handleRingtonePickerSelection(ringtoneName, ringtoneUri)
-        }
+    override fun handleMusicSelection(metadata: MediaMetadata) {
+        createEditAlarmViewModel.metadataLiveData.value = metadata
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == SpotifyActivity.REQUEST_CODE_SPOTIFY_SEARCH && resultCode == Activity.RESULT_OK) {
-            handleSpotifySelection(alarm, data)
-        } else if (requestCode == REQUEST_CODE_PICK_MUSIC && resultCode == Activity.RESULT_OK) {
-            handleMusicPickerSelection(data)
-        }
+    override fun handleRingtoneSelection(metadata: MediaMetadata) {
+        createEditAlarmViewModel.metadataLiveData.value = metadata
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        val storagePermission = ReveryPermission.WRITE_EXTERNAL_STORAGE
-
-        when (requestCode) {
-            storagePermission.requestCode -> {
-                context?.let {
-                    if (PermissionManager.hasPermissionBeenGranted(it, storagePermission)) {
-                        AudioPickerHelper.startMusicPickerForResult(this, REQUEST_CODE_PICK_MUSIC)
-                    }
-
-                    PermissionManager.setStoragePermissionHasBeenAsked(it, true)
-                }
-            }
-        }
-    }
-
-    private fun handleSpotifySelection(alarm: Alarm?, data: Intent?) {
-        val selectedSpotifyItem =
-            data?.getParcelableExtra(Arguments.ARGS_SPOTIFY_ITEM_SELECTED) as BaseModel?
-
-        if (selectedSpotifyItem != null) {
-            alarm?.let {
-                it.metadata = spotifyItemToMetadata(it, selectedSpotifyItem)
-                createEditAlarmViewModel.alarmMetadataLiveData.value = it
-            }
-        }
-    }
-
-    private fun spotifyItemToMetadata(alarm: Alarm, item: BaseModel): AlarmMetadata {
-        return when (item) {
-            is TrackWrapper -> {
-                item.toAlarmMetadata(alarm)
-            }
-            is AlbumWrapper -> {
-                item.toAlarmMetadata(alarm)
-            }
-            is ArtistWrapper -> {
-                item.toAlarmMetadata(alarm)
-            }
-            is PlaylistWrapper -> {
-                item.toAlarmMetadata(alarm)
-            }
-            else -> {
-                AlarmMetadata(alarm.metadata)
-            }
-        }
-    }
-
-    private fun handleMusicPickerSelection(data: Intent?) {
-        val ringtoneUri: Uri? = data?.data
-
-        if (ringtoneUri != null) {
-            AudioPickerHelper.grantPermissionForUri(context, data)
-
-            val audioMetadata: AudioPickerHelper.AudioMetadata =
-                AudioPickerHelper.getAudioMetadata(context, ringtoneUri)
-
-            alarm?.let {
-                it.metadata = AlarmMetadata().apply {
-                    this.uri = ringtoneUri.toString()
-                    this.href = null
-                    this.type = MediaType.DEFAULT
-                    this.name = audioMetadata.name
-                    this.description = audioMetadata.description
-                    this.imageUrl = audioMetadata.imageUrl
-                }
-
-                createEditAlarmViewModel.alarmMetadataLiveData.value = it
-            }
-        }
-    }
-
-    private fun handleRingtonePickerSelection(ringtoneName: String, ringtoneUri: Uri?) {
+    override fun handleSpotifySelection(metadata: MediaMetadata) {
         alarm?.let {
-            it.metadata = AlarmMetadata().apply {
-                this.uri = ringtoneUri.toString()
-                this.href = null
-                this.type = MediaType.DEFAULT
-                this.name = ringtoneName
-                this.description = null
-                this.imageUrl = ringtoneUri.toString()
+            metadata.apply {
+                this.shuffle = it.metadata.shuffle
+                this.shouldKeepPlaying = it.metadata.shouldKeepPlaying
+                this.repeat = it.metadata.repeat
             }
 
-            createEditAlarmViewModel.alarmMetadataLiveData.value = it
+            createEditAlarmViewModel.metadataLiveData.value = metadata
         }
     }
 
     companion object {
         const val TAG = "CreateEditAlarmFragment"
-
-        const val REQUEST_CODE_PICK_MUSIC = 21
 
         fun newInstance(dialogTitle: String): CreateEditAlarmFragment {
             val newAlarm = Alarm(
@@ -791,7 +383,7 @@ class CreateEditAlarmFragment : BaseBottomSheetDialogFragment() {
                 vibrate = false,
                 fadeIn = false,
                 fadeInDuration = 0,
-                metadata = AlarmMetadata()
+                metadata = MediaMetadata()
             )
 
             return newInstance(dialogTitle, newAlarm)

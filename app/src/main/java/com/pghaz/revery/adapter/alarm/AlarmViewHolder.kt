@@ -11,8 +11,8 @@ import com.pghaz.revery.R
 import com.pghaz.revery.adapter.base.BaseViewHolder
 import com.pghaz.revery.image.ImageLoader
 import com.pghaz.revery.image.ImageUtils
-import com.pghaz.revery.model.app.BaseModel
 import com.pghaz.revery.model.app.Alarm
+import com.pghaz.revery.model.app.BaseModel
 import com.pghaz.revery.util.DateTimeUtils
 import java.util.*
 
@@ -37,7 +37,7 @@ open class AlarmViewHolder(view: View) : BaseViewHolder(view) {
     private val saturdayTextView: CheckedTextView = view.findViewById(R.id.saturdayTextView)
     private val sundayTextView: CheckedTextView = view.findViewById(R.id.sundayTextView)
 
-    private val alarmSwitch: SwitchCompat = view.findViewById(R.id.alarmSwitch)
+    private val enableSwitch: SwitchCompat = view.findViewById(R.id.enableSwitch)
 
     private fun setTimeText(alarm: Alarm, is24HourFormat: Boolean) {
         val hour: Int
@@ -129,8 +129,8 @@ open class AlarmViewHolder(view: View) : BaseViewHolder(view) {
         saturdayTextView.isEnabled = alarm.enabled
         sundayTextView.isEnabled = alarm.enabled
 
-        alarmSwitch.isChecked = alarm.enabled
-        alarmSwitch.setOnCheckedChangeListener { _, _ ->
+        enableSwitch.isChecked = alarm.enabled
+        enableSwitch.setOnCheckedChangeListener { _, _ ->
             alarmClickListener?.onToggle(Alarm(alarm))
         }
 
@@ -177,6 +177,6 @@ open class AlarmViewHolder(view: View) : BaseViewHolder(view) {
 
     override fun onViewHolderRecycled() {
         itemView.setOnClickListener(null)
-        alarmSwitch.setOnCheckedChangeListener(null)
+        enableSwitch.setOnCheckedChangeListener(null)
     }
 }

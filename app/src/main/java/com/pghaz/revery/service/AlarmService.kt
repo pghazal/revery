@@ -24,7 +24,7 @@ import com.pghaz.revery.alarm.RingActivity
 import com.pghaz.revery.broadcastreceiver.AlarmBroadcastReceiver
 import com.pghaz.revery.extension.logError
 import com.pghaz.revery.model.app.Alarm
-import com.pghaz.revery.model.app.AlarmMetadata
+import com.pghaz.revery.model.app.MediaMetadata
 import com.pghaz.revery.model.app.MediaType
 import com.pghaz.revery.notification.NotificationHandler
 import com.pghaz.revery.player.*
@@ -290,7 +290,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
         stopSelf()
     }
 
-    private fun configurePlayer(metadata: AlarmMetadata) {
+    private fun configurePlayer(metadata: MediaMetadata) {
         when (metadata.type) {
             MediaType.SPOTIFY_ALBUM,
             MediaType.SPOTIFY_ARTIST,
@@ -347,7 +347,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
         }
     }
 
-    private fun stopPlayerAndVibrator(forceShouldPausePlayback: Boolean, metadata: AlarmMetadata) {
+    private fun stopPlayerAndVibrator(forceShouldPausePlayback: Boolean, metadata: MediaMetadata) {
         FirebaseCrashlytics.getInstance()
             .log("AlarmService.stopPlayerAndVibrator($forceShouldPausePlayback, $metadata)")
 

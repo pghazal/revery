@@ -1,4 +1,4 @@
-package com.pghaz.revery.adapter.alarm
+package com.pghaz.revery.adapter
 
 import android.graphics.Canvas
 import android.graphics.Paint
@@ -6,7 +6,7 @@ import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
-class AlarmItemDecoration(private val color: Int, private val height: Int) :
+class ListItemDecoration(private val color: Int, private val height: Int) :
     RecyclerView.ItemDecoration() {
 
     private val paint = Paint()

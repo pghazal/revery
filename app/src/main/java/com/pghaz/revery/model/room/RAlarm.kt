@@ -27,5 +27,5 @@ data class RAlarm(
     var vibrate: Boolean = false,
     var fadeIn: Boolean = false,
     var fadeInDuration: Long = 0,
-    @Embedded var metadata: RAlarmMetadata = RAlarmMetadata()
+    @Embedded var metadata: RMediaMetadata = RMediaMetadata()
 ) : RBaseModel()

@@ -18,5 +18,5 @@ data class RTimer(
     var vibrate: Boolean = false,
     var fadeOut: Boolean = false,
     var fadeOutDuration: Long = 0,
-    @Embedded var metadata: RTimerMetadata = RTimerMetadata()
+    @Embedded var metadata: RMediaMetadata = RMediaMetadata()
 ) : RBaseModel()

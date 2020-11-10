@@ -171,6 +171,11 @@
     <string name="do_not_disturb_cannot_handle">Oops, your device doesn\'t allow this action</string>
     <string name="on_boarding_spotify_tips">Tips : When alarm goes off you can swipe left and right to change songs.</string>
 
+    <!-- TIMERS -->
+    <string name="no_timers_created">No timers created yet</string>
+    <string name="create_timer">add timer</string>
+    <string name="edit_timer">edit timer</string>
+
     <!-- TIME REMAINING TEXTS -->
     <plurals name="time_remaining_days">
         <item quantity="one">%d day</item>

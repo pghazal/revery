@@ -134,50 +134,12 @@
                     tools:np_value="3" />
             </LinearLayout>
 
-
-            <RadioGroup
-                android:id="@+id/amPmContainer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/timeSpinnerContainer"
-                android:layout_alignBottom="@+id/timeSpinnerContainer"
-                android:layout_marginStart="@dimen/half_base_margin"
-                android:layout_toEndOf="@+id/timeSpinnerContainer"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:visibility="gone"
-                tools:visibility="visible">
-
-                <RadioButton
-                    android:id="@+id/amRadioButton"
-                    style="@style/ReveryRadioButton"
-                    android:layout_width="@dimen/toggle_size"
-                    android:layout_height="@dimen/toggle_size"
-                    android:layout_marginBottom="@dimen/half_base_margin"
-                    android:checked="false"
-                    android:gravity="center"
-                    android:text="@string/am"
-                    tools:checked="true" />
-
-                <RadioButton
-                    android:id="@+id/pmRadioButton"
-                    style="@style/ReveryRadioButton"
-                    android:layout_width="@dimen/toggle_size"
-                    android:layout_height="@dimen/toggle_size"
-                    android:checked="true"
-                    android:gravity="center"
-                    android:text="@string/pm"
-                    tools:checked="false" />
-
-            </RadioGroup>
-
             <TextView
                 android:id="@+id/remainingLabel"
                 style="@style/ReveryLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/timeSpinnerContainer"
-                android:layout_alignStart="@+id/recurringDaysContainer"
                 android:layout_marginEnd="@dimen/third_base_margin"
                 android:layout_marginBottom="@dimen/half_base_margin"
                 android:text="@string/alarm_remaining_time_static" />
@@ -191,111 +153,13 @@
                 android:textColor="@android:color/white"
                 tools:text="3 days 4 hours" />
 
-            <TextView
-                android:id="@+id/recurringLabel"
-                style="@style/ReveryLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/remainingLabel"
-                android:layout_alignStart="@+id/recurringDaysContainer"
-                android:layout_marginBottom="@dimen/third_base_margin"
-                android:text="@string/alarm_repeat_static" />
-
-            <LinearLayout
-                android:id="@+id/recurringDaysContainer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/recurringLabel"
-                android:layout_centerHorizontal="true"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <ToggleButton
-                    android:id="@+id/mondayToggle"
-                    style="@style/ReveryRecurringDaysToggle"
-                    android:layout_width="@dimen/toggle_size"
-                    android:layout_height="@dimen/toggle_size"
-                    android:layout_marginEnd="@dimen/third_base_margin"
-                    android:checked="false"
-                    android:text=""
-                    android:textOff="@string/monday_short"
-                    android:textOn="@string/monday_short"
-                    tools:checked="true" />
-
-                <ToggleButton
-                    android:id="@+id/tuesdayToggle"
-                    style="@style/ReveryRecurringDaysToggle"
-                    android:layout_width="@dimen/toggle_size"
-                    android:layout_height="@dimen/toggle_size"
-                    android:layout_marginEnd="@dimen/third_base_margin"
-                    android:checked="false"
-                    android:text=""
-                    android:textOff="@string/tuesday_short"
-                    android:textOn="@string/tuesday_short" />
-
-                <ToggleButton
-                    android:id="@+id/wednesdayToggle"
-                    style="@style/ReveryRecurringDaysToggle"
-                    android:layout_width="@dimen/toggle_size"
-                    android:layout_height="@dimen/toggle_size"
-                    android:layout_marginEnd="@dimen/third_base_margin"
-                    android:checked="false"
-                    android:text=""
-                    android:textOff="@string/wednesday_short"
-                    android:textOn="@string/wednesday_short" />
-
-                <ToggleButton
-                    android:id="@+id/thursdayToggle"
-                    style="@style/ReveryRecurringDaysToggle"
-                    android:layout_width="@dimen/toggle_size"
-                    android:layout_height="@dimen/toggle_size"
-                    android:layout_marginEnd="@dimen/third_base_margin"
-                    android:checked="false"
-                    android:text=""
-                    android:textOff="@string/thursday_short"
-                    android:textOn="@string/thursday_short" />
-
-                <ToggleButton
-                    android:id="@+id/fridayToggle"
-                    style="@style/ReveryRecurringDaysToggle"
-                    android:layout_width="@dimen/toggle_size"
-                    android:layout_height="@dimen/toggle_size"
-                    android:layout_marginEnd="@dimen/third_base_margin"
-                    android:checked="false"
-                    android:text=""
-                    android:textOff="@string/friday_short"
-                    android:textOn="@string/friday_short" />
-
-                <ToggleButton
-                    android:id="@+id/saturdayToggle"
-                    style="@style/ReveryRecurringDaysToggle"
-                    android:layout_width="@dimen/toggle_size"
-                    android:layout_height="@dimen/toggle_size"
-                    android:layout_marginEnd="@dimen/third_base_margin"
-                    android:checked="false"
-                    android:text=""
-                    android:textOff="@string/saturday_short"
-                    android:textOn="@string/saturday_short" />
-
-                <ToggleButton
-                    android:id="@+id/sundayToggle"
-                    style="@style/ReveryRecurringDaysToggle"
-                    android:layout_width="@dimen/toggle_size"
-                    android:layout_height="@dimen/toggle_size"
-                    android:checked="false"
-                    android:text=""
-                    android:textOff="@string/sunday_short"
-                    android:textOn="@string/sunday_short" />
-
-            </LinearLayout>
-
             <LinearLayout
                 android:id="@+id/optionsContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/recurringDaysContainer"
-                android:layout_alignStart="@id/recurringDaysContainer"
-                android:layout_alignEnd="@id/recurringDaysContainer"
+                android:layout_below="@+id/remainingLabel"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
                 android:layout_marginTop="@dimen/half_base_margin"
                 android:gravity="center"
                 android:orientation="horizontal">

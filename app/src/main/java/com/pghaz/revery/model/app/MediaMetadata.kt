@@ -1,12 +1,13 @@
 package com.pghaz.revery.model.app
 
 import android.os.Parcelable
-import com.pghaz.revery.model.room.RAlarmMetadata
+import com.pghaz.revery.model.room.RMediaMetadata
 import com.pghaz.revery.model.room.RMediaType
+import com.spotify.protocol.types.Repeat
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class AlarmMetadata(
+data class MediaMetadata(
     var uri: String? = null,
     var href: String? = null,
     var type: MediaType = MediaType.DEFAULT,
@@ -15,10 +16,10 @@ data class AlarmMetadata(
     var imageUrl: String? = null,
     var shuffle: Boolean = false,
     var shouldKeepPlaying: Boolean = false,
-    var repeat: Int = 0
+    var repeat: Int = Repeat.OFF
 ) : BaseModel(), Parcelable {
 
-    constructor(metadata: AlarmMetadata) : this(
+    constructor(metadata: MediaMetadata) : this(
         metadata.uri,
         metadata.href,
         metadata.type,
@@ -31,8 +32,8 @@ data class AlarmMetadata(
     )
 
     companion object {
-        fun fromDatabaseModel(metadata: RAlarmMetadata): AlarmMetadata {
-            return AlarmMetadata(
+        fun fromDatabaseModel(metadata: RMediaMetadata): MediaMetadata {
+            return MediaMetadata(
                 uri = metadata.uri,
                 href = metadata.href,
                 type = MediaType.values()[metadata.type.ordinal],
@@ -45,8 +46,8 @@ data class AlarmMetadata(
             )
         }
 
-        fun toDatabaseModel(metadata: AlarmMetadata): RAlarmMetadata {
-            return RAlarmMetadata(
+        fun toDatabaseModel(metadata: MediaMetadata): RMediaMetadata {
+            return RMediaMetadata(
                 uri = metadata.uri,
                 href = metadata.href,
                 type = RMediaType.values()[metadata.type.ordinal],

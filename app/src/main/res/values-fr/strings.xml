@@ -169,6 +169,11 @@
     <string name="do_not_disturb_cannot_handle">Oups, votre appareil ne permet pas cette action</string>
     <string name="on_boarding_spotify_tips">Astuce : Lorsque l\'alarme s\'enclenche vous pouvez swiper sur l\'écran pour changer de musique.</string>
 
+    <!-- TIMERS -->
+    <string name="no_timers_created">Aucun minuteur créé</string>
+    <string name="create_timer">ajouter un minuteur</string>
+    <string name="edit_timer">éditer le minuteur</string>
+
     <!-- TIME REMAINING TEXTS -->
     <plurals name="time_remaining_days">
         <item quantity="one">%d jour</item>

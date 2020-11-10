@@ -7,7 +7,7 @@ import com.pghaz.revery.alarm.AlarmHandler
 import com.pghaz.revery.model.app.Alarm
 import com.pghaz.revery.repository.AlarmRepository
 
-class ListAlarmsViewModel(application: Application) : AndroidViewModel(application) {
+class AlarmsViewModel(application: Application) : AndroidViewModel(application) {
 
     private val alarmRepository = AlarmRepository(application)
     val alarmsLiveData = alarmRepository.getAlarmsLiveData()

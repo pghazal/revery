@@ -15,7 +15,7 @@ data class Timer(
     var fadeOutDuration: Long = 0,
     var isSnooze: Boolean = false,
     var isPreview: Boolean = false,
-    var metadata: TimerMetadata = TimerMetadata()
+    var metadata: MediaMetadata = MediaMetadata()
 ) : BaseModel(), Parcelable {
 
     constructor(timer: Timer) : this(
@@ -28,7 +28,7 @@ data class Timer(
         fadeOutDuration = timer.fadeOutDuration,
         isSnooze = timer.isSnooze,
         isPreview = timer.isPreview,
-        metadata = TimerMetadata(timer.metadata)
+        metadata = MediaMetadata(timer.metadata)
     )
 
     companion object {
@@ -43,7 +43,7 @@ data class Timer(
                 fadeOutDuration = timer.fadeOutDuration,
                 isSnooze = false,
                 isPreview = false,
-                metadata = TimerMetadata.fromDatabaseModel(timer.metadata)
+                metadata = MediaMetadata.fromDatabaseModel(timer.metadata)
             )
         }
 
@@ -56,7 +56,7 @@ data class Timer(
                 vibrate = timer.vibrate,
                 fadeOut = timer.fadeOut,
                 fadeOutDuration = timer.fadeOutDuration,
-                metadata = TimerMetadata.toDatabaseModel(timer.metadata)
+                metadata = MediaMetadata.toDatabaseModel(timer.metadata)
             )
         }
     }

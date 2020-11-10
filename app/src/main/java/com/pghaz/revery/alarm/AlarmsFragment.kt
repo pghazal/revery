@@ -12,22 +12,22 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.pghaz.revery.BaseFragment
 import com.pghaz.revery.BuildConfig
 import com.pghaz.revery.R
-import com.pghaz.revery.adapter.alarm.AlarmItemDecoration
+import com.pghaz.revery.adapter.ListItemDecoration
 import com.pghaz.revery.adapter.alarm.AlarmsAdapter
 import com.pghaz.revery.adapter.alarm.OnAlarmClickListener
 import com.pghaz.revery.adapter.base.BaseAdapter
-import com.pghaz.revery.model.app.BaseModel
 import com.pghaz.revery.model.app.Alarm
+import com.pghaz.revery.model.app.BaseModel
 import com.pghaz.revery.settings.SettingsFragment
 import com.pghaz.revery.settings.SettingsHandler
 import com.pghaz.revery.spotify.BaseSpotifyActivity
-import com.pghaz.revery.viewmodel.alarm.ListAlarmsViewModel
+import com.pghaz.revery.viewmodel.alarm.AlarmsViewModel
 import com.pghaz.spotify.webapi.auth.SpotifyAuthorizationClient
 import kotlinx.android.synthetic.main.fragment_alarms.*
 
 class AlarmsFragment : BaseFragment(), OnAlarmClickListener {
 
-    private lateinit var listAlarmsViewModel: ListAlarmsViewModel
+    private lateinit var alarmsViewModel: AlarmsViewModel
     private lateinit var alarmsAdapter: AlarmsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,8 +53,8 @@ class AlarmsFragment : BaseFragment(), OnAlarmClickListener {
             }
         }
 
-        listAlarmsViewModel = ViewModelProvider(this).get(ListAlarmsViewModel::class.java)
-        listAlarmsViewModel.alarmsLiveData.observe(this, { alarms ->
+        alarmsViewModel = ViewModelProvider(this).get(AlarmsViewModel::class.java)
+        alarmsViewModel.alarmsLiveData.observe(this, { alarms ->
             alarmsAdapter.submitList(alarms)
 
             showAddAlarmButtonIfHidden()
@@ -76,20 +76,18 @@ class AlarmsFragment : BaseFragment(), OnAlarmClickListener {
         recyclerView.setHasFixedSize(true)
 
         context?.let {
-            val itemDecor =
-                AlarmItemDecoration(ContextCompat.getColor(it, R.color.colorPrimary), 2)
+            val itemDecor = ListItemDecoration(ContextCompat.getColor(it, R.color.colorPrimary), 2)
             recyclerView.addItemDecoration(itemDecor)
         }
     }
 
     private fun configureAddAlarmButton() {
-        addAlarmButton.setOnClickListener {
-            var createAlarmFragment =
+        addButton.setOnClickListener {
+            var fragment =
                 childFragmentManager.findFragmentByTag(CreateEditAlarmFragment.TAG) as CreateEditAlarmFragment?
-            if (createAlarmFragment == null) {
-                createAlarmFragment =
-                    CreateEditAlarmFragment.newInstance(getString(R.string.create_alarm))
-                createAlarmFragment.show(childFragmentManager, CreateEditAlarmFragment.TAG)
+            if (fragment == null) {
+                fragment = CreateEditAlarmFragment.newInstance(getString(R.string.create_alarm))
+                fragment.show(childFragmentManager, CreateEditAlarmFragment.TAG)
             }
         }
     }
@@ -166,27 +164,27 @@ class AlarmsFragment : BaseFragment(), OnAlarmClickListener {
     }
 
     private fun showAddAlarmButtonIfHidden() {
-        if (addAlarmButton.isOrWillBeHidden) {
-            addAlarmButton.show()
+        if (addButton.isOrWillBeHidden) {
+            addButton.show()
         }
     }
 
     private fun cancelAllAlarms() {
-        val alarms = listAlarmsViewModel.alarmsLiveData.value
+        val alarms = alarmsViewModel.alarmsLiveData.value
         alarms?.forEach {
             val alarm = Alarm(it)
             if (alarm.enabled) {
-                listAlarmsViewModel.cancelAlarm(context, alarm)
-                listAlarmsViewModel.update(alarm)
+                alarmsViewModel.cancelAlarm(context, alarm)
+                alarmsViewModel.update(alarm)
             }
         }
     }
 
     private fun deleteAllAlarms() {
-        val alarms = listAlarmsViewModel.alarmsLiveData.value
+        val alarms = alarmsViewModel.alarmsLiveData.value
         alarms?.forEach {
-            listAlarmsViewModel.cancelAlarm(context, it)
-            listAlarmsViewModel.delete(it)
+            alarmsViewModel.cancelAlarm(context, it)
+            alarmsViewModel.delete(it)
         }
     }
 
@@ -200,15 +198,15 @@ class AlarmsFragment : BaseFragment(), OnAlarmClickListener {
     }
 
     override fun onClick(alarm: Alarm) {
-        var createAlarmFragment =
+        var fragment =
             childFragmentManager.findFragmentByTag(CreateEditAlarmFragment.TAG) as CreateEditAlarmFragment?
-        if (createAlarmFragment == null) {
+        if (fragment == null) {
             if (activity is BaseSpotifyActivity) {
-                createAlarmFragment = CreateEditAlarmFragment.newInstance(
+                fragment = CreateEditAlarmFragment.newInstance(
                     getString(R.string.edit_alarm),
                     alarm
                 )
-                createAlarmFragment.show(childFragmentManager, CreateEditAlarmFragment.TAG)
+                fragment.show(childFragmentManager, CreateEditAlarmFragment.TAG)
             }
         }
     }
@@ -216,12 +214,12 @@ class AlarmsFragment : BaseFragment(), OnAlarmClickListener {
     override fun onToggle(alarm: Alarm) {
         // if alarm was enabled, we cancel it
         if (alarm.enabled) {
-            listAlarmsViewModel.cancelAlarm(context, alarm)
+            alarmsViewModel.cancelAlarm(context, alarm)
         } else {
-            listAlarmsViewModel.scheduleAlarm(context, alarm)
+            alarmsViewModel.scheduleAlarm(context, alarm)
         }
 
-        listAlarmsViewModel.update(alarm)
+        alarmsViewModel.update(alarm)
     }
 
     companion object {

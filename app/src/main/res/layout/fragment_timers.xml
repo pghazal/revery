@@ -33,19 +33,19 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/no_alarms_scheduled"
+            android:text="@string/no_timers_created"
             android:textColor="@color/color_text_static_label"
             android:textSize="18sp" />
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/addAlarmButton"
+        android:id="@+id/addButton"
         style="@style/ReveryFloatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
         android:layout_margin="@dimen/base_margin"
-        android:contentDescription="@string/create_alarm"
+        android:contentDescription="@string/create_timer"
         app:layout_anchorGravity="center|bottom"
         app:layout_behavior="com.pghaz.revery.view.ScrollAwareFABBehavior"
         app:srcCompat="@drawable/ic_add" />

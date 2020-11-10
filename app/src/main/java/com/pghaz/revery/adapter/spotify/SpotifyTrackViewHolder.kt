@@ -4,7 +4,7 @@ import android.view.View
 import com.pghaz.revery.R
 import com.pghaz.revery.image.ImageLoader
 import com.pghaz.revery.model.app.BaseModel
-import com.pghaz.revery.model.app.AlarmMetadata
+import com.pghaz.revery.model.app.MediaMetadata
 import com.pghaz.revery.model.app.spotify.ArtistWrapper
 import com.pghaz.revery.model.app.spotify.TrackWrapper
 import java.util.*
@@ -19,7 +19,7 @@ class SpotifyTrackViewHolder(view: View) : BaseSpotifyViewHolder(view) {
                 bindTrackWrapper(model)
             }
 
-            is AlarmMetadata -> {
+            is MediaMetadata -> {
                 bindAlarmMetadata(model)
             }
         }
