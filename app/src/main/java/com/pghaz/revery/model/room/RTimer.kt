@@ -12,7 +12,9 @@ data class RTimer(
     @NonNull
     @PrimaryKey
     var id: Long = NO_ID,
-    var durationInSeconds: Int = 0,
+    var hour: Int = 0,
+    var minute: Int = 0,
+    var second: Int = 0,
     var label: String = "",
     var enabled: Boolean = true,
     var vibrate: Boolean = false,

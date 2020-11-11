@@ -8,8 +8,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.pghaz.revery.BaseCreateEditFragment
 import com.pghaz.revery.R
 import com.pghaz.revery.alarm.MoreOptionsAlarmFragment
-import com.pghaz.revery.model.app.MediaMetadata
 import com.pghaz.revery.model.app.BaseModel
+import com.pghaz.revery.model.app.MediaMetadata
 import com.pghaz.revery.model.app.MediaType
 import com.pghaz.revery.model.app.Timer
 import com.pghaz.revery.ringtone.AudioPickerHelper
@@ -45,11 +45,8 @@ class CreateEditTimerFragment : BaseCreateEditFragment() {
         super.onCreate(savedInstanceState)
 
         createEditTimerViewModel = ViewModelProvider(this).get(CreateEditTimerViewModel::class.java)
-        createEditTimerViewModel.timeChangedTimerLiveData.observe(this, { updatedTimer ->
-            // TODO ?
-            /*val timeRemainingInfo = DateTimeUtils.getTimeRemaining(updatedTimer)
-            timeRemainingTextView.text =
-                DateTimeUtils.getRemainingTimeText(timeRemainingTextView.context, timeRemainingInfo)*/
+        createEditTimerViewModel.timerChangedLiveData.observe(this, { updatedTimer ->
+            updateDurationText(updatedTimer)
         })
 
         createEditTimerViewModel.metadataLiveData.observe(this, { metadata ->
@@ -63,61 +60,44 @@ class CreateEditTimerFragment : BaseCreateEditFragment() {
             val face = ResourcesCompat.getFont(it, R.font.montserrat_regular)
             hourNumberPicker.setSelectedTypeface(face)
             minuteNumberPicker.setSelectedTypeface(face)
+            secondNumberPicker.setSelectedTypeface(face)
             hourNumberPicker.typeface = face
             minuteNumberPicker.typeface = face
+            secondNumberPicker.typeface = face
             hourNumberPicker.formatter = NumberPicker.getTwoDigitFormatter()
             minuteNumberPicker.formatter = NumberPicker.getTwoDigitFormatter()
+            secondNumberPicker.formatter = NumberPicker.getTwoDigitFormatter()
 
             hourNumberPicker.maxValue = it.resources.getInteger(R.integer.format_24_hour_max)
             hourNumberPicker.minValue = it.resources.getInteger(R.integer.format_24_hour_min)
         }
     }
 
-    private fun configureTimePickerNow() {
-
+    private fun configureTimePickerInitial() {
+        hourNumberPicker.value = 0
+        minuteNumberPicker.value = 0
+        secondNumberPicker.value = 0
     }
 
     private fun configureTimePickerFromTimer(timer: Timer) {
-        // TODO
-        /*val alarmHour = timer.hour
-
-        hourNumberPicker.value = if (is24HourFormat) {
-            alarmHour
-        } else {
-            DateTimeUtils.get12HourFormatFrom24HourFormat(alarmHour)
-        }
+        hourNumberPicker.value = timer.hour
         minuteNumberPicker.value = timer.minute
+        secondNumberPicker.value = timer.second
+    }
 
-        amRadioButton.isChecked = DateTimeUtils.isAM(alarmHour)
-        pmRadioButton.isChecked = !DateTimeUtils.isAM(alarmHour)*/
+    private fun updateDurationText(timer: Timer) {
+        hourDurationTextView.text = String.format("%02d", timer.hour)
+        minuteDurationTextView.text = String.format("%02d", timer.minute)
+        secondDurationTextView.text = String.format("%02d", timer.second)
     }
 
     private fun configureViewsFromTimer(timer: Timer) {
         labelEditText.setText(timer.label)
 
         vibrateToggle.isChecked = timer.vibrate
-        // TODO rename fadeIn
-        fadeInToggle.isChecked = timer.fadeOut
+        fadeOutToggle.isChecked = timer.fadeOut
 
-        createEditTimerViewModel.metadataLiveData.value = timer?.metadata
-    }
-
-    private fun setTimerHour(hour: Int) {
-        // TODO
-
-        /*timer?.hour = if (is24HourFormat) {
-            hour
-        } else {
-            DateTimeUtils.get24HourFormatFrom12HourFormat(
-                hour,
-                amRadioButton.isChecked
-            )
-        }*/
-    }
-
-    private fun setTimerMinute(minute: Int) {
-        // TODO 
-        //timer?.minute = minute
+        createEditTimerViewModel.metadataLiveData.value = timer.metadata
     }
 
     override fun configureViews(savedInstanceState: Bundle?) {
@@ -125,7 +105,7 @@ class CreateEditTimerFragment : BaseCreateEditFragment() {
 
         initTimePicker()
 
-        // If we're editing an alarm, we set time/minute on the time picker
+        // If we're editing a timer, we set time/minute/second on the time picker
         if (timer?.id != BaseModel.NO_ID) {
             configureTimePickerFromTimer(timer!!)
             // Set views data before any listeners are set
@@ -133,14 +113,12 @@ class CreateEditTimerFragment : BaseCreateEditFragment() {
             // Also show negative button (delete button)
             negativeButton.visibility = View.VISIBLE
         } else {
-            configureTimePickerNow()
-            setTimerHour(hourNumberPicker.value)
-            setTimerMinute(minuteNumberPicker.value)
+            configureTimePickerInitial()
             negativeButton.visibility = View.GONE
         }
 
         // Notify the LiveData so that it updates the time remaining
-        createEditTimerViewModel.timeChangedTimerLiveData.value = timer
+        createEditTimerViewModel.timerChangedLiveData.value = timer
 
         positiveButton.setOnClickListener {
             // This is a creation
@@ -154,10 +132,10 @@ class CreateEditTimerFragment : BaseCreateEditFragment() {
         }
 
         negativeButton.setOnClickListener {
-            // If we were creating an alarm and click the negative button, just dismiss the dialog
+            // If we were creating a time and click the negative button, just dismiss the dialog
             if (BaseModel.NO_ID == timer?.id) {
                 // do nothing
-            } else { // otherwise delete the existing alarm
+            } else { // otherwise delete the existing timer
                 createEditTimerViewModel.delete(context, timer!!)
             }
 
@@ -165,22 +143,27 @@ class CreateEditTimerFragment : BaseCreateEditFragment() {
         }
 
         hourNumberPicker.setOnValueChangedListener { _, _, hour ->
-            setTimerHour(hour)
-            createEditTimerViewModel.timeChangedTimerLiveData.value = timer
+            timer?.hour = hour
+            createEditTimerViewModel.timerChangedLiveData.value = timer
         }
 
         minuteNumberPicker.setOnValueChangedListener { _, _, minute ->
-            setTimerMinute(minute)
-            createEditTimerViewModel.timeChangedTimerLiveData.value = timer
+            timer?.minute = minute
+            createEditTimerViewModel.timerChangedLiveData.value = timer
+        }
+
+        secondNumberPicker.setOnValueChangedListener { _, _, second ->
+            timer?.second = second
+            createEditTimerViewModel.timerChangedLiveData.value = timer
         }
 
         vibrateToggle.setOnCheckedChangeListener { _, _ ->
             timer?.vibrate = vibrateToggle.isChecked
         }
 
-        fadeInToggle.setOnCheckedChangeListener { _, _ ->
-            timer?.fadeOut = fadeInToggle.isChecked
-            // This is not really useful for now because all alarms have same fade in duration
+        fadeOutToggle.setOnCheckedChangeListener { _, _ ->
+            timer?.fadeOut = fadeOutToggle.isChecked
+            // This is not really useful for now because all timers have same fade in duration
             //timer.fadeOutDuration = SettingsHandler.getFadeInDuration(buttonView.context)
         }
 
@@ -277,7 +260,7 @@ class CreateEditTimerFragment : BaseCreateEditFragment() {
         fun newInstance(dialogTitle: String): CreateEditTimerFragment {
             val newTimer = Timer(
                 id = BaseModel.NO_ID, // Let this ´NO_ID´ value. It defines if it's creation or edition of timer
-                durationInSeconds = 0,
+                hour = 0,
                 label = "",
                 enabled = true,
                 vibrate = false,

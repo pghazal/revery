@@ -11,7 +11,7 @@ class CreateEditTimerViewModel(application: Application) : BaseCreateEditViewMod
 
     private val timerRepository = TimerRepository(application)
 
-    val timeChangedTimerLiveData = MutableLiveData<Timer>()
+    val timerChangedLiveData = MutableLiveData<Timer>()
 
     fun createTimer(context: Context?, timer: Timer) {
         timerRepository.insert(timer)

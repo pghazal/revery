@@ -83,10 +83,92 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <LinearLayout
+                android:id="@+id/timerDurationContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/labelInputLayout"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="@dimen/half_base_margin"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/hourDurationTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_semi_bold"
+                    android:gravity="bottom"
+                    android:includeFontPadding="false"
+                    android:textColor="@android:color/white"
+                    android:textSize="30sp"
+                    app:fontFamily="@font/montserrat_semi_bold"
+                    tools:text="00" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/third_base_margin"
+                    android:fontFamily="@font/montserrat_semi_bold"
+                    android:gravity="bottom"
+                    android:includeFontPadding="false"
+                    android:text="@string/text_hour_short"
+                    android:textColor="@android:color/white"
+                    android:textSize="18sp"
+                    app:fontFamily="@font/montserrat_semi_bold" />
+
+                <TextView
+                    android:id="@+id/minuteDurationTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_semi_bold"
+                    android:gravity="bottom"
+                    android:includeFontPadding="false"
+                    android:textColor="@android:color/white"
+                    android:textSize="30sp"
+                    app:fontFamily="@font/montserrat_semi_bold"
+                    tools:text="10" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/third_base_margin"
+                    android:fontFamily="@font/montserrat_semi_bold"
+                    android:gravity="bottom"
+                    android:includeFontPadding="false"
+                    android:text="@string/text_minute_short"
+                    android:textColor="@android:color/white"
+                    android:textSize="18sp"
+                    app:fontFamily="@font/montserrat_semi_bold" />
+
+                <TextView
+                    android:id="@+id/secondDurationTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_semi_bold"
+                    android:gravity="bottom"
+                    android:includeFontPadding="false"
+                    android:textColor="@android:color/white"
+                    android:textSize="30sp"
+                    app:fontFamily="@font/montserrat_semi_bold"
+                    tools:text="00" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_semi_bold"
+                    android:gravity="bottom"
+                    android:includeFontPadding="false"
+                    android:text="@string/text_second_short"
+                    android:textColor="@android:color/white"
+                    android:textSize="18sp"
+                    app:fontFamily="@font/montserrat_semi_bold" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/timeSpinnerContainer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/labelInputLayout"
+                android:layout_below="@id/timerDurationContainer"
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="@dimen/half_base_margin"
                 android:gravity="center"
@@ -108,17 +190,25 @@
                     app:np_width="64dp"
                     tools:np_value="3" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/minimum_base_margin"
-                    android:text="@string/text_colon"
-                    android:textColor="@android:color/white"
-                    android:textSize="28sp"
-                    android:textStyle="bold" />
-
                 <com.shawnlin.numberpicker.NumberPicker
                     android:id="@+id/minuteNumberPicker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/minimum_base_margin"
+                    android:layout_marginEnd="@dimen/minimum_base_margin"
+                    app:np_dividerColor="@android:color/white"
+                    app:np_height="180dp"
+                    app:np_max="59"
+                    app:np_min="0"
+                    app:np_selectedTextColor="@android:color/white"
+                    app:np_selectedTextSize="28sp"
+                    app:np_textColor="@android:color/white"
+                    app:np_textSize="20sp"
+                    app:np_width="64dp"
+                    tools:np_value="3" />
+
+                <com.shawnlin.numberpicker.NumberPicker
+                    android:id="@+id/secondNumberPicker"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/minimum_base_margin"
@@ -134,30 +224,11 @@
                     tools:np_value="3" />
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/remainingLabel"
-                style="@style/ReveryLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/timeSpinnerContainer"
-                android:layout_marginEnd="@dimen/third_base_margin"
-                android:layout_marginBottom="@dimen/half_base_margin"
-                android:text="@string/alarm_remaining_time_static" />
-
-            <TextView
-                android:id="@+id/timeRemainingTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBaseline="@+id/remainingLabel"
-                android:layout_toEndOf="@+id/remainingLabel"
-                android:textColor="@android:color/white"
-                tools:text="3 days 4 hours" />
-
             <LinearLayout
                 android:id="@+id/optionsContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/remainingLabel"
+                android:layout_below="@+id/timeSpinnerContainer"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="@dimen/half_base_margin"
@@ -190,14 +261,14 @@
                     tools:checked="true" />
 
                 <androidx.appcompat.widget.AppCompatToggleButton
-                    android:id="@+id/fadeInToggle"
+                    android:id="@+id/fadeOutToggle"
                     style="@style/ReveryToggle"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/toggle_size"
                     android:layout_marginStart="@dimen/third_base_margin"
                     android:layout_weight="1"
                     android:checked="false"
-                    android:drawableStart="@drawable/ic_fade_in"
+                    android:drawableStart="@drawable/ic_fade_out"
                     android:text=""
                     android:textOff="@string/fade_in"
                     android:textOn="@string/fade_in"

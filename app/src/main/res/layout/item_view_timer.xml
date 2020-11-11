@@ -23,41 +23,97 @@
             android:background="@drawable/placeholder_square"
             android:scaleType="centerCrop" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/timeTextView"
+        <LinearLayout
+            android:id="@+id/timerDurationContainer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/imageView"
             android:layout_marginStart="@dimen/half_base_margin"
             android:layout_marginTop="-4dp"
             android:layout_toEndOf="@+id/imageView"
-            android:fontFamily="@font/montserrat_semi_bold"
-            android:includeFontPadding="false"
-            android:lines="1"
-            android:textColor="@color/selector_alarm_time_text_color"
-            android:textSize="28sp"
-            app:fontFamily="@font/montserrat_semi_bold"
-            tools:text="15:40" />
+            android:orientation="horizontal">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/amPmTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/timeTextView"
-            android:layout_marginStart="@dimen/third_base_margin"
-            android:layout_toEndOf="@+id/timeTextView"
-            android:text="@string/am"
-            android:textColor="@color/selector_alarm_time_text_color"
-            android:textStyle="bold"
-            android:visibility="gone"
-            tools:visibility="visible" />
+            <TextView
+                android:id="@+id/hourDurationTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_semi_bold"
+                android:gravity="bottom"
+                android:includeFontPadding="false"
+                android:textColor="@android:color/white"
+                android:textSize="28sp"
+                app:fontFamily="@font/montserrat_semi_bold"
+                tools:text="00" />
+
+            <TextView
+                android:id="@+id/hourLabelTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/third_base_margin"
+                android:fontFamily="@font/montserrat_semi_bold"
+                android:gravity="bottom"
+                android:includeFontPadding="false"
+                android:text="@string/text_hour_short"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                app:fontFamily="@font/montserrat_semi_bold" />
+
+            <TextView
+                android:id="@+id/minuteDurationTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_semi_bold"
+                android:gravity="bottom"
+                android:includeFontPadding="false"
+                android:textColor="@android:color/white"
+                android:textSize="28sp"
+                app:fontFamily="@font/montserrat_semi_bold"
+                tools:text="10" />
+
+            <TextView
+                android:id="@+id/minuteLabelTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/third_base_margin"
+                android:fontFamily="@font/montserrat_semi_bold"
+                android:gravity="bottom"
+                android:includeFontPadding="false"
+                android:text="@string/text_minute_short"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                app:fontFamily="@font/montserrat_semi_bold" />
+
+            <TextView
+                android:id="@+id/secondDurationTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_semi_bold"
+                android:gravity="bottom"
+                android:includeFontPadding="false"
+                android:textColor="@android:color/white"
+                android:textSize="28sp"
+                app:fontFamily="@font/montserrat_semi_bold"
+                tools:text="00" />
+
+            <TextView
+                android:id="@+id/secondLabelTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_semi_bold"
+                android:gravity="bottom"
+                android:includeFontPadding="false"
+                android:text="@string/text_second_short"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                app:fontFamily="@font/montserrat_semi_bold" />
+        </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/labelTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/timeTextView"
-            android:layout_alignStart="@+id/timeTextView"
+            android:layout_below="@+id/timerDurationContainer"
+            android:layout_alignStart="@+id/timerDurationContainer"
             android:layout_toStartOf="@+id/enableSwitch"
             android:ellipsize="end"
             android:lines="2"
@@ -74,120 +130,4 @@
             android:padding="@dimen/third_base_margin"
             android:text="" />
     </RelativeLayout>
-
-    <TextView
-        android:id="@+id/timeRemainingTextView"
-        style="@style/ReveryLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|start"
-        android:layout_marginStart="@dimen/half_base_margin"
-        android:layout_marginBottom="@dimen/third_base_margin"
-        android:lines="1"
-        android:visibility="gone"
-        tools:text="in 1 day and 3h"
-        tools:visibility="visible" />
-
-    <LinearLayout
-        android:id="@+id/recurringDaysContainer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:layout_margin="@dimen/third_base_margin"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        tools:visibility="visible">
-
-        <CheckedTextView
-            android:id="@+id/recurringLabelTextView"
-            style="@style/ReveryRecurringDaysText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/minimum_base_margin"
-            android:checked="true"
-            android:clickable="false"
-            android:enabled="true"
-            android:text=""
-            android:visibility="gone"
-            tools:text="@string/everyday"
-            tools:visibility="visible" />
-
-        <CheckedTextView
-            android:id="@+id/mondayTextView"
-            style="@style/ReveryRecurringDaysText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/minimum_base_margin"
-            android:checked="false"
-            android:clickable="false"
-            android:enabled="true"
-            android:text="@string/monday_short" />
-
-        <CheckedTextView
-            android:id="@+id/tuesdayTextView"
-            style="@style/ReveryRecurringDaysText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/minimum_base_margin"
-            android:checked="false"
-            android:clickable="false"
-            android:enabled="true"
-            android:text="@string/tuesday_short" />
-
-        <CheckedTextView
-            android:id="@+id/wednesdayTextView"
-            style="@style/ReveryRecurringDaysText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/minimum_base_margin"
-            android:checked="false"
-            android:clickable="false"
-            android:enabled="true"
-            android:text="@string/wednesday_short" />
-
-        <CheckedTextView
-            android:id="@+id/thursdayTextView"
-            style="@style/ReveryRecurringDaysText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/minimum_base_margin"
-            android:checked="false"
-            android:clickable="false"
-            android:enabled="true"
-            android:text="@string/thursday_short" />
-
-        <CheckedTextView
-            android:id="@+id/fridayTextView"
-            style="@style/ReveryRecurringDaysText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/minimum_base_margin"
-            android:checked="false"
-            android:clickable="false"
-            android:enabled="true"
-            android:text="@string/friday_short" />
-
-        <CheckedTextView
-            android:id="@+id/saturdayTextView"
-            style="@style/ReveryRecurringDaysText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/minimum_base_margin"
-            android:checked="false"
-            android:clickable="false"
-            android:enabled="true"
-            android:text="@string/saturday_short" />
-
-        <CheckedTextView
-            android:id="@+id/sundayTextView"
-            style="@style/ReveryRecurringDaysText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/minimum_base_margin"
-            android:checked="false"
-            android:clickable="false"
-            android:enabled="true"
-            android:text="@string/sunday_short" />
-
-    </LinearLayout>
 </FrameLayout>

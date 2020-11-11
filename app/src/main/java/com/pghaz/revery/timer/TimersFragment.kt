@@ -68,8 +68,7 @@ class TimersFragment : BaseFragment(), OnTimerClickListener {
         recyclerView.setHasFixedSize(true)
 
         context?.let {
-            val itemDecor =
-                ListItemDecoration(ContextCompat.getColor(it, R.color.colorPrimary), 2)
+            val itemDecor = ListItemDecoration(ContextCompat.getColor(it, R.color.colorPrimary), 2)
             recyclerView.addItemDecoration(itemDecor)
         }
     }

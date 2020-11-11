@@ -7,7 +7,9 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class Timer(
     var id: Long = NO_ID,
-    var durationInSeconds: Int = 0,
+    var hour: Int = 0,
+    var minute: Int = 0,
+    var second: Int = 0,
     var label: String = "",
     var enabled: Boolean = true,
     var vibrate: Boolean = false,
@@ -20,7 +22,9 @@ data class Timer(
 
     constructor(timer: Timer) : this(
         id = timer.id,
-        durationInSeconds = timer.durationInSeconds,
+        hour = timer.hour,
+        minute = timer.minute,
+        second = timer.second,
         label = timer.label,
         enabled = timer.enabled,
         vibrate = timer.vibrate,
@@ -35,7 +39,9 @@ data class Timer(
         fun fromDatabaseModel(timer: RTimer): Timer {
             return Timer(
                 id = timer.id,
-                durationInSeconds = timer.durationInSeconds,
+                hour = timer.hour,
+                minute = timer.minute,
+                second = timer.second,
                 label = timer.label,
                 enabled = timer.enabled,
                 vibrate = timer.vibrate,
@@ -50,7 +56,9 @@ data class Timer(
         fun toDatabaseModel(timer: Timer): RTimer {
             return RTimer(
                 id = timer.id,
-                durationInSeconds = timer.durationInSeconds,
+                hour = timer.hour,
+                minute = timer.minute,
+                second = timer.second,
                 label = timer.label,
                 enabled = timer.enabled,
                 vibrate = timer.vibrate,

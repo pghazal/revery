@@ -175,6 +175,9 @@
     <string name="no_timers_created">No timers created yet</string>
     <string name="create_timer">add timer</string>
     <string name="edit_timer">edit timer</string>
+    <string name="text_hour_short">h</string>
+    <string name="text_minute_short">min</string>
+    <string name="text_second_short">s</string>
 
     <!-- TIME REMAINING TEXTS -->
     <plurals name="time_remaining_days">

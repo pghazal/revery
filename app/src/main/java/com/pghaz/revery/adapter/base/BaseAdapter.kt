@@ -7,9 +7,9 @@ import android.view.ViewGroup
 import androidx.annotation.CallSuper
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.pghaz.revery.model.app.BaseModel
 import com.pghaz.revery.model.app.Alarm
-import java.util.*
+import com.pghaz.revery.model.app.BaseModel
+import com.pghaz.revery.model.app.Timer
 
 abstract class BaseAdapter : ListAdapter<BaseModel, BaseViewHolder>(DiffUtilCallback) {
 
@@ -58,9 +58,11 @@ abstract class BaseAdapter : ListAdapter<BaseModel, BaseViewHolder>(DiffUtilCall
             override fun areItemsTheSame(oldItem: BaseModel, newItem: BaseModel): Boolean {
                 if (oldItem is Alarm && newItem is Alarm) {
                     return oldItem.id == newItem.id
+                } else if (oldItem is Timer && newItem is Timer) {
+                    return oldItem.id == newItem.id
                 }
 
-                return Objects.equals(oldItem, newItem)
+                return oldItem == newItem
             }
 
             /**
@@ -70,9 +72,11 @@ abstract class BaseAdapter : ListAdapter<BaseModel, BaseViewHolder>(DiffUtilCall
             override fun areContentsTheSame(oldItem: BaseModel, newItem: BaseModel): Boolean {
                 if (oldItem is Alarm && newItem is Alarm) {
                     return oldItem == newItem
+                } else if (oldItem is Timer && newItem is Timer) {
+                    return oldItem == newItem
                 }
 
-                return Objects.equals(oldItem, newItem)
+                return oldItem == newItem
             }
         }
     }
