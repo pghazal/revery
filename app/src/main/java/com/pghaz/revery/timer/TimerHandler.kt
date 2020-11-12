@@ -30,6 +30,10 @@ object TimerHandler {
         timer.state = TimerState.CREATED
     }
 
+    fun incrementTimer(timer: Timer) {
+        timer.remainingTime += 60 * 1000
+    }
+
     fun getElapsedTime(timer: Timer): Long {
         val now = System.currentTimeMillis()
         val elapsedTime: Long

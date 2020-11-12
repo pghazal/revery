@@ -132,6 +132,11 @@ class TimersFragment : BaseFragment(), OnTimerClickListener {
         timersViewModel.update(timer)
     }
 
+    override fun onIncrementButtonClicked(timer: Timer) {
+        timersViewModel.incrementTimer(timer)
+        timersViewModel.update(timer)
+    }
+
     override fun onResume() {
         super.onResume()
         showAddTimerButtonIfHidden()

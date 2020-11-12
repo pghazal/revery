@@ -136,8 +136,26 @@
         android:layout_below="@+id/playPauseButton"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_gravity="center"
         android:layout_marginEnd="@dimen/half_base_margin"
         android:src="@drawable/ic_reset"
-        app:srcCompat="@drawable/ic_reset" />
+        android:visibility="invisible"
+        app:srcCompat="@drawable/ic_reset"
+        tools:visibility="visible" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/incrementButton"
+        style="@style/ReveryButtonBorderless"
+        android:layout_width="@dimen/timer_button_size"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/playPauseButton"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="@dimen/half_base_margin"
+        android:fontFamily="@font/montserrat_semi_bold"
+        android:text="+1min"
+        android:textAllCaps="false"
+        android:textSize="12sp"
+        android:visibility="invisible"
+        app:fontFamily="@font/montserrat_semi_bold"
+        tools:visibility="visible" />
 </RelativeLayout>

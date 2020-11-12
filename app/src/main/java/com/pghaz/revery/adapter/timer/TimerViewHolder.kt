@@ -6,6 +6,7 @@ import android.text.TextUtils
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatImageButton
 import com.pghaz.revery.R
 import com.pghaz.revery.adapter.base.BaseViewHolder
@@ -30,6 +31,7 @@ open class TimerViewHolder(view: View) : BaseViewHolder(view) {
     private val imageView: ImageView = view.findViewById(R.id.imageView)
     private val playPauseButton: AppCompatImageButton = view.findViewById(R.id.playPauseButton)
     private val resetButton: AppCompatImageButton = view.findViewById(R.id.resetButton)
+    private val incrementButton: AppCompatButton = view.findViewById(R.id.incrementButton)
 
     private lateinit var timer: Timer
 
@@ -81,6 +83,10 @@ open class TimerViewHolder(view: View) : BaseViewHolder(view) {
             timerClickListener?.onResetButtonClicked(timer)
         }
 
+        incrementButton.setOnClickListener {
+            timerClickListener?.onIncrementButtonClicked(timer)
+        }
+
         val imageUri = Uri.parse(timer.metadata.imageUrl)
         val imageUrl = if (ImageUtils.isInternalFile(imageUri)) {
             if (ImageUtils.isCoverArtExists(imageUri)) {
@@ -101,14 +107,20 @@ open class TimerViewHolder(view: View) : BaseViewHolder(view) {
         when (timer.state) {
             TimerState.CREATED -> {
                 playPauseButton.setImageResource(R.drawable.ic_play_filled)
+                resetButton.visibility = View.INVISIBLE
+                incrementButton.visibility = View.INVISIBLE
             }
 
             TimerState.RUNNING -> {
                 playPauseButton.setImageResource(R.drawable.ic_pause_filled)
+                resetButton.visibility = View.INVISIBLE
+                incrementButton.visibility = View.VISIBLE
             }
 
             TimerState.PAUSED -> {
                 playPauseButton.setImageResource(R.drawable.ic_play_filled)
+                resetButton.visibility = View.VISIBLE
+                incrementButton.visibility = View.INVISIBLE
             }
         }
     }
@@ -117,6 +129,7 @@ open class TimerViewHolder(view: View) : BaseViewHolder(view) {
         itemView.setOnClickListener(null)
         playPauseButton.setOnClickListener(null)
         resetButton.setOnClickListener(null)
+        incrementButton.setOnClickListener(null)
     }
 
     private fun updateRemainingTime(timer: Timer, elapsedTime: Long) {

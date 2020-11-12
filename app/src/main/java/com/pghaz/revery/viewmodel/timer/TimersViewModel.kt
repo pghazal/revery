@@ -23,6 +23,12 @@ class TimersViewModel(application: Application) : AndroidViewModel(application) 
         TimerHandler.resetTimer(timer)
     }
 
+    fun incrementTimer(timer: Timer) {
+        pauseTimer(timer)
+        TimerHandler.incrementTimer(timer)
+        startTimer(timer)
+    }
+
     fun update(timer: Timer) {
         timerRepository.update(timer)
     }
