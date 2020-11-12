@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,124 +10,134 @@
     android:foreground="?android:attr/selectableItemBackground"
     android:gravity="center_vertical">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="@dimen/half_base_margin">
+    <com.pghaz.revery.view.ReveryImageView
+        android:id="@+id/imageView"
+        android:layout_width="@dimen/item_view_alarm_image_size"
+        android:layout_height="@dimen/item_view_alarm_image_size"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="@dimen/half_base_margin"
+        android:layout_marginTop="@dimen/half_base_margin"
+        android:background="@drawable/placeholder_square"
+        android:scaleType="centerCrop" />
 
-        <com.pghaz.revery.view.ReveryImageView
-            android:id="@+id/imageView"
-            android:layout_width="@dimen/item_view_alarm_image_size"
-            android:layout_height="@dimen/item_view_alarm_image_size"
-            android:layout_alignParentStart="true"
-            android:background="@drawable/placeholder_square"
-            android:scaleType="centerCrop" />
+    <LinearLayout
+        android:id="@+id/timerDurationContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/imageView"
+        android:layout_marginStart="@dimen/half_base_margin"
+        android:layout_marginTop="-4dp"
+        android:layout_toEndOf="@+id/imageView"
+        android:orientation="horizontal">
 
-        <LinearLayout
-            android:id="@+id/timerDurationContainer"
+        <TextView
+            android:id="@+id/hourDurationTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/imageView"
-            android:layout_marginStart="@dimen/half_base_margin"
-            android:layout_marginTop="-4dp"
-            android:layout_toEndOf="@+id/imageView"
-            android:orientation="horizontal">
+            android:fontFamily="@font/montserrat_semi_bold"
+            android:gravity="bottom"
+            android:includeFontPadding="false"
+            android:textColor="@android:color/white"
+            android:textSize="28sp"
+            app:fontFamily="@font/montserrat_semi_bold"
+            tools:text="00" />
 
-            <TextView
-                android:id="@+id/hourDurationTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/montserrat_semi_bold"
-                android:gravity="bottom"
-                android:includeFontPadding="false"
-                android:textColor="@android:color/white"
-                android:textSize="28sp"
-                app:fontFamily="@font/montserrat_semi_bold"
-                tools:text="00" />
-
-            <TextView
-                android:id="@+id/hourLabelTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/third_base_margin"
-                android:fontFamily="@font/montserrat_semi_bold"
-                android:gravity="bottom"
-                android:includeFontPadding="false"
-                android:text="@string/text_hour_short"
-                android:textColor="@android:color/white"
-                android:textSize="16sp"
-                app:fontFamily="@font/montserrat_semi_bold" />
-
-            <TextView
-                android:id="@+id/minuteDurationTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/montserrat_semi_bold"
-                android:gravity="bottom"
-                android:includeFontPadding="false"
-                android:textColor="@android:color/white"
-                android:textSize="28sp"
-                app:fontFamily="@font/montserrat_semi_bold"
-                tools:text="10" />
-
-            <TextView
-                android:id="@+id/minuteLabelTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/third_base_margin"
-                android:fontFamily="@font/montserrat_semi_bold"
-                android:gravity="bottom"
-                android:includeFontPadding="false"
-                android:text="@string/text_minute_short"
-                android:textColor="@android:color/white"
-                android:textSize="16sp"
-                app:fontFamily="@font/montserrat_semi_bold" />
-
-            <TextView
-                android:id="@+id/secondDurationTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/montserrat_semi_bold"
-                android:gravity="bottom"
-                android:includeFontPadding="false"
-                android:textColor="@android:color/white"
-                android:textSize="28sp"
-                app:fontFamily="@font/montserrat_semi_bold"
-                tools:text="00" />
-
-            <TextView
-                android:id="@+id/secondLabelTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/montserrat_semi_bold"
-                android:gravity="bottom"
-                android:includeFontPadding="false"
-                android:text="@string/text_second_short"
-                android:textColor="@android:color/white"
-                android:textSize="16sp"
-                app:fontFamily="@font/montserrat_semi_bold" />
-        </LinearLayout>
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/labelTextView"
+        <TextView
+            android:id="@+id/hourLabelTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/timerDurationContainer"
-            android:layout_alignStart="@+id/timerDurationContainer"
-            android:layout_toStartOf="@+id/timerStateButton"
-            android:ellipsize="end"
-            android:lines="2"
-            android:textColor="@color/selector_alarm_label_text_color"
-            tools:text="description" />
+            android:layout_marginEnd="@dimen/third_base_margin"
+            android:fontFamily="@font/montserrat_semi_bold"
+            android:gravity="bottom"
+            android:includeFontPadding="false"
+            android:text="@string/text_hour_short"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            app:fontFamily="@font/montserrat_semi_bold" />
 
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/timerStateButton"
-            android:layout_width="@dimen/timer_button_size"
-            android:layout_height="@dimen/timer_button_size"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_gravity="end"
-            android:src="@drawable/ic_play_filled"
-            app:srcCompat="@drawable/ic_play_filled" />
-    </RelativeLayout>
-</FrameLayout>
+        <TextView
+            android:id="@+id/minuteDurationTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_semi_bold"
+            android:gravity="bottom"
+            android:includeFontPadding="false"
+            android:textColor="@android:color/white"
+            android:textSize="28sp"
+            app:fontFamily="@font/montserrat_semi_bold"
+            tools:text="10" />
+
+        <TextView
+            android:id="@+id/minuteLabelTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/third_base_margin"
+            android:fontFamily="@font/montserrat_semi_bold"
+            android:gravity="bottom"
+            android:includeFontPadding="false"
+            android:text="@string/text_minute_short"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            app:fontFamily="@font/montserrat_semi_bold" />
+
+        <TextView
+            android:id="@+id/secondDurationTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_semi_bold"
+            android:gravity="bottom"
+            android:includeFontPadding="false"
+            android:textColor="@android:color/white"
+            android:textSize="28sp"
+            app:fontFamily="@font/montserrat_semi_bold"
+            tools:text="00" />
+
+        <TextView
+            android:id="@+id/secondLabelTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_semi_bold"
+            android:gravity="bottom"
+            android:includeFontPadding="false"
+            android:text="@string/text_second_short"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            app:fontFamily="@font/montserrat_semi_bold" />
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/labelTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/timerDurationContainer"
+        android:layout_alignStart="@+id/timerDurationContainer"
+        android:layout_toStartOf="@+id/playPauseButton"
+        android:ellipsize="end"
+        android:lines="2"
+        android:textColor="@color/selector_alarm_label_text_color"
+        tools:text="description" />
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/playPauseButton"
+        android:layout_width="@dimen/timer_button_size"
+        android:layout_height="@dimen/timer_button_size"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="end"
+        android:layout_marginEnd="@dimen/half_base_margin"
+        android:src="@drawable/ic_play_filled"
+        app:srcCompat="@drawable/ic_play_filled" />
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/resetButton"
+        style="@style/ReveryButtonBorderless"
+        android:layout_width="@dimen/timer_button_size"
+        android:layout_height="@dimen/timer_button_size"
+        android:layout_below="@+id/playPauseButton"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center"
+        android:layout_marginEnd="@dimen/half_base_margin"
+        android:src="@drawable/ic_reset"
+        app:srcCompat="@drawable/ic_reset" />
+</RelativeLayout>

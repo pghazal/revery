@@ -28,7 +28,8 @@ open class TimerViewHolder(view: View) : BaseViewHolder(view) {
     private val secondLabelTextView: TextView = view.findViewById(R.id.secondLabelTextView)
     private val labelTextView: TextView = view.findViewById(R.id.labelTextView)
     private val imageView: ImageView = view.findViewById(R.id.imageView)
-    private val timerStateButton: AppCompatImageButton = view.findViewById(R.id.timerStateButton)
+    private val playPauseButton: AppCompatImageButton = view.findViewById(R.id.playPauseButton)
+    private val resetButton: AppCompatImageButton = view.findViewById(R.id.resetButton)
 
     private lateinit var timer: Timer
 
@@ -72,8 +73,12 @@ open class TimerViewHolder(view: View) : BaseViewHolder(view) {
 
         labelTextView.text = timer.label
 
-        timerStateButton.setOnClickListener {
+        playPauseButton.setOnClickListener {
             timerClickListener?.onPlayPauseButtonClicked(timer)
+        }
+
+        resetButton.setOnClickListener {
+            timerClickListener?.onResetButtonClicked(timer)
         }
 
         val imageUri = Uri.parse(timer.metadata.imageUrl)
@@ -95,22 +100,23 @@ open class TimerViewHolder(view: View) : BaseViewHolder(view) {
     private fun updatePlayPauseButton(timer: Timer) {
         when (timer.state) {
             TimerState.CREATED -> {
-                timerStateButton.setImageResource(R.drawable.ic_play_filled)
+                playPauseButton.setImageResource(R.drawable.ic_play_filled)
             }
 
             TimerState.RUNNING -> {
-                timerStateButton.setImageResource(R.drawable.ic_pause_filled)
+                playPauseButton.setImageResource(R.drawable.ic_pause_filled)
             }
 
             TimerState.PAUSED -> {
-                timerStateButton.setImageResource(R.drawable.ic_play_filled)
+                playPauseButton.setImageResource(R.drawable.ic_play_filled)
             }
         }
     }
 
     override fun onViewHolderRecycled() {
         itemView.setOnClickListener(null)
-        timerStateButton.setOnClickListener(null)
+        playPauseButton.setOnClickListener(null)
+        resetButton.setOnClickListener(null)
     }
 
     private fun updateRemainingTime(timer: Timer, elapsedTime: Long) {

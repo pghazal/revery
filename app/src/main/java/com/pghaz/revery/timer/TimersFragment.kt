@@ -2,6 +2,7 @@ package com.pghaz.revery.timer
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -93,17 +94,21 @@ class TimersFragment : BaseFragment(), OnTimerClickListener {
     }
 
     override fun onTimerClicked(timer: Timer) {
-        // TODO check Timer state
-        var fragment =
-            childFragmentManager.findFragmentByTag(CreateEditTimerFragment.TAG) as CreateEditTimerFragment?
-        if (fragment == null) {
-            if (activity is BaseSpotifyActivity) {
-                fragment = CreateEditTimerFragment.newInstance(
-                    getString(R.string.edit_timer),
-                    timer
-                )
-                fragment.show(childFragmentManager, CreateEditTimerFragment.TAG)
+        if (timer.state == TimerState.CREATED) {
+            var fragment =
+                childFragmentManager.findFragmentByTag(CreateEditTimerFragment.TAG) as CreateEditTimerFragment?
+            if (fragment == null) {
+                if (activity is BaseSpotifyActivity) {
+                    fragment = CreateEditTimerFragment.newInstance(
+                        getString(R.string.edit_timer),
+                        timer
+                    )
+                    fragment.show(childFragmentManager, CreateEditTimerFragment.TAG)
+                }
             }
+        } else {
+            Toast.makeText(context, "Timer is in use. Reset before editing.", Toast.LENGTH_SHORT)
+                .show()
         }
     }
 
@@ -119,6 +124,11 @@ class TimersFragment : BaseFragment(), OnTimerClickListener {
             }
         }
 
+        timersViewModel.update(timer)
+    }
+
+    override fun onResetButtonClicked(timer: Timer) {
+        timersViewModel.resetTimer(timer)
         timersViewModel.update(timer)
     }
 
