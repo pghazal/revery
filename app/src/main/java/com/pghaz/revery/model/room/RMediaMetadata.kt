@@ -1,9 +1,9 @@
 package com.pghaz.revery.model.room
 
 import androidx.room.TypeConverters
-import com.pghaz.revery.repository.converter.MediaTypeConverters
+import com.pghaz.revery.repository.converter.RoomTypeConverters
 
-@TypeConverters(MediaTypeConverters::class)
+@TypeConverters(RoomTypeConverters::class)
 data class RMediaMetadata(
     var uri: String? = null,
     var href: String? = null,

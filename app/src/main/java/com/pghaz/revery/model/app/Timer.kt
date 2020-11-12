@@ -2,69 +2,68 @@ package com.pghaz.revery.model.app
 
 import android.os.Parcelable
 import com.pghaz.revery.model.room.RTimer
+import com.pghaz.revery.model.room.RTimerState
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class Timer(
     var id: Long = NO_ID,
-    var hour: Int = 0,
-    var minute: Int = 0,
-    var second: Int = 0,
     var label: String = "",
-    var enabled: Boolean = true,
     var vibrate: Boolean = false,
     var fadeOut: Boolean = false,
     var fadeOutDuration: Long = 0,
-    var isSnooze: Boolean = false,
-    var isPreview: Boolean = false,
-    var metadata: MediaMetadata = MediaMetadata()
+    var metadata: MediaMetadata = MediaMetadata(),
+    var duration: Long = 0,
+    var startTime: Long = 0,
+    var stopTime: Long = 0,
+    var remainingTime: Long = 0,
+    var state: TimerState = TimerState.CREATED
 ) : BaseModel(), Parcelable {
 
     constructor(timer: Timer) : this(
         id = timer.id,
-        hour = timer.hour,
-        minute = timer.minute,
-        second = timer.second,
         label = timer.label,
-        enabled = timer.enabled,
         vibrate = timer.vibrate,
         fadeOut = timer.fadeOut,
         fadeOutDuration = timer.fadeOutDuration,
-        isSnooze = timer.isSnooze,
-        isPreview = timer.isPreview,
-        metadata = MediaMetadata(timer.metadata)
+        metadata = MediaMetadata(timer.metadata),
+        duration = timer.duration,
+        startTime = timer.startTime,
+        stopTime = timer.stopTime,
+        remainingTime = timer.remainingTime,
+        state = timer.state
     )
 
     companion object {
         fun fromDatabaseModel(timer: RTimer): Timer {
             return Timer(
                 id = timer.id,
-                hour = timer.hour,
-                minute = timer.minute,
-                second = timer.second,
                 label = timer.label,
-                enabled = timer.enabled,
                 vibrate = timer.vibrate,
                 fadeOut = timer.fadeOut,
                 fadeOutDuration = timer.fadeOutDuration,
-                isSnooze = false,
-                isPreview = false,
-                metadata = MediaMetadata.fromDatabaseModel(timer.metadata)
+                metadata = MediaMetadata.fromDatabaseModel(timer.metadata),
+                duration = timer.duration,
+                startTime = timer.startTime,
+                stopTime = timer.stopTime,
+                remainingTime = timer.remainingTime,
+                state = TimerState.values()[timer.state.ordinal]
             )
         }
 
         fun toDatabaseModel(timer: Timer): RTimer {
             return RTimer(
                 id = timer.id,
-                hour = timer.hour,
-                minute = timer.minute,
-                second = timer.second,
                 label = timer.label,
-                enabled = timer.enabled,
                 vibrate = timer.vibrate,
                 fadeOut = timer.fadeOut,
                 fadeOutDuration = timer.fadeOutDuration,
-                metadata = MediaMetadata.toDatabaseModel(timer.metadata)
+                metadata = MediaMetadata.toDatabaseModel(timer.metadata),
+                duration = timer.duration,
+                startTime = timer.startTime,
+                stopTime = timer.stopTime,
+                remainingTime = timer.remainingTime,
+                state = RTimerState.values()[timer.state.ordinal]
             )
         }
     }

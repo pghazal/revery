@@ -1,17 +1,21 @@
 package com.pghaz.revery.adapter.timer
 
 import android.net.Uri
+import android.os.Handler
 import android.text.TextUtils
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.widget.SwitchCompat
+import androidx.appcompat.widget.AppCompatImageButton
 import com.pghaz.revery.R
 import com.pghaz.revery.adapter.base.BaseViewHolder
+import com.pghaz.revery.extension.logError
 import com.pghaz.revery.image.ImageLoader
 import com.pghaz.revery.image.ImageUtils
 import com.pghaz.revery.model.app.BaseModel
 import com.pghaz.revery.model.app.Timer
+import com.pghaz.revery.model.app.TimerState
+import com.pghaz.revery.timer.TimerHandler
 
 open class TimerViewHolder(view: View) : BaseViewHolder(view) {
     var timerClickListener: OnTimerClickListener? = null
@@ -19,54 +23,46 @@ open class TimerViewHolder(view: View) : BaseViewHolder(view) {
     private val hourDurationTextView: TextView = view.findViewById(R.id.hourDurationTextView)
     private val minuteDurationTextView: TextView = view.findViewById(R.id.minuteDurationTextView)
     private val secondDurationTextView: TextView = view.findViewById(R.id.secondDurationTextView)
-
     private val hourLabelTextView: TextView = view.findViewById(R.id.hourLabelTextView)
     private val minuteLabelTextView: TextView = view.findViewById(R.id.minuteLabelTextView)
     private val secondLabelTextView: TextView = view.findViewById(R.id.secondLabelTextView)
-
     private val labelTextView: TextView = view.findViewById(R.id.labelTextView)
     private val imageView: ImageView = view.findViewById(R.id.imageView)
+    private val timerStateButton: AppCompatImageButton = view.findViewById(R.id.timerStateButton)
 
-    private val enableSwitch: SwitchCompat = view.findViewById(R.id.enableSwitch)
+    private lateinit var timer: Timer
 
-    private fun setDurationText(timer: Timer) {
-        hourDurationTextView.text = String.format("%02d", timer.hour)
-        minuteDurationTextView.text = String.format("%02d", timer.minute)
-        secondDurationTextView.text = String.format("%02d", timer.second)
+    private val mHandler: Handler = Handler()
+    private val updateRemainingTimeRunnable = object : Runnable {
+        override fun run() {
+            val elapsedTime = TimerHandler.getElapsedTime(timer)
+            updateRemainingTime(timer, elapsedTime)
+            updatePlayPauseButton(timer)
 
-        if (timer.hour > 0) {
-            hourDurationTextView.visibility = View.VISIBLE
-            hourLabelTextView.visibility = View.VISIBLE
-        } else {
-            hourDurationTextView.visibility = View.GONE
-            hourLabelTextView.visibility = View.GONE
-        }
-
-        minuteDurationTextView.visibility = View.VISIBLE
-        minuteLabelTextView.visibility = View.VISIBLE
-
-        if (timer.second > 0) {
-            secondDurationTextView.visibility = View.VISIBLE
-            secondLabelTextView.visibility = View.VISIBLE
-        } else {
-            secondDurationTextView.visibility = View.GONE
-            secondLabelTextView.visibility = View.GONE
-        }
-
-        if (timer.hour == 0 && timer.second == 0) {
-            secondDurationTextView.visibility = View.VISIBLE
-            secondLabelTextView.visibility = View.VISIBLE
+            if (timer.state == TimerState.RUNNING) {
+                mHandler.postDelayed(this, 1000L)
+            }
         }
     }
 
+    fun startUpdateTimer() {
+        mHandler.postDelayed(updateRemainingTimeRunnable, 1000L)
+    }
+
+    fun stopUpdateTimer() {
+        mHandler.removeCallbacks(updateRemainingTimeRunnable)
+    }
+
     override fun bind(model: BaseModel) {
-        val timer = model as Timer
+        timer = Timer(model as Timer)
 
         itemView.setOnClickListener {
-            timerClickListener?.onClick(Timer(timer))
+            timerClickListener?.onTimerClicked(timer)
         }
 
-        setDurationText(timer)
+        val elapsedTime = TimerHandler.getElapsedTime(timer)
+        updateRemainingTime(timer, elapsedTime)
+        updatePlayPauseButton(timer)
 
         if (TextUtils.isEmpty(timer.label)) {
             labelTextView.visibility = View.GONE
@@ -76,16 +72,9 @@ open class TimerViewHolder(view: View) : BaseViewHolder(view) {
 
         labelTextView.text = timer.label
 
-        enableSwitch.isChecked = timer.enabled
-        enableSwitch.setOnCheckedChangeListener { _, _ ->
-            timerClickListener?.onToggle(Timer(timer))
+        timerStateButton.setOnClickListener {
+            timerClickListener?.onPlayPauseButtonClicked(timer)
         }
-
-        imageView.isEnabled = timer.enabled
-        hourDurationTextView.isEnabled = timer.enabled
-        minuteDurationTextView.isEnabled = timer.enabled
-        secondDurationTextView.isEnabled = timer.enabled
-        labelTextView.isEnabled = timer.enabled
 
         val imageUri = Uri.parse(timer.metadata.imageUrl)
         val imageUrl = if (ImageUtils.isInternalFile(imageUri)) {
@@ -103,8 +92,70 @@ open class TimerViewHolder(view: View) : BaseViewHolder(view) {
             .into(imageView)
     }
 
+    private fun updatePlayPauseButton(timer: Timer) {
+        when (timer.state) {
+            TimerState.CREATED -> {
+                timerStateButton.setImageResource(R.drawable.ic_play_filled)
+            }
+
+            TimerState.RUNNING -> {
+                timerStateButton.setImageResource(R.drawable.ic_pause_filled)
+            }
+
+            TimerState.PAUSED -> {
+                timerStateButton.setImageResource(R.drawable.ic_play_filled)
+            }
+        }
+    }
+
     override fun onViewHolderRecycled() {
         itemView.setOnClickListener(null)
-        enableSwitch.setOnCheckedChangeListener(null)
+        timerStateButton.setOnClickListener(null)
+    }
+
+    private fun updateRemainingTime(timer: Timer, elapsedTime: Long) {
+        val milliseconds = if (elapsedTime > 0) {
+            elapsedTime
+        } else {
+            timer.duration
+        }
+
+        hourDurationTextView.context.logError("milliseconds: $milliseconds")
+
+        val seconds = (milliseconds / 1000).toInt() % 60
+        val minutes = (milliseconds / (1000 * 60) % 60).toInt()
+        val hours = (milliseconds / (1000 * 60 * 60) % 24).toInt()
+
+        hourDurationTextView.context.logError("hours: $hours")
+        hourDurationTextView.context.logError("minutes: $minutes")
+        hourDurationTextView.context.logError("seconds: $seconds")
+
+        hourDurationTextView.text = String.format("%02d", hours)
+        minuteDurationTextView.text = String.format("%02d", minutes)
+        secondDurationTextView.text = String.format("%02d", seconds)
+
+        if (hours > 0) {
+            hourDurationTextView.visibility = View.VISIBLE
+            hourLabelTextView.visibility = View.VISIBLE
+        } else {
+            hourDurationTextView.visibility = View.GONE
+            hourLabelTextView.visibility = View.GONE
+        }
+
+        minuteDurationTextView.visibility = View.VISIBLE
+        minuteLabelTextView.visibility = View.VISIBLE
+
+        if (seconds > 0) {
+            secondDurationTextView.visibility = View.VISIBLE
+            secondLabelTextView.visibility = View.VISIBLE
+        } else {
+            secondDurationTextView.visibility = View.GONE
+            secondLabelTextView.visibility = View.GONE
+        }
+
+        if (hours == 0 && seconds == 0) {
+            secondDurationTextView.visibility = View.VISIBLE
+            secondLabelTextView.visibility = View.VISIBLE
+        }
     }
 }

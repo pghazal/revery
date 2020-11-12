@@ -114,20 +114,20 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/timerDurationContainer"
             android:layout_alignStart="@+id/timerDurationContainer"
-            android:layout_toStartOf="@+id/enableSwitch"
+            android:layout_toStartOf="@+id/timerStateButton"
             android:ellipsize="end"
             android:lines="2"
             android:textColor="@color/selector_alarm_label_text_color"
             tools:text="description" />
 
-        <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/enableSwitch"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/timerStateButton"
+            android:layout_width="@dimen/timer_button_size"
+            android:layout_height="@dimen/timer_button_size"
             android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
             android:layout_gravity="end"
-            android:checked="false"
-            android:padding="@dimen/third_base_margin"
-            android:text="" />
+            android:src="@drawable/ic_play_filled"
+            app:srcCompat="@drawable/ic_play_filled" />
     </RelativeLayout>
 </FrameLayout>

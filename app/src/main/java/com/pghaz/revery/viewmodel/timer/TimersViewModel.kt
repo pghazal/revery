@@ -1,22 +1,26 @@
 package com.pghaz.revery.viewmodel.timer
 
 import android.app.Application
-import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import com.pghaz.revery.model.app.Timer
 import com.pghaz.revery.repository.TimerRepository
+import com.pghaz.revery.timer.TimerHandler
 
 class TimersViewModel(application: Application) : AndroidViewModel(application) {
 
     private val timerRepository = TimerRepository(application)
     val timersLiveData = timerRepository.getTimersLiveData()
 
-    fun scheduleTimer(context: Context?, timer: Timer) {
-        //AlarmHandler.scheduleAlarm(context, timer)
+    fun startTimer(timer: Timer) {
+        TimerHandler.startTimer(timer)
     }
 
-    fun cancelTimer(context: Context?, timer: Timer) {
-        //AlarmHandler.cancelAlarm(context, timer)
+    fun pauseTimer(timer: Timer) {
+        TimerHandler.pauseTimer(timer)
+    }
+
+    fun resetTimer(timer: Timer) {
+        TimerHandler.resetTimer(timer)
     }
 
     fun update(timer: Timer) {

@@ -8,10 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.pghaz.revery.BaseCreateEditFragment
 import com.pghaz.revery.R
 import com.pghaz.revery.alarm.MoreOptionsAlarmFragment
-import com.pghaz.revery.model.app.BaseModel
-import com.pghaz.revery.model.app.MediaMetadata
-import com.pghaz.revery.model.app.MediaType
-import com.pghaz.revery.model.app.Timer
+import com.pghaz.revery.model.app.*
 import com.pghaz.revery.ringtone.AudioPickerHelper
 import com.pghaz.revery.settings.SettingsFragment
 import com.pghaz.revery.settings.SettingsHandler
@@ -46,6 +43,8 @@ class CreateEditTimerFragment : BaseCreateEditFragment() {
 
         createEditTimerViewModel = ViewModelProvider(this).get(CreateEditTimerViewModel::class.java)
         createEditTimerViewModel.timerChangedLiveData.observe(this, { updatedTimer ->
+            positiveButton.isEnabled = updatedTimer.duration != 0L
+
             updateDurationText(updatedTimer)
         })
 
@@ -80,15 +79,23 @@ class CreateEditTimerFragment : BaseCreateEditFragment() {
     }
 
     private fun configureTimePickerFromTimer(timer: Timer) {
-        hourNumberPicker.value = timer.hour
-        minuteNumberPicker.value = timer.minute
-        secondNumberPicker.value = timer.second
+        val hour = (timer.duration / (1000 * 60 * 60) % 24).toInt()
+        val minute = (timer.duration / (1000 * 60) % 60).toInt()
+        val second = ((timer.duration / 1000) % 60).toInt()
+
+        hourNumberPicker.value = hour
+        minuteNumberPicker.value = minute
+        secondNumberPicker.value = second
     }
 
     private fun updateDurationText(timer: Timer) {
-        hourDurationTextView.text = String.format("%02d", timer.hour)
-        minuteDurationTextView.text = String.format("%02d", timer.minute)
-        secondDurationTextView.text = String.format("%02d", timer.second)
+        val hour = (timer.duration / (1000 * 60 * 60) % 24).toInt()
+        val minute = (timer.duration / (1000 * 60) % 60).toInt()
+        val second = ((timer.duration / 1000) % 60).toInt()
+
+        hourDurationTextView.text = String.format("%02d", hour)
+        minuteDurationTextView.text = String.format("%02d", minute)
+        secondDurationTextView.text = String.format("%02d", second)
     }
 
     private fun configureViewsFromTimer(timer: Timer) {
@@ -143,17 +150,26 @@ class CreateEditTimerFragment : BaseCreateEditFragment() {
         }
 
         hourNumberPicker.setOnValueChangedListener { _, _, hour ->
-            timer?.hour = hour
+            val duration =
+                (hour * 60 * 60 * 1000) + (minuteNumberPicker.value * 60 * 1000) + (secondNumberPicker.value * 1000)
+
+            timer?.duration = duration.toLong()
             createEditTimerViewModel.timerChangedLiveData.value = timer
         }
 
         minuteNumberPicker.setOnValueChangedListener { _, _, minute ->
-            timer?.minute = minute
+            val duration =
+                (hourNumberPicker.value * 60 * 60 * 1000) + (minute * 60 * 1000) + (secondNumberPicker.value * 1000)
+
+            timer?.duration = duration.toLong()
             createEditTimerViewModel.timerChangedLiveData.value = timer
         }
 
         secondNumberPicker.setOnValueChangedListener { _, _, second ->
-            timer?.second = second
+            val duration =
+                (hourNumberPicker.value * 60 * 60 * 1000) + (minuteNumberPicker.value * 60 * 1000) + (second * 1000)
+
+            timer?.duration = duration.toLong()
             createEditTimerViewModel.timerChangedLiveData.value = timer
         }
 
@@ -193,7 +209,10 @@ class CreateEditTimerFragment : BaseCreateEditFragment() {
         timer?.let {
             it.id = System.currentTimeMillis()
             it.label = label
-            it.enabled = true
+            it.state = TimerState.CREATED
+            it.startTime = 0
+            it.stopTime = 0
+            it.remainingTime = 0
 
             // Safe init of uri
             if (it.metadata.uri.isNullOrEmpty()) {
@@ -224,7 +243,10 @@ class CreateEditTimerFragment : BaseCreateEditFragment() {
 
         timer?.let {
             it.label = label
-            it.enabled = true
+            it.state = TimerState.CREATED
+            it.startTime = 0
+            it.stopTime = 0
+            it.remainingTime = 0
 
             createEditTimerViewModel.editTimer(context, it)
         }
@@ -258,17 +280,7 @@ class CreateEditTimerFragment : BaseCreateEditFragment() {
         const val TAG = "CreateEditTimerFragment"
 
         fun newInstance(dialogTitle: String): CreateEditTimerFragment {
-            val newTimer = Timer(
-                id = BaseModel.NO_ID, // Let this ´NO_ID´ value. It defines if it's creation or edition of timer
-                hour = 0,
-                label = "",
-                enabled = true,
-                vibrate = false,
-                fadeOut = false,
-                fadeOutDuration = 0,
-                metadata = MediaMetadata()
-            )
-
+            val newTimer = Timer()
             return newInstance(dialogTitle, newTimer)
         }
 

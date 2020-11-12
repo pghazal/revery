@@ -13,6 +13,7 @@ import com.pghaz.revery.adapter.timer.OnTimerClickListener
 import com.pghaz.revery.adapter.timer.TimersAdapter
 import com.pghaz.revery.model.app.BaseModel
 import com.pghaz.revery.model.app.Timer
+import com.pghaz.revery.model.app.TimerState
 import com.pghaz.revery.spotify.BaseSpotifyActivity
 import com.pghaz.revery.viewmodel.timer.TimersViewModel
 import kotlinx.android.synthetic.main.fragment_timers.*
@@ -91,7 +92,8 @@ class TimersFragment : BaseFragment(), OnTimerClickListener {
         }
     }
 
-    override fun onClick(timer: Timer) {
+    override fun onTimerClicked(timer: Timer) {
+        // TODO check Timer state
         var fragment =
             childFragmentManager.findFragmentByTag(CreateEditTimerFragment.TAG) as CreateEditTimerFragment?
         if (fragment == null) {
@@ -105,11 +107,16 @@ class TimersFragment : BaseFragment(), OnTimerClickListener {
         }
     }
 
-    override fun onToggle(timer: Timer) {
-        if (timer.enabled) {
-            timersViewModel.cancelTimer(context, timer)
-        } else {
-            timersViewModel.scheduleTimer(context, timer)
+    override fun onPlayPauseButtonClicked(timer: Timer) {
+        when (timer.state) {
+            TimerState.CREATED,
+            TimerState.PAUSED -> {
+                timersViewModel.startTimer(timer)
+            }
+
+            TimerState.RUNNING -> {
+                timersViewModel.pauseTimer(timer)
+            }
         }
 
         timersViewModel.update(timer)
