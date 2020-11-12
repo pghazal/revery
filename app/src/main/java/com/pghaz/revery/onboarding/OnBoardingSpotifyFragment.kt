@@ -59,7 +59,7 @@ class OnBoardingSpotifyFragment : BaseSpotifyFragment() {
     private fun updateSpotifyViews(spotifyUser: UserPrivate?, animate: Boolean) {
         if (spotifyUser?.id == null) {
             descriptionTextView.text =
-                descriptionTextView.context.getString(R.string.on_boarding_spotify_description_not_logged)
+                descriptionTextView.context?.getString(R.string.on_boarding_spotify_description_not_logged)
 
             if (animate) {
                 loginSpotifyButton.apply {
@@ -134,7 +134,7 @@ class OnBoardingSpotifyFragment : BaseSpotifyFragment() {
             }
 
             descriptionTextView.text =
-                descriptionTextView.context.getString(R.string.on_boarding_spotify_description_logged)
+                descriptionTextView.context?.getString(R.string.on_boarding_spotify_description_logged)
 
             pseudoTextView.text = spotifyUser.display_name
 

@@ -61,13 +61,15 @@ abstract class BaseSpotifyItemsFragment : BaseSpotifyFragment(),
     }
 
     override fun configureViews(savedInstanceState: Bundle?) {
-        val layoutManager = LinearLayoutManager(context)
-        scrollListener =
-            ResultListScrollListener(layoutManager, this)
-        recyclerView.layoutManager = layoutManager
-        recyclerView.adapter = itemsAdapter
-        recyclerView.setHasFixedSize(true)
-        recyclerView.addOnScrollListener(scrollListener)
+        context?.let {
+            val layoutManager = LinearLayoutManager(it)
+            scrollListener =
+                ResultListScrollListener(layoutManager, this)
+            recyclerView.layoutManager = layoutManager
+            recyclerView.adapter = itemsAdapter
+            recyclerView.setHasFixedSize(true)
+            recyclerView.addOnScrollListener(scrollListener)
+        }
     }
 
     override fun onSpotifyItemClicked(model: BaseModel) {

@@ -34,11 +34,13 @@ abstract class BaseSpotifyFragment : BaseFragment(), SpotifyAuthorizationCallbac
     }
 
     override fun onSpotifyError(error: SpotifyError) {
-        val errorMessage = when (error.details.status) {
-            SpotifyError.ERROR_NETWORK -> getString(R.string.error_network)
-            else -> getString(R.string.error_unexpected)
+        context?.let {
+            val errorMessage = when (error.details.status) {
+                SpotifyError.ERROR_NETWORK -> getString(R.string.error_network)
+                else -> getString(R.string.error_unexpected)
+            }
+            Toast.makeText(it, errorMessage, Toast.LENGTH_SHORT).show()
         }
-        Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
     }
 
     override fun onAuthorizationCancelled() {
