@@ -10,6 +10,7 @@ import com.pghaz.revery.extension.toastDebug
 import com.pghaz.revery.model.app.alarm.Alarm
 import com.pghaz.revery.model.app.alarm.AlarmMetadata
 import com.pghaz.revery.model.app.alarm.MediaType
+import com.pghaz.revery.ringtone.AudioPickerHelper
 import com.pghaz.revery.settings.SettingsHandler
 import com.pghaz.revery.util.DateTimeUtils
 import java.util.*
@@ -82,8 +83,16 @@ object AlarmHandler {
             metadata.uri = "spotify:playlist:3H8dsoJvkH7lUkaQlUNjPJ"
             metadata.shuffle = true
         } else {
+            val uri = SettingsHandler.getDefaultAudioUri(context)
+
+            val audioMetadata: AudioPickerHelper.AudioMetadata =
+                AudioPickerHelper.getAudioMetadata(context, uri)
+
             metadata.type = MediaType.DEFAULT
-            metadata.uri = SettingsHandler.getDefaultAudioUri(context).toString()
+            metadata.uri = uri.toString()
+            metadata.name = audioMetadata.name
+            metadata.description = audioMetadata.description
+            metadata.imageUrl = audioMetadata.imageUrl
         }
 
         val alarm = Alarm(
