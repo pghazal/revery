@@ -56,7 +56,7 @@ abstract class ReveryDatabase : RoomDatabase() {
 
         private val MIGRATION_2_3 = object : Migration(2, 3) {
             override fun migrate(database: SupportSQLiteDatabase) {
-                database.execSQL("CREATE TABLE IF NOT EXISTS `revery_table_timer` (`id` INTEGER NOT NULL, `durationInSeconds` INTEGER NOT NULL, `label` TEXT NOT NULL, `enabled` INTEGER NOT NULL, `vibrate` INTEGER NOT NULL, `fadeOut` INTEGER NOT NULL, `fadeOutDuration` INTEGER NOT NULL, `uri` TEXT, `href` TEXT, `type` INTEGER NOT NULL, `name` TEXT, `description` TEXT, `imageUrl` TEXT, `shuffle` INTEGER NOT NULL, `shouldKeepPlaying` INTEGER NOT NULL, `repeat` INTEGER NOT NULL, PRIMARY KEY(`id`));")
+                database.execSQL("CREATE TABLE IF NOT EXISTS `revery_table_timer` (`id` INTEGER NOT NULL, `label` TEXT NOT NULL, `vibrate` INTEGER NOT NULL, `fadeOut` INTEGER NOT NULL, `fadeOutDuration` INTEGER NOT NULL, `duration` INTEGER NOT NULL, `startTime` INTEGER NOT NULL, `stopTime` INTEGER NOT NULL, `remainingTime` INTEGER NOT NULL, `state` INTEGER NOT NULL, `uri` TEXT, `href` TEXT, `type` INTEGER NOT NULL, `name` TEXT, `description` TEXT, `imageUrl` TEXT, `shuffle` INTEGER NOT NULL, `shouldKeepPlaying` INTEGER NOT NULL, `repeat` INTEGER NOT NULL, PRIMARY KEY(`id`))")
             }
         }
     }
