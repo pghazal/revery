@@ -334,6 +334,8 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
     private fun handlePreviousPlayer() {
         vibrator.cancel()
 
+        player.resetInitialDeviceVolume()
+
         // If previous player is a DefaultPlayer, release it without killing Service
         if (player is DefaultPlayer) {
             (player as DefaultPlayer).releaseWithoutCallback()

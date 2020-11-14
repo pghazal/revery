@@ -102,7 +102,7 @@ abstract class AbstractPlayer(
         audioManager.setStreamVolume(streamType, maxDecidedVolume, 0)
     }
 
-    protected fun resetInitialDeviceVolume() {
+    fun resetInitialDeviceVolume() {
         stopFadeIn()
 
         // Reset user volume

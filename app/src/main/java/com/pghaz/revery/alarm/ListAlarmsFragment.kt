@@ -19,6 +19,7 @@ import com.pghaz.revery.adapter.base.BaseAdapter
 import com.pghaz.revery.model.app.BaseModel
 import com.pghaz.revery.model.app.alarm.Alarm
 import com.pghaz.revery.settings.SettingsFragment
+import com.pghaz.revery.settings.SettingsHandler
 import com.pghaz.revery.spotify.BaseSpotifyActivity
 import com.pghaz.revery.viewmodel.alarm.ListAlarmsViewModel
 import com.pghaz.spotify.webapi.auth.SpotifyAuthorizationClient
@@ -127,9 +128,8 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
                     context!!, 1,
                     recurring = false,
                     spotify = true,
-                    fadeIn = false,
-                    // Useless for now
-                    // fadeInDuration = SettingsHandler.getFadeInDuration(context!!)
+                    fadeIn = true,
+                    fadeInDuration = SettingsHandler.getFadeInDuration(context!!)
                 )
                 true
             }
@@ -139,8 +139,7 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
                     recurring = false,
                     spotify = false,
                     fadeIn = true,
-                    // Useless for now
-                    // fadeInDuration = SettingsHandler.getFadeInDuration(context!!)
+                    fadeInDuration = SettingsHandler.getFadeInDuration(context!!)
                 )
                 true
             }
@@ -150,8 +149,7 @@ class ListAlarmsFragment : BaseFragment(), OnAlarmClickListener {
                     recurring = true,
                     spotify = false,
                     fadeIn = true,
-                    // Useless for now
-                    // fadeInDuration = SettingsHandler.getFadeInDuration(context!!)
+                    fadeInDuration = SettingsHandler.getFadeInDuration(context!!)
                 )
                 true
             }
