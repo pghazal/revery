@@ -16,7 +16,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.pghaz.revery.alarm.ListAlarmsFragment
 import com.pghaz.revery.alarm.RingActivity
 import com.pghaz.revery.extension.logError
-import com.pghaz.revery.model.app.alarm.Alarm
 import com.pghaz.revery.notification.NotificationHandler
 import com.pghaz.revery.onboarding.OnBoardingActivity
 import com.pghaz.revery.service.AlarmService
@@ -24,8 +23,6 @@ import com.pghaz.revery.service.RescheduleAlarmsService
 import com.pghaz.revery.settings.SettingsHandler
 import com.pghaz.revery.sleep.SleepFragment
 import com.pghaz.revery.spotify.BaseSpotifyActivity
-import com.pghaz.revery.util.Arguments
-import com.pghaz.revery.util.IntentUtils
 import kotlinx.android.synthetic.main.activity_main.*
 
 /**
@@ -36,7 +33,6 @@ class MainActivity : BaseSpotifyActivity(), BottomNavigationView.OnNavigationIte
     private var notificationsDisabledDialog: AlertDialog? = null
 
     private var mAlarmServiceBound: Boolean = false
-    private lateinit var alarm: Alarm
 
     override fun getLayoutResId(): Int {
         return R.layout.activity_main
@@ -102,19 +98,6 @@ class MainActivity : BaseSpotifyActivity(), BottomNavigationView.OnNavigationIte
     }
 
     override fun parseArguments(args: Bundle?) {
-        args?.let {
-            val nullableAlarm = it.getParcelable(Arguments.ARGS_ALARM) as Alarm?
-            nullableAlarm?.let { nonNullAlarm ->
-                alarm = nonNullAlarm
-            }
-        }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        if (this::alarm.isInitialized) {
-            outState.putParcelable(Arguments.ARGS_ALARM, alarm)
-        }
-        super.onSaveInstanceState(outState)
     }
 
     override fun configureViews(savedInstanceState: Bundle?) {
@@ -214,9 +197,7 @@ class MainActivity : BaseSpotifyActivity(), BottomNavigationView.OnNavigationIte
             logError("onServiceConnected")
             mAlarmServiceBound = true
 
-            alarm = (service as AlarmService.AlarmServiceBinder).getAlarm()
-
-            startRingActivityForResult(alarm)
+            startRingActivityForResult()
         }
 
         override fun onServiceDisconnected(name: ComponentName) {
@@ -231,7 +212,7 @@ class MainActivity : BaseSpotifyActivity(), BottomNavigationView.OnNavigationIte
                 val service = Intent(applicationContext, AlarmService::class.java)
                 bindService(service, mServiceConnection, Activity.BIND_AUTO_CREATE)
             } else {
-                startRingActivityForResult(alarm)
+                startRingActivityForResult()
             }
         }
     }
@@ -243,13 +224,11 @@ class MainActivity : BaseSpotifyActivity(), BottomNavigationView.OnNavigationIte
         }
     }
 
-    private fun startRingActivityForResult(alarm: Alarm) {
+    private fun startRingActivityForResult() {
         val ringIntent = Intent(this@MainActivity, RingActivity::class.java)
         ringIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
         ringIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
         ringIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-
-        IntentUtils.safePutAlarmIntoIntent(ringIntent, alarm)
 
         startActivityForResult(ringIntent, RingActivity.REQUEST_CODE_ALARM_RINGING)
     }

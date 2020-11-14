@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.IBinder
 import android.view.View
 import android.view.WindowManager
+import androidx.lifecycle.LiveData
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.ncorti.slidetoact.SlideToActView
 import com.pghaz.revery.BaseActivity
@@ -22,9 +23,9 @@ import com.pghaz.revery.service.AlarmService
 import com.pghaz.revery.settings.SettingsHandler
 import com.pghaz.revery.settings.SnoozeDuration
 import com.pghaz.revery.util.Arguments
-import com.pghaz.revery.util.IntentUtils
 import com.pghaz.revery.util.ViewUtils
 import com.pghaz.revery.view.OnCustomTouchListener
+import com.spotify.protocol.client.Subscription
 import com.spotify.protocol.types.PlayerState
 import com.spotify.protocol.types.Track
 import kotlinx.android.synthetic.main.activity_ring.*
@@ -46,25 +47,35 @@ class RingActivity : BaseActivity() {
     }
 
     private var player: AbstractPlayer? = null
-    private var hasStartedPlayingAtLeast = false
     private var snoozeDurationIndex = 0
 
     private var mAlarmServiceBound: Boolean = false
-    private lateinit var alarm: Alarm
+    private var alarmLiveData: LiveData<Alarm>? = null
+    private var playerStateSubscription: Subscription<PlayerState>? = null
 
     private val mServiceConnection: ServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
             logError("onServiceConnected")
             mAlarmServiceBound = true
-            player = (service as AlarmService.AlarmServiceBinder).getPlayer()
 
-            configurePlayerControllers(player)
+            val alarmService = service as AlarmService.AlarmServiceBinder
+            alarmLiveData = service.getAlarmLiveData()
+
+            observeAlarmUpdate(alarmService)
         }
 
         override fun onServiceDisconnected(name: ComponentName) {
             mAlarmServiceBound = false
             player = null
         }
+    }
+
+    private fun observeAlarmUpdate(service: AlarmService.AlarmServiceBinder) {
+        alarmLiveData?.observe(this, { alarm ->
+            player = service.getPlayer()
+
+            configurePlayerControllers(alarm, player)
+        })
     }
 
     inner class FinishRingActivityBroadcastReceiver : BroadcastReceiver() {
@@ -120,18 +131,22 @@ class RingActivity : BaseActivity() {
         bindToAlarmService()
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        IntentUtils.safePutAlarmIntoBundle(outState, alarm)
+    /*override fun onSaveInstanceState(outState: Bundle) {
+        if (this::alarm.isInitialized) {
+            IntentUtils.safePutAlarmIntoBundle(outState, alarm)
+        }
         super.onSaveInstanceState(outState)
-    }
+    }*/
 
     override fun parseArguments(args: Bundle?) {
-        alarm = IntentUtils.safeGetAlarmFromBundle(args)
+        /*args?.let {
+            if (it.containsKey(Arguments.ARGS_BUNDLE_ALARM)) {
+                alarm = IntentUtils.safeGetAlarmFromBundle(it)
+            }
+        }*/
     }
 
     override fun configureViews(savedInstanceState: Bundle?) {
-        updateBackgroundImage(alarm.metadata.imageUrl)
-
         if (SettingsHandler.getSlideToTurnOff(this)) {
             slideTurnOffButton.visibility = View.VISIBLE
             turnOffButton.visibility = View.GONE
@@ -270,13 +285,16 @@ class RingActivity : BaseActivity() {
         }
     }
 
-    private fun configurePlayerControllers(player: AbstractPlayer?) {
+    private fun configurePlayerControllers(alarm: Alarm, player: AbstractPlayer?) {
         if (player != null && player is SpotifyPlayer) {
             controllersContainer.visibility = View.VISIBLE
 
             player.playerConnectedLiveData.observe(this, { isPlayerConnected ->
                 if (isPlayerConnected) {
-                    player.getPlayerStateSubscription()?.setEventCallback { playerState ->
+                    playerStateSubscription?.cancel()
+                    playerStateSubscription = player.getPlayerStateSubscription()
+
+                    playerStateSubscription?.setEventCallback { playerState ->
                         val track: Track? = playerState.track
 
                         if (track != null) {
@@ -284,13 +302,7 @@ class RingActivity : BaseActivity() {
 
                             if (playerState.isPaused) {
                                 playPauseButton.setImageResource(R.drawable.selector_play)
-                                // If Spotify starting playing and we're pausing from app or Spotify
-                                // Let's just stop the
-                                if (hasStartedPlayingAtLeast) {
-                                    broadcastStopAlarm()
-                                }
                             } else {
-                                hasStartedPlayingAtLeast = true
                                 playPauseButton.setImageResource(R.drawable.selector_pause)
 
                                 titleTextView.text = track.name
@@ -307,6 +319,8 @@ class RingActivity : BaseActivity() {
             })
         } else {
             controllersContainer.visibility = View.GONE
+            updateBackgroundImage(alarm.metadata.imageUrl)
+            playerStateSubscription?.cancel()
         }
     }
 
@@ -330,14 +344,20 @@ class RingActivity : BaseActivity() {
     }
 
     private fun broadcastStopAlarm() {
-        val stopIntent = AlarmBroadcastReceiver.getStopAlarmActionIntent(applicationContext, alarm)
-        sendBroadcast(stopIntent)
+        alarmLiveData?.value?.let {
+            val stopIntent =
+                AlarmBroadcastReceiver.getStopAlarmActionIntent(applicationContext, it)
+            sendBroadcast(stopIntent)
+        }
     }
 
     private fun broadcastSnooze(snoozeDuration: SnoozeDuration) {
-        val snoozeIntent = AlarmBroadcastReceiver.getSnoozeActionIntent(applicationContext, alarm)
-        snoozeIntent.putExtra(Arguments.ARGS_SNOOZE_DURATION, snoozeDuration.minutes)
-        sendBroadcast(snoozeIntent)
+        alarmLiveData?.value?.let {
+            val snoozeIntent =
+                AlarmBroadcastReceiver.getSnoozeActionIntent(applicationContext, it)
+            snoozeIntent.putExtra(Arguments.ARGS_SNOOZE_DURATION, snoozeDuration.minutes)
+            sendBroadcast(snoozeIntent)
+        }
     }
 
     // If this activity exists, it means an alarm is ringing.

@@ -13,12 +13,14 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pghaz.revery.MainActivity
 import com.pghaz.revery.R
 import com.pghaz.revery.alarm.AlarmHandler
+import com.pghaz.revery.alarm.RingActivity
 import com.pghaz.revery.broadcastreceiver.AlarmBroadcastReceiver
 import com.pghaz.revery.extension.logError
 import com.pghaz.revery.model.app.alarm.Alarm
@@ -29,6 +31,7 @@ import com.pghaz.revery.player.*
 import com.pghaz.revery.repository.AlarmRepository
 import com.pghaz.revery.settings.SettingsHandler
 import com.pghaz.revery.util.IntentUtils
+import com.spotify.protocol.types.Repeat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -108,10 +111,11 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
         var isRunning: Boolean = false // this is ugly: find a way to check if service is alive
     }
 
+    private val alarmLiveData = MutableLiveData<Alarm>()
     private lateinit var alarm: Alarm
 
     private lateinit var alarmRepository: AlarmRepository
-    private var alarmLiveData: LiveData<Alarm>? = null
+    private var disableOneShotAlarmLiveData: LiveData<Alarm>? = null
 
     private lateinit var vibrator: Vibrator
     private lateinit var notification: Notification
@@ -142,10 +146,6 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
                     logError(ACTION_ALARM_SERVICE_SNOOZE)
                     stopPlayerAndVibrator(true, alarm.metadata)
                 }
-
-                player.release()
-
-                killService() // will call onDestroy()
             }
         }
     }
@@ -157,8 +157,8 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
             return player
         }
 
-        fun getAlarm(): Alarm {
-            return alarm
+        fun getAlarmLiveData(): LiveData<Alarm> {
+            return alarmLiveData
         }
     }
 
@@ -181,6 +181,11 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
 
     private fun unregisterFromLocalAlarmBroadcastReceiver() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver)
+    }
+
+    private fun broadcastFinishRingActivity(context: Context) {
+        val stopRingActivityIntent = RingActivity.getFinishRingActivityBroadcastReceiver(context)
+        LocalBroadcastManager.getInstance(context).sendBroadcast(stopRingActivityIntent)
     }
 
     override fun onCreate() {
@@ -226,7 +231,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
                             fadeInDuration
                         )
                     } else {
-                        stopPlayerAndVibrator(true, alarm.metadata)
+                        handlePreviousPlayer()
                         getInitializedPlayer(
                             alarm.metadata.type,
                             false,
@@ -240,6 +245,10 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
                     // Additional settings such as shuffle
                     configurePlayer(alarm.metadata)
                     player.prepareAsync(alarm.metadata.uri)
+
+                    // Update alarm so that RingActivity updates its view.
+                    // Note: first time Service is created, no one is notified
+                    alarmLiveData.value = alarm
                 } catch (exception: Exception) {
                     onPlayerError(PlayerError.Initialization(exception))
                 }
@@ -288,7 +297,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
             MediaType.SPOTIFY_PLAYLIST,
             MediaType.SPOTIFY_TRACK -> {
                 (player as SpotifyPlayer).shuffle = metadata.shuffle
-                (player as SpotifyPlayer).repeat = metadata.repeat
+                (player as SpotifyPlayer).repeat = Repeat.ALL
             }
 
             MediaType.DEFAULT -> {
@@ -322,9 +331,20 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
         }
     }
 
-    /**
-     * We don't call ´player.release()´ because we may need the player later
-     */
+    private fun handlePreviousPlayer() {
+        vibrator.cancel()
+
+        // If previous player is a DefaultPlayer, release it without killing Service
+        if (player is DefaultPlayer) {
+            (player as DefaultPlayer).releaseWithoutCallback()
+        }
+        // Otherwise if it a SpotifyPlayer, unsubscribe from Player before it pauses to avoid
+        // callback on ´onPlayerReleased()´ called which kills the Service
+        else if (player is SpotifyPlayer) {
+            (player as SpotifyPlayer).unsubscribePlayerState()
+        }
+    }
+
     private fun stopPlayerAndVibrator(forceShouldPausePlayback: Boolean, metadata: AlarmMetadata) {
         FirebaseCrashlytics.getInstance()
             .log("AlarmService.stopPlayerAndVibrator($forceShouldPausePlayback, $metadata)")
@@ -336,21 +356,49 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
             return
         }
 
+        // If it's a Default alarm, stop alarm which will call release()
         if (metadata.type == MediaType.DEFAULT) {
             player.stop()
-        } else if (!metadata.shouldKeepPlaying) {
+        }
+        // If it's Spotify alarm, and shouldn't keep playing after alarm stopped, same as above:
+        // Stop alarm which will then call release()
+        else if (metadata.type != MediaType.DEFAULT && !metadata.shouldKeepPlaying) {
             player.stop()
+        }
+        // If it's Spotify alarm and should keep playing, at least disconnect from Spotify app
+        // by calling release()
+        else if (metadata.type != MediaType.DEFAULT && metadata.shouldKeepPlaying) {
+            player.release()
         }
     }
 
     override fun onPlayerInitialized(player: AbstractPlayer) {
-        FirebaseCrashlytics.getInstance().log("AlarmService.onPlayerInitialized()")
+        FirebaseCrashlytics.getInstance()
+            .log("AlarmService.onPlayerInitialized(): ${player.isEmergencyAlarm}")
 
-        if (alarm.vibrate) {
+        if (alarmLiveData.value?.vibrate == true) {
             vibrate()
         }
 
         player.start()
+    }
+
+    override fun onPlayerStopped(player: AbstractPlayer) {
+        logError("onPlayerStopped()")
+        FirebaseCrashlytics.getInstance().log("AlarmService.onPlayerStopped()")
+
+        vibrator.cancel()
+
+        player.release()
+    }
+
+    override fun onPlayerReleased(player: AbstractPlayer) {
+        logError("onPlayerReleased()")
+        FirebaseCrashlytics.getInstance().log("AlarmService.onPlayerReleased()")
+
+        broadcastFinishRingActivity(this)
+
+        killService() // will call onDestroy()
     }
 
     override fun onPlayerError(error: PlayerError) {
@@ -365,10 +413,10 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
 
         notifyErrorOccurred(this, error)
 
-        playEmergencyAlarm(error, shouldUseDeviceVolume)
+        playEmergencyAlarm(shouldUseDeviceVolume)
     }
 
-    private fun playEmergencyAlarm(error: PlayerError, shouldUseDeviceVolume: Boolean) {
+    private fun playEmergencyAlarm(shouldUseDeviceVolume: Boolean) {
         FirebaseCrashlytics.getInstance().log("AlarmService.playEmergencyAlarm()")
 
         if (this::player.isInitialized) {
@@ -376,10 +424,9 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
                 .log("AlarmService.playEmergencyAlarm() player was initialized")
             vibrator.cancel()
 
-            if (error !is SpotifyPlayerError) {
-                FirebaseCrashlytics.getInstance()
-                    .log("AlarmService.playEmergencyAlarm() Spotify error")
-                player.release()
+            // Only release default player without callback, otherwise it will call killService()
+            if (player is DefaultPlayer) {
+                (player as DefaultPlayer).releaseWithoutCallback()
             }
         }
 
@@ -387,13 +434,11 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
             MediaType.DEFAULT,
             isEmergencyAlarm = true,
             shouldUseDeviceVolume = shouldUseDeviceVolume,
-            playerListener = null,
+            playerListener = this,
             fadeIn = false,
             fadeInDuration = 0
         )
-        player.prepare(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM).toString())
-
-        onPlayerInitialized(player)
+        player.prepareAsync(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM).toString())
     }
 
     private fun notifyErrorOccurred(context: Context, error: PlayerError) {
@@ -462,8 +507,8 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
     private fun disableOneShotAlarm(context: Context?, alarm: Alarm) {
         if (!alarm.recurring && !alarm.isSnooze && !alarm.isPreview) {
             FirebaseCrashlytics.getInstance().log("AlarmService.disableOneShotAlarm()")
-            alarmLiveData = alarmRepository.get(alarm)
-            alarmLiveData?.observe(this, {
+            disableOneShotAlarmLiveData = alarmRepository.get(alarm)
+            disableOneShotAlarmLiveData?.observe(this, {
                 it?.let {
                     AlarmHandler.cancelAlarm(context, it)
                     alarmRepository.update(it)
@@ -471,7 +516,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
 
                 // Important: we remove the observer because otherwise, as we change the value inside the observer
                 // it would call the observer in a infinite loop
-                alarmLiveData?.removeObservers(this)
+                disableOneShotAlarmLiveData?.removeObservers(this)
             })
         }
     }

@@ -38,6 +38,8 @@ class SpotifyPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
 
     private var playerApi: PlayerApi? = null
     private var imagesApi: ImagesApi? = null
+    private var internalPlayerStateSubscription: Subscription<PlayerState>? = null
+    private var hasStartedPlayingAtLeast = false
 
     override fun init(playerListener: PlayerListener?) {
         super.init(playerListener)
@@ -65,6 +67,28 @@ class SpotifyPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
         // sync prepared is not used for this player
     }
 
+    /**
+     * We unsubscribe and reset when another Spotify alarm fires
+     * to avoid ´onPlayerStopped()´ to be wrongly called.
+     */
+    fun unsubscribePlayerState() {
+        this.internalPlayerStateSubscription?.cancel()
+        this.internalPlayerStateSubscription = null
+        resetPlayerStarted()
+    }
+
+    /**
+     * Resetting is important because when Spotify is playing a Track, skipping next will PAUSE the
+     * playback which will then call ´onPlayerStopped()´ and release player and closing Service.
+     * Whereas if Spotify is playing an Album/Playlist, skipping doesn't seem to PAUSE the playback
+     * when ´internalPlayerStateSubscription´ receives callback event.
+     *
+     * Note: as long as repeat mode = Repeat.ALL, this is not necessary. Call it anyway for safety
+     */
+    private fun resetPlayerStarted() {
+        this.hasStartedPlayingAtLeast = false
+    }
+
     @ExperimentalCoroutinesApi
     override fun onConnected(spotifyAppRemote: SpotifyAppRemote) {
         this.spotifyAppRemote = spotifyAppRemote
@@ -76,6 +100,7 @@ class SpotifyPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
         this.playerApi = this.spotifyAppRemote!!.playerApi
         this.imagesApi = this.spotifyAppRemote!!.imagesApi
 
+        context.logError("onConnected($playerAction)")
         FirebaseCrashlytics.getInstance().log("SpotifyPlayer.onConnected($playerAction)")
 
         // When AppRemote disconnected and auto-reconnect, ´playerAction´ will exec unhandled action
@@ -92,6 +117,21 @@ class SpotifyPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
             }
         }
 
+        unsubscribePlayerState()
+        internalPlayerStateSubscription = getPlayerStateSubscription()
+        internalPlayerStateSubscription?.setEventCallback { playerState ->
+            if (playerState.track != null) {
+                if (playerState.isPaused) {
+                    if (hasStartedPlayingAtLeast) {
+                        playerListener?.onPlayerStopped(this@SpotifyPlayer)
+                        unsubscribePlayerState()
+                    }
+                } else {
+                    hasStartedPlayingAtLeast = true
+                }
+            }
+        }
+
         playerConnectedLiveData.value = true
 
         callSuspendFunctionStateCallbacks(ConnectionState.CONNECTED)
@@ -103,6 +143,8 @@ class SpotifyPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
         FirebaseCrashlytics.getInstance().log("SpotifyPlayer.onFailure()")
 
         connectionState = ConnectionState.DISCONNECTED
+
+        unsubscribePlayerState()
 
         playerConnectedLiveData.value = false
 
@@ -186,6 +228,7 @@ class SpotifyPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
 
         context.logError("skipNext()")
         coroutinesScope.launch {
+            resetPlayerStarted()
             getAppRemote()?.playerApi?.skipNext()?.setErrorCallback {
                 handlePlayerActionError(playerAction, it)
             }
@@ -198,6 +241,7 @@ class SpotifyPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
 
         context.logError("skipPrevious()")
         coroutinesScope.launch {
+            resetPlayerStarted()
             getAppRemote()?.playerApi?.skipPrevious()?.setErrorCallback {
                 handlePlayerActionError(playerAction, it)
             }
@@ -267,12 +311,14 @@ class SpotifyPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
         context.logError("release()")
         coroutinesScope.launch {
             FirebaseCrashlytics.getInstance().log("SpotifyPlayer.release()")
-            SpotifyAppRemote.disconnect(getAppRemote())
+            SpotifyAppRemote.disconnect(spotifyAppRemote)
 
             // Give some time to the player to disconnect
             delay(500)
 
             resetInitialDeviceVolume()
+
+            playerListener?.onPlayerReleased(this@SpotifyPlayer)
 
             job.cancel()
         }

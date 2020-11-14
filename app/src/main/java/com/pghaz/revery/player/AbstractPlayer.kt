@@ -11,11 +11,15 @@ import com.pghaz.revery.settings.SettingsHandler
 abstract class AbstractPlayer(
     protected val context: Context,
     protected val streamType: Int,
-    private val isEmergencyAlarm: Boolean,
+    val isEmergencyAlarm: Boolean,
     private val shouldUseDeviceVolume: Boolean
 ) {
     interface PlayerListener {
         fun onPlayerInitialized(player: AbstractPlayer)
+
+        fun onPlayerStopped(player: AbstractPlayer)
+
+        fun onPlayerReleased(player: AbstractPlayer)
 
         fun onPlayerError(error: PlayerError)
     }

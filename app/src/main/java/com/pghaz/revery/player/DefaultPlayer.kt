@@ -132,6 +132,7 @@ class DefaultPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
 
     override fun stop() {
         pause()
+        playerListener?.onPlayerStopped(this)
     }
 
     override fun play() {
@@ -168,6 +169,14 @@ class DefaultPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
     }
 
     override fun release() {
+        release(true)
+    }
+
+    fun releaseWithoutCallback() {
+        release(false)
+    }
+
+    private fun release(withCallback: Boolean) {
         mediaPlayer?.let {
             if (it.isPlaying) {
                 it.stop()
@@ -181,6 +190,10 @@ class DefaultPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
         resetInitialDeviceVolume()
 
         abandonAudioFocus()
+
+        if (withCallback) {
+            playerListener?.onPlayerReleased(this)
+        }
     }
 
     companion object {

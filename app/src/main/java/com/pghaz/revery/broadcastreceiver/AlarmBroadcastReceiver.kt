@@ -6,7 +6,6 @@ import android.content.Intent
 import android.os.Build
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.pghaz.revery.alarm.AlarmHandler
-import com.pghaz.revery.alarm.RingActivity
 import com.pghaz.revery.model.app.alarm.Alarm
 import com.pghaz.revery.notification.NotificationHandler
 import com.pghaz.revery.service.AlarmService
@@ -104,12 +103,10 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
                 AlarmService.buildSnoozeNotification(context, snoozeAlarm)
             )
 
-            broadcastFinishRingActivity(context)
             broadcastServiceSnooze(context, alarm)
         } else if (ACTION_ALARM_STOP == intent.action) {
             val alarm = IntentUtils.safeGetAlarmFromIntent(intent)
 
-            broadcastFinishRingActivity(context)
             broadcastServiceShouldStop(context, alarm)
         } else if (ACTION_ALARM_SNOOZE_CANCEL == intent.action) {
             val alarm = IntentUtils.safeGetAlarmFromIntent(intent)
@@ -118,11 +115,6 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
 
             AlarmHandler.cancelAlarm(context, alarm)
         }
-    }
-
-    private fun broadcastFinishRingActivity(context: Context) {
-        val stopRingActivityIntent = RingActivity.getFinishRingActivityBroadcastReceiver(context)
-        LocalBroadcastManager.getInstance(context).sendBroadcast(stopRingActivityIntent)
     }
 
     private fun broadcastServiceShouldStop(context: Context, alarm: Alarm) {
