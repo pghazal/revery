@@ -1,9 +1,15 @@
 package com.pghaz.revery.timer
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import com.pghaz.revery.broadcastreceiver.TimerBroadcastReceiver
 import com.pghaz.revery.model.app.Timer
 import com.pghaz.revery.model.app.TimerState
 
 object TimerHandler {
+
+    private const val ONE_MINUTE = 60 * 1000
 
     fun startTimer(timer: Timer) {
         val now = System.currentTimeMillis()
@@ -31,7 +37,7 @@ object TimerHandler {
     }
 
     fun incrementTimer(timer: Timer) {
-        timer.remainingTime += 60 * 1000
+        timer.remainingTime += ONE_MINUTE
     }
 
     fun getElapsedTime(timer: Timer): Long {
@@ -50,5 +56,39 @@ object TimerHandler {
         }
 
         return elapsedTime
+    }
+
+    fun setAlarm(context: Context?, timer: Timer) {
+        val alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager?
+
+        alarmManager?.let {
+            val intent = TimerBroadcastReceiver.getTimerIsOverActionIntent(context, timer)
+
+            val pendingIntent = PendingIntent.getBroadcast(
+                context?.applicationContext,
+                timer.id.toInt(),
+                intent,
+                PendingIntent.FLAG_ONE_SHOT
+            )
+
+            it.setExact(AlarmManager.RTC_WAKEUP, timer.stopTime, pendingIntent)
+        }
+    }
+
+    fun removeAlarm(context: Context?, timer: Timer) {
+        val alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager?
+
+        alarmManager?.let {
+            val intent = TimerBroadcastReceiver.getTimerIsOverActionIntent(context, timer)
+
+            val pendingIntent = PendingIntent.getBroadcast(
+                context?.applicationContext,
+                timer.id.toInt(),
+                intent,
+                PendingIntent.FLAG_ONE_SHOT
+            )
+
+            it.cancel(pendingIntent)
+        }
     }
 }

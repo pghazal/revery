@@ -3,6 +3,7 @@ package com.pghaz.revery.util
 import android.content.Intent
 import android.os.Bundle
 import com.pghaz.revery.model.app.Alarm
+import com.pghaz.revery.model.app.Timer
 
 object IntentUtils {
 
@@ -30,5 +31,31 @@ object IntentUtils {
         val alarmBundle = Bundle()
         alarmBundle.putParcelable(Arguments.ARGS_ALARM, alarm)
         return alarmBundle
+    }
+
+    fun safePutTimerIntoIntent(intent: Intent, timer: Timer) {
+        val timerBundle = getTimerBundle(timer)
+        intent.putExtra(Arguments.ARGS_BUNDLE_TIMER, timerBundle)
+    }
+
+    fun safeGetTimerFromIntent(intent: Intent): Timer {
+        val timerBundle = intent.getBundleExtra(Arguments.ARGS_BUNDLE_TIMER)
+        return timerBundle?.getParcelable<Timer>(Arguments.ARGS_TIMER) as Timer
+    }
+
+    fun safePutTimerIntoBundle(bundle: Bundle, timer: Timer) {
+        val timerBundle = getTimerBundle(timer)
+        bundle.putBundle(Arguments.ARGS_BUNDLE_TIMER, timerBundle)
+    }
+
+    fun safeGetTimerFromBundle(bundle: Bundle?): Timer {
+        val timerBundle = bundle?.getBundle(Arguments.ARGS_BUNDLE_TIMER)
+        return timerBundle?.getParcelable<Timer>(Arguments.ARGS_TIMER) as Timer
+    }
+
+    private fun getTimerBundle(timer: Timer): Bundle {
+        val timerBundle = Bundle()
+        timerBundle.putParcelable(Arguments.ARGS_TIMER, timer)
+        return timerBundle
     }
 }

@@ -70,7 +70,23 @@
             android:label="@string/android_settings" />
 
         <receiver
-            android:name="com.pghaz.revery.broadcastreceiver.AlarmBroadcastReceiver"
+            android:name=".broadcastreceiver.AlarmBroadcastReceiver"
+            android:directBootAware="true"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="android.intent.action.PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.DATE_CHANGED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".broadcastreceiver.TimerBroadcastReceiver"
             android:directBootAware="true"
             android:enabled="true"
             android:exported="true">
@@ -92,6 +108,11 @@
 
         <service
             android:name="com.pghaz.revery.service.RescheduleAlarmsService"
+            android:enabled="true"
+            android:exported="false" />
+
+        <service
+            android:name="com.pghaz.revery.service.TimerService"
             android:enabled="true"
             android:exported="false" />
 

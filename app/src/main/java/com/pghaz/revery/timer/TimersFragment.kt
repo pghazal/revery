@@ -113,28 +113,34 @@ class TimersFragment : BaseFragment(), OnTimerClickListener {
     }
 
     override fun onPlayPauseButtonClicked(timer: Timer) {
-        when (timer.state) {
-            TimerState.CREATED,
-            TimerState.PAUSED -> {
-                timersViewModel.startTimer(timer)
+        context?.let {
+            when (timer.state) {
+                TimerState.CREATED,
+                TimerState.PAUSED -> {
+                    timersViewModel.startTimer(it, timer)
+                }
+
+                TimerState.RUNNING -> {
+                    timersViewModel.pauseTimer(it, timer)
+                }
             }
 
-            TimerState.RUNNING -> {
-                timersViewModel.pauseTimer(timer)
-            }
+            timersViewModel.update(timer)
         }
-
-        timersViewModel.update(timer)
     }
 
     override fun onResetButtonClicked(timer: Timer) {
-        timersViewModel.resetTimer(timer)
-        timersViewModel.update(timer)
+        context?.let {
+            timersViewModel.resetTimer(it, timer)
+            timersViewModel.update(timer)
+        }
     }
 
     override fun onIncrementButtonClicked(timer: Timer) {
-        timersViewModel.incrementTimer(timer)
-        timersViewModel.update(timer)
+        context?.let {
+            timersViewModel.incrementTimer(it, timer)
+            timersViewModel.update(timer)
+        }
     }
 
     override fun onResume() {

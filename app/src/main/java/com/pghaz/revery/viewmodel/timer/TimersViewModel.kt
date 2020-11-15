@@ -1,6 +1,7 @@
 package com.pghaz.revery.viewmodel.timer
 
 import android.app.Application
+import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import com.pghaz.revery.model.app.Timer
 import com.pghaz.revery.repository.TimerRepository
@@ -11,22 +12,28 @@ class TimersViewModel(application: Application) : AndroidViewModel(application) 
     private val timerRepository = TimerRepository(application)
     val timersLiveData = timerRepository.getTimersLiveData()
 
-    fun startTimer(timer: Timer) {
+    fun startTimer(context: Context, timer: Timer) {
         TimerHandler.startTimer(timer)
+
+        TimerHandler.setAlarm(context, timer)
     }
 
-    fun pauseTimer(timer: Timer) {
+    fun pauseTimer(context: Context, timer: Timer) {
         TimerHandler.pauseTimer(timer)
+
+        TimerHandler.removeAlarm(context, timer)
     }
 
-    fun resetTimer(timer: Timer) {
+    fun resetTimer(context: Context, timer: Timer) {
         TimerHandler.resetTimer(timer)
+
+        TimerHandler.removeAlarm(context, timer)
     }
 
-    fun incrementTimer(timer: Timer) {
-        pauseTimer(timer)
+    fun incrementTimer(context: Context, timer: Timer) {
+        pauseTimer(context, timer)
         TimerHandler.incrementTimer(timer)
-        startTimer(timer)
+        startTimer(context, timer)
     }
 
     fun update(timer: Timer) {
