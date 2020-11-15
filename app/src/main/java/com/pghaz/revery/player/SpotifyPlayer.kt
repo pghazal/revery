@@ -56,6 +56,7 @@ class SpotifyPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
     override fun prepareAsync(uri: String?) {
         playerAction = PlayerAction.ACTION_START
         currentUri = uri!!
+        SpotifyAppRemote.disconnect(spotifyAppRemote)
         SpotifyAppRemote.connect(context, connectionParams, this)
 
         FirebaseCrashlytics.getInstance().log("SpotifyPlayer.prepareAsync()")
@@ -207,6 +208,19 @@ class SpotifyPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
         }
     }
 
+    private fun handlePlayerActionError(shouldPlayEmergencyAlarm: Boolean, throwable: Throwable) {
+        context.logError("handlePlayerActionError($shouldPlayEmergencyAlarm, $throwable)")
+        FirebaseCrashlytics.getInstance().log("handlePlayerActionError($shouldPlayEmergencyAlarm)")
+
+        if (shouldPlayEmergencyAlarm) {
+            unsubscribePlayerState()
+            val playerError = getPlayerError(throwable)
+            playerListener?.onPlayerError(playerError)
+        } else {
+            FirebaseCrashlytics.getInstance().recordException(throwable)
+        }
+    }
+
     fun getPlayerStateSubscription(): Subscription<PlayerState>? {
         context.logError("getPlayerStateSubscription()")
         return playerApi?.subscribeToPlayerState()
@@ -230,7 +244,7 @@ class SpotifyPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
         coroutinesScope.launch {
             resetPlayerStarted()
             getAppRemote()?.playerApi?.skipNext()?.setErrorCallback {
-                handlePlayerActionError(playerAction, it)
+                handlePlayerActionError(false, it)
             }
         }
     }
@@ -243,7 +257,7 @@ class SpotifyPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
         coroutinesScope.launch {
             resetPlayerStarted()
             getAppRemote()?.playerApi?.skipPrevious()?.setErrorCallback {
-                handlePlayerActionError(playerAction, it)
+                handlePlayerActionError(false, it)
             }
         }
     }
@@ -255,7 +269,7 @@ class SpotifyPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
         context.logError("internalStart()")
         coroutinesScope.launch {
             getAppRemote()?.playerApi?.play(currentUri)?.setErrorCallback {
-                handlePlayerActionError(playerAction, it)
+                handlePlayerActionError(true, it)
             }
         }
     }
@@ -268,7 +282,7 @@ class SpotifyPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
         coroutinesScope.launch {
             FirebaseCrashlytics.getInstance().log("SpotifyPlayer.stop()")
             getAppRemote()?.playerApi?.pause()?.setErrorCallback {
-                handlePlayerActionError(playerAction, it)
+                handlePlayerActionError(false, it)
             }
         }
     }
@@ -281,7 +295,7 @@ class SpotifyPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
         coroutinesScope.launch {
             FirebaseCrashlytics.getInstance().log("SpotifyPlayer.play()")
             getAppRemote()?.playerApi?.resume()?.setErrorCallback {
-                handlePlayerActionError(playerAction, it)
+                handlePlayerActionError(false, it)
             }
         }
     }
@@ -294,14 +308,9 @@ class SpotifyPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
         coroutinesScope.launch {
             FirebaseCrashlytics.getInstance().log("SpotifyPlayer.pause()")
             getAppRemote()?.playerApi?.pause()?.setErrorCallback {
-                handlePlayerActionError(playerAction, it)
+                handlePlayerActionError(false, it)
             }
         }
-    }
-
-    private fun handlePlayerActionError(playerAction: PlayerAction, throwable: Throwable) {
-        context.logError(playerAction.name, throwable)
-        FirebaseCrashlytics.getInstance().recordException(throwable)
     }
 
     @ExperimentalCoroutinesApi
