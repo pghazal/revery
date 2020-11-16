@@ -291,7 +291,7 @@ class RingActivity : BaseActivity() {
 
             player.playerConnectedLiveData.observe(this, { isPlayerConnected ->
                 if (isPlayerConnected) {
-                    playerStateSubscription?.cancel()
+                    unsubscribeFromPlayerState()
                     playerStateSubscription = player.getPlayerStateSubscription()
 
                     playerStateSubscription?.setEventCallback { playerState ->
@@ -315,11 +315,19 @@ class RingActivity : BaseActivity() {
                                 playerState.playbackRestrictions.canSkipPrev
                         }
                     }
+                } else {
+                    unsubscribeFromPlayerState()
                 }
             })
         } else {
             controllersContainer.visibility = View.GONE
             updateBackgroundImage(alarm.metadata.imageUrl)
+            unsubscribeFromPlayerState()
+        }
+    }
+
+    private fun unsubscribeFromPlayerState() {
+        if (playerStateSubscription?.isCanceled == false) {
             playerStateSubscription?.cancel()
         }
     }
@@ -387,6 +395,7 @@ class RingActivity : BaseActivity() {
     }
 
     override fun onDestroy() {
+        unsubscribeFromPlayerState()
         unbindFromAlarmService()
         unregisterFromLocalAlarmBroadcastReceiver()
         super.onDestroy()

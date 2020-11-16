@@ -343,7 +343,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
         // Otherwise if it a SpotifyPlayer, unsubscribe from Player before it pauses to avoid
         // callback on ´onPlayerReleased()´ called which kills the Service
         else if (player is SpotifyPlayer) {
-            (player as SpotifyPlayer).unsubscribePlayerState()
+            (player as SpotifyPlayer).unsubscribePlayerStateAndDisconnect()
         }
     }
 

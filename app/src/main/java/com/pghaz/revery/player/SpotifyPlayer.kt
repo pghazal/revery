@@ -43,7 +43,6 @@ class SpotifyPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
 
     override fun init(playerListener: PlayerListener?) {
         super.init(playerListener)
-        playerConnectedLiveData.value = false
 
         SpotifyAppRemote.setDebugMode(BuildConfig.DEBUG)
 
@@ -56,7 +55,8 @@ class SpotifyPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
     override fun prepareAsync(uri: String?) {
         playerAction = PlayerAction.ACTION_START
         currentUri = uri!!
-        SpotifyAppRemote.disconnect(spotifyAppRemote)
+
+        unsubscribePlayerStateAndDisconnect()
         SpotifyAppRemote.connect(context, connectionParams, this)
 
         FirebaseCrashlytics.getInstance().log("SpotifyPlayer.prepareAsync()")
@@ -68,12 +68,26 @@ class SpotifyPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
         // sync prepared is not used for this player
     }
 
+    fun unsubscribePlayerStateAndDisconnect() {
+        context.logError("unsubscribePlayerStateAndDisconnect()")
+
+        connectionState = ConnectionState.DISCONNECTED
+
+        playerConnectedLiveData.value = false
+
+        unsubscribePlayerState()
+
+        SpotifyAppRemote.disconnect(spotifyAppRemote)
+    }
+
     /**
      * We unsubscribe and reset when another Spotify alarm fires
      * to avoid ´onPlayerStopped()´ to be wrongly called.
      */
-    fun unsubscribePlayerState() {
-        this.internalPlayerStateSubscription?.cancel()
+    private fun unsubscribePlayerState() {
+        if (this.internalPlayerStateSubscription?.isCanceled == false) {
+            this.internalPlayerStateSubscription?.cancel()
+        }
         this.internalPlayerStateSubscription = null
         resetPlayerStarted()
     }
@@ -143,11 +157,7 @@ class SpotifyPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
 
         FirebaseCrashlytics.getInstance().log("SpotifyPlayer.onFailure()")
 
-        connectionState = ConnectionState.DISCONNECTED
-
-        unsubscribePlayerState()
-
-        playerConnectedLiveData.value = false
+        unsubscribePlayerStateAndDisconnect()
 
         if (error is SpotifyConnectionTerminatedException) {
             FirebaseCrashlytics.getInstance()
@@ -208,17 +218,10 @@ class SpotifyPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
         }
     }
 
-    private fun handlePlayerActionError(shouldPlayEmergencyAlarm: Boolean, throwable: Throwable) {
-        context.logError("handlePlayerActionError($shouldPlayEmergencyAlarm, $throwable)")
-        FirebaseCrashlytics.getInstance().log("handlePlayerActionError($shouldPlayEmergencyAlarm)")
-
-        if (shouldPlayEmergencyAlarm) {
-            unsubscribePlayerState()
-            val playerError = getPlayerError(throwable)
-            playerListener?.onPlayerError(playerError)
-        } else {
-            FirebaseCrashlytics.getInstance().recordException(throwable)
-        }
+    private fun handlePlayerActionError(throwable: Throwable) {
+        context.logError("handlePlayerActionError($throwable)")
+        val playerError = getPlayerError(throwable)
+        FirebaseCrashlytics.getInstance().recordException(playerError)
     }
 
     fun getPlayerStateSubscription(): Subscription<PlayerState>? {
@@ -244,7 +247,7 @@ class SpotifyPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
         coroutinesScope.launch {
             resetPlayerStarted()
             getAppRemote()?.playerApi?.skipNext()?.setErrorCallback {
-                handlePlayerActionError(false, it)
+                handlePlayerActionError(it)
             }
         }
     }
@@ -257,7 +260,7 @@ class SpotifyPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
         coroutinesScope.launch {
             resetPlayerStarted()
             getAppRemote()?.playerApi?.skipPrevious()?.setErrorCallback {
-                handlePlayerActionError(false, it)
+                handlePlayerActionError(it)
             }
         }
     }
@@ -269,7 +272,7 @@ class SpotifyPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
         context.logError("internalStart()")
         coroutinesScope.launch {
             getAppRemote()?.playerApi?.play(currentUri)?.setErrorCallback {
-                handlePlayerActionError(true, it)
+                handlePlayerActionError(it)
             }
         }
     }
@@ -282,7 +285,7 @@ class SpotifyPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
         coroutinesScope.launch {
             FirebaseCrashlytics.getInstance().log("SpotifyPlayer.stop()")
             getAppRemote()?.playerApi?.pause()?.setErrorCallback {
-                handlePlayerActionError(false, it)
+                handlePlayerActionError(it)
             }
         }
     }
@@ -295,7 +298,7 @@ class SpotifyPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
         coroutinesScope.launch {
             FirebaseCrashlytics.getInstance().log("SpotifyPlayer.play()")
             getAppRemote()?.playerApi?.resume()?.setErrorCallback {
-                handlePlayerActionError(false, it)
+                handlePlayerActionError(it)
             }
         }
     }
@@ -308,7 +311,7 @@ class SpotifyPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
         coroutinesScope.launch {
             FirebaseCrashlytics.getInstance().log("SpotifyPlayer.pause()")
             getAppRemote()?.playerApi?.pause()?.setErrorCallback {
-                handlePlayerActionError(false, it)
+                handlePlayerActionError(it)
             }
         }
     }
@@ -320,7 +323,7 @@ class SpotifyPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
         context.logError("release()")
         coroutinesScope.launch {
             FirebaseCrashlytics.getInstance().log("SpotifyPlayer.release()")
-            SpotifyAppRemote.disconnect(spotifyAppRemote)
+            unsubscribePlayerStateAndDisconnect()
 
             // Give some time to the player to disconnect
             delay(500)
