@@ -28,7 +28,7 @@ class TimersAdapter(private val timerClickListener: OnTimerClickListener) : Base
         super.onBindViewHolder(holder, position)
         val timer = getItem(position) as Timer
 
-        if (timer.state == TimerState.RUNNING) {
+        if (timer.state == TimerState.RUNNING || timer.state == TimerState.RINGING) {
             (holder as TimerViewHolder).startUpdateTimer()
         } else {
             (holder as TimerViewHolder).stopUpdateTimer()
@@ -40,5 +40,10 @@ class TimersAdapter(private val timerClickListener: OnTimerClickListener) : Base
             is Timer -> ListItemType.Timer
             else -> ListItemType.Empty
         }.ordinal
+    }
+
+    override fun onViewDetachedFromWindow(holder: BaseViewHolder) {
+        super.onViewDetachedFromWindow(holder)
+        (holder as TimerViewHolder).onViewHolderRecycled()
     }
 }

@@ -42,7 +42,9 @@ open class TimerViewHolder(view: View) : BaseViewHolder(view) {
             updateRemainingTime(timer, elapsedTime)
             updatePlayPauseButton(timer)
 
-            if (timer.state == TimerState.RUNNING) {
+            if (timer.state == TimerState.RUNNING ||
+                timer.state == TimerState.RINGING
+            ) {
                 mHandler.postDelayed(this, 1000L)
             }
         }
@@ -117,6 +119,12 @@ open class TimerViewHolder(view: View) : BaseViewHolder(view) {
                 incrementButton.visibility = View.VISIBLE
             }
 
+            TimerState.RINGING -> {
+                playPauseButton.setImageResource(R.drawable.ic_stop_filled)
+                resetButton.visibility = View.INVISIBLE
+                incrementButton.visibility = View.VISIBLE
+            }
+
             TimerState.PAUSED -> {
                 playPauseButton.setImageResource(R.drawable.ic_play_filled)
                 resetButton.visibility = View.VISIBLE
@@ -130,6 +138,7 @@ open class TimerViewHolder(view: View) : BaseViewHolder(view) {
         playPauseButton.setOnClickListener(null)
         resetButton.setOnClickListener(null)
         incrementButton.setOnClickListener(null)
+        stopUpdateTimer()
     }
 
     private fun updateRemainingTime(timer: Timer, elapsedTime: Long) {

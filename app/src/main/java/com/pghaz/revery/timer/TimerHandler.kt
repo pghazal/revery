@@ -25,7 +25,15 @@ object TimerHandler {
     }
 
     fun pauseTimer(timer: Timer) {
-        timer.remainingTime = timer.stopTime - System.currentTimeMillis()
+        val now = System.currentTimeMillis()
+
+        // If time is over
+        timer.remainingTime = if (now >= timer.stopTime) {
+            0
+        } else {
+            timer.stopTime - now
+        }
+
         timer.state = TimerState.PAUSED
     }
 
@@ -44,9 +52,11 @@ object TimerHandler {
         val now = System.currentTimeMillis()
         val elapsedTime: Long
 
-        if (timer.state == TimerState.RUNNING && now >= timer.stopTime) {
-            elapsedTime = 0
-            resetTimer(timer)
+        if (timer.state == TimerState.RINGING) {
+            elapsedTime = now - timer.stopTime
+        } else if (timer.state == TimerState.RUNNING && now >= timer.stopTime) {
+            elapsedTime = now - timer.stopTime
+            timer.state = TimerState.RINGING
         } else if (timer.state != TimerState.RUNNING && timer.stopTime != 0L) {
             elapsedTime = timer.remainingTime
         } else if (timer.state != TimerState.RUNNING && timer.stopTime == 0L) {

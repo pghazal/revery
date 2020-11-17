@@ -9,6 +9,7 @@
     <string name="notification_channel_alarm_snooze">Rappels d\'alarme</string>
     <string name="notification_channel_alarm_reschedule">Alarmes reprogrammées</string>
     <string name="notification_channel_alarm_error">Alarmes d\'urgence</string>
+    <string name="notification_channel_timer">Minuteurs</string>
     <string name="rescheduling_alarms_after_reboot">Les alarmes ont été reprogrammées après le redémarrage du téléphone</string>
     <string name="go_to_settings">Ouvrir les paramètres</string>
     <string name="notification_disabled">Notifications désactivées</string>
@@ -176,6 +177,8 @@
     <string name="text_hour_short">h</string>
     <string name="text_minute_short">min</string>
     <string name="text_second_short">s</string>
+    <string name="timer_is_over">Temps écoulé</string>
+    <string name="timer_increment">+1min</string>
 
     <!-- TIME REMAINING TEXTS -->
     <plurals name="time_remaining_days">

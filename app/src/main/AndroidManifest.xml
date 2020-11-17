@@ -112,7 +112,7 @@
             android:exported="false" />
 
         <service
-            android:name="com.pghaz.revery.service.TimerService"
+            android:name="com.pghaz.revery.service.TimerOverService"
             android:enabled="true"
             android:exported="false" />
 

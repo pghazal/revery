@@ -23,10 +23,12 @@ object NotificationHandler {
     const val CHANNEL_ID_ALARM_RESCHEDULE = "REVERY_CHANNEL_ALARM_RESCHEDULE"
     const val CHANNEL_ID_ALARM_SNOOZE = "REVERY_CHANNEL_ALARM_SNOOZE"
     const val CHANNEL_ID_ALARM_ERROR = "REVERY_CHANNEL_ALARM_ERROR"
+    const val CHANNEL_ID_TIMER_OVER = "REVERY_CHANNEL_TIMER_OVER"
 
     const val NOTIFICATION_ID_ALARM = 1
     const val NOTIFICATION_ID_RESCHEDULE = 2
     const val NOTIFICATION_ID_ERROR_OCCURRED = 3
+    const val NOTIFICATION_ID_TIMER_OVER = 4
 
     fun createNotificationChannels(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -58,10 +60,17 @@ object NotificationHandler {
                 NotificationManager.IMPORTANCE_HIGH
             )
 
+            val timerOverChannel = NotificationChannel(
+                CHANNEL_ID_TIMER_OVER,
+                context.getString(R.string.notification_channel_timer),
+                NotificationManager.IMPORTANCE_HIGH
+            )
+
             manager?.createNotificationChannel(alarmChannel)
             manager?.createNotificationChannel(alarmSnoozeChannel)
             manager?.createNotificationChannel(alarmRescheduleChannel)
             manager?.createNotificationChannel(emergencyAlarmChannel)
+            manager?.createNotificationChannel(timerOverChannel)
         }
     }
 
@@ -125,7 +134,11 @@ object NotificationHandler {
         if (intent.resolveActivity(context.packageManager) != null) {
             launcherForResultComponent.launchActivityForResult(intent, requestCode)
         } else {
-            Toast.makeText(context, context.getString(R.string.do_not_disturb_cannot_handle), Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                context,
+                context.getString(R.string.do_not_disturb_cannot_handle),
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 

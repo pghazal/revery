@@ -123,6 +123,10 @@ class TimersFragment : BaseFragment(), OnTimerClickListener {
                 TimerState.RUNNING -> {
                     timersViewModel.pauseTimer(it, timer)
                 }
+
+                TimerState.RINGING -> {
+                    timersViewModel.stopTimer(it, timer)
+                }
             }
 
             timersViewModel.update(timer)
@@ -146,6 +150,13 @@ class TimersFragment : BaseFragment(), OnTimerClickListener {
     override fun onResume() {
         super.onResume()
         showAddTimerButtonIfHidden()
+    }
+
+    override fun onDestroyView() {
+        // This is necessary so that ´adapter.onViewDetachedFromWindow()´ gets called when
+        // fragment is destroy, avoiding memory leak
+        recyclerView.adapter = null
+        super.onDestroyView()
     }
 
     companion object {
