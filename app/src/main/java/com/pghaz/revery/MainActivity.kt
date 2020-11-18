@@ -16,12 +16,12 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.pghaz.revery.alarm.AlarmsFragment
 import com.pghaz.revery.alarm.RingActivity
 import com.pghaz.revery.extension.logError
-import com.pghaz.revery.model.app.Alarm
 import com.pghaz.revery.notification.NotificationHandler
 import com.pghaz.revery.onboarding.OnBoardingActivity
 import com.pghaz.revery.service.AlarmService
 import com.pghaz.revery.service.RescheduleAlarmsService
 import com.pghaz.revery.settings.SettingsHandler
+import com.pghaz.revery.settings.TabFeature
 import com.pghaz.revery.spotify.BaseSpotifyActivity
 import com.pghaz.revery.timer.TimersFragment
 import kotlinx.android.synthetic.main.activity_main.*
@@ -118,8 +118,16 @@ class MainActivity : BaseSpotifyActivity(), BottomNavigationView.OnNavigationIte
             return
         }
 
-        // Select the first tab (alarms) which will call the listener as it is already set
-        bottomNavigationView.selectedItemId = R.id.alarm_tab
+        // Select the last opened tab which will call the listener as it is already set
+        when (SettingsHandler.getLastOpenedTab(this)) {
+            TabFeature.ALARM -> {
+                bottomNavigationView.selectedItemId = R.id.alarm_tab
+            }
+
+            TabFeature.TIMER -> {
+                bottomNavigationView.selectedItemId = R.id.timer_tab
+            }
+        }
     }
 
     override fun onResume() {
@@ -172,6 +180,7 @@ class MainActivity : BaseSpotifyActivity(), BottomNavigationView.OnNavigationIte
     }
 
     private fun openAlarmsTab() {
+        SettingsHandler.setLastOpenedTab(this, TabFeature.ALARM)
         // Check first if the fragment already exists
         var alarmsFragment =
             supportFragmentManager.findFragmentByTag(AlarmsFragment.TAG) as AlarmsFragment?
@@ -183,6 +192,7 @@ class MainActivity : BaseSpotifyActivity(), BottomNavigationView.OnNavigationIte
     }
 
     private fun openTimersTab() {
+        SettingsHandler.setLastOpenedTab(this, TabFeature.TIMER)
         // Check first if the fragment already exists
         var timersFragment =
             supportFragmentManager.findFragmentByTag(TimersFragment.TAG) as TimersFragment?

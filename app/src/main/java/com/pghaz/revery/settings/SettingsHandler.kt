@@ -9,6 +9,10 @@ object SettingsHandler {
 
     private const val SETTINGS_SHARED_PREF = "com.pghaz.revery.settings"
 
+    // General
+    private const val SETTINGS_LAST_OPENED_TAB = "$SETTINGS_SHARED_PREF.last.opened.tab"
+    private val DEFAULT_LAST_OPENED_TAB = TabFeature.ALARM
+
     // On Boarding
     private const val SETTINGS_ON_BOARDING_SHOWN = "$SETTINGS_SHARED_PREF.on.boarding.shown"
     private const val DEFAULT_ON_BOARDING_SHOWN = false
@@ -70,6 +74,21 @@ object SettingsHandler {
             SETTINGS_ON_BOARDING_SHOWN,
             DEFAULT_ON_BOARDING_SHOWN
         )
+    }
+
+    fun setLastOpenedTab(context: Context, tabFeature: TabFeature) {
+        val sharedPreferences = getSharedPreferences(context)
+        val editor = sharedPreferences.edit()
+        editor.putInt(SETTINGS_LAST_OPENED_TAB, tabFeature.ordinal)
+        editor.apply()
+    }
+
+    fun getLastOpenedTab(context: Context): TabFeature {
+        val sharedPreferences = getSharedPreferences(context)
+        return TabFeature.values()[sharedPreferences.getInt(
+            SETTINGS_LAST_OPENED_TAB,
+            DEFAULT_LAST_OPENED_TAB.ordinal
+        )]
     }
 
     fun setSnoozeDuration(context: Context, snoozeDuration: SnoozeDuration) {
