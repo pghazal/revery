@@ -212,7 +212,8 @@ class CreateEditTimerFragment : BaseCreateEditFragment() {
             it.state = TimerState.CREATED
             it.startTime = 0
             it.stopTime = 0
-            it.remainingTime = 0
+            it.remainingTime = it.duration
+            it.extraTime = 0
 
             // Safe init of uri
             if (it.metadata.uri.isNullOrEmpty()) {
@@ -246,7 +247,8 @@ class CreateEditTimerFragment : BaseCreateEditFragment() {
             it.state = TimerState.CREATED
             it.startTime = 0
             it.stopTime = 0
-            it.remainingTime = 0
+            it.remainingTime = it.duration
+            it.extraTime = 0
 
             createEditTimerViewModel.editTimer(context, it)
         }

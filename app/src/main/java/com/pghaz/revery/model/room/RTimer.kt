@@ -24,5 +24,6 @@ data class RTimer(
     var startTime: Long = 0,
     var stopTime: Long = 0,
     var remainingTime: Long = 0,
+    var extraTime: Long = 0,
     var state: RTimerState = RTimerState.CREATED
 ) : RBaseModel()

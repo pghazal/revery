@@ -1,10 +1,12 @@
 package com.pghaz.revery.adapter.timer
 
+import android.animation.ValueAnimator
 import android.net.Uri
 import android.os.Handler
 import android.text.TextUtils
 import android.view.View
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatImageButton
@@ -32,14 +34,17 @@ open class TimerViewHolder(view: View) : BaseViewHolder(view) {
     private val playPauseButton: AppCompatImageButton = view.findViewById(R.id.playPauseButton)
     private val resetButton: AppCompatImageButton = view.findViewById(R.id.resetButton)
     private val incrementButton: AppCompatButton = view.findViewById(R.id.incrementButton)
+    private val circularProgressBar: ProgressBar = view.findViewById(R.id.circularProgressBar)
+
+    private var progressAnimator = ValueAnimator()
 
     private lateinit var timer: Timer
 
     private val mHandler: Handler = Handler()
     private val updateRemainingTimeRunnable = object : Runnable {
         override fun run() {
-            val elapsedTime = TimerHandler.getElapsedTime(timer)
-            updateRemainingTime(timer, elapsedTime)
+            val remainingTime = TimerHandler.getRemainingTime(timer)
+            updateRemainingTime(timer, remainingTime)
             updatePlayPauseButton(timer)
 
             if (timer.state == TimerState.RUNNING ||
@@ -66,7 +71,9 @@ open class TimerViewHolder(view: View) : BaseViewHolder(view) {
         }
 
         val elapsedTime = TimerHandler.getElapsedTime(timer)
-        updateRemainingTime(timer, elapsedTime)
+        val remainingTime = TimerHandler.getRemainingTime(timer)
+        updateProgress(timer, elapsedTime, remainingTime)
+        updateRemainingTime(timer, remainingTime)
         updatePlayPauseButton(timer)
 
         if (TextUtils.isEmpty(timer.label)) {
@@ -111,24 +118,28 @@ open class TimerViewHolder(view: View) : BaseViewHolder(view) {
                 playPauseButton.setImageResource(R.drawable.ic_play_filled)
                 resetButton.visibility = View.INVISIBLE
                 incrementButton.visibility = View.INVISIBLE
+                circularProgressBar.visibility = View.GONE
             }
 
             TimerState.RUNNING -> {
                 playPauseButton.setImageResource(R.drawable.ic_pause_filled)
                 resetButton.visibility = View.INVISIBLE
                 incrementButton.visibility = View.VISIBLE
+                circularProgressBar.visibility = View.VISIBLE
             }
 
             TimerState.RINGING -> {
                 playPauseButton.setImageResource(R.drawable.ic_stop_filled)
                 resetButton.visibility = View.INVISIBLE
                 incrementButton.visibility = View.VISIBLE
+                circularProgressBar.visibility = View.VISIBLE
             }
 
             TimerState.PAUSED -> {
                 playPauseButton.setImageResource(R.drawable.ic_play_filled)
                 resetButton.visibility = View.VISIBLE
                 incrementButton.visibility = View.INVISIBLE
+                circularProgressBar.visibility = View.VISIBLE
             }
         }
     }
@@ -138,12 +149,78 @@ open class TimerViewHolder(view: View) : BaseViewHolder(view) {
         playPauseButton.setOnClickListener(null)
         resetButton.setOnClickListener(null)
         incrementButton.setOnClickListener(null)
+        progressAnimator.cancel()
         stopUpdateTimer()
     }
 
-    private fun updateRemainingTime(timer: Timer, elapsedTime: Long) {
-        val milliseconds = if (elapsedTime > 0) {
-            elapsedTime
+    /**
+     * Copyright Mahmoud Bentriou <3
+     */
+    /*val N = 100
+    private fun l(timer: Timer, i: Int): Long {
+        return i * ((timer.duration + timer.extraTime) / N)
+    }
+
+    private fun getProgressWithMoud(timer: Timer, elapsedTime: Long): Int {
+        var progress = 0
+        for (k in 0..N) {
+            if (l(timer, k) <= elapsedTime && l(timer, k + 1) > elapsedTime) {
+                progress = k
+                break
+            }
+        }
+        return progress
+    }*/
+
+    private fun updateProgress(timer: Timer, elapsedTime: Long, remainingTime: Long) {
+        val remainingMilliseconds = if (remainingTime > 0) {
+            remainingTime
+        } else {
+            timer.duration
+        }
+
+        val step = (timer.duration + timer.extraTime) / 100
+        val progress = (elapsedTime / step).toInt()
+
+        circularProgressBar.progress = progress
+
+        circularProgressBar.context.logError("remainingMilliseconds: $remainingMilliseconds")
+        circularProgressBar.context.logError("progress: $progress")
+
+        progressAnimator.duration = remainingMilliseconds
+        progressAnimator.setIntValues(progress, 100)
+        progressAnimator.removeAllUpdateListeners()
+        progressAnimator.addUpdateListener { animation ->
+            circularProgressBar.context.logError("animatedValue: ${animation.animatedValue}")
+            circularProgressBar.progress = animation.animatedValue as Int
+        }
+
+        when (timer.state) {
+            TimerState.RUNNING -> {
+                if (!progressAnimator.isStarted) {
+                    circularProgressBar.context.logError("start()")
+                    progressAnimator.start()
+                } else if (progressAnimator.isPaused) {
+                    circularProgressBar.context.logError("resume()")
+                    progressAnimator.resume()
+                }
+            }
+            TimerState.PAUSED -> {
+                if (!progressAnimator.isPaused) {
+                    circularProgressBar.context.logError("pause()")
+                    progressAnimator.pause()
+                }
+            }
+
+            else -> {
+                // do nothing
+            }
+        }
+    }
+
+    private fun updateRemainingTime(timer: Timer, remainingTime: Long) {
+        val milliseconds = if (remainingTime > 0) {
+            remainingTime
         } else {
             timer.duration
         }

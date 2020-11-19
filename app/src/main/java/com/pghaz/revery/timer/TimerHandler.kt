@@ -40,32 +40,38 @@ object TimerHandler {
     fun resetTimer(timer: Timer) {
         timer.startTime = 0
         timer.stopTime = 0
-        timer.remainingTime = 0
+        timer.remainingTime = timer.duration
+        timer.extraTime = 0
         timer.state = TimerState.CREATED
     }
 
     fun incrementTimer(timer: Timer) {
         timer.remainingTime += ONE_MINUTE
+        timer.extraTime += ONE_MINUTE
+    }
+
+    fun getRemainingTime(timer: Timer): Long {
+        val now = System.currentTimeMillis()
+        val remainingTime: Long
+
+        if (timer.state == TimerState.RINGING) {
+            remainingTime = now - timer.stopTime
+        } else if (timer.state == TimerState.RUNNING && now >= timer.stopTime) {
+            remainingTime = now - timer.stopTime
+            timer.state = TimerState.RINGING
+        } else if (timer.state != TimerState.RUNNING && timer.stopTime != 0L) {
+            remainingTime = timer.remainingTime
+        } else if (timer.state != TimerState.RUNNING && timer.stopTime == 0L) {
+            remainingTime = 0
+        } else {
+            remainingTime = timer.stopTime - now
+        }
+
+        return remainingTime
     }
 
     fun getElapsedTime(timer: Timer): Long {
-        val now = System.currentTimeMillis()
-        val elapsedTime: Long
-
-        if (timer.state == TimerState.RINGING) {
-            elapsedTime = now - timer.stopTime
-        } else if (timer.state == TimerState.RUNNING && now >= timer.stopTime) {
-            elapsedTime = now - timer.stopTime
-            timer.state = TimerState.RINGING
-        } else if (timer.state != TimerState.RUNNING && timer.stopTime != 0L) {
-            elapsedTime = timer.remainingTime
-        } else if (timer.state != TimerState.RUNNING && timer.stopTime == 0L) {
-            elapsedTime = 0
-        } else {
-            elapsedTime = timer.stopTime - now
-        }
-
-        return elapsedTime
+        return timer.duration + timer.extraTime - timer.remainingTime
     }
 
     fun setAlarm(context: Context?, timer: Timer) {

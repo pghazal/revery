@@ -128,6 +128,22 @@
         android:src="@drawable/ic_play_filled"
         app:srcCompat="@drawable/ic_play_filled" />
 
+    <ProgressBar
+        android:id="@+id/circularProgressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/playPauseButton"
+        android:layout_alignTop="@+id/playPauseButton"
+        android:layout_alignEnd="@+id/playPauseButton"
+        android:layout_alignBottom="@+id/playPauseButton"
+        android:indeterminate="false"
+        android:max="100"
+        android:progress="0"
+        android:progressDrawable="@drawable/progress_circular"
+        android:secondaryProgress="100"
+        tools:progress="50" />
+
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/resetButton"
         style="@style/ReveryButtonBorderless"

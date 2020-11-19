@@ -17,6 +17,7 @@ data class Timer(
     var startTime: Long = 0,
     var stopTime: Long = 0,
     var remainingTime: Long = 0,
+    var extraTime: Long = 0,
     var state: TimerState = TimerState.CREATED
 ) : BaseModel(), Parcelable {
 
@@ -31,6 +32,7 @@ data class Timer(
         startTime = timer.startTime,
         stopTime = timer.stopTime,
         remainingTime = timer.remainingTime,
+        extraTime = timer.extraTime,
         state = timer.state
     )
 
@@ -47,6 +49,7 @@ data class Timer(
                 startTime = timer.startTime,
                 stopTime = timer.stopTime,
                 remainingTime = timer.remainingTime,
+                extraTime = timer.extraTime,
                 state = TimerState.values()[timer.state.ordinal]
             )
         }
@@ -63,6 +66,7 @@ data class Timer(
                 startTime = timer.startTime,
                 stopTime = timer.stopTime,
                 remainingTime = timer.remainingTime,
+                extraTime = timer.extraTime,
                 state = RTimerState.values()[timer.state.ordinal]
             )
         }
