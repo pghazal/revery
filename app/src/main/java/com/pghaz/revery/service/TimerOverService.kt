@@ -84,6 +84,14 @@ class TimerOverService : LifecycleService(), AbstractPlayer.PlayerListener {
                         }
 
                         player.stop()
+                    } else {
+                        synchronized(timersOverQueue) {
+                            timersOverQueue.forEach { item ->
+                                if (item.id == timer.id) {
+                                    timersOverQueue.remove(item)
+                                }
+                            }
+                        }
                     }
                 }
                 // This is called when user clicked "+1 min" from the notification ONLY
