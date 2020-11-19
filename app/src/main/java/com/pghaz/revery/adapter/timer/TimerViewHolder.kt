@@ -179,8 +179,12 @@ open class TimerViewHolder(view: View) : BaseViewHolder(view) {
             timer.duration
         }
 
-        val step = (timer.duration + timer.extraTime) / 100
-        val progress = (elapsedTime / step).toInt()
+        val progress = if (timer.state == TimerState.RINGING) {
+            100
+        } else {
+            val step = (timer.duration + timer.extraTime) / 100
+            (elapsedTime / step).toInt()
+        }
 
         circularProgressBar.progress = progress
 
@@ -191,23 +195,20 @@ open class TimerViewHolder(view: View) : BaseViewHolder(view) {
         progressAnimator.setIntValues(progress, 100)
         progressAnimator.removeAllUpdateListeners()
         progressAnimator.addUpdateListener { animation ->
-            circularProgressBar.context.logError("animatedValue: ${animation.animatedValue}")
             circularProgressBar.progress = animation.animatedValue as Int
         }
 
         when (timer.state) {
             TimerState.RUNNING -> {
                 if (!progressAnimator.isStarted) {
-                    circularProgressBar.context.logError("start()")
                     progressAnimator.start()
                 } else if (progressAnimator.isPaused) {
-                    circularProgressBar.context.logError("resume()")
                     progressAnimator.resume()
                 }
             }
+
             TimerState.PAUSED -> {
                 if (!progressAnimator.isPaused) {
-                    circularProgressBar.context.logError("pause()")
                     progressAnimator.pause()
                 }
             }
