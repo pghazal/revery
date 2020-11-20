@@ -18,6 +18,7 @@ import com.pghaz.revery.broadcastreceiver.TimerBroadcastReceiver
 import com.pghaz.revery.extension.logError
 import com.pghaz.revery.model.app.MediaType
 import com.pghaz.revery.model.app.Timer
+import com.pghaz.revery.model.app.TimerState
 import com.pghaz.revery.notification.NotificationHandler
 import com.pghaz.revery.player.AbstractPlayer
 import com.pghaz.revery.player.PlayerError
@@ -211,53 +212,55 @@ class TimerRunningService : LifecycleService(), AbstractPlayer.PlayerListener {
     }
 
     private fun updateNotificationProgress(timer: Timer) {
-        val remainingTime = TimerHandler.getRemainingTime(timer)
+        if (timer.state == TimerState.RUNNING) {
+            val remainingTime = TimerHandler.getRemainingTime(timer)
 
-        val milliseconds = if (remainingTime > 0) {
-            remainingTime
-        } else {
-            timer.duration
-        }
+            val milliseconds = if (remainingTime > 0) {
+                remainingTime
+            } else {
+                timer.duration
+            }
 
-        val seconds = (milliseconds / 1000).toInt() % 60
-        val minutes = (milliseconds / (1000 * 60) % 60).toInt()
-        val hours = (milliseconds / (1000 * 60 * 60) % 24).toInt()
+            val seconds = (milliseconds / 1000).toInt() % 60
+            val minutes = (milliseconds / (1000 * 60) % 60).toInt()
+            val hours = (milliseconds / (1000 * 60 * 60) % 24).toInt()
 
-        val hourText = if (hours > 0) {
-            String.format("%02d%s", hours, getString(R.string.text_hour_short))
-        } else {
-            ""
-        }
+            val hourText = if (hours > 0) {
+                String.format("%02d%s", hours, getString(R.string.text_hour_short))
+            } else {
+                ""
+            }
 
-        val minuteText = String.format("%02d%s", minutes, getString(R.string.text_minute_short))
+            val minuteText = String.format("%02d%s", minutes, getString(R.string.text_minute_short))
 
-        var secondText = if (seconds > 0) {
-            String.format("%02d%s", seconds, getString(R.string.text_second_short))
-        } else {
-            ""
-        }
+            var secondText = if (seconds > 0) {
+                String.format("%02d%s", seconds, getString(R.string.text_second_short))
+            } else {
+                ""
+            }
 
-        if (hours == 0 && seconds == 0) {
-            secondText = String.format("00%s", getString(R.string.text_second_short))
-        }
+            if (hours == 0 && seconds == 0) {
+                secondText = String.format("00%s", getString(R.string.text_second_short))
+            }
 
-        val progressText = String.format("%s %s %s", hourText, minuteText, secondText)
+            val progressText = String.format("%s %s %s", hourText, minuteText, secondText)
 
-        notificationBuilder.setContentTitle(
-            String.format(
-                "%s %s",
-                getString(R.string.remaining_time),
-                progressText
+            notificationBuilder.setContentTitle(
+                String.format(
+                    "%s %s",
+                    getString(R.string.remaining_time),
+                    progressText
+                )
+            ).setContentText(timer.label)
+                .setStyle(NotificationCompat.BigTextStyle().bigText(timer.label))
+
+            notification = notificationBuilder.build()
+            NotificationHandler.notify(
+                this,
+                NotificationHandler.NOTIFICATION_ID_TIMER_RUNNING,
+                notification
             )
-        ).setContentText(timer.label)
-            .setStyle(NotificationCompat.BigTextStyle().bigText(timer.label))
-
-        notification = notificationBuilder.build()
-        NotificationHandler.notify(
-            this,
-            NotificationHandler.NOTIFICATION_ID_TIMER_RUNNING,
-            notification
-        )
+        }
     }
 
     private fun configurePlayer(timer: Timer, player: SpotifyPlayer) {
