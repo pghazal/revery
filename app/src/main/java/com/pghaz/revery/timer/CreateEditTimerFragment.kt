@@ -1,5 +1,6 @@
 package com.pghaz.revery.timer
 
+import android.animation.AnimatorSet
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
@@ -8,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.pghaz.revery.BaseCreateEditFragment
 import com.pghaz.revery.R
 import com.pghaz.revery.alarm.MoreOptionsAlarmFragment
+import com.pghaz.revery.animation.AnimatorUtils
 import com.pghaz.revery.model.app.*
 import com.pghaz.revery.ringtone.AudioPickerHelper
 import com.pghaz.revery.settings.SettingsFragment
@@ -15,9 +17,13 @@ import com.pghaz.revery.settings.SettingsHandler
 import com.pghaz.revery.util.Arguments
 import com.pghaz.revery.viewmodel.timer.CreateEditTimerViewModel
 import com.shawnlin.numberpicker.NumberPicker
+import kotlinx.android.synthetic.main.floating_action_buttons_music_menu_timers.*
 import kotlinx.android.synthetic.main.fragment_timer_create_edit.*
 
 class CreateEditTimerFragment : BaseCreateEditFragment() {
+
+    private lateinit var openMenuMusicAnimation: AnimatorSet
+    private lateinit var closeMenuMusicAnimation: AnimatorSet
 
     private lateinit var createEditTimerViewModel: CreateEditTimerViewModel
     private var timer: Timer? = null
@@ -186,6 +192,58 @@ class CreateEditTimerFragment : BaseCreateEditFragment() {
         moreOptionsButton.setOnClickListener {
             showMoreOptionsFragment()
         }
+    }
+
+    override fun openMusicMenu() {
+        val spotifyAnimator = AnimatorUtils.getTranslationAnimatorSet(
+            spotifyButton,
+            true,
+            AnimatorUtils.TranslationAxis.VERTICAL,
+            AnimatorUtils.TranslationDirection.FROM_BOTTOM_TO_TOP,
+            true,
+            0,
+            400
+        )
+
+        openMenuMusicAnimation = AnimatorSet()
+        openMenuMusicAnimation.playTogether(spotifyAnimator)
+
+        if (this::closeMenuMusicAnimation.isInitialized && closeMenuMusicAnimation.isRunning) {
+            closeMenuMusicAnimation.cancel()
+        }
+
+        AnimatorUtils.fadeIn(floatingMenuTouchInterceptor, 300, 0)
+        openMenuMusicAnimation.start()
+        chooseRingtoneButtonAnimatorSet.pause()
+
+        chooseRingtoneButton.isExpanded = true
+        chooseRingtoneButton.setImageResource(R.drawable.ic_close)
+    }
+
+    override fun closeMusicMenu() {
+        val spotifyAnimator = AnimatorUtils.getTranslationAnimatorSet(
+            spotifyButton,
+            false,
+            AnimatorUtils.TranslationAxis.VERTICAL,
+            AnimatorUtils.TranslationDirection.FROM_TOP_TO_BOTTOM,
+            true,
+            0,
+            400
+        )
+
+        closeMenuMusicAnimation = AnimatorSet()
+        closeMenuMusicAnimation.playTogether(spotifyAnimator)
+
+        if (this::openMenuMusicAnimation.isInitialized && openMenuMusicAnimation.isRunning) {
+            openMenuMusicAnimation.cancel()
+        }
+
+        AnimatorUtils.fadeOut(floatingMenuTouchInterceptor, 300, 0)
+        closeMenuMusicAnimation.start()
+        chooseRingtoneButtonAnimatorSet.resume()
+
+        chooseRingtoneButton.isExpanded = false
+        chooseRingtoneButton.setImageResource(R.drawable.ic_music_note)
     }
 
     private fun showMoreOptionsFragment() {

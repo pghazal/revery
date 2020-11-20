@@ -329,7 +329,7 @@
         tools:visibility="visible" />
 
     <include
-        layout="@layout/floating_action_buttons_music_menu"
+        layout="@layout/floating_action_buttons_music_menu_timers"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/chooseRingtoneButton"

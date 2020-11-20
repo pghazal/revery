@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ringtoneMenuContainer"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="end"
+    android:orientation="vertical">
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/spotifyButton"
+        style="@style/ReveryExtendedFloatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/half_base_margin"
+        android:layout_marginBottom="@dimen/half_base_margin"
+        android:text="@string/spotify"
+        android:visibility="invisible"
+        app:icon="@drawable/ic_spotify_icon_white"
+        tools:visibility="visible" />
+
+</LinearLayout>

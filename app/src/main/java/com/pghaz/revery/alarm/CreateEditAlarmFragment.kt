@@ -1,5 +1,6 @@
 package com.pghaz.revery.alarm
 
+import android.animation.AnimatorSet
 import android.os.Bundle
 import android.text.TextUtils
 import android.text.format.DateFormat
@@ -8,9 +9,10 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
 import com.pghaz.revery.BaseCreateEditFragment
 import com.pghaz.revery.R
+import com.pghaz.revery.animation.AnimatorUtils
 import com.pghaz.revery.model.app.Alarm
-import com.pghaz.revery.model.app.MediaMetadata
 import com.pghaz.revery.model.app.BaseModel
+import com.pghaz.revery.model.app.MediaMetadata
 import com.pghaz.revery.model.app.MediaType
 import com.pghaz.revery.ringtone.AudioPickerHelper
 import com.pghaz.revery.settings.SettingsFragment
@@ -19,10 +21,14 @@ import com.pghaz.revery.util.Arguments
 import com.pghaz.revery.util.DateTimeUtils
 import com.pghaz.revery.viewmodel.alarm.CreateEditAlarmViewModel
 import com.shawnlin.numberpicker.NumberPicker
+import kotlinx.android.synthetic.main.floating_action_buttons_music_menu_alarms.*
 import kotlinx.android.synthetic.main.fragment_alarm_create_edit.*
 import java.util.*
 
 class CreateEditAlarmFragment : BaseCreateEditFragment() {
+
+    private lateinit var openMenuMusicAnimation: AnimatorSet
+    private lateinit var closeMenuMusicAnimation: AnimatorSet
 
     private lateinit var createEditAlarmViewModel: CreateEditAlarmViewModel
     private var alarm: Alarm? = null
@@ -269,6 +275,150 @@ class CreateEditAlarmFragment : BaseCreateEditFragment() {
         moreOptionsButton.setOnClickListener {
             showMoreOptionsFragment()
         }
+
+        musicPickerButton.setOnClickListener {
+            if (chooseRingtoneButton.isExpanded) {
+                closeMusicMenu()
+            }
+            openMusicPicker()
+        }
+
+        ringtonePickerButton.setOnClickListener {
+            if (chooseRingtoneButton.isExpanded) {
+                closeMusicMenu()
+            }
+            openRingtonePicker()
+        }
+
+        defaultRingtoneButton.setOnClickListener {
+            if (chooseRingtoneButton.isExpanded) {
+                closeMusicMenu()
+            }
+            val metadata = getDefaultRingtoneMetadata()
+            handleDefaultRingtoneClicked(metadata)
+        }
+    }
+
+    override fun openMusicMenu() {
+        val defaultRingtoneAnimator = AnimatorUtils.getTranslationAnimatorSet(
+            defaultRingtoneButton,
+            true,
+            AnimatorUtils.TranslationAxis.VERTICAL,
+            AnimatorUtils.TranslationDirection.FROM_BOTTOM_TO_TOP,
+            true,
+            0,
+            400
+        )
+
+        val spotifyAnimator = AnimatorUtils.getTranslationAnimatorSet(
+            spotifyButton,
+            true,
+            AnimatorUtils.TranslationAxis.VERTICAL,
+            AnimatorUtils.TranslationDirection.FROM_BOTTOM_TO_TOP,
+            true,
+            0,
+            500
+        )
+
+        val musicPickerAnimator = AnimatorUtils.getTranslationAnimatorSet(
+            musicPickerButton,
+            true,
+            AnimatorUtils.TranslationAxis.VERTICAL,
+            AnimatorUtils.TranslationDirection.FROM_BOTTOM_TO_TOP,
+            true,
+            0,
+            600
+        )
+
+        val ringtonePickerAnimator = AnimatorUtils.getTranslationAnimatorSet(
+            ringtonePickerButton,
+            true,
+            AnimatorUtils.TranslationAxis.VERTICAL,
+            AnimatorUtils.TranslationDirection.FROM_BOTTOM_TO_TOP,
+            true,
+            0,
+            700
+        )
+
+        openMenuMusicAnimation = AnimatorSet()
+        openMenuMusicAnimation.playTogether(
+            defaultRingtoneAnimator,
+            spotifyAnimator,
+            musicPickerAnimator,
+            ringtonePickerAnimator
+        )
+
+        if (this::closeMenuMusicAnimation.isInitialized && closeMenuMusicAnimation.isRunning) {
+            closeMenuMusicAnimation.cancel()
+        }
+
+        AnimatorUtils.fadeIn(floatingMenuTouchInterceptor, 300, 0)
+        openMenuMusicAnimation.start()
+        chooseRingtoneButtonAnimatorSet.pause()
+
+        chooseRingtoneButton.isExpanded = true
+        chooseRingtoneButton.setImageResource(R.drawable.ic_close)
+    }
+
+    override fun closeMusicMenu() {
+        val defaultRingtoneAnimator = AnimatorUtils.getTranslationAnimatorSet(
+            defaultRingtoneButton,
+            false,
+            AnimatorUtils.TranslationAxis.VERTICAL,
+            AnimatorUtils.TranslationDirection.FROM_TOP_TO_BOTTOM,
+            true,
+            0,
+            400
+        )
+
+        val spotifyAnimator = AnimatorUtils.getTranslationAnimatorSet(
+            spotifyButton,
+            false,
+            AnimatorUtils.TranslationAxis.VERTICAL,
+            AnimatorUtils.TranslationDirection.FROM_TOP_TO_BOTTOM,
+            true,
+            0,
+            400
+        )
+
+        val musicPickerAnimator = AnimatorUtils.getTranslationAnimatorSet(
+            musicPickerButton,
+            false,
+            AnimatorUtils.TranslationAxis.VERTICAL,
+            AnimatorUtils.TranslationDirection.FROM_TOP_TO_BOTTOM,
+            true,
+            0,
+            400
+        )
+
+        val ringtonePickerAnimator = AnimatorUtils.getTranslationAnimatorSet(
+            ringtonePickerButton,
+            false,
+            AnimatorUtils.TranslationAxis.VERTICAL,
+            AnimatorUtils.TranslationDirection.FROM_TOP_TO_BOTTOM,
+            true,
+            0,
+            400
+        )
+
+        closeMenuMusicAnimation = AnimatorSet()
+        closeMenuMusicAnimation.playTogether(
+            defaultRingtoneAnimator,
+            spotifyAnimator,
+            musicPickerAnimator,
+            ringtonePickerAnimator
+        )
+
+        if (this::openMenuMusicAnimation.isInitialized && openMenuMusicAnimation.isRunning) {
+            openMenuMusicAnimation.cancel()
+        }
+
+        AnimatorUtils.fadeOut(floatingMenuTouchInterceptor, 300, 0)
+        closeMenuMusicAnimation.start()
+        chooseRingtoneButtonAnimatorSet.resume()
+
+        chooseRingtoneButton.isExpanded = false
+        chooseRingtoneButton.setImageResource(R.drawable.ic_music_note)
     }
 
     private fun showMoreOptionsFragment() {

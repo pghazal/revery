@@ -35,7 +35,7 @@ import com.pghaz.revery.spotify.BaseSpotifyActivity
 import com.pghaz.revery.spotify.BaseSpotifyBottomSheetDialogFragment
 import com.pghaz.revery.util.Arguments
 import io.github.kaaes.spotify.webapi.core.models.UserPrivate
-import kotlinx.android.synthetic.main.floating_action_buttons_music_menu.*
+import kotlinx.android.synthetic.main.floating_action_buttons_default_alarm_menu.*
 import kotlinx.android.synthetic.main.fragment_settings.*
 
 class SettingsFragment : BaseSpotifyBottomSheetDialogFragment() {

@@ -17,10 +17,9 @@ import com.pghaz.revery.adapter.spotify.SpotifyAlbumViewHolder
 import com.pghaz.revery.adapter.spotify.SpotifyArtistViewHolder
 import com.pghaz.revery.adapter.spotify.SpotifyPlaylistViewHolder
 import com.pghaz.revery.adapter.spotify.SpotifyTrackViewHolder
-import com.pghaz.revery.animation.AnimatorUtils
 import com.pghaz.revery.image.ImageLoader
-import com.pghaz.revery.model.app.MediaMetadata
 import com.pghaz.revery.model.app.BaseModel
+import com.pghaz.revery.model.app.MediaMetadata
 import com.pghaz.revery.model.app.MediaType
 import com.pghaz.revery.model.app.spotify.AlbumWrapper
 import com.pghaz.revery.model.app.spotify.ArtistWrapper
@@ -34,14 +33,12 @@ import com.pghaz.revery.settings.SettingsHandler
 import com.pghaz.revery.spotify.SpotifyActivity
 import com.pghaz.revery.util.Arguments
 import com.pghaz.revery.util.ViewUtils
-import kotlinx.android.synthetic.main.floating_action_buttons_music_menu.*
+import kotlinx.android.synthetic.main.floating_action_buttons_music_menu_timers.*
 import kotlinx.android.synthetic.main.fragment_alarm_create_edit.*
 
 abstract class BaseCreateEditFragment : BaseBottomSheetDialogFragment() {
 
-    private lateinit var chooseRingtoneButtonAnimatorSet: AnimatorSet
-    private lateinit var openMenuMusicAnimation: AnimatorSet
-    private lateinit var closeMenuMusicAnimation: AnimatorSet
+    protected lateinit var chooseRingtoneButtonAnimatorSet: AnimatorSet
 
     protected fun updateMetadataViews(metadata: MediaMetadata) {
         if (metadata.type != MediaType.DEFAULT) {
@@ -127,28 +124,6 @@ abstract class BaseCreateEditFragment : BaseBottomSheetDialogFragment() {
             openSpotifyActivity()
         }
 
-        musicPickerButton.setOnClickListener {
-            if (chooseRingtoneButton.isExpanded) {
-                closeMusicMenu()
-            }
-            openMusicPicker()
-        }
-
-        ringtonePickerButton.setOnClickListener {
-            if (chooseRingtoneButton.isExpanded) {
-                closeMusicMenu()
-            }
-            openRingtonePicker()
-        }
-
-        defaultRingtoneButton.setOnClickListener {
-            if (chooseRingtoneButton.isExpanded) {
-                closeMusicMenu()
-            }
-            val metadata = getDefaultRingtoneMetadata()
-            handleDefaultRingtoneClicked(metadata)
-        }
-
         startChooseRingtoneButtonAnimation()
     }
 
@@ -175,7 +150,7 @@ abstract class BaseCreateEditFragment : BaseBottomSheetDialogFragment() {
         chooseRingtoneButtonAnimatorSet.start()
     }
 
-    private fun getDefaultRingtoneMetadata(): MediaMetadata {
+    protected fun getDefaultRingtoneMetadata(): MediaMetadata {
         return MediaMetadata().apply {
             context?.let { nonNullContext ->
                 val uri = SettingsHandler.getDefaultAudioUri(nonNullContext)
@@ -197,129 +172,11 @@ abstract class BaseCreateEditFragment : BaseBottomSheetDialogFragment() {
         startActivityForResult(intent, SpotifyActivity.REQUEST_CODE_SPOTIFY_SEARCH)
     }
 
-    private fun openMusicMenu() {
-        val defaultRingtoneAnimator = AnimatorUtils.getTranslationAnimatorSet(
-            defaultRingtoneButton,
-            true,
-            AnimatorUtils.TranslationAxis.VERTICAL,
-            AnimatorUtils.TranslationDirection.FROM_BOTTOM_TO_TOP,
-            true,
-            0,
-            400
-        )
+    abstract fun openMusicMenu()
 
-        val spotifyAnimator = AnimatorUtils.getTranslationAnimatorSet(
-            spotifyButton,
-            true,
-            AnimatorUtils.TranslationAxis.VERTICAL,
-            AnimatorUtils.TranslationDirection.FROM_BOTTOM_TO_TOP,
-            true,
-            0,
-            500
-        )
+    abstract fun closeMusicMenu()
 
-        val musicPickerAnimator = AnimatorUtils.getTranslationAnimatorSet(
-            musicPickerButton,
-            true,
-            AnimatorUtils.TranslationAxis.VERTICAL,
-            AnimatorUtils.TranslationDirection.FROM_BOTTOM_TO_TOP,
-            true,
-            0,
-            600
-        )
-
-        val ringtonePickerAnimator = AnimatorUtils.getTranslationAnimatorSet(
-            ringtonePickerButton,
-            true,
-            AnimatorUtils.TranslationAxis.VERTICAL,
-            AnimatorUtils.TranslationDirection.FROM_BOTTOM_TO_TOP,
-            true,
-            0,
-            700
-        )
-
-        openMenuMusicAnimation = AnimatorSet()
-        openMenuMusicAnimation.playTogether(
-            defaultRingtoneAnimator,
-            spotifyAnimator,
-            musicPickerAnimator,
-            ringtonePickerAnimator
-        )
-
-        if (this::closeMenuMusicAnimation.isInitialized && closeMenuMusicAnimation.isRunning) {
-            closeMenuMusicAnimation.cancel()
-        }
-
-        AnimatorUtils.fadeIn(floatingMenuTouchInterceptor, 300, 0)
-        openMenuMusicAnimation.start()
-        chooseRingtoneButtonAnimatorSet.pause()
-
-        chooseRingtoneButton.isExpanded = true
-        chooseRingtoneButton.setImageResource(R.drawable.ic_close)
-    }
-
-    private fun closeMusicMenu() {
-        val defaultRingtoneAnimator = AnimatorUtils.getTranslationAnimatorSet(
-            defaultRingtoneButton,
-            false,
-            AnimatorUtils.TranslationAxis.VERTICAL,
-            AnimatorUtils.TranslationDirection.FROM_TOP_TO_BOTTOM,
-            true,
-            0,
-            400
-        )
-
-        val spotifyAnimator = AnimatorUtils.getTranslationAnimatorSet(
-            spotifyButton,
-            false,
-            AnimatorUtils.TranslationAxis.VERTICAL,
-            AnimatorUtils.TranslationDirection.FROM_TOP_TO_BOTTOM,
-            true,
-            0,
-            400
-        )
-
-        val musicPickerAnimator = AnimatorUtils.getTranslationAnimatorSet(
-            musicPickerButton,
-            false,
-            AnimatorUtils.TranslationAxis.VERTICAL,
-            AnimatorUtils.TranslationDirection.FROM_TOP_TO_BOTTOM,
-            true,
-            0,
-            400
-        )
-
-        val ringtonePickerAnimator = AnimatorUtils.getTranslationAnimatorSet(
-            ringtonePickerButton,
-            false,
-            AnimatorUtils.TranslationAxis.VERTICAL,
-            AnimatorUtils.TranslationDirection.FROM_TOP_TO_BOTTOM,
-            true,
-            0,
-            400
-        )
-
-        closeMenuMusicAnimation = AnimatorSet()
-        closeMenuMusicAnimation.playTogether(
-            defaultRingtoneAnimator,
-            spotifyAnimator,
-            musicPickerAnimator,
-            ringtonePickerAnimator
-        )
-
-        if (this::openMenuMusicAnimation.isInitialized && openMenuMusicAnimation.isRunning) {
-            openMenuMusicAnimation.cancel()
-        }
-
-        AnimatorUtils.fadeOut(floatingMenuTouchInterceptor, 300, 0)
-        closeMenuMusicAnimation.start()
-        chooseRingtoneButtonAnimatorSet.resume()
-
-        chooseRingtoneButton.isExpanded = false
-        chooseRingtoneButton.setImageResource(R.drawable.ic_music_note)
-    }
-
-    private fun openMusicPicker() {
+    protected fun openMusicPicker() {
         activity?.let {
             val permission = ReveryPermission.WRITE_EXTERNAL_STORAGE
 
@@ -335,7 +192,7 @@ abstract class BaseCreateEditFragment : BaseBottomSheetDialogFragment() {
         }
     }
 
-    private fun openRingtonePicker() {
+    protected fun openRingtonePicker() {
         AudioPickerHelper.showRingtonePicker(
             context,
             childFragmentManager
