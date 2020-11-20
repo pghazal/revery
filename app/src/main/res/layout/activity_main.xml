@@ -16,7 +16,6 @@
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
-        style="@style/ReveryBottomNavigationView"
         android:layout_width="0dp"
         android:layout_height="@dimen/bottom_navigation_view_height"
         app:labelVisibilityMode="labeled"

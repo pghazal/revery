@@ -4,6 +4,9 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:colorPrimary">@color/colorPrimary</item>
+        <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:colorAccent">@color/colorAccent</item>
         <!-- this remove the white screen on start up-->
         <!--<item name="android:windowDisablePreview">true</item>-->
 
@@ -14,6 +17,8 @@
 
         <item name="android:fontFamily">@font/montserrat</item>
         <item name="fontFamily">@font/montserrat</item>
+
+        <item name="bottomNavigationStyle">@style/ReveryBottomNavigationView</item>
 
         <item name="android:buttonStyle">@style/ReveryButton</item>
         <item name="buttonStyle">@style/ReveryButton</item>
@@ -35,7 +40,7 @@
         <item name="android:windowActionBar">false</item>
     </style>
 
-    <style name="ReveryBottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView.PrimarySurface">
+    <style name="ReveryBottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView.Colored">
         <item name="itemTextAppearanceActive">@style/ReveryBottomNavigationView.TextAppearance
         </item>
         <item name="itemTextAppearanceInactive">@style/ReveryBottomNavigationView.TextAppearance
