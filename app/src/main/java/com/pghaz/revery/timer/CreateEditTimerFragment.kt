@@ -4,6 +4,7 @@ import android.animation.AnimatorSet
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
+import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
 import com.pghaz.revery.BaseCreateEditFragment
@@ -199,6 +200,7 @@ class CreateEditTimerFragment : BaseCreateEditFragment() {
         }
 
         moreOptionsButton.setOnClickListener {
+            Toast.makeText(context, "TODO :)", Toast.LENGTH_SHORT).show()
             showMoreOptionsFragment()
         }
     }
