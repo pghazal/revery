@@ -5,5 +5,6 @@ enum class RMediaType {
     SPOTIFY_ARTIST,
     SPOTIFY_ALBUM,
     SPOTIFY_TRACK,
-    SPOTIFY_PLAYLIST
+    SPOTIFY_PLAYLIST,
+    NONE
 }

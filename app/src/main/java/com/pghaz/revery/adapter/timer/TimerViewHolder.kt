@@ -15,6 +15,7 @@ import com.pghaz.revery.adapter.base.BaseViewHolder
 import com.pghaz.revery.image.ImageLoader
 import com.pghaz.revery.image.ImageUtils
 import com.pghaz.revery.model.app.BaseModel
+import com.pghaz.revery.model.app.MediaType
 import com.pghaz.revery.model.app.Timer
 import com.pghaz.revery.model.app.TimerState
 import com.pghaz.revery.timer.TimerHandler
@@ -66,7 +67,7 @@ open class TimerViewHolder(view: View) : BaseViewHolder(view) {
         timer = Timer(model as Timer)
 
         itemView.setOnClickListener {
-            timerClickListener?.onTimerClicked(timer)
+            timerClickListener?.onTimerClicked(Timer(timer))
         }
 
         val elapsedTime = TimerHandler.getElapsedTime(timer)
@@ -84,26 +85,30 @@ open class TimerViewHolder(view: View) : BaseViewHolder(view) {
         labelTextView.text = timer.label
 
         playPauseButton.setOnClickListener {
-            timerClickListener?.onPlayPauseButtonClicked(timer)
+            timerClickListener?.onPlayPauseButtonClicked(Timer(timer))
         }
 
         resetButton.setOnClickListener {
-            timerClickListener?.onResetButtonClicked(timer)
+            timerClickListener?.onResetButtonClicked(Timer(timer))
         }
 
         incrementButton.setOnClickListener {
-            timerClickListener?.onIncrementButtonClicked(timer)
+            timerClickListener?.onIncrementButtonClicked(Timer(timer))
         }
 
-        val imageUri = Uri.parse(timer.metadata.imageUrl)
-        val imageUrl = if (ImageUtils.isInternalFile(imageUri)) {
-            if (ImageUtils.isCoverArtExists(imageUri)) {
-                timer.metadata.imageUrl
+        val imageUrl = if (timer.metadata.type != MediaType.NONE) {
+            val imageUri = Uri.parse(timer.metadata.imageUrl)
+            if (ImageUtils.isInternalFile(imageUri)) {
+                if (ImageUtils.isCoverArtExists(imageUri)) {
+                    timer.metadata.imageUrl
+                } else {
+                    ImageUtils.getCoverArtFilePath(imageView.context, Uri.parse(timer.metadata.uri))
+                }
             } else {
-                ImageUtils.getCoverArtFilePath(imageView.context, Uri.parse(timer.metadata.uri))
+                timer.metadata.imageUrl
             }
         } else {
-            timer.metadata.imageUrl
+            null
         }
 
         ImageLoader.get().load(imageUrl)

@@ -14,10 +14,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/half_base_margin"
-        android:layout_marginBottom="@dimen/half_base_margin"
         android:text="@string/spotify"
         android:visibility="invisible"
         app:icon="@drawable/ic_spotify_icon_white"
+        tools:visibility="visible" />
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/noneButton"
+        style="@style/ReveryExtendedFloatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/half_base_margin"
+        android:layout_marginBottom="@dimen/half_base_margin"
+        android:text="@string/none"
+        android:visibility="invisible"
+        app:icon="@drawable/ic_music_off"
         tools:visibility="visible" />
 
 </LinearLayout>

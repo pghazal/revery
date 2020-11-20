@@ -183,6 +183,7 @@
     <string name="timer_increment">+1min</string>
     <string name="remaining_time">Remaining time:</string>
     <string name="timer_in_use">Timer is in use. Reset before editing.</string>
+    <string name="none">None</string>
 
     <!-- TIME REMAINING TEXTS -->
     <plurals name="time_remaining_days">

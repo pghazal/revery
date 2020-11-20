@@ -13,6 +13,7 @@ import android.widget.RelativeLayout
 import androidx.annotation.CallSuper
 import com.pghaz.revery.adapter.alarm.DefaultMediaViewHolder
 import com.pghaz.revery.adapter.base.BaseViewHolder
+import com.pghaz.revery.adapter.base.EmptyViewHolder
 import com.pghaz.revery.adapter.spotify.SpotifyAlbumViewHolder
 import com.pghaz.revery.adapter.spotify.SpotifyArtistViewHolder
 import com.pghaz.revery.adapter.spotify.SpotifyPlaylistViewHolder
@@ -41,7 +42,7 @@ abstract class BaseCreateEditFragment : BaseBottomSheetDialogFragment() {
     protected lateinit var chooseRingtoneButtonAnimatorSet: AnimatorSet
 
     protected fun updateMetadataViews(metadata: MediaMetadata) {
-        if (metadata.type != MediaType.DEFAULT) {
+        if (metadata.type != MediaType.DEFAULT && metadata.type != MediaType.NONE) {
             moreOptionsButton.visibility = View.VISIBLE
         } else {
             moreOptionsButton.visibility = View.GONE
@@ -49,6 +50,10 @@ abstract class BaseCreateEditFragment : BaseBottomSheetDialogFragment() {
 
         ringtoneInfoContainer.removeAllViews()
         ringtoneInfoContainer.visibility = View.VISIBLE
+
+        if (metadata.type == MediaType.NONE) {
+            return
+        }
 
         val view: View
         val holder: BaseViewHolder
@@ -82,6 +87,11 @@ abstract class BaseCreateEditFragment : BaseBottomSheetDialogFragment() {
                 view = LayoutInflater.from(context)
                     .inflate(R.layout.item_view_alarm_media_square, ringtoneInfoContainer, false)
                 holder = SpotifyPlaylistViewHolder(view)
+            }
+
+            MediaType.NONE -> {
+                view = View(context)
+                holder = EmptyViewHolder(view)
             }
         }
 
@@ -164,6 +174,16 @@ abstract class BaseCreateEditFragment : BaseBottomSheetDialogFragment() {
                 this.description = audioMetadata.description
                 this.imageUrl = audioMetadata.imageUrl
             }
+        }
+    }
+
+    protected fun getClearedMetadata(): MediaMetadata {
+        return MediaMetadata().apply {
+            this.type = MediaType.NONE
+            this.uri = null
+            this.name = null
+            this.description = null
+            this.imageUrl = null
         }
     }
 

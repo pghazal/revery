@@ -10,7 +10,7 @@ import kotlinx.android.parcel.Parcelize
 data class MediaMetadata(
     var uri: String? = null,
     var href: String? = null,
-    var type: MediaType = MediaType.DEFAULT,
+    var type: MediaType = MediaType.NONE,
     var name: String? = null,
     var description: String? = null,
     var imageUrl: String? = null,

@@ -10,10 +10,11 @@ import com.pghaz.revery.BaseCreateEditFragment
 import com.pghaz.revery.R
 import com.pghaz.revery.alarm.MoreOptionsAlarmFragment
 import com.pghaz.revery.animation.AnimatorUtils
-import com.pghaz.revery.model.app.*
-import com.pghaz.revery.ringtone.AudioPickerHelper
+import com.pghaz.revery.model.app.BaseModel
+import com.pghaz.revery.model.app.MediaMetadata
+import com.pghaz.revery.model.app.Timer
+import com.pghaz.revery.model.app.TimerState
 import com.pghaz.revery.settings.SettingsFragment
-import com.pghaz.revery.settings.SettingsHandler
 import com.pghaz.revery.util.Arguments
 import com.pghaz.revery.viewmodel.timer.CreateEditTimerViewModel
 import com.shawnlin.numberpicker.NumberPicker
@@ -189,14 +190,22 @@ class CreateEditTimerFragment : BaseCreateEditFragment() {
             //timer.fadeOutDuration = SettingsHandler.getFadeInDuration(buttonView.context)
         }
 
+        noneButton.setOnClickListener {
+            if (chooseRingtoneButton.isExpanded) {
+                closeMusicMenu()
+            }
+            val metadata = getClearedMetadata()
+            createEditTimerViewModel.metadataLiveData.value = metadata
+        }
+
         moreOptionsButton.setOnClickListener {
             showMoreOptionsFragment()
         }
     }
 
     override fun openMusicMenu() {
-        val spotifyAnimator = AnimatorUtils.getTranslationAnimatorSet(
-            spotifyButton,
+        val noneAnimator = AnimatorUtils.getTranslationAnimatorSet(
+            noneButton,
             true,
             AnimatorUtils.TranslationAxis.VERTICAL,
             AnimatorUtils.TranslationDirection.FROM_BOTTOM_TO_TOP,
@@ -205,8 +214,18 @@ class CreateEditTimerFragment : BaseCreateEditFragment() {
             400
         )
 
+        val spotifyAnimator = AnimatorUtils.getTranslationAnimatorSet(
+            spotifyButton,
+            true,
+            AnimatorUtils.TranslationAxis.VERTICAL,
+            AnimatorUtils.TranslationDirection.FROM_BOTTOM_TO_TOP,
+            true,
+            0,
+            500
+        )
+
         openMenuMusicAnimation = AnimatorSet()
-        openMenuMusicAnimation.playTogether(spotifyAnimator)
+        openMenuMusicAnimation.playTogether(noneAnimator, spotifyAnimator)
 
         if (this::closeMenuMusicAnimation.isInitialized && closeMenuMusicAnimation.isRunning) {
             closeMenuMusicAnimation.cancel()
@@ -221,6 +240,16 @@ class CreateEditTimerFragment : BaseCreateEditFragment() {
     }
 
     override fun closeMusicMenu() {
+        val noneAnimator = AnimatorUtils.getTranslationAnimatorSet(
+            noneButton,
+            false,
+            AnimatorUtils.TranslationAxis.VERTICAL,
+            AnimatorUtils.TranslationDirection.FROM_TOP_TO_BOTTOM,
+            true,
+            0,
+            400
+        )
+
         val spotifyAnimator = AnimatorUtils.getTranslationAnimatorSet(
             spotifyButton,
             false,
@@ -232,7 +261,7 @@ class CreateEditTimerFragment : BaseCreateEditFragment() {
         )
 
         closeMenuMusicAnimation = AnimatorSet()
-        closeMenuMusicAnimation.playTogether(spotifyAnimator)
+        closeMenuMusicAnimation.playTogether(noneAnimator, spotifyAnimator)
 
         if (this::openMenuMusicAnimation.isInitialized && openMenuMusicAnimation.isRunning) {
             openMenuMusicAnimation.cancel()
@@ -272,24 +301,6 @@ class CreateEditTimerFragment : BaseCreateEditFragment() {
             it.stopTime = 0
             it.remainingTime = it.duration
             it.extraTime = 0
-
-            // Safe init of uri
-            if (it.metadata.uri.isNullOrEmpty()) {
-                it.metadata = MediaMetadata().apply {
-                    context?.let { nonNullContext ->
-                        val uri = SettingsHandler.getDefaultAudioUri(nonNullContext)
-
-                        val audioMetadata: AudioPickerHelper.AudioMetadata =
-                            AudioPickerHelper.getAudioMetadata(nonNullContext, uri)
-
-                        this.type = MediaType.DEFAULT
-                        this.uri = uri.toString()
-                        this.name = audioMetadata.name
-                        this.description = audioMetadata.description
-                        this.imageUrl = audioMetadata.imageUrl
-                    }
-                }
-            }
 
             createEditTimerViewModel.createTimer(context, it)
         }

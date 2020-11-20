@@ -194,7 +194,7 @@ class TimerRunningService : LifecycleService(), AbstractPlayer.PlayerListener {
 
     private fun handleTimer(timer: Timer) {
         // If it's a spotify content
-        if (timer.metadata.type != MediaType.DEFAULT) {
+        if (timer.metadata.type != MediaType.DEFAULT && timer.metadata.type != MediaType.NONE) {
             player.apply {
                 this.init(this@TimerRunningService)
                 configurePlayer(timer, this)
