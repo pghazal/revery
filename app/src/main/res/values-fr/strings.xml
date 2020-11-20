@@ -93,6 +93,7 @@
 
     <!-- MENU -->
     <string name="menu_disable_all_alarms">Désactiver toutes les alarmes</string>
+    <string name="menu_disable_all_timers">Réinitialiser tous les minuteurs</string>
     <string name="menu_settings">Paramètres</string>
 
     <!-- ALARM -->

@@ -95,6 +95,7 @@
 
     <!-- MENU -->
     <string name="menu_disable_all_alarms">Turn all alarms off</string>
+    <string name="menu_disable_all_timers">Stop all timers</string>
     <string name="menu_settings">Settings</string>
 
     <!-- ALARM -->

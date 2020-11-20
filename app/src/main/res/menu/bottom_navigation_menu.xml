@@ -8,6 +8,6 @@
     <item
         android:id="@+id/timer_tab"
         android:enabled="true"
-        android:icon="@drawable/ic_hourglass"
+        android:icon="@drawable/ic_hourglass_animated"
         android:title="@string/timer_text" />
 </menu>

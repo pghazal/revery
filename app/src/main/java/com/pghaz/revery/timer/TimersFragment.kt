@@ -1,6 +1,9 @@
 package com.pghaz.revery.timer
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -15,6 +18,7 @@ import com.pghaz.revery.adapter.timer.TimersAdapter
 import com.pghaz.revery.model.app.BaseModel
 import com.pghaz.revery.model.app.Timer
 import com.pghaz.revery.model.app.TimerState
+import com.pghaz.revery.settings.SettingsFragment
 import com.pghaz.revery.spotify.BaseSpotifyActivity
 import com.pghaz.revery.viewmodel.timer.TimersViewModel
 import kotlinx.android.synthetic.main.fragment_timers.*
@@ -84,6 +88,46 @@ class TimersFragment : BaseFragment(), OnTimerClickListener {
                     CreateEditTimerFragment.newInstance(getString(R.string.create_timer))
                 fragment.show(childFragmentManager, CreateEditTimerFragment.TAG)
             }
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_timers, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_timers_cancel_all -> {
+                cancelAllTimers()
+                true
+            }
+            R.id.menu_alarms_settings -> {
+                openSettings()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun cancelAllTimers() {
+        val timers = timersViewModel.timersLiveData.value
+        timers?.forEach {
+            val timer = Timer(it)
+            if (timer.state == TimerState.RUNNING && context != null) {
+                timersViewModel.stopTimer(context!!, timer)
+                timersViewModel.resetTimer(context!!, timer)
+                timersViewModel.update(timer)
+            }
+        }
+    }
+
+    private fun openSettings() {
+        var fragment =
+            childFragmentManager.findFragmentByTag(SettingsFragment.TAG) as SettingsFragment?
+        if (fragment == null) {
+            fragment = SettingsFragment.newInstance(getString(R.string.menu_settings))
+            fragment.show(childFragmentManager, SettingsFragment.TAG)
         }
     }
 
