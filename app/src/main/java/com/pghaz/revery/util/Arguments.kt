@@ -6,6 +6,9 @@ object Arguments {
     const val ARGS_DIALOG_TITLE = "ARGS_DIALOG_TITLE"
     const val ARGS_DIALOG_CLOSE_ICON = "ARGS_DIALOG_CLOSE_ICON"
 
+    // Notification
+    const val NOTIFICATION_SOURCE = "ARGS_NOTIFICATION_SOURCE"
+
     // Alarms
     const val ARGS_ALARM = "ARGS_ALARM"
     const val ARGS_BUNDLE_ALARM = "ARGS_BUNDLE_ALARM"

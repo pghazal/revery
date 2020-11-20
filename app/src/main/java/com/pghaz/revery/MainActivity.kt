@@ -24,6 +24,7 @@ import com.pghaz.revery.settings.SettingsHandler
 import com.pghaz.revery.settings.TabFeature
 import com.pghaz.revery.spotify.BaseSpotifyActivity
 import com.pghaz.revery.timer.TimersFragment
+import com.pghaz.revery.util.Arguments
 import kotlinx.android.synthetic.main.activity_main.*
 
 /**
@@ -34,6 +35,8 @@ class MainActivity : BaseSpotifyActivity(), BottomNavigationView.OnNavigationIte
     private var notificationsDisabledDialog: AlertDialog? = null
 
     private var mAlarmServiceBound: Boolean = false
+
+    private lateinit var lastOpenedTabFeature: TabFeature
 
     override fun getLayoutResId(): Int {
         return R.layout.activity_main
@@ -99,6 +102,15 @@ class MainActivity : BaseSpotifyActivity(), BottomNavigationView.OnNavigationIte
     }
 
     override fun parseArguments(args: Bundle?) {
+        val settingsLastOpenedTab = SettingsHandler.getLastOpenedTab(this)
+
+        val tabFeatureOrdinal = args?.let {
+            it.getInt(Arguments.NOTIFICATION_SOURCE, settingsLastOpenedTab.ordinal)
+        } ?: kotlin.run {
+            settingsLastOpenedTab.ordinal
+        }
+
+        lastOpenedTabFeature = TabFeature.values()[tabFeatureOrdinal]
     }
 
     override fun configureViews(savedInstanceState: Bundle?) {
@@ -119,7 +131,7 @@ class MainActivity : BaseSpotifyActivity(), BottomNavigationView.OnNavigationIte
         }
 
         // Select the last opened tab which will call the listener as it is already set
-        when (SettingsHandler.getLastOpenedTab(this)) {
+        when (lastOpenedTabFeature) {
             TabFeature.ALARM -> {
                 bottomNavigationView.selectedItemId = R.id.alarm_tab
             }

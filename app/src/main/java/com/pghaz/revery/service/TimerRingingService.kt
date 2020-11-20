@@ -27,7 +27,9 @@ import com.pghaz.revery.player.DefaultPlayer
 import com.pghaz.revery.player.PlayerError
 import com.pghaz.revery.repository.TimerRepository
 import com.pghaz.revery.settings.SettingsHandler
+import com.pghaz.revery.settings.TabFeature
 import com.pghaz.revery.timer.TimerHandler
+import com.pghaz.revery.util.Arguments
 import com.pghaz.revery.util.IntentUtils
 import java.util.*
 
@@ -272,6 +274,7 @@ class TimerRingingService : LifecycleService(), AbstractPlayer.PlayerListener {
     private fun buildTimerNotification(timer: Timer): Notification {
         val notificationIntent = Intent(this, MainActivity::class.java)
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+        notificationIntent.putExtra(Arguments.NOTIFICATION_SOURCE, TabFeature.TIMER.ordinal)
 
         IntentUtils.safePutTimerIntoIntent(notificationIntent, timer)
 

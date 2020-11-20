@@ -31,6 +31,8 @@ import com.pghaz.revery.notification.NotificationHandler
 import com.pghaz.revery.player.*
 import com.pghaz.revery.repository.AlarmRepository
 import com.pghaz.revery.settings.SettingsHandler
+import com.pghaz.revery.settings.TabFeature
+import com.pghaz.revery.util.Arguments
 import com.pghaz.revery.util.IntentUtils
 import com.spotify.protocol.types.Repeat
 import kotlinx.coroutines.Dispatchers
@@ -537,6 +539,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
     private fun buildAlarmNotification(alarm: Alarm): Notification {
         val notificationIntent = Intent(this, MainActivity::class.java)
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+        notificationIntent.putExtra(Arguments.NOTIFICATION_SOURCE, TabFeature.ALARM.ordinal)
 
         IntentUtils.safePutAlarmIntoIntent(notificationIntent, alarm)
 

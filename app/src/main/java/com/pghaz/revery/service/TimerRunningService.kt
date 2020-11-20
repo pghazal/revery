@@ -24,7 +24,9 @@ import com.pghaz.revery.player.PlayerError
 import com.pghaz.revery.player.SpotifyPlayer
 import com.pghaz.revery.repository.TimerRepository
 import com.pghaz.revery.settings.SettingsHandler
+import com.pghaz.revery.settings.TabFeature
 import com.pghaz.revery.timer.TimerHandler
+import com.pghaz.revery.util.Arguments
 import com.pghaz.revery.util.IntentUtils
 import com.spotify.protocol.types.Repeat
 import java.util.*
@@ -338,6 +340,7 @@ class TimerRunningService : LifecycleService(), AbstractPlayer.PlayerListener {
     private fun buildTimerNotification(timer: Timer): NotificationCompat.Builder {
         val notificationIntent = Intent(this, MainActivity::class.java)
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+        notificationIntent.putExtra(Arguments.NOTIFICATION_SOURCE, TabFeature.TIMER.ordinal)
 
         IntentUtils.safePutTimerIntoIntent(notificationIntent, timer)
 
