@@ -3,9 +3,11 @@
     <item
         android:id="@+id/alarm_tab"
         android:enabled="true"
+        android:icon="@drawable/ic_alarm_bottom_navigation"
         android:title="@string/alarm_text" />
     <item
         android:id="@+id/timer_tab"
         android:enabled="true"
+        android:icon="@drawable/ic_hourglass"
         android:title="@string/timer_text" />
 </menu>
