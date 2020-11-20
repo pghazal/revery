@@ -325,7 +325,7 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
             else -> {
                 DefaultPlayer(
                     this,
-                    AudioManager.AUDIOFOCUS_GAIN,
+                    AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK,
                     isEmergencyAlarm,
                     shouldUseDeviceVolume
                 )
