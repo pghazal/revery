@@ -87,7 +87,9 @@ class TimerRunningService : LifecycleService(), AbstractPlayer.PlayerListener {
             } else if (ACTION_TIMER_RUNNING_STOP == intent.action) {
                 logError(ACTION_TIMER_RUNNING_STOP)
 
-                player.release()
+                if (this@TimerRunningService::player.isInitialized) {
+                    player.release()
+                }
 
                 // Remove timer which has been stopped
                 remove(timer)
@@ -198,10 +200,12 @@ class TimerRunningService : LifecycleService(), AbstractPlayer.PlayerListener {
     private fun handleTimer(timer: Timer) {
         // If it's a spotify content
         if (timer.metadata.type != MediaType.DEFAULT && timer.metadata.type != MediaType.NONE) {
-            player.apply {
-                this.init(this@TimerRunningService)
-                configurePlayer(timer, this)
-                this.prepareAsync(timer.metadata.uri)
+            if (this::player.isInitialized) {
+                player.apply {
+                    this.init(this@TimerRunningService)
+                    configurePlayer(timer, this)
+                    this.prepareAsync(timer.metadata.uri)
+                }
             }
         }
 
