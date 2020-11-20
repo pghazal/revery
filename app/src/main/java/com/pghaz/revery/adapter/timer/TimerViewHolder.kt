@@ -12,7 +12,6 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatImageButton
 import com.pghaz.revery.R
 import com.pghaz.revery.adapter.base.BaseViewHolder
-import com.pghaz.revery.extension.logError
 import com.pghaz.revery.image.ImageLoader
 import com.pghaz.revery.image.ImageUtils
 import com.pghaz.revery.model.app.BaseModel
@@ -188,8 +187,8 @@ open class TimerViewHolder(view: View) : BaseViewHolder(view) {
 
         circularProgressBar.progress = progress
 
-        circularProgressBar.context.logError("remainingMilliseconds: $remainingMilliseconds")
-        circularProgressBar.context.logError("progress: $progress")
+        /*circularProgressBar.context.logError("remainingMilliseconds: $remainingMilliseconds")
+        circularProgressBar.context.logError("progress: $progress")*/
 
         progressAnimator.duration = remainingMilliseconds
         progressAnimator.setIntValues(progress, 100)
@@ -226,15 +225,9 @@ open class TimerViewHolder(view: View) : BaseViewHolder(view) {
             timer.duration
         }
 
-        hourDurationTextView.context.logError("milliseconds: $milliseconds")
-
         val seconds = (milliseconds / 1000).toInt() % 60
         val minutes = (milliseconds / (1000 * 60) % 60).toInt()
         val hours = (milliseconds / (1000 * 60 * 60) % 24).toInt()
-
-        hourDurationTextView.context.logError("hours: $hours")
-        hourDurationTextView.context.logError("minutes: $minutes")
-        hourDurationTextView.context.logError("seconds: $seconds")
 
         hourDurationTextView.text = String.format("%02d", hours)
         minuteDurationTextView.text = String.format("%02d", minutes)

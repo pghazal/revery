@@ -8,7 +8,6 @@ import com.pghaz.revery.model.app.Timer
 import com.pghaz.revery.model.app.TimerState
 import com.pghaz.revery.repository.TimerRepository
 import com.pghaz.revery.timer.TimerHandler
-import com.pghaz.revery.util.Arguments
 
 class TimersViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -24,7 +23,8 @@ class TimersViewModel(application: Application) : AndroidViewModel(application) 
     fun stopTimer(context: Context, timer: Timer) {
         TimerHandler.resetTimer(timer)
 
-        broadcastTimerShouldStop(context, timer, false)
+        val intent = TimerBroadcastReceiver.buildStopRingingTimerActionIntent(context, timer)
+        context.sendBroadcast(intent)
     }
 
     fun pauseTimer(context: Context, timer: Timer) {
@@ -41,12 +41,18 @@ class TimersViewModel(application: Application) : AndroidViewModel(application) 
 
     fun incrementTimer(context: Context, timer: Timer) {
         if (timer.state == TimerState.RINGING) {
-            broadcastTimerShouldStop(context, timer, true)
-        }
+            val incrementIntent =
+                TimerBroadcastReceiver.buildRingingTimerIncrementActionIntent(context, timer)
+            context.sendBroadcast(incrementIntent)
 
-        pauseTimer(context, timer)
-        TimerHandler.incrementTimer(timer)
-        startTimer(context, timer)
+            val stopIntent =
+                TimerBroadcastReceiver.buildStopRingingTimerActionIntent(context, timer)
+            context.sendBroadcast(stopIntent)
+        } else {
+            val incrementIntent =
+                TimerBroadcastReceiver.buildRunningTimerIncrementActionIntent(context, timer)
+            context.sendBroadcast(incrementIntent)
+        }
     }
 
     fun update(timer: Timer) {
@@ -55,15 +61,5 @@ class TimersViewModel(application: Application) : AndroidViewModel(application) 
 
     fun delete(timer: Timer) {
         timerRepository.delete(timer)
-    }
-
-    private fun broadcastTimerShouldStop(
-        context: Context,
-        timer: Timer,
-        isIncrementAction: Boolean
-    ) {
-        val intent = TimerBroadcastReceiver.getStopTimerActionIntent(context, timer)
-        intent.putExtra(Arguments.ARGS_TIMER_INCREMENT, isIncrementAction)
-        context.sendBroadcast(intent)
     }
 }

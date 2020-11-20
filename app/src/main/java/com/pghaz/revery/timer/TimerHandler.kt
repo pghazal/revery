@@ -74,37 +74,44 @@ object TimerHandler {
         return timer.duration + timer.extraTime - timer.remainingTime
     }
 
-    fun setAlarm(context: Context?, timer: Timer) {
-        val alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager?
+    fun setAlarm(context: Context, timer: Timer) {
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager?
 
         alarmManager?.let {
-            val intent = TimerBroadcastReceiver.getTimerIsOverActionIntent(context, timer)
+            val intent = TimerBroadcastReceiver.buildTimerIsOverActionIntent(context, timer)
 
             val pendingIntent = PendingIntent.getBroadcast(
-                context?.applicationContext,
+                context.applicationContext,
                 timer.id.toInt(),
                 intent,
                 PendingIntent.FLAG_ONE_SHOT
             )
 
             it.setExact(AlarmManager.RTC_WAKEUP, timer.stopTime, pendingIntent)
+
+            val startIntent = TimerBroadcastReceiver.buildStartTimerActionIntent(context, timer)
+            context.sendBroadcast(startIntent)
         }
     }
 
-    fun removeAlarm(context: Context?, timer: Timer) {
-        val alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager?
+    fun removeAlarm(context: Context, timer: Timer) {
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager?
 
         alarmManager?.let {
-            val intent = TimerBroadcastReceiver.getTimerIsOverActionIntent(context, timer)
+            val intent = TimerBroadcastReceiver.buildTimerIsOverActionIntent(context, timer)
 
             val pendingIntent = PendingIntent.getBroadcast(
-                context?.applicationContext,
+                context.applicationContext,
                 timer.id.toInt(),
                 intent,
                 PendingIntent.FLAG_ONE_SHOT
             )
 
             it.cancel(pendingIntent)
+
+            val stopIntent =
+                TimerBroadcastReceiver.buildStopRunningTimerActionIntent(context, timer)
+            context.sendBroadcast(stopIntent)
         }
     }
 }

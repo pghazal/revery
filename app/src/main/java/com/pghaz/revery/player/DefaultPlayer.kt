@@ -12,7 +12,12 @@ import java.io.FileInputStream
 import java.io.FileNotFoundException
 
 
-class DefaultPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDeviceVolume: Boolean) :
+class DefaultPlayer(
+    context: Context,
+    private val focusGain: Int,
+    isEmergencyAlarm: Boolean,
+    shouldUseDeviceVolume: Boolean
+) :
     AbstractPlayer(context, AudioManager.STREAM_ALARM, isEmergencyAlarm, shouldUseDeviceVolume) {
 
     private var mediaPlayer: MediaPlayer? = null
@@ -22,7 +27,7 @@ class DefaultPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
     // Used only for Android O and later
     private val audioFocusRequest =
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            AudioFocusRequest.Builder(AUDIO_FOCUS_PARAM)
+            AudioFocusRequest.Builder(focusGain)
                 .setOnAudioFocusChangeListener(onAudioFocusChangeListener)
                 .build()
         } else {
@@ -121,7 +126,7 @@ class DefaultPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
             audioManager.requestAudioFocus(
                 onAudioFocusChangeListener,
                 streamType,
-                AUDIO_FOCUS_PARAM
+                focusGain
             )
         }
     }
@@ -194,9 +199,5 @@ class DefaultPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
         if (withCallback) {
             playerListener?.onPlayerReleased(this)
         }
-    }
-
-    companion object {
-        private const val AUDIO_FOCUS_PARAM = AudioManager.AUDIOFOCUS_GAIN
     }
 }

@@ -23,12 +23,13 @@ object NotificationHandler {
     const val CHANNEL_ID_ALARM_RESCHEDULE = "REVERY_CHANNEL_ALARM_RESCHEDULE"
     const val CHANNEL_ID_ALARM_SNOOZE = "REVERY_CHANNEL_ALARM_SNOOZE"
     const val CHANNEL_ID_ALARM_ERROR = "REVERY_CHANNEL_ALARM_ERROR"
-    const val CHANNEL_ID_TIMER_OVER = "REVERY_CHANNEL_TIMER_OVER"
+    const val CHANNEL_ID_TIMER = "REVERY_CHANNEL_TIMER"
 
     const val NOTIFICATION_ID_ALARM = 1
     const val NOTIFICATION_ID_RESCHEDULE = 2
     const val NOTIFICATION_ID_ERROR_OCCURRED = 3
     const val NOTIFICATION_ID_TIMER_OVER = 4
+    const val NOTIFICATION_ID_TIMER_RUNNING = 5
 
     fun createNotificationChannels(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -41,36 +42,46 @@ object NotificationHandler {
                 context.getString(R.string.notification_channel_alarm),
                 NotificationManager.IMPORTANCE_HIGH
             )
+            alarmChannel.vibrationPattern = longArrayOf(0)
+            alarmChannel.enableVibration(true)
 
             val alarmSnoozeChannel = NotificationChannel(
                 CHANNEL_ID_ALARM_SNOOZE,
                 context.getString(R.string.notification_channel_alarm_snooze),
                 NotificationManager.IMPORTANCE_HIGH
             )
+            alarmSnoozeChannel.vibrationPattern = longArrayOf(0)
+            alarmSnoozeChannel.enableVibration(true)
 
             val alarmRescheduleChannel = NotificationChannel(
                 CHANNEL_ID_ALARM_RESCHEDULE,
                 context.getString(R.string.notification_channel_alarm_reschedule),
                 NotificationManager.IMPORTANCE_HIGH
             )
+            alarmRescheduleChannel.vibrationPattern = longArrayOf(0)
+            alarmRescheduleChannel.enableVibration(true)
 
             val emergencyAlarmChannel = NotificationChannel(
                 CHANNEL_ID_ALARM_ERROR,
                 context.getString(R.string.notification_channel_alarm_error),
                 NotificationManager.IMPORTANCE_HIGH
             )
+            emergencyAlarmChannel.vibrationPattern = longArrayOf(0)
+            emergencyAlarmChannel.enableVibration(true)
 
-            val timerOverChannel = NotificationChannel(
-                CHANNEL_ID_TIMER_OVER,
+            val timerChannel = NotificationChannel(
+                CHANNEL_ID_TIMER,
                 context.getString(R.string.notification_channel_timer),
                 NotificationManager.IMPORTANCE_HIGH
             )
+            timerChannel.vibrationPattern = longArrayOf(0)
+            timerChannel.enableVibration(true)
 
             manager?.createNotificationChannel(alarmChannel)
             manager?.createNotificationChannel(alarmSnoozeChannel)
             manager?.createNotificationChannel(alarmRescheduleChannel)
             manager?.createNotificationChannel(emergencyAlarmChannel)
-            manager?.createNotificationChannel(timerOverChannel)
+            manager?.createNotificationChannel(timerChannel)
         }
     }
 

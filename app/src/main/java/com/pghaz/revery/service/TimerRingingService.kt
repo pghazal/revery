@@ -6,6 +6,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.media.AudioManager
+import android.media.RingtoneManager
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -26,36 +28,35 @@ import com.pghaz.revery.player.PlayerError
 import com.pghaz.revery.repository.TimerRepository
 import com.pghaz.revery.settings.SettingsHandler
 import com.pghaz.revery.timer.TimerHandler
-import com.pghaz.revery.util.Arguments
 import com.pghaz.revery.util.IntentUtils
 import java.util.*
 
-class TimerOverService : LifecycleService(), AbstractPlayer.PlayerListener {
+class TimerRingingService : LifecycleService(), AbstractPlayer.PlayerListener {
 
     companion object {
-        private const val ACTION_TIMER_SHOULD_STOP =
-            "com.pghaz.revery.ACTION_TIMER_SHOULD_STOP"
-        private const val ACTION_TIMER_INCREMENT =
-            "com.pghaz.revery.ACTION_TIMER_INCREMENT"
+        private const val ACTION_TIMER_RINGING_SHOULD_STOP =
+            "com.pghaz.revery.ACTION_TIMER_RINGING_SHOULD_STOP"
+        private const val ACTION_TIMER_RINGING_INCREMENT =
+            "com.pghaz.revery.ACTION_TIMER_RINGING_INCREMENT"
 
-        fun getTimerShouldStopIntent(context: Context, timer: Timer): Intent {
+        fun buildRingingTimerShouldStopIntent(context: Context, timer: Timer): Intent {
             val intent = Intent(
                 context.applicationContext,
                 TimerOverServiceBroadcastReceiver::class.java
             )
-            intent.action = ACTION_TIMER_SHOULD_STOP
+            intent.action = ACTION_TIMER_RINGING_SHOULD_STOP
 
             IntentUtils.safePutTimerIntoIntent(intent, timer)
 
             return intent
         }
 
-        fun getTimerIncrementIntent(context: Context, timer: Timer): Intent {
+        fun buildRingingTimerIncrementIntent(context: Context, timer: Timer): Intent {
             val intent = Intent(
                 context.applicationContext,
                 TimerOverServiceBroadcastReceiver::class.java
             )
-            intent.action = ACTION_TIMER_INCREMENT
+            intent.action = ACTION_TIMER_RINGING_INCREMENT
 
             IntentUtils.safePutTimerIntoIntent(intent, timer)
 
@@ -65,49 +66,46 @@ class TimerOverService : LifecycleService(), AbstractPlayer.PlayerListener {
 
     inner class TimerOverServiceBroadcastReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            intent?.let {
-                val timer = IntentUtils.safeGetTimerFromIntent(intent)
+            if (context == null || intent == null) {
+                return
+            }
 
-                // This is called when 1) timer is ringing and
-                // 2) user clicked stop from view holder or from the notification.
-                // 3) user clicked "+1min" from view holder while timer is ringing.
-                if (ACTION_TIMER_SHOULD_STOP == it.action) {
-                    logError(ACTION_TIMER_SHOULD_STOP)
-                    if (currentTimer?.id == timer.id) {
-                        val isIncrementAction =
-                            it.getBooleanExtra(Arguments.ARGS_TIMER_INCREMENT, false)
+            val timer = IntentUtils.safeGetTimerFromIntent(intent)
 
-                        // Stop the timer and save it in DB
-                        if (!isIncrementAction) {
-                            TimerHandler.resetTimer(timer)
-                            timerRepository.update(timer)
-                        }
+            // This is called when 1) timer is ringing and
+            // 2) user clicked stop from view holder or from the notification.
+            // 3) user clicked "+1min" from view holder while timer is ringing.
+            if (ACTION_TIMER_RINGING_SHOULD_STOP == intent.action) {
+                logError(ACTION_TIMER_RINGING_SHOULD_STOP)
+                if (currentTimer?.id == timer.id) {
 
-                        player.stop()
-                    } else {
-                        synchronized(timersOverQueue) {
-                            timersOverQueue.forEach { item ->
-                                if (item.id == timer.id) {
-                                    timersOverQueue.remove(item)
-                                }
+                    TimerHandler.resetTimer(timer)
+                    timerRepository.update(timer)
+
+                    player.stop()
+                } else {
+                    synchronized(timersOverQueue) {
+                        timersOverQueue.forEach { item ->
+                            if (item.id == timer.id) {
+                                timersOverQueue.remove(item)
                             }
                         }
                     }
                 }
-                // This is called when user clicked "+1 min" from the notification ONLY
-                else if (ACTION_TIMER_INCREMENT == it.action) {
-                    logError(ACTION_TIMER_INCREMENT)
+            }
+            // This is called when user clicked "+1 min" from the notification ONLY
+            else if (ACTION_TIMER_RINGING_INCREMENT == intent.action) {
+                logError(ACTION_TIMER_RINGING_INCREMENT)
 
-                    if (currentTimer?.id == timer.id) {
-                        TimerHandler.pauseTimer(timer)
-                        TimerHandler.removeAlarm(context, timer)
-                        TimerHandler.incrementTimer(timer)
-                        TimerHandler.startTimer(timer)
-                        TimerHandler.setAlarm(context, timer)
-                        timerRepository.update(timer)
+                if (currentTimer?.id == timer.id) {
+                    TimerHandler.pauseTimer(timer)
+                    TimerHandler.removeAlarm(context, timer)
+                    TimerHandler.incrementTimer(timer)
+                    TimerHandler.startTimer(timer)
+                    TimerHandler.setAlarm(context, timer)
+                    timerRepository.update(timer)
 
-                        player.stop()
-                    }
+                    player.stop()
                 }
             }
         }
@@ -124,10 +122,12 @@ class TimerOverService : LifecycleService(), AbstractPlayer.PlayerListener {
     private val timersOverQueue: Queue<Timer> = LinkedList()
     private var currentTimer: Timer? = null
 
+    private val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM).toString()
+
     private fun registerToLocalTimerOverBroadcastReceiver() {
         val intentFilter = IntentFilter()
-        intentFilter.addAction(ACTION_TIMER_SHOULD_STOP)
-        intentFilter.addAction(ACTION_TIMER_INCREMENT)
+        intentFilter.addAction(ACTION_TIMER_RINGING_SHOULD_STOP)
+        intentFilter.addAction(ACTION_TIMER_RINGING_INCREMENT)
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, intentFilter)
     }
 
@@ -151,6 +151,10 @@ class TimerOverService : LifecycleService(), AbstractPlayer.PlayerListener {
         intent?.let { nonNullIntent ->
             val timerOver = IntentUtils.safeGetTimerFromIntent(nonNullIntent)
 
+            val stopRunningTimerIntent =
+                TimerBroadcastReceiver.buildStopRunningTimerActionIntent(this, timerOver)
+            sendBroadcast(stopRunningTimerIntent)
+
             queue(timerOver)
 
             // First time Service is started
@@ -162,10 +166,15 @@ class TimerOverService : LifecycleService(), AbstractPlayer.PlayerListener {
 
                     if (!this::player.isInitialized) {
                         val shouldUseDeviceVolume =
-                            SettingsHandler.getShouldUseDeviceVolume(this@TimerOverService)
-                        player = DefaultPlayer(this, false, shouldUseDeviceVolume)
-                        player.init(this@TimerOverService)
-                        player.prepareAsync(it.metadata.uri)
+                            SettingsHandler.getShouldUseDeviceVolume(this@TimerRingingService)
+                        player = DefaultPlayer(
+                            this,
+                            AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK,
+                            false,
+                            shouldUseDeviceVolume
+                        )
+                        player.init(this@TimerRingingService)
+                        player.prepareAsync(soundUri)
                     }
 
                     startForeground(
@@ -181,7 +190,15 @@ class TimerOverService : LifecycleService(), AbstractPlayer.PlayerListener {
 
     private fun queue(timer: Timer) {
         synchronized(timersOverQueue) {
-            if (!timersOverQueue.contains(timer)) {
+            var found = false
+            timersOverQueue.forEach {
+                if (it.id == timer.id) {
+                    found = true
+                    return@forEach
+                }
+            }
+
+            if (!found) {
                 timersOverQueue.add(timer)
             }
         }
@@ -218,7 +235,7 @@ class TimerOverService : LifecycleService(), AbstractPlayer.PlayerListener {
 
         currentTimer?.let {
             player.init(this)
-            player.prepareAsync(it.metadata.uri)
+            player.prepareAsync(soundUri)
 
             notification = buildTimerNotification(it)
             NotificationHandler.notify(
@@ -266,7 +283,7 @@ class TimerOverService : LifecycleService(), AbstractPlayer.PlayerListener {
             PendingIntent.FLAG_UPDATE_CURRENT
         )
 
-        val stopIntent = TimerBroadcastReceiver.getStopTimerActionIntent(this, timer)
+        val stopIntent = TimerBroadcastReceiver.buildStopRingingTimerActionIntent(this, timer)
         val stopPendingIntent: PendingIntent =
             PendingIntent.getBroadcast(
                 this,
@@ -281,7 +298,8 @@ class TimerOverService : LifecycleService(), AbstractPlayer.PlayerListener {
                 stopPendingIntent
             )
 
-        val incrementIntent = TimerBroadcastReceiver.getTimerIncrementActionIntent(this, timer)
+        val incrementIntent =
+            TimerBroadcastReceiver.buildRingingTimerIncrementActionIntent(this, timer)
         val incrementPendingIntent: PendingIntent =
             PendingIntent.getBroadcast(
                 this,
@@ -296,7 +314,7 @@ class TimerOverService : LifecycleService(), AbstractPlayer.PlayerListener {
                 incrementPendingIntent
             )
 
-        return NotificationCompat.Builder(this, NotificationHandler.CHANNEL_ID_TIMER_OVER)
+        return NotificationCompat.Builder(this, NotificationHandler.CHANNEL_ID_TIMER)
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setContentTitle(String.format("%s", getString(R.string.timer_is_over)))
             .setContentText(timer.label)
@@ -308,6 +326,7 @@ class TimerOverService : LifecycleService(), AbstractPlayer.PlayerListener {
             .addAction(incrementActionNotification)
             .setColor(ContextCompat.getColor(this, R.color.colorAccent))
             .setAutoCancel(true)
+            .setOnlyAlertOnce(true)
             .setStyle(NotificationCompat.BigTextStyle().bigText(timer.label))
             .build()
     }

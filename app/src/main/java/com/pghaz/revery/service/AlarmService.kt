@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.media.AudioManager
 import android.media.RingtoneManager
 import android.os.*
 import androidx.core.app.NotificationCompat
@@ -322,7 +323,12 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
                 SpotifyPlayer(this, isEmergencyAlarm, shouldUseDeviceVolume)
             }
             else -> {
-                DefaultPlayer(this, isEmergencyAlarm, shouldUseDeviceVolume)
+                DefaultPlayer(
+                    this,
+                    AudioManager.AUDIOFOCUS_GAIN,
+                    isEmergencyAlarm,
+                    shouldUseDeviceVolume
+                )
             }
         }.apply {
             this.init(playerListener)

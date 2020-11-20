@@ -181,6 +181,7 @@
     <string name="text_second_short">s</string>
     <string name="timer_is_over">Time is over</string>
     <string name="timer_increment">+1min</string>
+    <string name="remaining_time">Remaining time:</string>
 
     <!-- TIME REMAINING TEXTS -->
     <plurals name="time_remaining_days">

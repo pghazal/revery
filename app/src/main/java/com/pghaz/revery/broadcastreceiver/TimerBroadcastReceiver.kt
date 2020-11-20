@@ -7,19 +7,33 @@ import android.os.Build
 import android.widget.Toast
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.pghaz.revery.model.app.Timer
-import com.pghaz.revery.notification.NotificationHandler
-import com.pghaz.revery.service.TimerOverService
-import com.pghaz.revery.util.Arguments
+import com.pghaz.revery.service.TimerRingingService
+import com.pghaz.revery.service.TimerRunningService
 import com.pghaz.revery.util.IntentUtils
 
 class TimerBroadcastReceiver : BroadcastReceiver() {
 
     companion object {
+        private const val ACTION_TIMER_START = "com.pghaz.revery.ACTION_TIMER_START"
         private const val ACTION_TIMER_IS_OVER = "com.pghaz.revery.ACTION_TIMER_IS_OVER"
-        private const val ACTION_TIMER_STOP = "com.pghaz.revery.ACTION_TIMER_STOP"
-        private const val ACTION_TIMER_INCREMENT = "com.pghaz.revery.ACTION_TIMER_INCREMENT"
+        private const val ACTION_TIMER_RUNNING_STOP = "com.pghaz.revery.ACTION_TIMER_RUNNING_STOP"
+        private const val ACTION_TIMER_RUNNING_INCREMENT =
+            "com.pghaz.revery.ACTION_TIMER_RUNNING_INCREMENT"
 
-        fun getTimerIsOverActionIntent(context: Context?, timer: Timer): Intent {
+        private const val ACTION_TIMER_RINGING_STOP = "com.pghaz.revery.ACTION_TIMER_RINGING_STOP"
+        private const val ACTION_TIMER_RINGING_INCREMENT =
+            "com.pghaz.revery.ACTION_TIMER_RINGING_INCREMENT"
+
+        fun buildStartTimerActionIntent(context: Context?, timer: Timer): Intent {
+            val intent = Intent(context?.applicationContext, TimerBroadcastReceiver::class.java)
+            intent.action = ACTION_TIMER_START
+
+            IntentUtils.safePutTimerIntoIntent(intent, timer)
+
+            return intent
+        }
+
+        fun buildTimerIsOverActionIntent(context: Context?, timer: Timer): Intent {
             val intent = Intent(context?.applicationContext, TimerBroadcastReceiver::class.java)
             intent.action = ACTION_TIMER_IS_OVER
 
@@ -30,18 +44,36 @@ class TimerBroadcastReceiver : BroadcastReceiver() {
             return intent
         }
 
-        fun getStopTimerActionIntent(context: Context?, timer: Timer): Intent {
+        fun buildStopRingingTimerActionIntent(context: Context?, timer: Timer): Intent {
             val intent = Intent(context?.applicationContext, TimerBroadcastReceiver::class.java)
-            intent.action = ACTION_TIMER_STOP
+            intent.action = ACTION_TIMER_RINGING_STOP
 
             IntentUtils.safePutTimerIntoIntent(intent, timer)
 
             return intent
         }
 
-        fun getTimerIncrementActionIntent(context: Context?, timer: Timer): Intent {
+        fun buildStopRunningTimerActionIntent(context: Context?, timer: Timer): Intent {
             val intent = Intent(context?.applicationContext, TimerBroadcastReceiver::class.java)
-            intent.action = ACTION_TIMER_INCREMENT
+            intent.action = ACTION_TIMER_RUNNING_STOP
+
+            IntentUtils.safePutTimerIntoIntent(intent, timer)
+
+            return intent
+        }
+
+        fun buildRunningTimerIncrementActionIntent(context: Context?, timer: Timer): Intent {
+            val intent = Intent(context?.applicationContext, TimerBroadcastReceiver::class.java)
+            intent.action = ACTION_TIMER_RUNNING_INCREMENT
+
+            IntentUtils.safePutTimerIntoIntent(intent, timer)
+
+            return intent
+        }
+
+        fun buildRingingTimerIncrementActionIntent(context: Context?, timer: Timer): Intent {
+            val intent = Intent(context?.applicationContext, TimerBroadcastReceiver::class.java)
+            intent.action = ACTION_TIMER_RINGING_INCREMENT
 
             IntentUtils.safePutTimerIntoIntent(intent, timer)
 
@@ -54,25 +86,31 @@ class TimerBroadcastReceiver : BroadcastReceiver() {
             return
         }
 
-        if (ACTION_TIMER_IS_OVER == intent.action) {
+        if (ACTION_TIMER_START == intent.action) {
             val timer = IntentUtils.safeGetTimerFromIntent(intent)
-
-            NotificationHandler.cancel(context, timer.id.toInt())
-
-            Toast.makeText(context, "${timer.id}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Start ${timer.id}", Toast.LENGTH_SHORT).show()
+            startTimerRunningService(context, timer)
+        } else if (ACTION_TIMER_IS_OVER == intent.action) {
+            val timer = IntentUtils.safeGetTimerFromIntent(intent)
+            Toast.makeText(context, "Over ${timer.id}", Toast.LENGTH_SHORT).show()
             startTimerOverService(context, timer)
-        } else if (ACTION_TIMER_STOP == intent.action) {
+        } else if (ACTION_TIMER_RUNNING_INCREMENT == intent.action) {
             val timer = IntentUtils.safeGetTimerFromIntent(intent)
-            val isIncrementAction = intent.getBooleanExtra(Arguments.ARGS_TIMER_INCREMENT, false)
-            broadcastServiceTimerShouldStop(context, timer, isIncrementAction)
-        } else if (ACTION_TIMER_INCREMENT == intent.action) {
+            broadcastRunningTimerIncrement(context, timer)
+        } else if (ACTION_TIMER_RINGING_INCREMENT == intent.action) {
             val timer = IntentUtils.safeGetTimerFromIntent(intent)
-            broadcastServiceTimerIncrement(context, timer)
+            broadcastRingingTimerIncrement(context, timer)
+        } else if (ACTION_TIMER_RINGING_STOP == intent.action) {
+            val timer = IntentUtils.safeGetTimerFromIntent(intent)
+            broadcastRingingTimerShouldStop(context, timer)
+        } else if (ACTION_TIMER_RUNNING_STOP == intent.action) {
+            val timer = IntentUtils.safeGetTimerFromIntent(intent)
+            broadcastRunningTimerShouldStop(context, timer)
         }
     }
 
     private fun startTimerOverService(context: Context, timer: Timer) {
-        val service = Intent(context, TimerOverService::class.java)
+        val service = Intent(context, TimerRingingService::class.java)
 
         IntentUtils.safePutTimerIntoIntent(service, timer)
 
@@ -83,18 +121,38 @@ class TimerBroadcastReceiver : BroadcastReceiver() {
         }
     }
 
-    private fun broadcastServiceTimerShouldStop(
-        context: Context,
-        timer: Timer,
-        isIncrementAction: Boolean
-    ) {
-        val timerShouldStopIntent = TimerOverService.getTimerShouldStopIntent(context, timer)
-        timerShouldStopIntent.putExtra(Arguments.ARGS_TIMER_INCREMENT, isIncrementAction)
+    private fun startTimerRunningService(context: Context, timer: Timer) {
+        val service = Intent(context, TimerRunningService::class.java)
+
+        IntentUtils.safePutTimerIntoIntent(service, timer)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(service)
+        } else {
+            context.startService(service)
+        }
+    }
+
+    private fun broadcastRingingTimerShouldStop(context: Context, timer: Timer) {
+        val timerShouldStopIntent =
+            TimerRingingService.buildRingingTimerShouldStopIntent(context, timer)
         LocalBroadcastManager.getInstance(context).sendBroadcast(timerShouldStopIntent)
     }
 
-    private fun broadcastServiceTimerIncrement(context: Context, timer: Timer) {
-        val timerIncrementIntent = TimerOverService.getTimerIncrementIntent(context, timer)
+    private fun broadcastRunningTimerShouldStop(context: Context, timer: Timer) {
+        val timerShouldStopIntent =
+            TimerRunningService.buildRunningTimerShouldStopIntent(context, timer)
+        LocalBroadcastManager.getInstance(context).sendBroadcast(timerShouldStopIntent)
+    }
+
+    private fun broadcastRingingTimerIncrement(context: Context, timer: Timer) {
+        val timerIncrementIntent = TimerRingingService.buildRingingTimerIncrementIntent(context, timer)
+        LocalBroadcastManager.getInstance(context).sendBroadcast(timerIncrementIntent)
+    }
+
+    private fun broadcastRunningTimerIncrement(context: Context, timer: Timer) {
+        val timerIncrementIntent =
+            TimerRunningService.buildRunningTimerIncrementIntent(context, timer)
         LocalBroadcastManager.getInstance(context).sendBroadcast(timerIncrementIntent)
     }
 }
