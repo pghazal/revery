@@ -256,7 +256,7 @@ class TimerRingingService : LifecycleService(), AbstractPlayer.PlayerListener {
     private fun vibrate() {
         // Vibrate for 1000 milliseconds
         // Sleep for 1000 milliseconds
-        val pattern = longArrayOf(1000, 1000)
+        val pattern = longArrayOf(500, 500)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             vibrator.vibrate(VibrationEffect.createWaveform(pattern, 0))
         } else {
