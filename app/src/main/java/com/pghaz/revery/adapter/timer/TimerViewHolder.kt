@@ -22,6 +22,7 @@ import com.pghaz.revery.timer.TimerHandler
 open class TimerViewHolder(view: View) : BaseViewHolder(view) {
     var timerClickListener: OnTimerClickListener? = null
 
+    private val minusTextView: TextView = view.findViewById(R.id.minusTextView)
     private val hourDurationTextView: TextView = view.findViewById(R.id.hourDurationTextView)
     private val minuteDurationTextView: TextView = view.findViewById(R.id.minuteDurationTextView)
     private val secondDurationTextView: TextView = view.findViewById(R.id.secondDurationTextView)
@@ -229,6 +230,20 @@ open class TimerViewHolder(view: View) : BaseViewHolder(view) {
         if (hours == 0 && seconds == 0) {
             secondDurationTextView.visibility = View.VISIBLE
             secondLabelTextView.visibility = View.VISIBLE
+        }
+
+        minusTextView.isEnabled = timer.state != TimerState.RINGING
+        hourDurationTextView.isEnabled = timer.state != TimerState.RINGING
+        hourLabelTextView.isEnabled = timer.state != TimerState.RINGING
+        minuteDurationTextView.isEnabled = timer.state != TimerState.RINGING
+        minuteLabelTextView.isEnabled = timer.state != TimerState.RINGING
+        secondDurationTextView.isEnabled = timer.state != TimerState.RINGING
+        secondLabelTextView.isEnabled = timer.state != TimerState.RINGING
+
+        if (timer.state == TimerState.RINGING) {
+            minusTextView.visibility = View.VISIBLE
+        } else {
+            minusTextView.visibility = View.GONE
         }
     }
 }
