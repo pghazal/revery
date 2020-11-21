@@ -1,6 +1,5 @@
 package com.pghaz.revery.adapter.timer
 
-import android.animation.ValueAnimator
 import android.net.Uri
 import android.os.Handler
 import android.text.TextUtils
@@ -36,27 +35,30 @@ open class TimerViewHolder(view: View) : BaseViewHolder(view) {
     private val incrementButton: AppCompatButton = view.findViewById(R.id.incrementButton)
     private val circularProgressBar: ProgressBar = view.findViewById(R.id.circularProgressBar)
 
-    private var progressAnimator = ValueAnimator()
-
     private lateinit var timer: Timer
+    private var step: Long = 50L
 
     private val mHandler: Handler = Handler()
     private val updateRemainingTimeRunnable = object : Runnable {
         override fun run() {
-            val remainingTime = TimerHandler.getRemainingTime(timer)
-            updateRemainingTime(timer, remainingTime)
-            updatePlayPauseButton(timer)
+            if (timer.state == TimerState.RUNNING || timer.state == TimerState.RINGING) {
+                val remainingTime = TimerHandler.getRemainingTime(timer)
+                val elapsedTime = TimerHandler.getFullDuration(timer) - remainingTime
+                updateProgress(timer, elapsedTime)
+                updateRemainingTime(timer, remainingTime)
+                updatePlayPauseButton(timer)
 
-            if (timer.state == TimerState.RUNNING ||
-                timer.state == TimerState.RINGING
-            ) {
-                mHandler.postDelayed(this, 1000L)
+                if (step > 1000L) {
+                    mHandler.postDelayed(this, 1000L)
+                } else {
+                    mHandler.postDelayed(this, step)
+                }
             }
         }
     }
 
     fun startUpdateTimer() {
-        mHandler.postDelayed(updateRemainingTimeRunnable, 1000L)
+        mHandler.post(updateRemainingTimeRunnable)
     }
 
     fun stopUpdateTimer() {
@@ -66,13 +68,15 @@ open class TimerViewHolder(view: View) : BaseViewHolder(view) {
     override fun bind(model: BaseModel) {
         timer = Timer(model as Timer)
 
+        step = (timer.duration + timer.extraTime) / 100
+
         itemView.setOnClickListener {
             timerClickListener?.onTimerClicked(Timer(timer))
         }
 
-        val elapsedTime = TimerHandler.getElapsedTime(timer)
         val remainingTime = TimerHandler.getRemainingTime(timer)
-        updateProgress(timer, elapsedTime, remainingTime)
+        val elapsedTime = TimerHandler.getFullDuration(timer) - remainingTime
+        updateProgress(timer, elapsedTime)
         updateRemainingTime(timer, remainingTime)
         updatePlayPauseButton(timer)
 
@@ -85,6 +89,7 @@ open class TimerViewHolder(view: View) : BaseViewHolder(view) {
         labelTextView.text = timer.label
 
         playPauseButton.setOnClickListener {
+            stopUpdateTimer()
             timerClickListener?.onPlayPauseButtonClicked(Timer(timer))
         }
 
@@ -153,7 +158,6 @@ open class TimerViewHolder(view: View) : BaseViewHolder(view) {
         playPauseButton.setOnClickListener(null)
         resetButton.setOnClickListener(null)
         incrementButton.setOnClickListener(null)
-        progressAnimator.cancel()
         stopUpdateTimer()
     }
 
@@ -176,51 +180,16 @@ open class TimerViewHolder(view: View) : BaseViewHolder(view) {
         return progress
     }*/
 
-    private fun updateProgress(timer: Timer, elapsedTime: Long, remainingTime: Long) {
-        val remainingMilliseconds = if (remainingTime > 0) {
-            remainingTime
-        } else {
-            timer.duration
-        }
-
-        val progress = if (timer.state == TimerState.RINGING) {
+    private fun calculateProgress(timer: Timer, elapsedTime: Long): Int {
+        return if (timer.state == TimerState.RINGING) {
             100
         } else {
-            val step = (timer.duration + timer.extraTime) / 100
             (elapsedTime / step).toInt()
         }
+    }
 
-        circularProgressBar.progress = progress
-
-        /*circularProgressBar.context.logError("remainingMilliseconds: $remainingMilliseconds")
-        circularProgressBar.context.logError("progress: $progress")*/
-
-        progressAnimator.duration = remainingMilliseconds
-        progressAnimator.setIntValues(progress, 100)
-        progressAnimator.removeAllUpdateListeners()
-        progressAnimator.addUpdateListener { animation ->
-            circularProgressBar.progress = animation.animatedValue as Int
-        }
-
-        when (timer.state) {
-            TimerState.RUNNING -> {
-                if (!progressAnimator.isStarted) {
-                    progressAnimator.start()
-                } else if (progressAnimator.isPaused) {
-                    progressAnimator.resume()
-                }
-            }
-
-            TimerState.PAUSED -> {
-                if (!progressAnimator.isPaused) {
-                    progressAnimator.pause()
-                }
-            }
-
-            else -> {
-                // do nothing
-            }
-        }
+    private fun updateProgress(timer: Timer, elapsedTime: Long) {
+        circularProgressBar.progress = calculateProgress(timer, elapsedTime)
     }
 
     private fun updateRemainingTime(timer: Timer, remainingTime: Long) {

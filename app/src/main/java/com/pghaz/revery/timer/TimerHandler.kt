@@ -70,8 +70,8 @@ object TimerHandler {
         return remainingTime
     }
 
-    fun getElapsedTime(timer: Timer): Long {
-        return timer.duration + timer.extraTime - timer.remainingTime
+    fun getFullDuration(timer: Timer): Long {
+        return timer.duration + timer.extraTime
     }
 
     fun setAlarm(context: Context, timer: Timer) {
