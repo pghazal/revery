@@ -264,6 +264,8 @@ class TimerRunningService : LifecycleService(), AbstractPlayer.PlayerListener {
                 NotificationHandler.NOTIFICATION_ID_TIMER_RUNNING,
                 notification
             )
+        } else {
+            NotificationHandler.cancel(this, NotificationHandler.NOTIFICATION_ID_TIMER_RUNNING)
         }
     }
 
