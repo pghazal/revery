@@ -4,6 +4,9 @@
     <string name="timer_text">timer</string>
     <string name="standby_text">standby</string>
 
+    <string name="off" translatable="false">OFF</string>
+    <string name="on" translatable="false">ON</string>
+
     <!-- NOTIFICATION -->
     <string name="notification_channel_alarm">Alarms</string>
     <string name="notification_channel_alarm_snooze">Snooze</string>

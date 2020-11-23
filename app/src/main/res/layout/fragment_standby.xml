@@ -59,9 +59,12 @@
         android:layout_margin="@dimen/base_margin"
         android:text=""
         android:textColor="@android:color/white"
-        android:textOff=""
-        android:textOn=""
+        android:textOff="@string/off"
+        android:textOn="@string/on"
         android:thumb="@drawable/switch_standby_thumb"
+        app:showText="true"
+        app:switchMinWidth="150dp"
+        app:switchTextAppearance="@style/SwitchTextAppearance"
         app:track="@drawable/switch_standby_track" />
 
 </RelativeLayout>
