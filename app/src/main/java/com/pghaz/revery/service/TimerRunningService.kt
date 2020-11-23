@@ -270,8 +270,8 @@ class TimerRunningService : LifecycleService(), AbstractPlayer.PlayerListener {
     }
 
     private fun configurePlayer(timer: Timer, player: SpotifyPlayer) {
-        player.fadeIn = timer.fadeOut
-        player.fadeInDuration = 10000 // TODO
+        player.fadeIn = false
+        player.fadeInDuration = 0
         player.shuffle = timer.metadata.shuffle
         player.repeat = Repeat.ALL
     }
