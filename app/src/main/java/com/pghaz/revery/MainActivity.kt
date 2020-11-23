@@ -23,6 +23,7 @@ import com.pghaz.revery.service.RescheduleAlarmsService
 import com.pghaz.revery.settings.SettingsHandler
 import com.pghaz.revery.settings.TabFeature
 import com.pghaz.revery.spotify.BaseSpotifyActivity
+import com.pghaz.revery.standby.StandByFragment
 import com.pghaz.revery.timer.TimersFragment
 import com.pghaz.revery.util.Arguments
 import kotlinx.android.synthetic.main.activity_main.*
@@ -139,6 +140,10 @@ class MainActivity : BaseSpotifyActivity(), BottomNavigationView.OnNavigationIte
             TabFeature.TIMER -> {
                 bottomNavigationView.selectedItemId = R.id.timer_tab
             }
+
+            TabFeature.STANDBY -> {
+                bottomNavigationView.selectedItemId = R.id.standby_tab
+            }
         }
     }
 
@@ -187,6 +192,11 @@ class MainActivity : BaseSpotifyActivity(), BottomNavigationView.OnNavigationIte
                 true
             }
 
+            R.id.standby_tab -> {
+                openStandByTab()
+                true
+            }
+
             else -> false
         }
     }
@@ -194,25 +204,37 @@ class MainActivity : BaseSpotifyActivity(), BottomNavigationView.OnNavigationIte
     private fun openAlarmsTab() {
         SettingsHandler.setLastOpenedTab(this, TabFeature.ALARM)
         // Check first if the fragment already exists
-        var alarmsFragment =
+        var fragment =
             supportFragmentManager.findFragmentByTag(AlarmsFragment.TAG) as AlarmsFragment?
         // If it doesn't, create it
-        if (alarmsFragment == null) {
-            alarmsFragment = AlarmsFragment.newInstance()
+        if (fragment == null) {
+            fragment = AlarmsFragment.newInstance()
         }
-        selectNavigationItem(alarmsFragment, AlarmsFragment.TAG)
+        selectNavigationItem(fragment, AlarmsFragment.TAG)
     }
 
     private fun openTimersTab() {
         SettingsHandler.setLastOpenedTab(this, TabFeature.TIMER)
         // Check first if the fragment already exists
-        var timersFragment =
+        var fragment =
             supportFragmentManager.findFragmentByTag(TimersFragment.TAG) as TimersFragment?
         // If it doesn't, create it
-        if (timersFragment == null) {
-            timersFragment = TimersFragment.newInstance()
+        if (fragment == null) {
+            fragment = TimersFragment.newInstance()
         }
-        selectNavigationItem(timersFragment, TimersFragment.TAG)
+        selectNavigationItem(fragment, TimersFragment.TAG)
+    }
+
+    private fun openStandByTab() {
+        SettingsHandler.setLastOpenedTab(this, TabFeature.STANDBY)
+        // Check first if the fragment already exists
+        var fragment =
+            supportFragmentManager.findFragmentByTag(StandByFragment.TAG) as StandByFragment?
+        // If it doesn't, create it
+        if (fragment == null) {
+            fragment = StandByFragment.newInstance()
+        }
+        selectNavigationItem(fragment, StandByFragment.TAG)
     }
 
     private val mServiceConnection: ServiceConnection = object : ServiceConnection {

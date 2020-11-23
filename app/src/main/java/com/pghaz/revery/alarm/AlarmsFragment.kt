@@ -117,7 +117,7 @@ class AlarmsFragment : BaseFragment(), OnAlarmClickListener {
                 cancelAllAlarms()
                 true
             }
-            R.id.menu_alarms_settings -> {
+            R.id.menu_settings -> {
                 openSettings()
                 true
             }

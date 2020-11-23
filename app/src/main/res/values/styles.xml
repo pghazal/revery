@@ -47,6 +47,21 @@
         </item>
     </style>
 
+    <style name="ReveryTimePicker" parent="@android:style/Widget.Material.Light.TimePicker">
+        <item name="android:textColorPrimary">@color/colorAccent</item>
+        <item name="android:textColorSecondary">@color/colorAccent</item>
+        <item name="android:textColor">@android:color/white</item>
+
+        <item name="android:numbersBackgroundColor">@android:color/white</item>
+        <item name="android:numbersTextColor">@color/selector_time_picker_text_color</item>
+        <item name="android:numbersInnerTextColor">@color/selector_time_picker_text_color</item>
+        <item name="android:numbersSelectorColor">@color/colorAccent</item>
+
+        <item name="android:amPmTextColor">@android:color/white</item>
+
+        <item name="android:colorBackground">@color/colorAccent</item>
+    </style>
+
     <style name="ReveryBottomNavigationView.TextAppearance">
         <item name="android:fontFamily">@font/montserrat_regular</item>
         <item name="fontFamily">@font/montserrat_regular</item>

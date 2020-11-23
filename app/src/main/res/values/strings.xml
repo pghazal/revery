@@ -2,6 +2,7 @@
     <!-- GENERAL -->
     <string name="alarm_text">alarm</string>
     <string name="timer_text">timer</string>
+    <string name="standby_text">standby</string>
 
     <!-- NOTIFICATION -->
     <string name="notification_channel_alarm">Alarms</string>

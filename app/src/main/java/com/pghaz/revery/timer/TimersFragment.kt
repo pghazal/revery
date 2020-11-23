@@ -102,7 +102,7 @@ class TimersFragment : BaseFragment(), OnTimerClickListener {
                 cancelAllTimers()
                 true
             }
-            R.id.menu_alarms_settings -> {
+            R.id.menu_settings -> {
                 openSettings()
                 true
             }

@@ -10,4 +10,9 @@
         android:enabled="true"
         android:icon="@drawable/ic_hourglass_animated"
         android:title="@string/timer_text" />
+    <item
+        android:id="@+id/standby_tab"
+        android:enabled="true"
+        android:icon="@drawable/ic_moon"
+        android:title="@string/standby_text" />
 </menu>

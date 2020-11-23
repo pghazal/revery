@@ -3,6 +3,7 @@
     <!-- GENERAL -->
     <string name="alarm_text">alarme</string>
     <string name="timer_text">minuteur</string>
+    <string name="standby_text">veille</string>
 
     <!-- NOTIFICATION -->
     <string name="notification_channel_alarm">Alarmes</string>
