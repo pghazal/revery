@@ -3,6 +3,7 @@ package com.pghaz.revery.util
 import android.content.Intent
 import android.os.Bundle
 import com.pghaz.revery.model.app.Alarm
+import com.pghaz.revery.model.app.StandByEnabler
 import com.pghaz.revery.model.app.Timer
 
 object IntentUtils {
@@ -57,5 +58,21 @@ object IntentUtils {
         val timerBundle = Bundle()
         timerBundle.putParcelable(Arguments.ARGS_TIMER, timer)
         return timerBundle
+    }
+
+    fun safePutStandByEnablerIntoIntent(intent: Intent, standByEnabler: StandByEnabler) {
+        val bundle = getStandByEnablerBundle(standByEnabler)
+        intent.putExtra(Arguments.ARGS_BUNDLE_STANDBY, bundle)
+    }
+
+    fun safeGetStandByEnablerFromIntent(intent: Intent): StandByEnabler {
+        val bundle = intent.getBundleExtra(Arguments.ARGS_BUNDLE_STANDBY)
+        return bundle?.getParcelable<StandByEnabler>(Arguments.ARGS_STANDBY) as StandByEnabler
+    }
+
+    private fun getStandByEnablerBundle(standByEnabler: StandByEnabler): Bundle {
+        val bundle = Bundle()
+        bundle.putParcelable(Arguments.ARGS_STANDBY, standByEnabler)
+        return bundle
     }
 }

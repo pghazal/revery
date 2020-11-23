@@ -47,7 +47,7 @@
         </item>
     </style>
 
-    <style name="ReveryTimePicker" parent="@android:style/Widget.Material.Light.TimePicker">
+    <!--<style name="ReveryTimePicker" parent="@android:style/Widget.Material.Light.TimePicker">
         <item name="android:textColorPrimary">@color/colorAccent</item>
         <item name="android:textColorSecondary">@color/colorAccent</item>
         <item name="android:textColor">@android:color/white</item>
@@ -60,7 +60,7 @@
         <item name="android:amPmTextColor">@android:color/white</item>
 
         <item name="android:colorBackground">@color/colorAccent</item>
-    </style>
+    </style>-->
 
     <style name="ReveryBottomNavigationView.TextAppearance">
         <item name="android:fontFamily">@font/montserrat_regular</item>

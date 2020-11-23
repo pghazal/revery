@@ -87,6 +87,11 @@
 
         <receiver
             android:name=".broadcastreceiver.TimerBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true" />
+
+        <receiver
+            android:name=".broadcastreceiver.StandByBroadcastReceiver"
             android:directBootAware="true"
             android:enabled="true"
             android:exported="true">
@@ -118,6 +123,11 @@
 
         <service
             android:name="com.pghaz.revery.service.TimerRunningService"
+            android:enabled="true"
+            android:exported="false" />
+
+        <service
+            android:name="com.pghaz.revery.service.StandByService"
             android:enabled="true"
             android:exported="false" />
 

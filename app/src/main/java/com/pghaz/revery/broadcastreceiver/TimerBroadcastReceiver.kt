@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.widget.Toast
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.pghaz.revery.model.app.Timer
 import com.pghaz.revery.service.TimerRingingService
@@ -88,11 +87,9 @@ class TimerBroadcastReceiver : BroadcastReceiver() {
 
         if (ACTION_TIMER_START == intent.action) {
             val timer = IntentUtils.safeGetTimerFromIntent(intent)
-            Toast.makeText(context, "Start ${timer.id}", Toast.LENGTH_SHORT).show()
             startTimerRunningService(context, timer)
         } else if (ACTION_TIMER_IS_OVER == intent.action) {
             val timer = IntentUtils.safeGetTimerFromIntent(intent)
-            Toast.makeText(context, "Over ${timer.id}", Toast.LENGTH_SHORT).show()
             startTimerOverService(context, timer)
         } else if (ACTION_TIMER_RUNNING_INCREMENT == intent.action) {
             val timer = IntentUtils.safeGetTimerFromIntent(intent)
@@ -146,7 +143,8 @@ class TimerBroadcastReceiver : BroadcastReceiver() {
     }
 
     private fun broadcastRingingTimerIncrement(context: Context, timer: Timer) {
-        val timerIncrementIntent = TimerRingingService.buildRingingTimerIncrementIntent(context, timer)
+        val timerIncrementIntent =
+            TimerRingingService.buildRingingTimerIncrementIntent(context, timer)
         LocalBroadcastManager.getInstance(context).sendBroadcast(timerIncrementIntent)
     }
 

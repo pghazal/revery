@@ -185,6 +185,11 @@
     <string name="timer_in_use">Minuteur en cours d\'utilisation. Réinitialisez avant d\'éditer.</string>
     <string name="none">Aucun</string>
 
+    <!-- STANDBY -->
+    <string name="standby_start_text">Mise en veille de Spotify</string>
+    <string name="standby_disabled_text">La mise en veille Spotify est désactivée.</string>
+    <string name="standby_enabled_text">La mise en veille Spotify est activée pour :</string>
+
     <!-- TIME REMAINING TEXTS -->
     <plurals name="time_remaining_days">
         <item quantity="one">%d jour</item>

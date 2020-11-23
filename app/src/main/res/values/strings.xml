@@ -187,6 +187,11 @@
     <string name="timer_in_use">Timer is in use. Reset before editing.</string>
     <string name="none">None</string>
 
+    <!-- STANDBY -->
+    <string name="standby_start_text">Spotify standing by</string>
+    <string name="standby_disabled_text">Spotify Standby is disabled.</string>
+    <string name="standby_enabled_text">Spotify Standby is enabled for :</string>
+
     <!-- TIME REMAINING TEXTS -->
     <plurals name="time_remaining_days">
         <item quantity="one">%d day</item>
