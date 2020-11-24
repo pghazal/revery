@@ -109,6 +109,33 @@ class StandByService : LifecycleService(), AbstractPlayer.PlayerListener {
     }
 
     override fun onPlayerError(error: PlayerError) {
+        FirebaseCrashlytics.getInstance().recordException(error)
+
+        notifyErrorOccurred(this, error)
+    }
+
+    private fun notifyErrorOccurred(context: Context, error: PlayerError) {
+        val notificationBuilder =
+            NotificationCompat.Builder(context, NotificationHandler.CHANNEL_ID_ALARM_ERROR)
+                .setCategory(NotificationCompat.CATEGORY_ERROR)
+                .setContentTitle(context.getString(R.string.notification_channel_standby))
+                .setSmallIcon(R.drawable.ic_revery_transparent)
+                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setColor(ContextCompat.getColor(context, R.color.colorAccent))
+                .setAutoCancel(true)
+
+        val text = context.getString(R.string.notification_standby_player_error_general)
+
+        val notification = notificationBuilder
+            .setContentText(text)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(text))
+            .build()
+
+        NotificationHandler.notify(
+            context,
+            NotificationHandler.NOTIFICATION_ID_ERROR_OCCURRED,
+            notification
+        )
     }
 
     private fun killService() {

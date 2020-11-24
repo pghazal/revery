@@ -31,6 +31,9 @@
     <string name="notification_spotify_error_unknown">Emergency alarm went off because of an unknown reason.</string>
     <string name="notification_player_error_general">Emergency alarm went off because of an unknown reason.</string>
 
+    <string name="notification_timer_player_error_general">An error occurred while trying to connect to Spotify.</string>
+    <string name="notification_standby_player_error_general">An error occurred while trying to connect to Spotify.</string>
+
     <!-- SPOTIFY NOT INSTALLED -->
     <string name="spotify_not_installed">Spotify not found</string>
     <string name="spotify_not_installed_message">It seems that Spotify is not installed on your device. In order to play Spotify\'s content you need to install Spotify.</string>

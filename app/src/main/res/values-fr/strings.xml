@@ -29,6 +29,9 @@
     <string name="notification_spotify_error_unknown">L\'alarme d\'urgence s\'est déclenchée à cause d\'une raison inconnue.</string>
     <string name="notification_player_error_general">L\'alarme d\'urgence s\'est déclenchée à cause d\'une raison inconnue.</string>
 
+    <string name="notification_timer_player_error_general">Revery n\'a pas réussi à communiquer avec l\'application Spotify.</string>
+    <string name="notification_standby_player_error_general">Revery n\'a pas réussi à communiquer avec l\'application Spotify.</string>
+
     <!-- SPOTIFY NOT INSTALLED -->
     <string name="spotify_not_installed">Spotify non installé</string>
     <string name="spotify_not_installed_message">Il semble que Spotify ne soit pas installé sur votre téléphone. Pour pouvoir jouer du contenu Spotify, ce dernier doit être installé.</string>

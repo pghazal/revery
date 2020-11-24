@@ -303,7 +303,8 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
                 (player as SpotifyPlayer).repeat = Repeat.ALL
             }
 
-            MediaType.DEFAULT -> {
+            MediaType.DEFAULT,
+            MediaType.NONE -> {
                 // do nothing
             }
         }
@@ -460,10 +461,6 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setColor(ContextCompat.getColor(context, R.color.colorAccent))
                 .setAutoCancel(true)
-                .setStyle(
-                    NotificationCompat.BigTextStyle()
-                        .bigText(getString(R.string.rescheduling_alarms_after_reboot))
-                )
 
         val text = if (error is SpotifyPlayerError) {
             when (error) {
