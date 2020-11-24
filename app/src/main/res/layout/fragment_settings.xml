@@ -296,7 +296,8 @@
                 android:paddingStart="@dimen/third_base_margin"
                 android:paddingEnd="@dimen/third_base_margin"
                 android:text="@string/alarm_test"
-                android:textAllCaps="false" />
+                android:textAllCaps="false"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/aboutButton"
