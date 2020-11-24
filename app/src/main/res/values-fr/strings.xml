@@ -184,6 +184,7 @@
     <string name="remaining_time">Temps restant:</string>
     <string name="timer_in_use">Minuteur en cours d\'utilisation. Réinitialisez avant d\'éditer.</string>
     <string name="none">Aucun</string>
+    <string name="timer_start">lancer le minuteur</string>
 
     <!-- STANDBY -->
     <string name="standby_start_text">Mise en veille de Spotify</string>

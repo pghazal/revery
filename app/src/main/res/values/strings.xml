@@ -189,6 +189,7 @@
     <string name="remaining_time">Remaining time:</string>
     <string name="timer_in_use">Timer is in use. Reset before editing.</string>
     <string name="none">None</string>
+    <string name="timer_start">start timer</string>
 
     <!-- STANDBY -->
     <string name="standby_start_text">Spotify standing by</string>

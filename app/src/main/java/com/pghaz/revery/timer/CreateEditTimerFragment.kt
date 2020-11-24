@@ -151,7 +151,7 @@ class CreateEditTimerFragment : BaseCreateEditFragment() {
             if (BaseModel.NO_ID == timer?.id) {
                 // do nothing
             } else { // otherwise delete the existing timer
-                createEditTimerViewModel.delete(context, timer!!)
+                createEditTimerViewModel.delete(timer!!)
             }
 
             dismiss()
@@ -304,7 +304,7 @@ class CreateEditTimerFragment : BaseCreateEditFragment() {
             it.remainingTime = it.duration
             it.extraTime = 0
 
-            createEditTimerViewModel.createTimer(context, it)
+            createEditTimerViewModel.createTimer(labelEditText.context, it)
         }
     }
 
@@ -321,7 +321,7 @@ class CreateEditTimerFragment : BaseCreateEditFragment() {
             it.remainingTime = it.duration
             it.extraTime = 0
 
-            createEditTimerViewModel.editTimer(context, it)
+            createEditTimerViewModel.editTimer(labelEditText.context, it)
         }
     }
 

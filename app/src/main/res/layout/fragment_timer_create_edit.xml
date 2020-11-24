@@ -306,7 +306,7 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/button_height"
             android:layout_weight="4"
-            android:text="@string/save" />
+            android:text="@string/timer_start" />
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/negativeButton"

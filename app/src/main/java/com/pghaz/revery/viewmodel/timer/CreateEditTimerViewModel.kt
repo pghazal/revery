@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.pghaz.revery.model.app.Timer
 import com.pghaz.revery.repository.TimerRepository
+import com.pghaz.revery.timer.TimerHandler
 import com.pghaz.revery.viewmodel.BaseCreateEditViewModel
 
 class CreateEditTimerViewModel(application: Application) : BaseCreateEditViewModel(application) {
@@ -13,20 +14,21 @@ class CreateEditTimerViewModel(application: Application) : BaseCreateEditViewMod
 
     val timerChangedLiveData = MutableLiveData<Timer>()
 
-    fun createTimer(context: Context?, timer: Timer) {
+    fun createTimer(context: Context, timer: Timer) {
+        TimerHandler.startTimer(timer)
+        TimerHandler.setAlarm(context, timer)
+
         timerRepository.insert(timer)
-        //AlarmHandler.scheduleAlarm(context, timer)
     }
 
-    fun editTimer(context: Context?, timer: Timer) {
-        //AlarmHandler.cancelAlarm(context, timer)
-        //AlarmHandler.scheduleAlarm(context, timer)
+    fun editTimer(context: Context, timer: Timer) {
+        TimerHandler.startTimer(timer)
+        TimerHandler.setAlarm(context, timer)
 
         timerRepository.update(timer)
     }
 
-    fun delete(context: Context?, timer: Timer) {
-        //AlarmHandler.cancelAlarm(context, timer)
+    fun delete(timer: Timer) {
         timerRepository.delete(timer)
     }
 }
