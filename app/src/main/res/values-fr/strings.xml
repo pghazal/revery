@@ -11,6 +11,7 @@
     <string name="notification_channel_alarm_reschedule">Alarmes reprogrammées</string>
     <string name="notification_channel_alarm_error">Alarmes d\'urgence</string>
     <string name="notification_channel_timer">Minuteurs</string>
+    <string name="notification_channel_standby">Mise en veille</string>
     <string name="rescheduling_alarms_after_reboot">Les alarmes ont été reprogrammées après le redémarrage du téléphone</string>
     <string name="go_to_settings">Ouvrir les paramètres</string>
     <string name="notification_disabled">Notifications désactivées</string>

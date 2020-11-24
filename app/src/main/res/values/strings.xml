@@ -13,6 +13,7 @@
     <string name="notification_channel_alarm_reschedule">Rescheduled alarms</string>
     <string name="notification_channel_alarm_error">Emergency alarm</string>
     <string name="notification_channel_timer">Timers</string>
+    <string name="notification_channel_standby">Standby</string>
     <string name="rescheduling_alarms_after_reboot">Alarms have been rescheduled after phone reboot</string>
     <string name="go_to_settings">Go to settings</string>
     <string name="notification_disabled">Notifications disabled</string>
@@ -193,7 +194,7 @@
     <string name="timer_start">start timer</string>
 
     <!-- STANDBY -->
-    <string name="standby_start_text">Spotify standing by</string>
+    <string name="standby_start_text">Spotify is going to sleep</string>
     <string name="standby_disabled_text">Spotify standby disabled</string>
     <string name="standby_enabled_text">Spotify is scheduled to go to sleep at :</string>
 

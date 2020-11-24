@@ -24,12 +24,14 @@ object NotificationHandler {
     const val CHANNEL_ID_ALARM_SNOOZE = "REVERY_CHANNEL_ALARM_SNOOZE"
     const val CHANNEL_ID_ALARM_ERROR = "REVERY_CHANNEL_ALARM_ERROR"
     const val CHANNEL_ID_TIMER = "REVERY_CHANNEL_TIMER"
+    const val CHANNEL_ID_STANDBY = "REVERY_CHANNEL_STANDBY"
 
     const val NOTIFICATION_ID_ALARM = 1
     const val NOTIFICATION_ID_RESCHEDULE = 2
     const val NOTIFICATION_ID_ERROR_OCCURRED = 3
     const val NOTIFICATION_ID_TIMER_OVER = 4
     const val NOTIFICATION_ID_TIMER_RUNNING = 5
+    const val NOTIFICATION_ID_STANDBY = 6
 
     fun createNotificationChannels(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -77,11 +79,20 @@ object NotificationHandler {
             timerChannel.vibrationPattern = longArrayOf(0)
             timerChannel.enableVibration(true)
 
+            val standbyChannel = NotificationChannel(
+                CHANNEL_ID_STANDBY,
+                context.getString(R.string.notification_channel_standby),
+                NotificationManager.IMPORTANCE_HIGH
+            )
+            timerChannel.vibrationPattern = longArrayOf(0)
+            timerChannel.enableVibration(true)
+
             manager?.createNotificationChannel(alarmChannel)
             manager?.createNotificationChannel(alarmSnoozeChannel)
             manager?.createNotificationChannel(alarmRescheduleChannel)
             manager?.createNotificationChannel(emergencyAlarmChannel)
             manager?.createNotificationChannel(timerChannel)
+            manager?.createNotificationChannel(standbyChannel)
         }
     }
 

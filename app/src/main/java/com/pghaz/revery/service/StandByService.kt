@@ -48,7 +48,7 @@ class StandByService : LifecycleService(), AbstractPlayer.PlayerListener {
             notification = notificationBuilder.build()
 
             startForeground(
-                NotificationHandler.NOTIFICATION_ID_TIMER_RUNNING,
+                NotificationHandler.NOTIFICATION_ID_STANDBY,
                 notification
             )
 
@@ -70,9 +70,9 @@ class StandByService : LifecycleService(), AbstractPlayer.PlayerListener {
     }
 
     private fun buildNotification(): NotificationCompat.Builder {
-        return NotificationCompat.Builder(this, NotificationHandler.CHANNEL_ID_TIMER)
+        return NotificationCompat.Builder(this, NotificationHandler.CHANNEL_ID_STANDBY)
             .setCategory(NotificationCompat.CATEGORY_ALARM)
-            .setContentTitle(String.format("%s", getString(R.string.standby_text)))
+            .setContentTitle(String.format("%s", getString(R.string.notification_channel_standby)))
             .setContentText(String.format("%s", getString(R.string.standby_start_text)))
             .setSmallIcon(R.drawable.ic_revery_transparent)
             .setPriority(NotificationCompat.PRIORITY_MAX)
