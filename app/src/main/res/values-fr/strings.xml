@@ -104,6 +104,7 @@
     <string name="edit_alarm">éditer l\'alarme</string>
     <string name="vibrate">vibrer</string>
     <string name="fade_in">en douceur</string>
+    <string name="fade_out">arrêt en douceur</string>
     <string name="save">enregistrer</string>
     <string name="delete">supprimer</string>
     <string name="alarm_hint">ajouter une description</string>

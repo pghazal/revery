@@ -74,8 +74,8 @@
         android:checked="false"
         android:drawableStart="@drawable/ic_fade_out"
         android:text=""
-        android:textOff="@string/fade_in"
-        android:textOn="@string/fade_in"
+        android:textOff="@string/fade_out"
+        android:textOn="@string/fade_out"
         android:visibility="gone"
         tools:checked="true"
         tools:visibility="visible" />
