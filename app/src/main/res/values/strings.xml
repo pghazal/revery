@@ -86,7 +86,7 @@
     <string name="alarm_fade_in_duration_static">Fade in duration</string>
     <string name="alarm_should_use_device_volume">Use device\'s volume</string>
     <string name="alarm_should_use_device_volume_explanation"><b>WARNING:</b> if <b>enabled</b> and if you choose a default ringtone or one of your own sounds for your alarm, the application will use the <b>alarm stream</b> volume. Otherwise, the application will use the <b>music stream</b> volume (e.g: when alarm plays a content Spotify). If <b>disabled</b>, the app will use the volume level below.</string>
-    <string name="audio_by_default">Default audio</string>
+    <string name="audio_by_default">Default audio for alarms and timers</string>
     <string name="alarm_snooze_update">Ability to change duration when alarm goes off</string>
     <string name="alarm_snooze_double_tap">Double tap to snooze</string>
     <string name="alarm_slide_to_turn_off">Slide to turn off alarm</string>

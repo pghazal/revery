@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
-import android.media.RingtoneManager
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -124,8 +123,6 @@ class TimerRingingService : LifecycleService(), AbstractPlayer.PlayerListener {
     private val timersOverQueue: Queue<Timer> = LinkedList()
     private var currentTimer: Timer? = null
 
-    private val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM).toString()
-
     private fun registerToLocalTimerOverBroadcastReceiver() {
         val intentFilter = IntentFilter()
         intentFilter.addAction(ACTION_TIMER_RINGING_SHOULD_STOP)
@@ -175,6 +172,7 @@ class TimerRingingService : LifecycleService(), AbstractPlayer.PlayerListener {
                             false,
                             shouldUseDeviceVolume
                         )
+                        val soundUri = SettingsHandler.getDefaultAudioUri(this).toString()
                         player.init(this@TimerRingingService)
                         player.prepareAsync(soundUri)
                     }
@@ -236,6 +234,7 @@ class TimerRingingService : LifecycleService(), AbstractPlayer.PlayerListener {
         currentTimer = pop()
 
         currentTimer?.let {
+            val soundUri = SettingsHandler.getDefaultAudioUri(this).toString()
             player.init(this)
             player.prepareAsync(soundUri)
 
