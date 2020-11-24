@@ -94,7 +94,7 @@
         android:textOn="@string/on"
         android:thumb="@drawable/switch_standby_thumb"
         app:showText="true"
-        app:switchMinWidth="150dp"
+        app:switchMinWidth="180dp"
         app:switchTextAppearance="@style/SwitchTextAppearance"
         app:track="@drawable/switch_standby_track" />
 
