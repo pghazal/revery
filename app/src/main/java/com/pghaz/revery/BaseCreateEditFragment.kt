@@ -41,7 +41,8 @@ abstract class BaseCreateEditFragment : BaseBottomSheetDialogFragment() {
 
     protected lateinit var chooseRingtoneButtonAnimatorSet: AnimatorSet
 
-    protected fun updateMetadataViews(metadata: MediaMetadata) {
+    @CallSuper
+    protected open fun updateMetadataViews(metadata: MediaMetadata) {
         if (metadata.type != MediaType.DEFAULT && metadata.type != MediaType.NONE) {
             moreOptionsButton.visibility = View.VISIBLE
         } else {

@@ -96,6 +96,11 @@ class CreateEditTimerFragment : BaseCreateEditFragment() {
         secondNumberPicker.value = second
     }
 
+    override fun updateMetadataViews(metadata: MediaMetadata) {
+        super.updateMetadataViews(metadata)
+        moreOptionsButton.visibility = View.GONE
+    }
+
     private fun updateDurationText(timer: Timer) {
         val hour = (timer.duration / (1000 * 60 * 60) % 24).toInt()
         val minute = (timer.duration / (1000 * 60) % 60).toInt()
