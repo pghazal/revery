@@ -11,19 +11,23 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.SpinnerAdapter
 import android.widget.TimePicker
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.pghaz.revery.BaseFragment
 import com.pghaz.revery.R
 import com.pghaz.revery.broadcastreceiver.StandByBroadcastReceiver
 import com.pghaz.revery.model.app.StandByEnabler
+import com.pghaz.revery.settings.FadeDuration
 import com.pghaz.revery.settings.SettingsFragment
 import com.pghaz.revery.util.IntentUtils
 import com.pghaz.revery.viewmodel.standby.StandByViewModel
 import kotlinx.android.synthetic.main.fragment_standby.*
 import java.util.*
+
 
 class StandByFragment : BaseFragment(), TimePickerDialog.OnTimeSetListener {
 
@@ -94,10 +98,18 @@ class StandByFragment : BaseFragment(), TimePickerDialog.OnTimeSetListener {
             standbyEnabledTextView.visibility = View.VISIBLE
             clockView.visibility = View.VISIBLE
             standbyDisabledTextView.visibility = View.GONE
+            fadeOutToggle.visibility = View.VISIBLE
+            if (standByEnabler.fadeOut) {
+                fadeOutDurationSpinner.visibility = View.VISIBLE
+            } else {
+                fadeOutDurationSpinner.visibility = View.GONE
+            }
         } else {
             standbyEnabledTextView.visibility = View.GONE
             clockView.visibility = View.GONE
             standbyDisabledTextView.visibility = View.VISIBLE
+            fadeOutToggle.visibility = View.GONE
+            fadeOutDurationSpinner.visibility = View.GONE
         }
 
         clockView.updateTime(standByEnabler.hour, standByEnabler.minute)
@@ -116,30 +128,109 @@ class StandByFragment : BaseFragment(), TimePickerDialog.OnTimeSetListener {
         savedInstanceState?.let { timePickerDialog.onRestoreInstanceState(it) }
 
         standbySwitch.isChecked = standbyViewModel.getStandByEnabler(context).enabled
-        standbySwitch.setOnCheckedChangeListener { button, isChecked ->
+        standbySwitch.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
                 val calendar = Calendar.getInstance()
                 val hour = calendar[if (is24HourFormat) Calendar.HOUR_OF_DAY else Calendar.HOUR]
                 val minute = calendar[Calendar.MINUTE]
                 showTimerPickerDialog(hour, minute)
             } else {
-                standbyViewModel.setStandByEnabler(button.context, false, 0, 0)
+                standbyViewModel.setStandByEnabled(buttonView.context, false)
                 standbyViewModel.standbyLiveData.value =
-                    standbyViewModel.getStandByEnabler(button.context)
+                    standbyViewModel.getStandByEnabler(buttonView.context)
             }
+        }
+
+        fadeOutToggle.isChecked = standbyViewModel.getStandByEnabler(context).fadeOut
+        fadeOutToggle.setOnCheckedChangeListener { buttonView, isChecked ->
+            standbyViewModel.setStandByFadeOut(buttonView.context, isChecked)
+            standbyViewModel.standbyLiveData.value =
+                standbyViewModel.getStandByEnabler(buttonView.context)
         }
 
         clockView.setOnClickListener {
             val standByEnabler = standbyViewModel.getStandByEnabler(it.context)
             showTimerPickerDialog(standByEnabler.hour, standByEnabler.minute)
         }
+
+        val spinnerAdapter: SpinnerAdapter = ArrayAdapter(
+            fadeOutDurationSpinner.context,
+            R.layout.spinner_item_view,
+            resources.getStringArray(R.array.fade_in_duration_array)
+        )
+        fadeOutDurationSpinner.adapter = spinnerAdapter
+
+        val fadeOutDurationPosition =
+            standbyViewModel.getStandByFadeOutDurationPosition(fadeOutDurationSpinner.context)
+        fadeOutDurationSpinner.setSelection(fadeOutDurationPosition)
+
+        fadeOutDurationSpinner.onItemSelectedListener = object :
+            AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?, view: View?,
+                position: Int, id: Long
+            ) {
+                if (context == null) {
+                    return
+                }
+
+                when (position) {
+                    FadeDuration.TEN_SECONDS.ordinal -> {
+                        standbyViewModel.setStandByFadeOutDuration(
+                            context!!,
+                            FadeDuration.TEN_SECONDS
+                        )
+                    }
+                    FadeDuration.TWENTY_SECONDS.ordinal -> {
+                        standbyViewModel.setStandByFadeOutDuration(
+                            context!!,
+                            FadeDuration.TWENTY_SECONDS
+                        )
+                    }
+                    FadeDuration.THIRTY_SECONDS.ordinal -> {
+                        standbyViewModel.setStandByFadeOutDuration(
+                            context!!,
+                            FadeDuration.THIRTY_SECONDS
+                        )
+                    }
+                    FadeDuration.ONE_MINUTE.ordinal -> {
+                        standbyViewModel.setStandByFadeOutDuration(
+                            context!!,
+                            FadeDuration.ONE_MINUTE
+                        )
+                    }
+                    FadeDuration.TWO_MINUTES.ordinal -> {
+                        standbyViewModel.setStandByFadeOutDuration(
+                            context!!,
+                            FadeDuration.TWO_MINUTES
+                        )
+                    }
+                    FadeDuration.FIVE_MINUTES.ordinal -> {
+                        standbyViewModel.setStandByFadeOutDuration(
+                            context!!,
+                            FadeDuration.FIVE_MINUTES
+                        )
+                    }
+                }
+
+                standbyViewModel.standbyLiveData.value =
+                    standbyViewModel.getStandByEnabler(context!!)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                // do nothing
+            }
+        }
     }
 
     override fun onTimeSet(view: TimePicker?, hourOfDay: Int, minute: Int) {
-        Toast.makeText(context, "$hourOfDay:$minute", Toast.LENGTH_SHORT).show()
+        view?.context?.let {
+            standbyViewModel.setStandByEnabled(it, true)
+            standbyViewModel.setStandByHour(it, hourOfDay)
+            standbyViewModel.setStandByMinute(it, minute)
 
-        standbyViewModel.setStandByEnabler(view?.context, true, hourOfDay, minute)
-        standbyViewModel.standbyLiveData.value = standbyViewModel.getStandByEnabler(view?.context)
+            standbyViewModel.standbyLiveData.value = standbyViewModel.getStandByEnabler(it)
+        }
     }
 
     private fun showTimerPickerDialog(hour: Int, minute: Int) {

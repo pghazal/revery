@@ -60,10 +60,11 @@ object StandByHandler {
             if (BuildConfig.DEBUG) {
                 val toastText = String.format(
                     Locale.getDefault(),
-                    "Standby scheduled for %s at %02d:%02d",
+                    "Standby scheduled for %s at %02d:%02d. Fade out: %d",
                     DateTimeUtils.toDay(calendar[Calendar.DAY_OF_WEEK]),
                     standByEnabler.hour,
-                    standByEnabler.minute
+                    standByEnabler.minute,
+                    standByEnabler.fadeOutDuration
                 )
                 context.toastDebug(toastText)
             }

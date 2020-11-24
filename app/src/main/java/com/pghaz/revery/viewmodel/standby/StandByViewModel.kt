@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.pghaz.revery.model.app.StandByEnabler
+import com.pghaz.revery.settings.FadeDuration
 
 class StandByViewModel : ViewModel() {
 
@@ -19,6 +20,15 @@ class StandByViewModel : ViewModel() {
 
         private const val STANDBY_FEATURE_MINUTE = "$STANDBY_SHARED_PREF.feature.minute"
         private const val DEFAULT_STANDBY_FEATURE_MINUTE = 0
+
+        private const val STANDBY_FEATURE_FADE_OUT = "$STANDBY_SHARED_PREF.feature.fade.out"
+        private const val DEFAULT_STANDBY_FEATURE_FADE_OUT = false
+
+        private const val STANDBY_FEATURE_FADE_OUT_DURATION =
+            "$STANDBY_SHARED_PREF.feature.fade.out.duration"
+        private const val STANDBY_FEATURE_FADE_OUT_DURATION_POSITION =
+            "$STANDBY_SHARED_PREF.feature.fade.out.duration.position"
+        private val DEFAULT_STANDBY_FEATURE_FADE_IN_DURATION = FadeDuration.ONE_MINUTE
     }
 
     val standbyLiveData = MutableLiveData<StandByEnabler>()
@@ -37,17 +47,11 @@ class StandByViewModel : ViewModel() {
             standByEnabler.enabled = getStandByEnabled(it)
             standByEnabler.hour = getStandByHour(it)
             standByEnabler.minute = getStandByMinute(it)
+            standByEnabler.fadeOut = getStandByFadeOut(it)
+            standByEnabler.fadeOutDuration = getStandByFadeOutDuration(it)
         }
 
         return standByEnabler
-    }
-
-    fun setStandByEnabler(context: Context?, enabled: Boolean, hour: Int, minute: Int) {
-        context?.let {
-            setStandByEnabled(it, enabled)
-            setStandByHour(it, hour)
-            setStandByMinute(it, minute)
-        }
     }
 
     private fun getStandByEnabled(context: Context): Boolean {
@@ -58,7 +62,7 @@ class StandByViewModel : ViewModel() {
         )
     }
 
-    private fun setStandByEnabled(context: Context, value: Boolean) {
+    fun setStandByEnabled(context: Context, value: Boolean) {
         val sharedPreferences = getSharedPreferences(context)
         val editor = sharedPreferences.edit()
         editor.putBoolean(STANDBY_FEATURE_ENABLED, value)
@@ -73,7 +77,7 @@ class StandByViewModel : ViewModel() {
         )
     }
 
-    private fun setStandByHour(context: Context, value: Int) {
+    fun setStandByHour(context: Context, value: Int) {
         val sharedPreferences = getSharedPreferences(context)
         val editor = sharedPreferences.edit()
         editor.putInt(STANDBY_FEATURE_HOUR, value)
@@ -88,10 +92,49 @@ class StandByViewModel : ViewModel() {
         )
     }
 
-    private fun setStandByMinute(context: Context, value: Int) {
+    fun setStandByMinute(context: Context, value: Int) {
         val sharedPreferences = getSharedPreferences(context)
         val editor = sharedPreferences.edit()
         editor.putInt(STANDBY_FEATURE_MINUTE, value)
         editor.apply()
+    }
+
+    private fun getStandByFadeOut(context: Context): Boolean {
+        val sharedPreferences = getSharedPreferences(context)
+        return sharedPreferences.getBoolean(
+            STANDBY_FEATURE_FADE_OUT,
+            DEFAULT_STANDBY_FEATURE_FADE_OUT
+        )
+    }
+
+    fun setStandByFadeOut(context: Context, value: Boolean) {
+        val sharedPreferences = getSharedPreferences(context)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean(STANDBY_FEATURE_FADE_OUT, value)
+        editor.apply()
+    }
+
+    private fun getStandByFadeOutDuration(context: Context): Long {
+        val sharedPreferences = getSharedPreferences(context)
+        return sharedPreferences.getLong(
+            STANDBY_FEATURE_FADE_OUT_DURATION,
+            DEFAULT_STANDBY_FEATURE_FADE_IN_DURATION.seconds
+        )
+    }
+
+    fun setStandByFadeOutDuration(context: Context, fadeDuration: FadeDuration) {
+        val sharedPreferences = getSharedPreferences(context)
+        val editor = sharedPreferences.edit()
+        editor.putLong(STANDBY_FEATURE_FADE_OUT_DURATION, fadeDuration.seconds)
+        editor.putInt(STANDBY_FEATURE_FADE_OUT_DURATION_POSITION, fadeDuration.ordinal)
+        editor.apply()
+    }
+
+    fun getStandByFadeOutDurationPosition(context: Context): Int {
+        val sharedPreferences = getSharedPreferences(context)
+        return sharedPreferences.getInt(
+            STANDBY_FEATURE_FADE_OUT_DURATION_POSITION,
+            DEFAULT_STANDBY_FEATURE_FADE_IN_DURATION.ordinal
+        )
     }
 }

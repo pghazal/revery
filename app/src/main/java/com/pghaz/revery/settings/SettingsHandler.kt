@@ -38,7 +38,7 @@ object SettingsHandler {
     // Fade in
     private const val SETTINGS_FADE_IN = "$SETTINGS_SHARED_PREF.fade_in"
     private const val SETTINGS_FADE_IN_POSITION = "$SETTINGS_SHARED_PREF.fade_in.position"
-    val DEFAULT_FADE_IN_DURATION = FadeInDuration.THIRTY_SECONDS
+    val DEFAULT_FADE_IN_DURATION = FadeDuration.THIRTY_SECONDS
 
     // Volume
     // Should use user device volume or the max possible
@@ -112,11 +112,11 @@ object SettingsHandler {
         )
     }
 
-    fun setFadeInDuration(context: Context, fadeInDuration: FadeInDuration) {
+    fun setFadeInDuration(context: Context, fadeDuration: FadeDuration) {
         val sharedPreferences = getSharedPreferences(context)
         val editor = sharedPreferences.edit()
-        editor.putLong(SETTINGS_FADE_IN, fadeInDuration.seconds)
-        editor.putInt(SETTINGS_FADE_IN_POSITION, fadeInDuration.ordinal)
+        editor.putLong(SETTINGS_FADE_IN, fadeDuration.seconds)
+        editor.putInt(SETTINGS_FADE_IN_POSITION, fadeDuration.ordinal)
         editor.apply()
     }
 

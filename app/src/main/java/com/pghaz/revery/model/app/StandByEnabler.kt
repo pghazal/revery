@@ -7,5 +7,7 @@ import kotlinx.android.parcel.Parcelize
 data class StandByEnabler(
     var hour: Int = 0,
     var minute: Int = 0,
-    var enabled: Boolean = true
+    var enabled: Boolean = true,
+    var fadeOut: Boolean = false,
+    var fadeOutDuration: Long = 0
 ) : BaseModel(), Parcelable

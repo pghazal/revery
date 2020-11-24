@@ -160,7 +160,7 @@ class SettingsFragment : BaseSpotifyBottomSheetDialogFragment() {
         context?.let {
             var fadeInDurationPosition = SettingsHandler.getFadeInDurationPosition(it)
 
-            if (fadeInDurationPosition >= FadeInDuration.values().size) {
+            if (fadeInDurationPosition >= FadeDuration.values().size) {
                 SettingsHandler.setFadeInDuration(it, SettingsHandler.DEFAULT_FADE_IN_DURATION)
                 fadeInDurationPosition = SettingsHandler.getFadeInDurationPosition(it)
             }
@@ -179,23 +179,23 @@ class SettingsFragment : BaseSpotifyBottomSheetDialogFragment() {
                 }
 
                 when (position) {
-                    FadeInDuration.TEN_SECONDS.ordinal -> {
-                        SettingsHandler.setFadeInDuration(context!!, FadeInDuration.TEN_SECONDS)
+                    FadeDuration.TEN_SECONDS.ordinal -> {
+                        SettingsHandler.setFadeInDuration(context!!, FadeDuration.TEN_SECONDS)
                     }
-                    FadeInDuration.TWENTY_SECONDS.ordinal -> {
-                        SettingsHandler.setFadeInDuration(context!!, FadeInDuration.TWENTY_SECONDS)
+                    FadeDuration.TWENTY_SECONDS.ordinal -> {
+                        SettingsHandler.setFadeInDuration(context!!, FadeDuration.TWENTY_SECONDS)
                     }
-                    FadeInDuration.THIRTY_SECONDS.ordinal -> {
-                        SettingsHandler.setFadeInDuration(context!!, FadeInDuration.THIRTY_SECONDS)
+                    FadeDuration.THIRTY_SECONDS.ordinal -> {
+                        SettingsHandler.setFadeInDuration(context!!, FadeDuration.THIRTY_SECONDS)
                     }
-                    FadeInDuration.ONE_MINUTE.ordinal -> {
-                        SettingsHandler.setFadeInDuration(context!!, FadeInDuration.ONE_MINUTE)
+                    FadeDuration.ONE_MINUTE.ordinal -> {
+                        SettingsHandler.setFadeInDuration(context!!, FadeDuration.ONE_MINUTE)
                     }
-                    FadeInDuration.TWO_MINUTES.ordinal -> {
-                        SettingsHandler.setFadeInDuration(context!!, FadeInDuration.TWO_MINUTES)
+                    FadeDuration.TWO_MINUTES.ordinal -> {
+                        SettingsHandler.setFadeInDuration(context!!, FadeDuration.TWO_MINUTES)
                     }
-                    FadeInDuration.FIVE_MINUTES.ordinal -> {
-                        SettingsHandler.setFadeInDuration(context!!, FadeInDuration.FIVE_MINUTES)
+                    FadeDuration.FIVE_MINUTES.ordinal -> {
+                        SettingsHandler.setFadeInDuration(context!!, FadeDuration.FIVE_MINUTES)
                     }
                 }
             }

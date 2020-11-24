@@ -1,6 +1,6 @@
 package com.pghaz.revery.settings
 
-enum class FadeInDuration(val seconds: Long) {
+enum class FadeDuration(val seconds: Long) {
     TEN_SECONDS(10),
     TWENTY_SECONDS(20),
     THIRTY_SECONDS(30),

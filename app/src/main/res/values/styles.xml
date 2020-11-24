@@ -120,6 +120,10 @@
         <item name="android:paddingBottom">0dp</item>
     </style>
 
+    <style name="ReveryToggleDark" parent="@style/ReveryToggle">
+        <item name="android:background">@drawable/selector_toggle_dark</item>
+    </style>
+
     <style name="ReveryRecurringDaysText">
         <item name="android:textColor">@color/selector_recurring_days_alarm_text_color</item>
         <item name="android:textStyle">bold</item>
@@ -168,6 +172,10 @@
         <item name="android:textColorSecondary">@android:color/white</item>
         <item name="android:textColorTertiary">@android:color/white</item>
         <item name="android:textColorPrimaryDisableOnly">@android:color/white</item>
+    </style>
+
+    <style name="ReverySpinnerDarkTheme" parent="@style/ReverySpinnerTheme">
+        <item name="android:colorBackground">@color/colorPrimary</item>
     </style>
 
     <style name="ReveryChip" parent="Widget.MaterialComponents.Chip.Choice">
