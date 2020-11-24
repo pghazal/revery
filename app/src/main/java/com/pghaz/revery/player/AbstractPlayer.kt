@@ -1,5 +1,6 @@
 package com.pghaz.revery.player
 
+import android.animation.Animator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.media.AudioManager
@@ -54,6 +55,9 @@ abstract class AbstractPlayer(
     var fadeIn: Boolean = false
     var fadeInDuration: Long = 0
 
+    var fadeOut: Boolean = false
+    var fadeOutDuration: Long = 0
+
     @CallSuper
     open fun init(playerListener: PlayerListener?) {
         this.playerListener = playerListener
@@ -73,10 +77,10 @@ abstract class AbstractPlayer(
             initVolume()
         }
 
-        internalStart()
-
         if (fadeIn) {
             fadeIn()
+        } else {
+            internalStart()
         }
     }
 
@@ -103,13 +107,15 @@ abstract class AbstractPlayer(
     }
 
     fun resetInitialDeviceVolume() {
-        stopFadeIn()
+        stopFadeAnimator()
 
         // Reset user volume
         audioManager.setStreamVolume(streamType, initialDeviceVolume, 0)
     }
 
-    protected fun fadeIn() {
+    private fun fadeIn() {
+        stopFadeAnimator()
+
         volumeAnimator = ValueAnimator.ofInt(minVolume, maxDecidedVolume)
         volumeAnimator?.interpolator = LinearInterpolator()
         volumeAnimator?.duration = fadeInDuration * 1000
@@ -124,12 +130,62 @@ abstract class AbstractPlayer(
             }
         }
 
+        volumeAnimator?.addListener(object : Animator.AnimatorListener {
+            override fun onAnimationStart(animation: Animator?) {
+                internalStart()
+            }
+
+            override fun onAnimationEnd(animation: Animator?) {
+            }
+
+            override fun onAnimationCancel(animation: Animator?) {
+            }
+
+            override fun onAnimationRepeat(animation: Animator?) {
+            }
+        })
+
         volumeAnimator?.start()
     }
 
-    private fun stopFadeIn() {
+    private fun stopFadeAnimator() {
         volumeAnimator?.cancel()
         volumeAnimator = null
+    }
+
+    fun fadeOut() {
+        stopFadeAnimator()
+
+        volumeAnimator = ValueAnimator.ofInt(initialDeviceVolume, minVolume)
+        volumeAnimator?.interpolator = LinearInterpolator()
+        volumeAnimator?.duration = fadeOutDuration * 1000
+
+        volumeAnimator?.addUpdateListener {
+            val volume = it.animatedValue as Int
+            try {
+                audioManager.setStreamVolume(streamType, volume, 0)
+            } catch (error: Exception) {
+                resetInitialDeviceVolume()
+                playerListener?.onPlayerError(PlayerError.FadeOut(error))
+            }
+        }
+
+        volumeAnimator?.addListener(object : Animator.AnimatorListener {
+            override fun onAnimationStart(animation: Animator?) {
+            }
+
+            override fun onAnimationEnd(animation: Animator?) {
+                stop()
+            }
+
+            override fun onAnimationCancel(animation: Animator?) {
+            }
+
+            override fun onAnimationRepeat(animation: Animator?) {
+            }
+        })
+
+        volumeAnimator?.start()
     }
 
     override fun toString(): String {
@@ -142,6 +198,9 @@ abstract class AbstractPlayer(
                 " minVolume=$minVolume," +
                 " maxDecidedVolume=$maxDecidedVolume," +
                 " fadeIn=$fadeIn," +
-                " fadeInDuration=$fadeInDuration)"
+                " fadeInDuration=$fadeInDuration" +
+                " fadeOut=$fadeOut," +
+                " fadeOutDuration=$fadeOutDuration" +
+                ")"
     }
 }

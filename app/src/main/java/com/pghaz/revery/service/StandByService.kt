@@ -55,6 +55,8 @@ class StandByService : LifecycleService(), AbstractPlayer.PlayerListener {
 
             player?.apply {
                 this.init(this@StandByService)
+                this.fadeOut = standByEnabler.fadeOut
+                this.fadeOutDuration = standByEnabler.fadeOutDuration
                 // Setting empty string because we just want to connect and stop player if needed
                 this.prepareAsync("")
             }
@@ -85,11 +87,14 @@ class StandByService : LifecycleService(), AbstractPlayer.PlayerListener {
     }
 
     override fun onPlayerInitialized(player: AbstractPlayer) {
-        // TODO : fade out ?
         val spotifyPlayer = player as SpotifyPlayer
         spotifyPlayer.getPlayerStateCallResult()?.setResultCallback {
             if (it.track != null && !it.isPaused) {
-                player.stop()
+                if (player.fadeOut) {
+                    player.fadeOut()
+                } else {
+                    player.stop()
+                }
             } else {
                 player.release()
             }

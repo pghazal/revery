@@ -10,6 +10,7 @@ abstract class PlayerError(message: String?, throwable: Throwable?) :
         PlayerError(throwable?.toString(), throwable)
 
     data class FadeIn(val throwable: Throwable?) : PlayerError(throwable?.toString(), throwable)
+    data class FadeOut(val throwable: Throwable?) : PlayerError(throwable?.toString(), throwable)
 
     /**
      *  Default Player
