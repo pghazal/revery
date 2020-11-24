@@ -95,7 +95,7 @@ abstract class BaseSpotifyActivity : BaseActivity(), SpotifyAuthorizationCallbac
         }
     }
 
-    private fun showSpotifyNotInstalledDialog() {
+    fun showSpotifyNotInstalledDialog() {
         if (!spotifyNotInstalledDialog?.isShowing!!) {
             spotifyNotInstalledDialog?.show()
         }

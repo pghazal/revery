@@ -18,6 +18,7 @@ import android.widget.TimePicker
 import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.pghaz.revery.BaseFragment
+import com.pghaz.revery.MainActivity
 import com.pghaz.revery.R
 import com.pghaz.revery.broadcastreceiver.StandByBroadcastReceiver
 import com.pghaz.revery.model.app.StandByEnabler
@@ -25,6 +26,7 @@ import com.pghaz.revery.settings.FadeDuration
 import com.pghaz.revery.settings.SettingsFragment
 import com.pghaz.revery.util.IntentUtils
 import com.pghaz.revery.viewmodel.standby.StandByViewModel
+import com.pghaz.spotify.webapi.auth.SpotifyAuthorizationClient
 import kotlinx.android.synthetic.main.fragment_standby.*
 import java.util.*
 
@@ -130,10 +132,16 @@ class StandByFragment : BaseFragment(), TimePickerDialog.OnTimeSetListener {
         standbySwitch.isChecked = standbyViewModel.getStandByEnabler(context).enabled
         standbySwitch.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
-                val calendar = Calendar.getInstance()
-                val hour = calendar[if (is24HourFormat) Calendar.HOUR_OF_DAY else Calendar.HOUR]
-                val minute = calendar[Calendar.MINUTE]
-                showTimerPickerDialog(hour, minute)
+                // If Spotify not installed
+                if (!SpotifyAuthorizationClient.isSpotifyInstalled(buttonView.context)) {
+                    standbySwitch.isChecked = false
+                    (activity as MainActivity?)?.showSpotifyNotInstalledDialog()
+                } else {
+                    val calendar = Calendar.getInstance()
+                    val hour = calendar[if (is24HourFormat) Calendar.HOUR_OF_DAY else Calendar.HOUR]
+                    val minute = calendar[Calendar.MINUTE]
+                    showTimerPickerDialog(hour, minute)
+                }
             } else {
                 standbyViewModel.setStandByEnabled(buttonView.context, false)
                 standbyViewModel.standbyLiveData.value =
