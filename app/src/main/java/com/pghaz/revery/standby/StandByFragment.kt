@@ -50,7 +50,6 @@ class StandByFragment : BaseFragment(), TimePickerDialog.OnTimeSetListener {
 
     private lateinit var standbyViewModel: StandByViewModel
 
-    private var is24HourFormat: Boolean = false
     private lateinit var timePickerDialog: TimePickerDialog
 
     override fun getLayoutResId(): Int {
@@ -86,7 +85,7 @@ class StandByFragment : BaseFragment(), TimePickerDialog.OnTimeSetListener {
 
             if (it.enabled) {
                 StandByHandler.removeAlarm(context, it)
-                StandByHandler.setAlarm(context, is24HourFormat, it)
+                StandByHandler.setAlarm(context, it)
             } else {
                 StandByHandler.removeAlarm(context, it)
             }
@@ -118,7 +117,7 @@ class StandByFragment : BaseFragment(), TimePickerDialog.OnTimeSetListener {
     }
 
     override fun configureViews(savedInstanceState: Bundle?) {
-        is24HourFormat = DateFormat.is24HourFormat(context)
+        val is24HourFormat = DateFormat.is24HourFormat(context)
 
         timePickerDialog = TimePickerDialog(context, this, 0, 0, is24HourFormat)
         timePickerDialog.setOnCancelListener {
@@ -138,7 +137,7 @@ class StandByFragment : BaseFragment(), TimePickerDialog.OnTimeSetListener {
                     (activity as MainActivity?)?.showSpotifyNotInstalledDialog()
                 } else {
                     val calendar = Calendar.getInstance()
-                    val hour = calendar[if (is24HourFormat) Calendar.HOUR_OF_DAY else Calendar.HOUR]
+                    val hour = calendar[Calendar.HOUR_OF_DAY]
                     val minute = calendar[Calendar.MINUTE]
                     showTimerPickerDialog(hour, minute)
                 }

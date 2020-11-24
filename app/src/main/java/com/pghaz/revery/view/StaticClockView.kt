@@ -59,7 +59,7 @@ class StaticClockView @JvmOverloads constructor(
     fun updateTime(hour: Int, minute: Int) {
         mCalendar.time = Date()
 
-        mCalendar.set(if (is24HourFormat) Calendar.HOUR_OF_DAY else Calendar.HOUR, hour)
+        mCalendar.set(Calendar.HOUR_OF_DAY, hour)
         mCalendar.set(Calendar.MINUTE, minute)
         mCalendar.set(Calendar.SECOND, 0)
         mCalendar.set(Calendar.MILLISECOND, 0)

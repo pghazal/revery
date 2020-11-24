@@ -3,7 +3,6 @@ package com.pghaz.revery.service
 import android.app.Notification
 import android.content.Context
 import android.content.Intent
-import android.text.format.DateFormat
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleService
@@ -38,7 +37,7 @@ class StandByService : LifecycleService(), AbstractPlayer.PlayerListener {
             val standByEnabler = IntentUtils.safeGetStandByEnablerFromIntent(intent)
 
             // Re-enable for tomorrow
-            StandByHandler.setAlarm(this, DateFormat.is24HourFormat(this), standByEnabler)
+            StandByHandler.setAlarm(this, standByEnabler)
             broadcastStandByStarted(this, standByEnabler)
 
             val shouldUseDeviceVolume =

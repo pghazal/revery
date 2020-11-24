@@ -16,7 +16,6 @@ object StandByHandler {
 
     fun setAlarm(
         context: Context?,
-        is24HourFormat: Boolean,
         standByEnabler: StandByEnabler
     ) {
         if (context == null) {
@@ -31,10 +30,7 @@ object StandByHandler {
 
             val now = System.currentTimeMillis()
             val calendar = Calendar.getInstance()
-            calendar.set(
-                if (is24HourFormat) Calendar.HOUR_OF_DAY else Calendar.HOUR,
-                standByEnabler.hour
-            )
+            calendar.set(Calendar.HOUR_OF_DAY, standByEnabler.hour)
             calendar.set(Calendar.MINUTE, standByEnabler.minute)
             calendar.set(Calendar.SECOND, 0)
             calendar.set(Calendar.MILLISECOND, 0)
