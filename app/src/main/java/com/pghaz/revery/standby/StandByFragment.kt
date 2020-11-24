@@ -97,7 +97,7 @@ class StandByFragment : BaseFragment(), TimePickerDialog.OnTimeSetListener {
         if (standByEnabler.enabled) {
             standbyEnabledTextView.visibility = View.VISIBLE
             clockView.visibility = View.VISIBLE
-            standbyDisabledTextView.visibility = View.GONE
+            placeholder.visibility = View.GONE
             fadeOutToggle.visibility = View.VISIBLE
             if (standByEnabler.fadeOut) {
                 fadeOutDurationSpinner.visibility = View.VISIBLE
@@ -107,7 +107,7 @@ class StandByFragment : BaseFragment(), TimePickerDialog.OnTimeSetListener {
         } else {
             standbyEnabledTextView.visibility = View.GONE
             clockView.visibility = View.GONE
-            standbyDisabledTextView.visibility = View.VISIBLE
+            placeholder.visibility = View.VISIBLE
             fadeOutToggle.visibility = View.GONE
             fadeOutDurationSpinner.visibility = View.GONE
         }

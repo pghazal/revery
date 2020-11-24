@@ -5,21 +5,33 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/standbyDisabledTextView"
+    <LinearLayout
+        android:id="@+id/placeholder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="@dimen/base_margin"
-        android:layout_marginTop="@dimen/double_base_margin"
-        android:layout_marginEnd="@dimen/base_margin"
-        android:layout_marginBottom="@dimen/base_margin"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
         android:gravity="center"
-        android:text="@string/standby_disabled_text"
-        android:textColor="@android:color/white"
-        android:textSize="22sp"
+        android:orientation="vertical"
         android:visibility="gone"
-        tools:visibility="visible" />
+        tools:visibility="visible">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="119dp"
+            android:layout_height="100dp"
+            android:layout_marginBottom="@dimen/base_margin"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/ic_revery_transparent"
+            app:tint="@color/color_text_static_label" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/standby_disabled_text"
+            android:textColor="@color/color_text_static_label"
+            android:textSize="18sp" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/standbyEnabledTextView"
