@@ -25,7 +25,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/half_base_margin">
+            android:padding="@dimen/page_padding">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/alarm"

@@ -2,6 +2,17 @@
 <resources>
     <bool name="is_tablet">false</bool>
 
+    <dimen name="page_padding">16dp</dimen>
+    <dimen name="page_padding_vertical">8dp</dimen>
+
+    <dimen name="list_page_padding">0dp</dimen>
+
+    <dimen name="placeholder_image_width">119dp</dimen>
+    <dimen name="placeholder_image_height">100dp</dimen>
+
+    <dimen name="alarm_turn_off_button_margins">48dp</dimen>
+    <dimen name="alarm_snooze_button_margins">24dp</dimen>
+
     <dimen name="minimum_base_margin">4dp</dimen>
     <dimen name="third_base_margin">8dp</dimen>
     <dimen name="half_base_margin">16dp</dimen>
@@ -18,7 +29,6 @@
     <dimen name="toggle_size">36dp</dimen>
     <dimen name="alarm_item_view_size">120dp</dimen>
     <dimen name="item_view_alarm_image_size">64dp</dimen>
-    <dimen name="ringtone_image_size">72dp</dimen>
     <dimen name="play_button_size">72dp</dimen>
     <dimen name="switch_standby_size">48dp</dimen>
 </resources>

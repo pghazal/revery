@@ -40,9 +40,9 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="@dimen/half_base_margin"
-            android:paddingTop="@dimen/third_base_margin"
-            android:paddingEnd="@dimen/half_base_margin">
+            android:paddingStart="@dimen/page_padding"
+            android:paddingTop="@dimen/page_padding_vertical"
+            android:paddingEnd="@dimen/page_padding">
 
             <TextView
                 android:id="@+id/descriptionLabel"
@@ -295,8 +295,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_gravity="center"
-        android:layout_marginStart="@dimen/half_base_margin"
-        android:layout_marginEnd="@dimen/half_base_margin"
+        android:layout_marginStart="@dimen/page_padding"
+        android:layout_marginEnd="@dimen/page_padding"
         android:orientation="horizontal"
         android:paddingTop="@dimen/half_base_margin"
         android:paddingBottom="@dimen/half_base_margin">

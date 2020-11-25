@@ -15,7 +15,7 @@
         android:layout_gravity="center_horizontal"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="@dimen/half_base_margin"
+        android:padding="@dimen/page_padding"
         tools:background="@color/colorPrimary">
 
         <ImageView

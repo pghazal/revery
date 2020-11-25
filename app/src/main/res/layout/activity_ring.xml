@@ -124,9 +124,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/clockView"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="@dimen/double_base_margin"
+        android:layout_marginStart="@dimen/alarm_turn_off_button_margins"
         android:layout_marginTop="@dimen/double_base_margin"
-        android:layout_marginEnd="@dimen/double_base_margin"
+        android:layout_marginEnd="@dimen/alarm_turn_off_button_margins"
         android:layout_marginBottom="@dimen/base_margin">
 
         <com.ncorti.slidetoact.SlideToActView
@@ -159,8 +159,8 @@
         android:layout_centerHorizontal="true"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingStart="@dimen/base_margin"
-        android:paddingEnd="@dimen/base_margin">
+        android:paddingStart="@dimen/alarm_snooze_button_margins"
+        android:paddingEnd="@dimen/alarm_snooze_button_margins">
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/minusSnoozeButton"

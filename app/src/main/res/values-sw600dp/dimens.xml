@@ -1,4 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <bool name="is_tablet">true</bool>
+
+    <dimen name="page_padding">92dp</dimen>
+    <dimen name="page_padding_vertical">92dp</dimen>
+
+    <dimen name="list_page_padding">92dp</dimen>
+
+    <dimen name="placeholder_image_width">240dp</dimen>
+    <dimen name="placeholder_image_height">200dp</dimen>
+
+    <dimen name="alarm_turn_off_button_margins">250dp</dimen>
+    <dimen name="alarm_snooze_button_margins">250dp</dimen>
+
+    <dimen name="minimum_base_margin">8dp</dimen>
+    <dimen name="third_base_margin">16dp</dimen>
+    <dimen name="half_base_margin">24dp</dimen>
+    <dimen name="base_margin">48dp</dimen>
+    <dimen name="double_base_margin">72dp</dimen>
+    <dimen name="triple_base_margin">92dp</dimen>
+
+    <dimen name="bottom_sheet_dialog_header_height">56dp</dimen>
+    <dimen name="spinner_height">56dp</dimen>
+    <dimen name="button_height">56dp</dimen>
+    <dimen name="timer_button_size">50dp</dimen>
+
+    <dimen name="bottom_navigation_view_height">72dp</dimen>
+    <dimen name="toggle_size">42dp</dimen>
+    <dimen name="alarm_item_view_size">136dp</dimen>
+    <dimen name="item_view_alarm_image_size">72dp</dimen>
+    <dimen name="play_button_size">72dp</dimen>
+    <dimen name="switch_standby_size">56dp</dimen>
 </resources>
