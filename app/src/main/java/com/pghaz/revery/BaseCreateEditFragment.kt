@@ -52,6 +52,13 @@ abstract class BaseCreateEditFragment : BaseBottomSheetDialogFragment() {
         ringtoneInfoContainer.removeAllViews()
         ringtoneInfoContainer.visibility = View.VISIBLE
 
+        ImageLoader.get()
+            .load(metadata.imageUrl)
+            .blur()
+            .roundCorners(16, 0)
+            .ratioAndWidth(1f, ViewUtils.getRealScreenWidthSize(backgroundImageView.context), true)
+            .into(backgroundImageView)
+
         if (metadata.type == MediaType.NONE) {
             return
         }
@@ -102,13 +109,6 @@ abstract class BaseCreateEditFragment : BaseBottomSheetDialogFragment() {
         params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
         params.addRule(RelativeLayout.ALIGN_PARENT_START)
         ringtoneInfoContainer.addView(view, params)
-
-        ImageLoader.get()
-            .load(metadata.imageUrl)
-            .blur()
-            .roundCorners(16, 0)
-            .ratioAndWidth(1f, ViewUtils.getRealScreenWidthSize(backgroundImageView.context), true)
-            .into(backgroundImageView)
     }
 
     @CallSuper
