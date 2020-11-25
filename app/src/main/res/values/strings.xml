@@ -79,7 +79,7 @@
     <!-- SETTINGS -->
     <string name="about">About</string>
     <string name="alarm_test">Alarm preview</string>
-    <string name="about_ok">That\'s great bro</string>
+    <string name="about_ok">That\'s great</string>
     <string name="about_developed_by">Developed by Pierre Ghazal</string>
     <string name="about_copyright">© 2020 Revery, all rights reserved</string>
     <string name="about_email">Support: pghaz.apps@gmail.com</string>
