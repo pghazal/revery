@@ -21,6 +21,7 @@ import com.pghaz.revery.BaseCreateEditFragment
 import com.pghaz.revery.BuildConfig
 import com.pghaz.revery.R
 import com.pghaz.revery.adapter.alarm.DefaultMediaViewHolder
+import com.pghaz.revery.adapter.alarm.DefaultTimerMediaViewHolder
 import com.pghaz.revery.alarm.AlarmHandler
 import com.pghaz.revery.animation.AnimatorUtils
 import com.pghaz.revery.battery.PowerSettingsActivity
@@ -587,7 +588,7 @@ class SettingsFragment : BaseSpotifyBottomSheetDialogFragment() {
 
         val view = LayoutInflater.from(context)
             .inflate(R.layout.item_view_alarm_media_square, ringtoneTimerInfoContainer, false)
-        val holder = DefaultMediaViewHolder(view)
+        val holder = DefaultTimerMediaViewHolder(view)
 
         holder.bind(metadata)
 

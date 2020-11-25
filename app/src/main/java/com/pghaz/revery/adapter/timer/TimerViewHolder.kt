@@ -118,7 +118,7 @@ open class TimerViewHolder(view: View) : BaseViewHolder(view) {
         }
 
         ImageLoader.get().load(imageUrl)
-            .placeholder(R.drawable.selector_alarm_image_background_color)
+            .placeholder(R.drawable.selector_timer_image_background_color)
             .into(imageView)
     }
 

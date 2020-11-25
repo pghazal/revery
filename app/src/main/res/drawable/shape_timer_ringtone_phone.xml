@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+
+            <solid android:color="@color/color_image_dark_enabled" />
+            <size
+                android:width="@dimen/item_view_alarm_image_size"
+                android:height="@dimen/item_view_alarm_image_size" />
+            <corners
+                android:bottomLeftRadius="0dp"
+                android:bottomRightRadius="0dp"
+                android:topLeftRadius="0dp"
+                android:topRightRadius="0dp" />
+        </shape>
+    </item>
+    <item
+        android:drawable="@drawable/ic_hourglass"
+        android:gravity="center" />
+</layer-list>

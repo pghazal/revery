@@ -10,11 +10,11 @@ import com.pghaz.revery.model.app.MediaMetadata
 import com.pghaz.revery.model.app.BaseModel
 import com.pghaz.revery.image.ImageLoader
 
-class DefaultMediaViewHolder(view: View) : BaseViewHolder(view) {
+open class DefaultMediaViewHolder(view: View) : BaseViewHolder(view) {
 
     private val titleTextView: TextView = view.findViewById(R.id.titleTextView)
     private val subtitleTextView: TextView = view.findViewById(R.id.subtitleTextView)
-    private val imageView: ImageView = view.findViewById(R.id.imageView)
+    protected val imageView: ImageView = view.findViewById(R.id.imageView)
     private val staticTextView: TextView = view.findViewById(R.id.staticTextView)
 
     @CallSuper
@@ -29,7 +29,8 @@ class DefaultMediaViewHolder(view: View) : BaseViewHolder(view) {
         // do nothing
     }
 
-    private fun bind(title: String?, subtitle: String?, imageUrl: String?) {
+    @CallSuper
+    protected open fun bind(title: String?, subtitle: String?, imageUrl: String?) {
         titleTextView.text = title
 
         staticTextView.text = ""
