@@ -54,6 +54,12 @@ object SettingsHandler {
     private val DEFAULT_ALARM_DEFAULT_AUDIO_URI =
         RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM).toString()
 
+    // Default timer
+    private const val SETTINGS_TIMER_DEFAULT_AUDIO_URI =
+        "$SETTINGS_SHARED_PREF.timer.default.audio.uri"
+    private val DEFAULT_TIMER_DEFAULT_AUDIO_URI =
+        RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM).toString()
+
     private fun getSharedPreferences(context: Context): SharedPreferences {
         return context.applicationContext.getSharedPreferences(
             SETTINGS_SHARED_PREF,
@@ -148,14 +154,14 @@ object SettingsHandler {
         )
     }
 
-    fun setDefaultAudioUri(context: Context, defaultAudioUri: Uri) {
+    fun setAlarmDefaultAudioUri(context: Context, defaultAudioUri: Uri) {
         val sharedPreferences = getSharedPreferences(context)
         val editor = sharedPreferences.edit()
         editor.putString(SETTINGS_ALARM_DEFAULT_AUDIO_URI, defaultAudioUri.toString())
         editor.apply()
     }
 
-    fun getDefaultAudioUri(context: Context): Uri {
+    fun getAlarmDefaultAudioUri(context: Context): Uri {
         val sharedPreferences = getSharedPreferences(context)
         return Uri.parse(
             sharedPreferences.getString(
@@ -214,5 +220,22 @@ object SettingsHandler {
     fun getSlideToTurnOff(context: Context): Boolean {
         val sharedPreferences = getSharedPreferences(context)
         return sharedPreferences.getBoolean(SETTINGS_SLIDE_TO_TURN_OFF, DEFAULT_SLIDE_TO_TURN_OFF)
+    }
+
+    fun setTimerDefaultAudioUri(context: Context, defaultAudioUri: Uri) {
+        val sharedPreferences = getSharedPreferences(context)
+        val editor = sharedPreferences.edit()
+        editor.putString(SETTINGS_TIMER_DEFAULT_AUDIO_URI, defaultAudioUri.toString())
+        editor.apply()
+    }
+
+    fun getTimerDefaultAudioUri(context: Context): Uri {
+        val sharedPreferences = getSharedPreferences(context)
+        return Uri.parse(
+            sharedPreferences.getString(
+                SETTINGS_TIMER_DEFAULT_AUDIO_URI,
+                DEFAULT_TIMER_DEFAULT_AUDIO_URI
+            ) ?: DEFAULT_TIMER_DEFAULT_AUDIO_URI
+        )
     }
 }

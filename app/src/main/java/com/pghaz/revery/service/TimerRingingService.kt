@@ -172,7 +172,7 @@ class TimerRingingService : LifecycleService(), AbstractPlayer.PlayerListener {
                             false,
                             shouldUseDeviceVolume
                         )
-                        val soundUri = SettingsHandler.getDefaultAudioUri(this).toString()
+                        val soundUri = SettingsHandler.getTimerDefaultAudioUri(this).toString()
                         player.init(this@TimerRingingService)
                         player.prepareAsync(soundUri)
                     }
@@ -234,7 +234,7 @@ class TimerRingingService : LifecycleService(), AbstractPlayer.PlayerListener {
         currentTimer = pop()
 
         currentTimer?.let {
-            val soundUri = SettingsHandler.getDefaultAudioUri(this).toString()
+            val soundUri = SettingsHandler.getTimerDefaultAudioUri(this).toString()
             player.init(this)
             player.prepareAsync(soundUri)
 

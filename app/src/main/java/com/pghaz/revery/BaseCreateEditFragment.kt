@@ -161,10 +161,10 @@ abstract class BaseCreateEditFragment : BaseBottomSheetDialogFragment() {
         chooseRingtoneButtonAnimatorSet.start()
     }
 
-    protected fun getDefaultRingtoneMetadata(): MediaMetadata {
+    protected fun getAlarmDefaultRingtoneMetadata(): MediaMetadata {
         return MediaMetadata().apply {
             context?.let { nonNullContext ->
-                val uri = SettingsHandler.getDefaultAudioUri(nonNullContext)
+                val uri = SettingsHandler.getAlarmDefaultAudioUri(nonNullContext)
 
                 val audioMetadata: AudioPickerHelper.AudioMetadata =
                     AudioPickerHelper.getAudioMetadata(nonNullContext, uri)

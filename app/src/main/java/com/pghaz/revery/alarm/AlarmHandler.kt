@@ -83,7 +83,7 @@ object AlarmHandler {
             metadata.uri = "spotify:playlist:3H8dsoJvkH7lUkaQlUNjPJ"
             metadata.shuffle = true
         } else {
-            val uri = SettingsHandler.getDefaultAudioUri(context)
+            val uri = SettingsHandler.getAlarmDefaultAudioUri(context)
 
             val audioMetadata: AudioPickerHelper.AudioMetadata =
                 AudioPickerHelper.getAudioMetadata(context, uri)

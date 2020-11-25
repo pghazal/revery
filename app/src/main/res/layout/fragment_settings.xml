@@ -171,35 +171,62 @@
                 android:layout_below="@id/volumeAlarmSlider"
                 android:layout_marginTop="@dimen/third_base_margin"
                 android:layout_marginBottom="@dimen/third_base_margin"
-                android:text="@string/audio_by_default" />
+                android:text="@string/alarm_audio_by_default" />
 
             <RelativeLayout
-                android:id="@+id/ringtoneInfoContainer"
+                android:id="@+id/ringtoneAlarmInfoContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/label3"
                 android:layout_alignParentStart="true"
                 android:layout_marginEnd="@dimen/base_margin"
-                android:layout_marginBottom="@dimen/double_base_margin"
-                android:layout_toStartOf="@+id/chooseRingtoneButton" />
+                android:layout_marginBottom="@dimen/base_margin"
+                android:layout_toStartOf="@+id/chooseAlarmRingtoneButton" />
 
-            <include
-                android:id="@+id/defaultRingtoneButtons"
-                layout="@layout/floating_action_buttons_default_alarm_menu"
+            <LinearLayout
+                android:id="@+id/ringtoneAlarmMenuContainer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/chooseRingtoneButton"
-                android:layout_alignEnd="@+id/chooseRingtoneButton" />
+                android:layout_above="@+id/chooseAlarmRingtoneButton"
+                android:layout_alignEnd="@+id/chooseAlarmRingtoneButton"
+                android:gravity="end"
+                android:orientation="vertical">
+
+                <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                    android:id="@+id/ringtoneAlarmPickerButton"
+                    style="@style/ReveryExtendedFloatingActionButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/half_base_margin"
+                    android:text="@string/select_ringtone_from_device"
+                    android:visibility="invisible"
+                    app:icon="@drawable/ic_phone_android"
+                    tools:visibility="visible" />
+
+                <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                    android:id="@+id/musicAlarmPickerButton"
+                    style="@style/ReveryExtendedFloatingActionButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/half_base_margin"
+                    android:layout_marginBottom="@dimen/third_base_margin"
+                    android:text="@string/select_music_from_device"
+                    android:visibility="invisible"
+                    app:icon="@drawable/ic_music_note"
+                    tools:visibility="visible" />
+            </LinearLayout>
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/chooseRingtoneButton"
+                android:id="@+id/chooseAlarmRingtoneButton"
                 style="@style/ReveryFloatingActionButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/label3"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="@dimen/third_base_margin"
+                android:elevation="0dp"
                 android:src="@drawable/ic_music_note"
+                app:elevation="0dp"
                 app:fabCustomSize="@dimen/button_height"
                 app:srcCompat="@drawable/ic_music_note" />
 
@@ -208,7 +235,74 @@
                 style="@style/ReveryLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/ringtoneInfoContainer"
+                android:layout_below="@id/ringtoneAlarmInfoContainer"
+                android:layout_marginTop="@dimen/third_base_margin"
+                android:layout_marginBottom="@dimen/third_base_margin"
+                android:text="@string/timer_audio_by_default" />
+
+            <RelativeLayout
+                android:id="@+id/ringtoneTimerInfoContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/label4"
+                android:layout_alignParentStart="true"
+                android:layout_marginEnd="@dimen/base_margin"
+                android:layout_marginBottom="@dimen/double_base_margin"
+                android:layout_toStartOf="@+id/chooseTimerRingtoneButton" />
+
+            <LinearLayout
+                android:id="@+id/ringtoneTimerMenuContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/chooseTimerRingtoneButton"
+                android:layout_alignEnd="@+id/chooseTimerRingtoneButton"
+                android:gravity="end"
+                android:orientation="vertical">
+
+                <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                    android:id="@+id/ringtoneTimerPickerButton"
+                    style="@style/ReveryExtendedFloatingActionButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/half_base_margin"
+                    android:text="@string/select_ringtone_from_device"
+                    android:visibility="invisible"
+                    app:icon="@drawable/ic_phone_android"
+                    tools:visibility="visible" />
+
+                <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                    android:id="@+id/musicTimerPickerButton"
+                    style="@style/ReveryExtendedFloatingActionButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/half_base_margin"
+                    android:layout_marginBottom="@dimen/third_base_margin"
+                    android:text="@string/select_music_from_device"
+                    android:visibility="invisible"
+                    app:icon="@drawable/ic_music_note"
+                    tools:visibility="visible" />
+            </LinearLayout>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/chooseTimerRingtoneButton"
+                style="@style/ReveryFloatingActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/label4"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="@dimen/third_base_margin"
+                android:elevation="0dp"
+                android:src="@drawable/ic_music_note"
+                app:elevation="0dp"
+                app:fabCustomSize="@dimen/button_height"
+                app:srcCompat="@drawable/ic_music_note" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/label5"
+                style="@style/ReveryLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/ringtoneTimerInfoContainer"
                 android:layout_marginBottom="@dimen/third_base_margin"
                 android:text="@string/android_settings" />
 
@@ -216,12 +310,12 @@
                 android:id="@+id/batteryOptimizationButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/label4"
+                android:layout_below="@+id/label5"
                 android:layout_marginBottom="@dimen/double_base_margin"
                 android:text="@string/android_settings_configure" />
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/label5"
+                android:id="@+id/label6"
                 style="@style/ReveryLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -233,7 +327,7 @@
                 android:id="@+id/spotifyContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/label5"
+                android:layout_below="@+id/label6"
                 android:layout_marginBottom="@dimen/double_base_margin">
 
                 <androidx.appcompat.widget.AppCompatButton

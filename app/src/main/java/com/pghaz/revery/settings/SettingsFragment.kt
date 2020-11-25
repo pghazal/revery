@@ -35,13 +35,14 @@ import com.pghaz.revery.spotify.BaseSpotifyActivity
 import com.pghaz.revery.spotify.BaseSpotifyBottomSheetDialogFragment
 import com.pghaz.revery.util.Arguments
 import io.github.kaaes.spotify.webapi.core.models.UserPrivate
-import kotlinx.android.synthetic.main.floating_action_buttons_default_alarm_menu.*
 import kotlinx.android.synthetic.main.fragment_settings.*
 
 class SettingsFragment : BaseSpotifyBottomSheetDialogFragment() {
 
     private lateinit var openMenuMusicAnimation: AnimatorSet
     private lateinit var closeMenuMusicAnimation: AnimatorSet
+
+    private var ringtonePickerType = -1
 
     override fun getLayoutResId(): Int {
         return R.layout.fragment_settings
@@ -59,7 +60,7 @@ class SettingsFragment : BaseSpotifyBottomSheetDialogFragment() {
     override fun configureViews(savedInstanceState: Bundle?) {
         // Alarm preview
         testAlarmButton.setOnClickListener {
-            val defaultUri = SettingsHandler.getDefaultAudioUri(testAlarmButton.context)
+            val defaultUri = SettingsHandler.getAlarmDefaultAudioUri(testAlarmButton.context)
             val audioMetadata: AudioPickerHelper.AudioMetadata =
                 AudioPickerHelper.getAudioMetadata(testAlarmButton.context, defaultUri)
 
@@ -242,30 +243,60 @@ class SettingsFragment : BaseSpotifyBottomSheetDialogFragment() {
             showAboutDialog()
         }
 
-        // Default Audio
-        chooseRingtoneButton.setOnClickListener {
-            if (chooseRingtoneButton.isExpanded) {
+        // Default Audio ALARMS
+        chooseAlarmRingtoneButton.setOnClickListener {
+            ringtonePickerType = ALARM_PICKER
+            if (chooseAlarmRingtoneButton.isExpanded) {
                 closeMusicMenu()
             } else {
                 openMusicMenu()
             }
         }
 
-        musicPickerButton.setOnClickListener {
-            if (chooseRingtoneButton.isExpanded) {
+        musicAlarmPickerButton.setOnClickListener {
+            ringtonePickerType = ALARM_PICKER
+            if (chooseAlarmRingtoneButton.isExpanded) {
                 closeMusicMenu()
             }
             openMusicPicker()
         }
 
-        ringtonePickerButton.setOnClickListener {
-            if (chooseRingtoneButton.isExpanded) {
+        ringtoneAlarmPickerButton.setOnClickListener {
+            ringtonePickerType = ALARM_PICKER
+            if (chooseAlarmRingtoneButton.isExpanded) {
                 closeMusicMenu()
             }
             openRingtonePicker()
         }
 
-        initDefaultAudioViews()
+        // Default Audio TIMERS
+        chooseTimerRingtoneButton.setOnClickListener {
+            ringtonePickerType = TIMER_PICKER
+            if (chooseTimerRingtoneButton.isExpanded) {
+                closeMusicMenu()
+            } else {
+                openMusicMenu()
+            }
+        }
+
+        musicTimerPickerButton.setOnClickListener {
+            ringtonePickerType = TIMER_PICKER
+            if (chooseTimerRingtoneButton.isExpanded) {
+                closeMusicMenu()
+            }
+            openMusicPicker()
+        }
+
+        ringtoneTimerPickerButton.setOnClickListener {
+            ringtonePickerType = TIMER_PICKER
+            if (chooseTimerRingtoneButton.isExpanded) {
+                closeMusicMenu()
+            }
+            openRingtonePicker()
+        }
+
+        initDefaultAlarmAudioViews()
+        initDefaultTimerAudioViews()
 
         if (activity is BaseSpotifyActivity) {
             updateSpotifyViews(
@@ -275,9 +306,9 @@ class SettingsFragment : BaseSpotifyBottomSheetDialogFragment() {
         }
     }
 
-    private fun initDefaultAudioViews() {
+    private fun initDefaultAlarmAudioViews() {
         context?.let {
-            val defaultUri = SettingsHandler.getDefaultAudioUri(it)
+            val defaultUri = SettingsHandler.getAlarmDefaultAudioUri(it)
 
             val audioMetadata: AudioPickerHelper.AudioMetadata =
                 AudioPickerHelper.getAudioMetadata(context, defaultUri)
@@ -295,7 +326,39 @@ class SettingsFragment : BaseSpotifyBottomSheetDialogFragment() {
         }
     }
 
+    private fun initDefaultTimerAudioViews() {
+        context?.let {
+            val defaultUri = SettingsHandler.getTimerDefaultAudioUri(it)
+
+            val audioMetadata: AudioPickerHelper.AudioMetadata =
+                AudioPickerHelper.getAudioMetadata(context, defaultUri)
+
+            val metadata = MediaMetadata().apply {
+                this.uri = defaultUri.toString()
+                this.href = null
+                this.type = MediaType.DEFAULT
+                this.name = audioMetadata.name
+                this.description = audioMetadata.description
+                this.imageUrl = audioMetadata.imageUrl
+            }
+
+            updateDefaultTimerViews(metadata)
+        }
+    }
+
     private fun openMusicMenu() {
+        val musicPickerButton = if (ringtonePickerType == ALARM_PICKER) {
+            musicAlarmPickerButton
+        } else {
+            musicTimerPickerButton
+        }
+
+        val ringtonePickerButton = if (ringtonePickerType == ALARM_PICKER) {
+            ringtoneAlarmPickerButton
+        } else {
+            ringtoneTimerPickerButton
+        }
+
         val musicPickerAnimator = AnimatorUtils.getTranslationAnimatorSet(
             musicPickerButton,
             true,
@@ -328,11 +391,28 @@ class SettingsFragment : BaseSpotifyBottomSheetDialogFragment() {
 
         openMenuMusicAnimation.start()
 
-        chooseRingtoneButton.isExpanded = true
-        chooseRingtoneButton.setImageResource(R.drawable.ic_close)
+        if (ringtonePickerType == ALARM_PICKER) {
+            chooseAlarmRingtoneButton.isExpanded = true
+            chooseAlarmRingtoneButton.setImageResource(R.drawable.ic_close)
+        } else {
+            chooseTimerRingtoneButton.isExpanded = true
+            chooseTimerRingtoneButton.setImageResource(R.drawable.ic_close)
+        }
     }
 
     private fun closeMusicMenu() {
+        val musicPickerButton = if (ringtonePickerType == ALARM_PICKER) {
+            musicAlarmPickerButton
+        } else {
+            musicTimerPickerButton
+        }
+
+        val ringtonePickerButton = if (ringtonePickerType == ALARM_PICKER) {
+            ringtoneAlarmPickerButton
+        } else {
+            ringtoneTimerPickerButton
+        }
+
         val musicPickerAnimator = AnimatorUtils.getTranslationAnimatorSet(
             musicPickerButton,
             false,
@@ -365,8 +445,13 @@ class SettingsFragment : BaseSpotifyBottomSheetDialogFragment() {
 
         closeMenuMusicAnimation.start()
 
-        chooseRingtoneButton.isExpanded = false
-        chooseRingtoneButton.setImageResource(R.drawable.ic_music_note)
+        if (ringtonePickerType == ALARM_PICKER) {
+            chooseAlarmRingtoneButton.isExpanded = false
+            chooseAlarmRingtoneButton.setImageResource(R.drawable.ic_music_note)
+        } else {
+            chooseTimerRingtoneButton.isExpanded = false
+            chooseTimerRingtoneButton.setImageResource(R.drawable.ic_music_note)
+        }
     }
 
     private fun openMusicPicker() {
@@ -448,9 +533,13 @@ class SettingsFragment : BaseSpotifyBottomSheetDialogFragment() {
                     this.imageUrl = audioMetadata.imageUrl
                 }
 
-                updateDefaultAlarmViews(metadata)
-
-                SettingsHandler.setDefaultAudioUri(it, ringtoneUri)
+                if (ringtonePickerType == ALARM_PICKER) {
+                    updateDefaultAlarmViews(metadata)
+                    SettingsHandler.setAlarmDefaultAudioUri(it, ringtoneUri)
+                } else {
+                    updateDefaultTimerViews(metadata)
+                    SettingsHandler.setTimerDefaultAudioUri(it, ringtoneUri)
+                }
             }
         }
     }
@@ -467,18 +556,22 @@ class SettingsFragment : BaseSpotifyBottomSheetDialogFragment() {
                     this.imageUrl = ringtoneUri.toString()
                 }
 
-                updateDefaultAlarmViews(metadata)
-
-                SettingsHandler.setDefaultAudioUri(it, ringtoneUri)
+                if (ringtonePickerType == ALARM_PICKER) {
+                    updateDefaultAlarmViews(metadata)
+                    SettingsHandler.setAlarmDefaultAudioUri(it, ringtoneUri)
+                } else {
+                    updateDefaultTimerViews(metadata)
+                    SettingsHandler.setTimerDefaultAudioUri(it, ringtoneUri)
+                }
             }
         }
     }
 
     private fun updateDefaultAlarmViews(metadata: MediaMetadata) {
-        ringtoneInfoContainer.removeAllViews()
+        ringtoneAlarmInfoContainer.removeAllViews()
 
         val view = LayoutInflater.from(context)
-            .inflate(R.layout.item_view_alarm_media_square, ringtoneInfoContainer, false)
+            .inflate(R.layout.item_view_alarm_media_square, ringtoneAlarmInfoContainer, false)
         val holder = DefaultMediaViewHolder(view)
 
         holder.bind(metadata)
@@ -486,7 +579,22 @@ class SettingsFragment : BaseSpotifyBottomSheetDialogFragment() {
         val params = view.layoutParams as RelativeLayout.LayoutParams
         params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
         params.addRule(RelativeLayout.ALIGN_PARENT_START)
-        ringtoneInfoContainer.addView(view, params)
+        ringtoneAlarmInfoContainer.addView(view, params)
+    }
+
+    private fun updateDefaultTimerViews(metadata: MediaMetadata) {
+        ringtoneTimerInfoContainer.removeAllViews()
+
+        val view = LayoutInflater.from(context)
+            .inflate(R.layout.item_view_alarm_media_square, ringtoneTimerInfoContainer, false)
+        val holder = DefaultMediaViewHolder(view)
+
+        holder.bind(metadata)
+
+        val params = view.layoutParams as RelativeLayout.LayoutParams
+        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
+        params.addRule(RelativeLayout.ALIGN_PARENT_START)
+        ringtoneTimerInfoContainer.addView(view, params)
     }
 
     @SuppressLint("InflateParams")
@@ -625,6 +733,9 @@ class SettingsFragment : BaseSpotifyBottomSheetDialogFragment() {
 
     companion object {
         const val TAG = "SettingsFragment"
+
+        private const val ALARM_PICKER = 0
+        private const val TIMER_PICKER = 1
 
         fun newInstance(title: String?): SettingsFragment {
             val fragment = SettingsFragment()

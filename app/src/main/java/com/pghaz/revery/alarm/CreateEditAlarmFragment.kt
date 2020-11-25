@@ -294,7 +294,7 @@ class CreateEditAlarmFragment : BaseCreateEditFragment() {
             if (chooseRingtoneButton.isExpanded) {
                 closeMusicMenu()
             }
-            val metadata = getDefaultRingtoneMetadata()
+            val metadata = getAlarmDefaultRingtoneMetadata()
             handleDefaultRingtoneClicked(metadata)
         }
     }
@@ -457,7 +457,7 @@ class CreateEditAlarmFragment : BaseCreateEditFragment() {
             if (it.metadata.uri.isNullOrEmpty()) {
                 it.metadata = MediaMetadata().apply {
                     context?.let { nonNullContext ->
-                        val uri = SettingsHandler.getDefaultAudioUri(nonNullContext)
+                        val uri = SettingsHandler.getAlarmDefaultAudioUri(nonNullContext)
 
                         val audioMetadata: AudioPickerHelper.AudioMetadata =
                             AudioPickerHelper.getAudioMetadata(nonNullContext, uri)

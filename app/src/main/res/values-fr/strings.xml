@@ -85,7 +85,8 @@
     <string name="alarm_fade_in_duration_static">Durée du réveil en douceur</string>
     <string name="alarm_should_use_device_volume">Utiliser le volume du téléphone</string>
     <string name="alarm_should_use_device_volume_explanation"><b>ATTENTION:</b> si <b>activé</b> et si vous choisissez une sonnerie ou bien un de vos sons pour votre alarme, l\'application utilisera le volume du <b>flux d\'alarme</b>. Sinon, l\'application utilisera le volume du <b>flux de musique</b> (par exemple: lorsque l\'alarme joue du contenu Spotify). Si <b>désactivé</b>, l\'application utilisera le niveau de volume ci-dessous.</string>
-    <string name="audio_by_default">Audio par défaut des alarmes et minuteurs</string>
+    <string name="alarm_audio_by_default">Audio par défaut des alarmes</string>
+    <string name="timer_audio_by_default">Sonnerie des minuteurs</string>
     <string name="alarm_snooze_update">Changer la durée du rappel au réveil</string>
     <string name="alarm_snooze_double_tap">Double-cliquer pour activer le rappel</string>
     <string name="alarm_slide_to_turn_off">Glisser pour arrêter l\'alarme</string>
