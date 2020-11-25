@@ -146,7 +146,7 @@ class OnBoardingSpotifyFragment : BaseSpotifyFragment() {
 
             profileImageView.clipToOutline = true
             ImageLoader.get()
-                .placeholder(R.drawable.placeholder_circle)
+                .placeholder(R.drawable.placeholder_spotify_profile_image)
                 .load(imageUrl)
                 .into(profileImageView)
         }

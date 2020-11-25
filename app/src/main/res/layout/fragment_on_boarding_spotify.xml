@@ -81,7 +81,7 @@
                         android:layout_width="@dimen/item_view_alarm_image_size"
                         android:layout_height="@dimen/item_view_alarm_image_size"
                         android:layout_gravity="center_vertical"
-                        android:background="@drawable/placeholder_circle"
+                        android:background="@drawable/placeholder_spotify_profile_image"
                         android:scaleType="centerCrop" />
 
                     <androidx.appcompat.widget.AppCompatTextView

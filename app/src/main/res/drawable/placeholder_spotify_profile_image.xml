@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape
+            android:shape="oval"
+            android:useLevel="false">
+            <solid android:color="@color/color_main_background_view" />
+        </shape>
+    </item>
+
+    <item
+        android:bottom="@dimen/half_base_margin"
+        android:drawable="@drawable/ic_person"
+        android:gravity="center"
+        android:left="@dimen/half_base_margin"
+        android:right="@dimen/half_base_margin"
+        android:top="@dimen/half_base_margin" />
+</layer-list>
