@@ -6,5 +6,5 @@ interface OnTimerClickListener {
     fun onTimerClicked(timer: Timer)
     fun onPlayPauseButtonClicked(timer: Timer)
     fun onResetButtonClicked(timer: Timer)
-    fun onIncrementButtonClicked(timer: Timer)
+    fun onIncrementButtonClicked(timer: Timer, incrementValue: Int)
 }

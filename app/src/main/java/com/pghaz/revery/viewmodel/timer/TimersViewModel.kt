@@ -39,10 +39,10 @@ class TimersViewModel(application: Application) : AndroidViewModel(application) 
         TimerHandler.removeAlarm(context, timer)
     }
 
-    fun incrementTimer(context: Context, timer: Timer) {
+    fun incrementTimer(context: Context, timer: Timer, incrementValue: Int) {
         if (timer.state == TimerState.RINGING) {
             val incrementIntent =
-                TimerBroadcastReceiver.buildRingingTimerIncrementActionIntent(context, timer)
+                TimerBroadcastReceiver.buildRingingTimerIncrementActionIntent(context, timer, incrementValue)
             context.sendBroadcast(incrementIntent)
 
             val stopIntent =
@@ -50,7 +50,7 @@ class TimersViewModel(application: Application) : AndroidViewModel(application) 
             context.sendBroadcast(stopIntent)
         } else {
             val incrementIntent =
-                TimerBroadcastReceiver.buildRunningTimerIncrementActionIntent(context, timer)
+                TimerBroadcastReceiver.buildRunningTimerIncrementActionIntent(context, timer, incrementValue)
             context.sendBroadcast(incrementIntent)
         }
     }

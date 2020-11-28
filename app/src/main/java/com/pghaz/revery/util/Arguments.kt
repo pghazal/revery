@@ -23,6 +23,7 @@ object Arguments {
     // Timers
     const val ARGS_TIMER = "ARGS_TIMER"
     const val ARGS_BUNDLE_TIMER = "ARGS_BUNDLE_TIMER"
+    const val ARGS_TIMER_INCREMENT = "ARGS_TIMER_INCREMENT"
 
     // Standby
     const val ARGS_STANDBY = "ARGS_STANDBY"

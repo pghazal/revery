@@ -183,9 +183,9 @@ class TimersFragment : BaseFragment(), OnTimerClickListener {
         }
     }
 
-    override fun onIncrementButtonClicked(timer: Timer) {
+    override fun onIncrementButtonClicked(timer: Timer, incrementValue: Int) {
         context?.let {
-            timersViewModel.incrementTimer(it, timer)
+            timersViewModel.incrementTimer(it, timer, incrementValue)
             timersViewModel.update(timer)
         }
     }

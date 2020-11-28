@@ -33,7 +33,10 @@ open class TimerViewHolder(view: View) : BaseViewHolder(view) {
     private val imageView: ImageView = view.findViewById(R.id.imageView)
     private val playPauseButton: AppCompatImageButton = view.findViewById(R.id.playPauseButton)
     private val resetButton: AppCompatImageButton = view.findViewById(R.id.resetButton)
-    private val incrementButton: AppCompatButton = view.findViewById(R.id.incrementButton)
+    private val incrementMaxButton: AppCompatButton = view.findViewById(R.id.incrementMaxButton)
+    private val incrementMinButton: AppCompatButton = view.findViewById(R.id.incrementMinButton)
+    private val decrementMaxButton: AppCompatButton = view.findViewById(R.id.decrementMaxButton)
+    private val decrementMinButton: AppCompatButton = view.findViewById(R.id.decrementMinButton)
     private val circularProgressBar: ProgressBar = view.findViewById(R.id.circularProgressBar)
 
     private lateinit var timer: Timer
@@ -98,8 +101,20 @@ open class TimerViewHolder(view: View) : BaseViewHolder(view) {
             timerClickListener?.onResetButtonClicked(Timer(timer))
         }
 
-        incrementButton.setOnClickListener {
-            timerClickListener?.onIncrementButtonClicked(Timer(timer))
+        incrementMaxButton.setOnClickListener {
+            timerClickListener?.onIncrementButtonClicked(Timer(timer), TimerHandler.ONE_MINUTE)
+        }
+
+        incrementMinButton.setOnClickListener {
+            timerClickListener?.onIncrementButtonClicked(Timer(timer), TimerHandler.HALF_MINUTE)
+        }
+
+        decrementMaxButton.setOnClickListener {
+            timerClickListener?.onIncrementButtonClicked(Timer(timer), -TimerHandler.ONE_MINUTE)
+        }
+
+        decrementMinButton.setOnClickListener {
+            timerClickListener?.onIncrementButtonClicked(Timer(timer), -TimerHandler.HALF_MINUTE)
         }
 
         val imageUrl = if (timer.metadata.type != MediaType.NONE) {
@@ -127,28 +142,40 @@ open class TimerViewHolder(view: View) : BaseViewHolder(view) {
             TimerState.CREATED -> {
                 playPauseButton.setImageResource(R.drawable.ic_play_filled)
                 resetButton.visibility = View.INVISIBLE
-                incrementButton.visibility = View.INVISIBLE
+                incrementMaxButton.visibility = View.INVISIBLE
+                incrementMinButton.visibility = View.INVISIBLE
+                decrementMaxButton.visibility = View.INVISIBLE
+                decrementMinButton.visibility = View.INVISIBLE
                 circularProgressBar.visibility = View.GONE
             }
 
             TimerState.RUNNING -> {
                 playPauseButton.setImageResource(R.drawable.ic_pause_filled)
                 resetButton.visibility = View.INVISIBLE
-                incrementButton.visibility = View.VISIBLE
+                incrementMaxButton.visibility = View.VISIBLE
+                incrementMinButton.visibility = View.VISIBLE
+                decrementMaxButton.visibility = View.VISIBLE
+                decrementMinButton.visibility = View.VISIBLE
                 circularProgressBar.visibility = View.VISIBLE
             }
 
             TimerState.RINGING -> {
                 playPauseButton.setImageResource(R.drawable.ic_stop_filled)
                 resetButton.visibility = View.INVISIBLE
-                incrementButton.visibility = View.VISIBLE
+                incrementMaxButton.visibility = View.VISIBLE
+                incrementMinButton.visibility = View.VISIBLE
+                decrementMaxButton.visibility = View.INVISIBLE
+                decrementMinButton.visibility = View.INVISIBLE
                 circularProgressBar.visibility = View.VISIBLE
             }
 
             TimerState.PAUSED -> {
                 playPauseButton.setImageResource(R.drawable.ic_play_filled)
                 resetButton.visibility = View.VISIBLE
-                incrementButton.visibility = View.INVISIBLE
+                incrementMaxButton.visibility = View.INVISIBLE
+                incrementMinButton.visibility = View.INVISIBLE
+                decrementMaxButton.visibility = View.INVISIBLE
+                decrementMinButton.visibility = View.INVISIBLE
                 circularProgressBar.visibility = View.VISIBLE
             }
         }
@@ -158,7 +185,9 @@ open class TimerViewHolder(view: View) : BaseViewHolder(view) {
         itemView.setOnClickListener(null)
         playPauseButton.setOnClickListener(null)
         resetButton.setOnClickListener(null)
-        incrementButton.setOnClickListener(null)
+        incrementMaxButton.setOnClickListener(null)
+        incrementMinButton.setOnClickListener(null)
+        decrementMaxButton.setOnClickListener(null)
         stopUpdateTimer()
     }
 

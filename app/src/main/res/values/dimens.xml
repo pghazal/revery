@@ -23,11 +23,12 @@
     <dimen name="bottom_sheet_dialog_header_height">48dp</dimen>
     <dimen name="spinner_height">48dp</dimen>
     <dimen name="button_height">48dp</dimen>
-    <dimen name="timer_button_size">42dp</dimen>
+    <dimen name="timer_button_size">48dp</dimen>
 
     <dimen name="bottom_navigation_view_height">64dp</dimen>
     <dimen name="toggle_size">36dp</dimen>
     <dimen name="alarm_item_view_size">120dp</dimen>
+    <dimen name="timer_item_view_size">140dp</dimen>
     <dimen name="item_view_alarm_image_size">64dp</dimen>
     <dimen name="play_button_size">72dp</dimen>
     <dimen name="switch_standby_size">48dp</dimen>

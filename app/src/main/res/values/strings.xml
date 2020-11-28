@@ -191,7 +191,10 @@
     <string name="text_minute_short">min</string>
     <string name="text_second_short">s</string>
     <string name="timer_is_over">Time is over</string>
-    <string name="timer_increment">+1min</string>
+    <string name="timer_increment_60sec">+1min</string>
+    <string name="timer_increment_30sec">+30sec</string>
+    <string name="timer_decrement_60sec">-1min</string>
+    <string name="timer_decrement_30sec">-30sec</string>
     <string name="remaining_time">Remaining time:</string>
     <string name="timer_in_use">Timer is in use. Reset before editing.</string>
     <string name="none">None</string>

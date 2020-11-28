@@ -77,9 +77,11 @@ class TimerRunningService : LifecycleService(), AbstractPlayer.PlayerListener {
             if (ACTION_TIMER_RUNNING_INCREMENT == intent.action) {
                 logError(ACTION_TIMER_RUNNING_INCREMENT)
 
+                val incrementValue = intent.getIntExtra(Arguments.ARGS_TIMER_INCREMENT, 0)
+
                 TimerHandler.pauseTimer(timer)
                 TimerHandler.removeAlarm(context, timer)
-                TimerHandler.incrementTimer(timer)
+                TimerHandler.incrementTimer(timer, incrementValue)
                 TimerHandler.startTimer(timer)
                 TimerHandler.setAlarm(context, timer)
                 timerRepository.update(timer)
@@ -403,7 +405,11 @@ class TimerRunningService : LifecycleService(), AbstractPlayer.PlayerListener {
             )*/
 
         val incrementIntent =
-            TimerBroadcastReceiver.buildRunningTimerIncrementActionIntent(this, timer)
+            TimerBroadcastReceiver.buildRunningTimerIncrementActionIntent(
+                this,
+                timer,
+                TimerHandler.ONE_MINUTE
+            )
         val incrementPendingIntent: PendingIntent =
             PendingIntent.getBroadcast(
                 this,
@@ -414,7 +420,7 @@ class TimerRunningService : LifecycleService(), AbstractPlayer.PlayerListener {
         val incrementActionNotification =
             NotificationCompat.Action(
                 null,
-                getString(R.string.timer_increment).toUpperCase(Locale.getDefault()),
+                getString(R.string.timer_increment_60sec).toUpperCase(Locale.getDefault()),
                 incrementPendingIntent
             )
 

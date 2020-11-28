@@ -9,7 +9,8 @@ import com.pghaz.revery.model.app.TimerState
 
 object TimerHandler {
 
-    private const val ONE_MINUTE = 60 * 1000
+    const val ONE_MINUTE = 60 * 1000
+    const val HALF_MINUTE = 30 * 1000
 
     fun startTimer(timer: Timer) {
         val now = System.currentTimeMillis()
@@ -45,9 +46,9 @@ object TimerHandler {
         timer.state = TimerState.CREATED
     }
 
-    fun incrementTimer(timer: Timer) {
-        timer.remainingTime += ONE_MINUTE
-        timer.extraTime += ONE_MINUTE
+    fun incrementTimer(timer: Timer, incrementValue: Int) {
+        timer.remainingTime += incrementValue
+        timer.extraTime += incrementValue
     }
 
     fun getRemainingTime(timer: Timer): Long {

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/alarm_item_view_size"
+    android:layout_height="@dimen/timer_item_view_size"
     android:background="@color/color_main_background_view"
     android:clickable="true"
     android:focusable="true"
@@ -173,7 +173,58 @@
         tools:visibility="visible" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/incrementButton"
+        android:id="@+id/decrementMaxButton"
+        style="@style/ReveryButtonBorderless"
+        android:layout_width="@dimen/timer_button_size"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/playPauseButton"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="@dimen/half_base_margin"
+        android:layout_toStartOf="@+id/decrementMinButton"
+        android:fontFamily="@font/montserrat_semi_bold"
+        android:text="@string/timer_decrement_60sec"
+        android:textAllCaps="false"
+        android:textSize="12sp"
+        android:visibility="invisible"
+        app:fontFamily="@font/montserrat_semi_bold"
+        tools:visibility="visible" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/decrementMinButton"
+        style="@style/ReveryButtonBorderless"
+        android:layout_width="@dimen/timer_button_size"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/playPauseButton"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="@dimen/half_base_margin"
+        android:layout_toStartOf="@+id/incrementMinButton"
+        android:fontFamily="@font/montserrat_semi_bold"
+        android:text="@string/timer_decrement_30sec"
+        android:textAllCaps="false"
+        android:textSize="12sp"
+        android:visibility="invisible"
+        app:fontFamily="@font/montserrat_semi_bold"
+        tools:visibility="visible" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/incrementMinButton"
+        style="@style/ReveryButtonBorderless"
+        android:layout_width="@dimen/timer_button_size"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/playPauseButton"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="@dimen/half_base_margin"
+        android:layout_toStartOf="@+id/incrementMaxButton"
+        android:fontFamily="@font/montserrat_semi_bold"
+        android:text="@string/timer_increment_30sec"
+        android:textAllCaps="false"
+        android:textSize="12sp"
+        android:visibility="invisible"
+        app:fontFamily="@font/montserrat_semi_bold"
+        tools:visibility="visible" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/incrementMaxButton"
         style="@style/ReveryButtonBorderless"
         android:layout_width="@dimen/timer_button_size"
         android:layout_height="wrap_content"
@@ -182,7 +233,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="@dimen/half_base_margin"
         android:fontFamily="@font/montserrat_semi_bold"
-        android:text="@string/timer_increment"
+        android:text="@string/timer_increment_60sec"
         android:textAllCaps="false"
         android:textSize="12sp"
         android:visibility="invisible"

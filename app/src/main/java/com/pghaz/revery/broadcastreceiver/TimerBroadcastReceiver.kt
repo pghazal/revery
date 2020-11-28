@@ -8,6 +8,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.pghaz.revery.model.app.Timer
 import com.pghaz.revery.service.TimerRingingService
 import com.pghaz.revery.service.TimerRunningService
+import com.pghaz.revery.util.Arguments
 import com.pghaz.revery.util.IntentUtils
 
 class TimerBroadcastReceiver : BroadcastReceiver() {
@@ -61,20 +62,32 @@ class TimerBroadcastReceiver : BroadcastReceiver() {
             return intent
         }
 
-        fun buildRunningTimerIncrementActionIntent(context: Context?, timer: Timer): Intent {
+        fun buildRunningTimerIncrementActionIntent(
+            context: Context?,
+            timer: Timer,
+            incrementValue: Int
+        ): Intent {
             val intent = Intent(context?.applicationContext, TimerBroadcastReceiver::class.java)
             intent.action = ACTION_TIMER_RUNNING_INCREMENT
 
             IntentUtils.safePutTimerIntoIntent(intent, timer)
 
+            intent.putExtra(Arguments.ARGS_TIMER_INCREMENT, incrementValue)
+
             return intent
         }
 
-        fun buildRingingTimerIncrementActionIntent(context: Context?, timer: Timer): Intent {
+        fun buildRingingTimerIncrementActionIntent(
+            context: Context?,
+            timer: Timer,
+            incrementValue: Int
+        ): Intent {
             val intent = Intent(context?.applicationContext, TimerBroadcastReceiver::class.java)
             intent.action = ACTION_TIMER_RINGING_INCREMENT
 
             IntentUtils.safePutTimerIntoIntent(intent, timer)
+
+            intent.putExtra(Arguments.ARGS_TIMER_INCREMENT, incrementValue)
 
             return intent
         }
@@ -93,10 +106,12 @@ class TimerBroadcastReceiver : BroadcastReceiver() {
             startTimerOverService(context, timer)
         } else if (ACTION_TIMER_RUNNING_INCREMENT == intent.action) {
             val timer = IntentUtils.safeGetTimerFromIntent(intent)
-            broadcastRunningTimerIncrement(context, timer)
+            val incrementValue = intent.getIntExtra(Arguments.ARGS_TIMER_INCREMENT, 0)
+            broadcastRunningTimerIncrement(context, timer, incrementValue)
         } else if (ACTION_TIMER_RINGING_INCREMENT == intent.action) {
             val timer = IntentUtils.safeGetTimerFromIntent(intent)
-            broadcastRingingTimerIncrement(context, timer)
+            val incrementValue = intent.getIntExtra(Arguments.ARGS_TIMER_INCREMENT, 0)
+            broadcastRingingTimerIncrement(context, timer, incrementValue)
         } else if (ACTION_TIMER_RINGING_STOP == intent.action) {
             val timer = IntentUtils.safeGetTimerFromIntent(intent)
             broadcastRingingTimerShouldStop(context, timer)
@@ -142,15 +157,23 @@ class TimerBroadcastReceiver : BroadcastReceiver() {
         LocalBroadcastManager.getInstance(context).sendBroadcast(timerShouldStopIntent)
     }
 
-    private fun broadcastRingingTimerIncrement(context: Context, timer: Timer) {
-        val timerIncrementIntent =
-            TimerRingingService.buildRingingTimerIncrementIntent(context, timer)
-        LocalBroadcastManager.getInstance(context).sendBroadcast(timerIncrementIntent)
+    private fun broadcastRingingTimerIncrement(
+        context: Context,
+        timer: Timer,
+        incrementValue: Int
+    ) {
+        val intent = TimerRingingService.buildRingingTimerIncrementIntent(context, timer)
+        intent.putExtra(Arguments.ARGS_TIMER_INCREMENT, incrementValue)
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
     }
 
-    private fun broadcastRunningTimerIncrement(context: Context, timer: Timer) {
-        val timerIncrementIntent =
-            TimerRunningService.buildRunningTimerIncrementIntent(context, timer)
-        LocalBroadcastManager.getInstance(context).sendBroadcast(timerIncrementIntent)
+    private fun broadcastRunningTimerIncrement(
+        context: Context,
+        timer: Timer,
+        incrementValue: Int
+    ) {
+        val intent = TimerRunningService.buildRunningTimerIncrementIntent(context, timer)
+        intent.putExtra(Arguments.ARGS_TIMER_INCREMENT, incrementValue)
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
     }
 }
