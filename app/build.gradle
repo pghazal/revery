@@ -133,9 +133,10 @@ dependencies {
     implementation "com.google.code.gson:gson:2.8.5"
 
     // Spotify Web API library
-    implementation 'com.github.pghazal.spotify-web-api-android:api-retrofit2:1.0.2'
+    def spotify_web_api_version = "1.0.3"
+    implementation "com.github.pghazal.spotify-web-api-android:api-retrofit2:$spotify_web_api_version"
     // Spotify Authentication
-    implementation 'com.github.pghazal.spotify-web-api-android:api-auth:1.0.2'
+    implementation "com.github.pghazal.spotify-web-api-android:api-auth:$spotify_web_api_version"
 
     // Firebase
     implementation platform('com.google.firebase:firebase-bom:25.12.0')
