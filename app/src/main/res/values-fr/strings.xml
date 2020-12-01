@@ -5,6 +5,8 @@
     <string name="timer_text">minuteur</string>
     <string name="standby_text">veille</string>
 
+    <string name="text_open_in_spotify">Ouvrir dans Spotify</string>
+
     <!-- NOTIFICATION -->
     <string name="notification_channel_alarm">Alarmes</string>
     <string name="notification_channel_alarm_snooze">Rappels d\'alarme</string>

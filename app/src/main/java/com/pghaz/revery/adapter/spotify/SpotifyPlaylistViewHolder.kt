@@ -34,6 +34,20 @@ class SpotifyPlaylistViewHolder(view: View) : BaseSpotifyViewHolder(view) {
             null
         }
 
+        if (!model.playlistSimple.uri.isNullOrEmpty() && model.playlistSimple.external_urls != null &&
+            !model.playlistSimple.external_urls["spotify"].isNullOrEmpty()
+        ) {
+            moreButton.visibility = View.VISIBLE
+            moreButton.setOnClickListener {
+                showMoreMenu(
+                    model.playlistSimple.uri,
+                    model.playlistSimple.external_urls["spotify"]!!
+                )
+            }
+        } else {
+            moreButton.visibility = View.GONE
+        }
+
         bind(title, subtitle, imageUrl)
     }
 

@@ -34,6 +34,17 @@ class SpotifyAlbumViewHolder(view: View) : BaseSpotifyViewHolder(view) {
             null
         }
 
+        if (!model.album.uri.isNullOrEmpty() && model.album.external_urls != null
+            && !model.album.external_urls["spotify"].isNullOrEmpty()
+        ) {
+            moreButton.visibility = View.VISIBLE
+            moreButton.setOnClickListener {
+                showMoreMenu(model.album.uri, model.album.external_urls["spotify"]!!)
+            }
+        } else {
+            moreButton.visibility = View.GONE
+        }
+
         bind(title, subtitle, imageUrl)
     }
 

@@ -7,6 +7,8 @@
     <string name="off" translatable="false">OFF</string>
     <string name="on" translatable="false">ON</string>
 
+    <string name="text_open_in_spotify">Open in Spotify</string>
+
     <!-- NOTIFICATION -->
     <string name="notification_channel_alarm">Alarms</string>
     <string name="notification_channel_alarm_snooze">Snooze</string>
