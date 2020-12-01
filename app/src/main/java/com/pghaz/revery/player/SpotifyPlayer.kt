@@ -271,7 +271,9 @@ class SpotifyPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
 
         context.logError("internalStart()")
         coroutinesScope.launch {
-            getAppRemote()?.playerApi?.play(currentUri)?.setErrorCallback {
+            getAppRemote()?.playerApi?.play(currentUri)?.setResultCallback {
+                enableVolumeKeyControllerIfNeeded()
+            }?.setErrorCallback {
                 handlePlayerActionError(it)
             }
         }

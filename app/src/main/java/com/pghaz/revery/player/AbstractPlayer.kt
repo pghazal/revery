@@ -14,7 +14,7 @@ abstract class AbstractPlayer(
     protected val streamType: Int,
     val isEmergencyAlarm: Boolean,
     private val shouldUseDeviceVolume: Boolean
-) {
+) : VolumeKeyController.VolumeKeyCallback {
     interface PlayerListener {
         fun onPlayerInitialized(player: AbstractPlayer)
 
@@ -24,6 +24,8 @@ abstract class AbstractPlayer(
 
         fun onPlayerError(error: PlayerError)
     }
+
+    private val volumeKeyController = VolumeKeyController(context, streamType)
 
     protected var currentUri: String? = null
     protected var playerListener: PlayerListener? = null
@@ -61,6 +63,7 @@ abstract class AbstractPlayer(
     @CallSuper
     open fun init(playerListener: PlayerListener?) {
         this.playerListener = playerListener
+        this.volumeKeyController.setCallback(this)
     }
 
     abstract fun prepareAsync(uri: String?)
@@ -136,9 +139,11 @@ abstract class AbstractPlayer(
             }
 
             override fun onAnimationEnd(animation: Animator?) {
+                releaseVolumeKeyController()
             }
 
             override fun onAnimationCancel(animation: Animator?) {
+                releaseVolumeKeyController()
             }
 
             override fun onAnimationRepeat(animation: Animator?) {
@@ -148,12 +153,28 @@ abstract class AbstractPlayer(
         volumeAnimator?.start()
     }
 
+    // This method is called once player has successfully started playing
+    // OR when player is fading out
+    protected fun enableVolumeKeyControllerIfNeeded() {
+        if (fadeIn || fadeOut) {
+            volumeKeyController.setActive(true)
+        }
+    }
+
+    protected fun releaseVolumeKeyController() {
+        if (fadeIn || fadeOut) {
+            volumeKeyController.release()
+        }
+    }
+
     private fun stopFadeAnimator() {
         volumeAnimator?.cancel()
         volumeAnimator = null
     }
 
     fun fadeOut() {
+        enableVolumeKeyControllerIfNeeded()
+
         stopFadeAnimator()
 
         volumeAnimator = ValueAnimator.ofInt(initialDeviceVolume, minVolume)
@@ -175,10 +196,12 @@ abstract class AbstractPlayer(
             }
 
             override fun onAnimationEnd(animation: Animator?) {
+                releaseVolumeKeyController()
                 stop()
             }
 
             override fun onAnimationCancel(animation: Animator?) {
+                releaseVolumeKeyController()
             }
 
             override fun onAnimationRepeat(animation: Animator?) {
@@ -186,6 +209,14 @@ abstract class AbstractPlayer(
         })
 
         volumeAnimator?.start()
+    }
+
+    override fun onVolumeKeyPressed() {
+        context.logError(">> onVolumeKeyPressed()")
+
+        if (fadeIn || fadeOut) {
+            volumeAnimator?.cancel()
+        }
     }
 
     override fun toString(): String {

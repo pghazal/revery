@@ -133,6 +133,8 @@ class DefaultPlayer(
 
     override fun internalStart() {
         play()
+
+        enableVolumeKeyControllerIfNeeded()
     }
 
     override fun stop() {
