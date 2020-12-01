@@ -143,6 +143,8 @@ class SpotifyPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
                     }
                 } else {
                     hasStartedPlayingAtLeast = true
+
+                    enableVolumeKeyControllerIfNeeded()
                 }
             }
         }
@@ -271,9 +273,7 @@ class SpotifyPlayer(context: Context, isEmergencyAlarm: Boolean, shouldUseDevice
 
         context.logError("internalStart()")
         coroutinesScope.launch {
-            getAppRemote()?.playerApi?.play(currentUri)?.setResultCallback {
-                enableVolumeKeyControllerIfNeeded()
-            }?.setErrorCallback {
+            getAppRemote()?.playerApi?.play(currentUri)?.setErrorCallback {
                 handlePlayerActionError(it)
             }
         }
