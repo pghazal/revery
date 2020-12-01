@@ -134,7 +134,7 @@ object PowerManagerHandler {
     fun isIgnoringBatteryOptimizations(context: Context): Boolean {
         val powerManager =
             context.applicationContext.getSystemService(Context.POWER_SERVICE) as PowerManager
-        val packageName = BuildConfig.APPLICATION_ID
+        val packageName = context.packageName
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             return powerManager.isIgnoringBatteryOptimizations(packageName)

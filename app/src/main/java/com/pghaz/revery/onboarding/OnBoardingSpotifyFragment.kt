@@ -40,7 +40,7 @@ class OnBoardingSpotifyFragment : BaseSpotifyFragment() {
             spotifyInstallButton.setOnClickListener {
                 SpotifyAuthorizationClient.openDownloadSpotifyActivity(
                     activity as BaseSpotifyActivity,
-                    "com.pghaz.revery"
+                    context?.packageName
                 )
             }
         }

@@ -113,7 +113,7 @@ abstract class BaseSpotifyActivity : BaseActivity(), SpotifyAuthorizationCallbac
 
         spotifyInstallButton.setOnClickListener {
             spotifyNotInstalledDialog?.dismiss()
-            SpotifyAuthorizationClient.openDownloadSpotifyActivity(this, "com.pghaz.revery")
+            SpotifyAuthorizationClient.openDownloadSpotifyActivity(this, packageName)
         }
     }
 
