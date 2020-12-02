@@ -203,8 +203,14 @@ object DateTimeUtils {
     }
 
     fun get24HourFormatFrom12HourFormat(_12HourFormat: Int, isAM: Boolean): Int {
+        val final12HourFormat = if (_12HourFormat == 12) {
+            0
+        } else {
+            _12HourFormat
+        }
+
         val calendar = Calendar.getInstance()
-        calendar.set(Calendar.HOUR, _12HourFormat)
+        calendar.set(Calendar.HOUR, final12HourFormat)
         calendar.set(Calendar.MINUTE, 0)
         calendar.set(Calendar.SECOND, 0)
         calendar.set(Calendar.AM_PM, if (isAM) Calendar.AM else Calendar.PM)

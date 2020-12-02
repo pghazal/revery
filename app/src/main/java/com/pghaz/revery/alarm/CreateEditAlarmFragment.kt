@@ -137,13 +137,13 @@ class CreateEditAlarmFragment : BaseCreateEditFragment() {
         createEditAlarmViewModel.metadataLiveData.value = alarm.metadata
     }
 
-    private fun setAlarmHour(is24HourFormat: Boolean, hour: Int) {
+    private fun setAlarmHour(is24HourFormat: Boolean, hour: Int, isAM: Boolean) {
         alarm?.hour = if (is24HourFormat) {
             hour
         } else {
             DateTimeUtils.get24HourFormatFrom12HourFormat(
                 hour,
-                amRadioButton.isChecked
+                isAM
             )
         }
     }
@@ -168,7 +168,7 @@ class CreateEditAlarmFragment : BaseCreateEditFragment() {
             negativeButton.visibility = View.VISIBLE
         } else {
             configureTimePickerNow(is24HourFormat)
-            setAlarmHour(is24HourFormat, hourNumberPicker.value)
+            setAlarmHour(is24HourFormat, hourNumberPicker.value, amRadioButton.isChecked)
             setAlarmMinute(minuteNumberPicker.value)
             negativeButton.visibility = View.GONE
         }
@@ -199,7 +199,7 @@ class CreateEditAlarmFragment : BaseCreateEditFragment() {
         }
 
         hourNumberPicker.setOnValueChangedListener { _, _, hour ->
-            setAlarmHour(is24HourFormat, hour)
+            setAlarmHour(is24HourFormat, hour, amRadioButton.isChecked)
             createEditAlarmViewModel.timeChangedAlarmLiveData.value = alarm
         }
 
@@ -208,16 +208,20 @@ class CreateEditAlarmFragment : BaseCreateEditFragment() {
             createEditAlarmViewModel.timeChangedAlarmLiveData.value = alarm
         }
 
-        amRadioButton.setOnCheckedChangeListener { _, _ ->
-            setAlarmHour(is24HourFormat, hourNumberPicker.value)
-            setAlarmMinute(minuteNumberPicker.value)
-            createEditAlarmViewModel.timeChangedAlarmLiveData.value = alarm
+        amRadioButton.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                setAlarmHour(is24HourFormat, hourNumberPicker.value, isChecked)
+                setAlarmMinute(minuteNumberPicker.value)
+                createEditAlarmViewModel.timeChangedAlarmLiveData.value = alarm
+            }
         }
 
-        pmRadioButton.setOnCheckedChangeListener { _, _ ->
-            setAlarmHour(is24HourFormat, hourNumberPicker.value)
-            setAlarmMinute(minuteNumberPicker.value)
-            createEditAlarmViewModel.timeChangedAlarmLiveData.value = alarm
+        pmRadioButton.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                setAlarmHour(is24HourFormat, hourNumberPicker.value, !isChecked)
+                setAlarmMinute(minuteNumberPicker.value)
+                createEditAlarmViewModel.timeChangedAlarmLiveData.value = alarm
+            }
         }
 
         mondayToggle.setOnCheckedChangeListener { _, _ ->
