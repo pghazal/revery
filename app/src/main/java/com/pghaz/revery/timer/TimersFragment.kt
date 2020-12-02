@@ -195,13 +195,6 @@ class TimersFragment : BaseFragment(), OnTimerClickListener {
         showAddTimerButtonIfHidden()
     }
 
-    override fun onDestroyView() {
-        // This is necessary so that ´adapter.onViewDetachedFromWindow()´ gets called when
-        // fragment is destroy, avoiding memory leak
-        recyclerView.adapter = null
-        super.onDestroyView()
-    }
-
     companion object {
         const val TAG = "TimersFragment"
 

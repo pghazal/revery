@@ -41,9 +41,4 @@ class TimersAdapter(private val timerClickListener: OnTimerClickListener) : Base
             else -> ListItemType.Empty
         }.ordinal
     }
-
-    override fun onViewDetachedFromWindow(holder: BaseViewHolder) {
-        super.onViewDetachedFromWindow(holder)
-        (holder as TimerViewHolder).onViewHolderRecycled()
-    }
 }
