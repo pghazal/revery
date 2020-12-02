@@ -46,7 +46,12 @@ open class AlarmViewHolder(view: View) : BaseViewHolder(view) {
             hour = alarm.hour
             amPmTextView.visibility = View.GONE
         } else {
-            hour = DateTimeUtils.get12HourFormatFrom24HourFormat(alarm.hour)
+            val amPmHourValue = DateTimeUtils.get12HourFormatFrom24HourFormat(alarm.hour)
+            hour = if (amPmHourValue == 0) {
+                12
+            } else {
+                amPmHourValue
+            }
             amPmTextView.visibility = View.VISIBLE
 
             if (DateTimeUtils.isAM(alarm.hour)) {
