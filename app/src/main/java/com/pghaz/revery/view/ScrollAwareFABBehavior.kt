@@ -52,6 +52,8 @@ class ScrollAwareFABBehavior(context: Context?, attrs: AttributeSet?) :
             consumed
         )
 
+        stopNestedScrollIfNeeded(target, type)
+
         if (dyConsumed > 0 && child.visibility == View.VISIBLE) {
             child.hide(object : OnVisibilityChangedListener() {
                 override fun onHidden(fab: FloatingActionButton) {
@@ -61,6 +63,25 @@ class ScrollAwareFABBehavior(context: Context?, attrs: AttributeSet?) :
             })
         } else if (dyConsumed < 0 && child.visibility != View.VISIBLE) {
             child.show()
+        }
+    }
+
+    override fun onNestedPreScroll(
+        coordinatorLayout: CoordinatorLayout,
+        child: FloatingActionButton,
+        target: View,
+        dx: Int,
+        dy: Int,
+        consumed: IntArray,
+        type: Int
+    ) {
+        super.onNestedPreScroll(coordinatorLayout, child, target, dx, dy, consumed, type)
+        stopNestedScrollIfNeeded(target, type)
+    }
+
+    private fun stopNestedScrollIfNeeded(target: View, type: Int) {
+        if (type == ViewCompat.TYPE_NON_TOUCH) {
+            ViewCompat.stopNestedScroll(target, ViewCompat.TYPE_NON_TOUCH)
         }
     }
 }
