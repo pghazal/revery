@@ -281,10 +281,10 @@ class TimerRunningService : LifecycleService(), AbstractPlayer.PlayerListener {
     private fun add(timer: Timer) {
         synchronized(timersRunningList) {
             var found = false
-            timersRunningList.forEach {
-                if (it.id == timer.id) {
+            val iterator = timersRunningList.iterator()
+            while (iterator.hasNext() && !found) {
+                if (iterator.next().id == timer.id) {
                     found = true
-                    return@forEach
                 }
             }
 
@@ -305,12 +305,15 @@ class TimerRunningService : LifecycleService(), AbstractPlayer.PlayerListener {
     private fun remove(timer: Timer) {
         synchronized(timersRunningList) {
             var indexToRemove = -1
-            timersRunningList.forEachIndexed { index, item ->
-                if (item.id == timer.id) {
+            var index = 0
+            val iterator = timersRunningList.iterator()
+            while (iterator.hasNext() && indexToRemove == -1) {
+                if (iterator.next().id == timer.id) {
                     indexToRemove = index
-                    return@forEachIndexed
                 }
+                index++
             }
+
             if (indexToRemove != -1) {
                 timersRunningList.removeAt(indexToRemove)
             }

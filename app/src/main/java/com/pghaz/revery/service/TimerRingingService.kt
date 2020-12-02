@@ -31,6 +31,7 @@ import com.pghaz.revery.timer.TimerHandler
 import com.pghaz.revery.util.Arguments
 import com.pghaz.revery.util.IntentUtils
 import java.util.*
+import java.util.concurrent.LinkedBlockingQueue
 
 class TimerRingingService : LifecycleService(), AbstractPlayer.PlayerListener {
 
@@ -85,11 +86,13 @@ class TimerRingingService : LifecycleService(), AbstractPlayer.PlayerListener {
 
                     player.stop()
                 } else {
-                    synchronized(timersOverQueue) {
-                        timersOverQueue.forEach { item ->
-                            if (item.id == timer.id) {
-                                timersOverQueue.remove(item)
-                            }
+                    var found = false
+                    val iterator = timersOverQueue.iterator()
+                    while (iterator.hasNext() && !found) {
+                        val item = iterator.next()
+                        if (item.id == timer.id) {
+                            found = true
+                            timersOverQueue.remove(item)
                         }
                     }
                 }
@@ -122,7 +125,7 @@ class TimerRingingService : LifecycleService(), AbstractPlayer.PlayerListener {
 
     private lateinit var timerRepository: TimerRepository
 
-    private val timersOverQueue: Queue<Timer> = LinkedList()
+    private val timersOverQueue = LinkedBlockingQueue<Timer>()
     private var currentTimer: Timer? = null
 
     private fun registerToLocalTimerOverBroadcastReceiver() {
@@ -191,25 +194,21 @@ class TimerRingingService : LifecycleService(), AbstractPlayer.PlayerListener {
     }
 
     private fun queue(timer: Timer) {
-        synchronized(timersOverQueue) {
-            var found = false
-            timersOverQueue.forEach {
-                if (it.id == timer.id) {
-                    found = true
-                    return@forEach
-                }
+        var found = false
+        val iterator = timersOverQueue.iterator()
+        while (iterator.hasNext() && !found) {
+            if (iterator.next().id == timer.id) {
+                found = true
             }
+        }
 
-            if (!found) {
-                timersOverQueue.add(timer)
-            }
+        if (!found) {
+            timersOverQueue.add(timer)
         }
     }
 
     private fun pop(): Timer? {
-        synchronized(timersOverQueue) {
-            return timersOverQueue.poll()
-        }
+        return timersOverQueue.poll()
     }
 
     override fun onDestroy() {
