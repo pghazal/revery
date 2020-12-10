@@ -362,24 +362,30 @@ class AlarmService : LifecycleService(), AbstractPlayer.PlayerListener {
 
         vibrator.cancel()
 
-        if (forceShouldPausePlayback) {
-            player.stop()
-            return
-        }
+        if (this::player.isInitialized) {
+            if (forceShouldPausePlayback) {
+                player.stop()
+                return
+            }
 
-        // If it's a Default alarm, stop alarm which will call release()
-        if (metadata.type == MediaType.DEFAULT) {
-            player.stop()
-        }
-        // If it's Spotify alarm, and shouldn't keep playing after alarm stopped, same as above:
-        // Stop alarm which will then call release()
-        else if (metadata.type != MediaType.DEFAULT && !metadata.shouldKeepPlaying) {
-            player.stop()
-        }
-        // If it's Spotify alarm and should keep playing, at least disconnect from Spotify app
-        // by calling release()
-        else if (metadata.type != MediaType.DEFAULT && metadata.shouldKeepPlaying) {
-            player.release()
+            // If it's a Default alarm, stop alarm which will call release()
+            if (metadata.type == MediaType.DEFAULT) {
+                player.stop()
+            }
+            // If it's Spotify alarm, and shouldn't keep playing after alarm stopped, same as above:
+            // Stop alarm which will then call release()
+            else if (metadata.type != MediaType.DEFAULT && !metadata.shouldKeepPlaying) {
+                player.stop()
+            }
+            // If it's Spotify alarm and should keep playing, at least disconnect from Spotify app
+            // by calling release()
+            else if (metadata.type != MediaType.DEFAULT && metadata.shouldKeepPlaying) {
+                player.release()
+            }
+        } else {
+            broadcastFinishRingActivity(this)
+
+            killService() // will call onDestroy()
         }
     }
 
