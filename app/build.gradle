@@ -124,9 +124,11 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
 
     implementation 'com.shawnlin:number-picker:2.4.10'
-    implementation 'com.squareup.picasso:picasso:2.71828'
-    implementation 'jp.wasabeef:picasso-transformations:2.4.0'
     implementation "com.ncorti:slidetoact:0.9.0"
+
+    // Glide
+    implementation("com.github.bumptech.glide:glide:4.11.0")
+    implementation 'jp.wasabeef:glide-transformations:4.3.0'
 
     // Spotify SDK App Remote
     implementation project(':spotify-app-remote')

@@ -4,7 +4,7 @@ class ImageLoader {
 
     companion object {
         fun get(): IImageLoader {
-            return PicassoImageLoader()
+            return GlideImageLoader()
         }
     }
 }
